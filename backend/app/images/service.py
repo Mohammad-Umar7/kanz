@@ -256,10 +256,20 @@ class ImageService:
             log.exception("step chain tutorial=%s could not start", tutorial_id)
 
     async def wait_for_chains(self) -> None:
-        """Wait for the step chains running now (used by tests and on shutdown)."""
+        """Wait for the step chains running now."""
         running = [t for t in self._chains.values() if not t.done()]
         if running:
             await asyncio.gather(*running, return_exceptions=True)
+
+    async def aclose(self) -> None:
+        """Cancel running chains and renders (server shutdown). Finished pictures stay cached."""
+        chains = [t for t in self._chains.values() if not t.done()]
+        for task in chains:
+            task.cancel()
+        pending = chains + self._flights.cancel_all()
+        if pending:
+            await asyncio.gather(*pending, return_exceptions=True)
+            log.info("image pipeline stopped: cancelled %d chain(s) and renders", len(chains))
 
     # ======================================================= idea hand-off
     def _idea_path(self, image_id: str, idea_id: str) -> Path:
@@ -559,3 +569,9 @@ def start_step_chain(tutorial: Tutorial, idea: UpcycleIdea | None = None) -> Non
         get_image_service().start_step_chain(tutorial, idea)
     except Exception:
         log.exception("step chain tutorial=%s could not start", tutorial.tutorial_id)
+
+
+async def shutdown() -> None:
+    """Stop background work on server shutdown (call from the app lifespan)."""
+    if _service is not None:
+        await _service.aclose()

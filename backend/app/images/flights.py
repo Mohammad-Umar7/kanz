@@ -40,6 +40,13 @@ class SingleFlight(Generic[T]):
             task.add_done_callback(lambda t, k=key: self._finished(k, t))
         return await asyncio.shield(task)
 
+    def cancel_all(self) -> list[asyncio.Task[T]]:
+        """Cancel every in-flight task (server shutdown) and return them so the caller can await them."""
+        running = [t for t in self._tasks.values() if not t.done()]
+        for task in running:
+            task.cancel()
+        return running
+
     def _finished(self, key: str, task: asyncio.Task[T]) -> None:
         if self._tasks.get(key) is task:
             del self._tasks[key]

@@ -135,3 +135,20 @@ async def test_module_seam_uses_the_process_service(
         image_service.set_image_service(None)
     assert resp.cached is True
     assert len(gateway.calls) == 6
+
+
+async def test_shutdown_cancels_running_chains_quietly(
+    service: ImageService, gateway: FakeImageGateway, tutorial: Tutorial, idea: UpcycleIdea
+) -> None:
+    gateway.delay = 5.0  # a render that would outlive the server
+    image_service.set_image_service(service)
+    try:
+        service.start_step_chain(tutorial, idea)
+        await asyncio.sleep(0.01)
+        await image_service.shutdown()
+    finally:
+        image_service.set_image_service(None)
+    assert gateway.labels == ["step1"]
+    assert service._chains == {}
+    assert len(service._flights) == 0
+    assert not step_exists(service.store, tutorial, 1)

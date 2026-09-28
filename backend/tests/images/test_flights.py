@@ -72,3 +72,14 @@ async def test_different_keys_run_independently() -> None:
         "a",
         "b",
     ]
+
+
+async def test_cancel_all_stops_in_flight_work() -> None:
+    flights: SingleFlight[str] = SingleFlight()
+    waiter = asyncio.create_task(flights.run("k", lambda: asyncio.sleep(10, result="late")))
+    await asyncio.sleep(0)
+    cancelled = flights.cancel_all()
+    assert len(cancelled) == 1
+    with pytest.raises(asyncio.CancelledError):
+        await waiter
+    assert not flights.running("k")
