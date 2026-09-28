@@ -96,18 +96,21 @@ class VoiceCommandService {
 
   bool get isListening => _speech.isListening;
 
-  Future<void> start({
+  /// Starts listening. False when speech recognition is unavailable or the
+  /// microphone permission was refused.
+  Future<bool> start({
     required Lang lang,
     required void Function(VoiceCommand command) onCommand,
     void Function(bool listening)? onListening,
   }) async {
-    if (!await init()) return;
+    if (!await init()) return false;
     _lang = lang;
     _onCommand = onCommand;
     _onListening = onListening;
     _active = true;
     _paused = false;
     await _listen();
+    return true;
   }
 
   /// Stops listening temporarily (while speaking).
