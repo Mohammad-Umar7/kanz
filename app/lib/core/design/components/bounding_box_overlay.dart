@@ -1,6 +1,7 @@
 import 'dart:math' as math;
 import 'dart:ui' show PathMetric;
 
+import 'package:flutter/foundation.dart' show listEquals;
 import 'package:flutter/material.dart';
 
 import '../context.dart';
@@ -35,9 +36,14 @@ class DetectionBox {
 }
 
 /// The user's photo with material-colored outlines around each detected
-/// item. On first show a thin scan line passes once over the photo, then
-/// the outlines draw in one after another. The selected item is drawn
-/// heavier and the others recede.
+/// item. When detections arrive a thin scan line passes once over the
+/// photo, then the outlines draw in one after another. The selected item is
+/// drawn heavier and the others recede.
+///
+/// The photo can be shown before the analysis returns (for example right
+/// after the Hero flight from the camera) with an empty [boxes] list: the
+/// reveal waits for the first detections, and plays again when a new
+/// analysis brings a different set of items.
 ///
 /// Boxes are mapped with the same [BoxFit] math the image uses, so they
 /// stay on their items with [BoxFit.cover] (cropped) and [BoxFit.contain]
@@ -59,7 +65,8 @@ class BoundingBoxOverlay extends StatefulWidget {
 
   final ImageProvider image;
 
-  /// Pixel size (or any size with the same aspect ratio) of [image].
+  /// Pixel size (or any size with the same aspect ratio) of [image]. When
+  /// it is unknown ([Size.zero]), boxes are mapped onto the whole viewport.
   final Size imageSize;
   final List<DetectionBox> boxes;
 
@@ -86,6 +93,14 @@ class BoundingBoxOverlay extends StatefulWidget {
     BoxFit fit = BoxFit.cover,
     Alignment alignment = Alignment.center,
   }) {
+    if (imageSize.isEmpty || viewport.isEmpty) {
+      return Rect.fromLTRB(
+        box.left * viewport.width,
+        box.top * viewport.height,
+        box.right * viewport.width,
+        box.bottom * viewport.height,
+      );
+    }
     final fitted = applyBoxFit(fit, imageSize, viewport);
     final src = alignment.inscribe(fitted.source, Offset.zero & imageSize);
     final dst = alignment.inscribe(fitted.destination, Offset.zero & viewport);
@@ -105,6 +120,7 @@ class BoundingBoxOverlay extends StatefulWidget {
     required Size viewport,
     BoxFit fit = BoxFit.cover,
   }) {
+    if (imageSize.isEmpty) return Offset.zero & viewport;
     final fitted = applyBoxFit(fit, imageSize, viewport);
     return Alignment.center.inscribe(
       fitted.destination,
@@ -124,34 +140,59 @@ class _BoundingBoxOverlayState extends State<BoundingBoxOverlay>
 
   late final AnimationController _controller;
 
-  int get _totalMs =>
-      _scanMs + _drawMs + _staggerMs * math.max(0, widget.boxes.length - 1);
+  /// Whether the reveal has started for the current set of items.
+  bool _revealed = false;
+
+  Duration get _duration => Duration(
+    milliseconds:
+        _scanMs + _drawMs + _staggerMs * math.max(0, widget.boxes.length - 1),
+  );
+
+  int get _totalMs => _controller.duration!.inMilliseconds;
+
+  bool get _animates => widget.animate && !KanzMotion.reduced(context);
 
   @override
   void initState() {
     super.initState();
-    _controller = AnimationController(
-      vsync: this,
-      duration: Duration(milliseconds: _totalMs),
-    );
+    _controller = AnimationController(vsync: this, duration: _duration);
   }
 
   @override
   void didChangeDependencies() {
     super.didChangeDependencies();
-    if (!widget.animate || KanzMotion.reduced(context)) {
+    if (!_animates) {
       _controller.value = 1;
-    } else if (!_controller.isAnimating && _controller.value == 0) {
-      _controller.forward();
+    } else if (!_revealed && widget.boxes.isNotEmpty) {
+      _reveal();
     }
   }
 
   @override
   void didUpdateWidget(BoundingBoxOverlay oldWidget) {
     super.didUpdateWidget(oldWidget);
-    if (oldWidget.boxes.length != widget.boxes.length) {
-      _controller.duration = Duration(milliseconds: _totalMs);
+    final sameItems = listEquals(
+      [for (final b in oldWidget.boxes) b.id],
+      [for (final b in widget.boxes) b.id],
+    );
+    if (sameItems) return;
+    // A new analysis: replay the reveal for its items (or show them at once
+    // when motion is reduced). An emptied list waits for the next result.
+    _revealed = false;
+    if (!_animates) {
+      _controller.value = 1;
+    } else if (widget.boxes.isNotEmpty) {
+      _reveal();
+    } else {
+      _controller.value = 0;
     }
+  }
+
+  void _reveal() {
+    _revealed = true;
+    _controller
+      ..duration = _duration
+      ..forward(from: 0);
   }
 
   @override
@@ -201,7 +242,9 @@ class _BoundingBoxOverlayState extends State<BoundingBoxOverlay>
       builder: (context, constraints) {
         if (!constraints.hasBoundedHeight) {
           return AspectRatio(
-            aspectRatio: widget.imageSize.aspectRatio,
+            aspectRatio: widget.imageSize.isEmpty
+                ? 4 / 3
+                : widget.imageSize.aspectRatio,
             child: _buildSized(context),
           );
         }
@@ -266,7 +309,6 @@ class _BoundingBoxOverlayState extends State<BoundingBoxOverlay>
                                   viewport: viewport,
                                   fit: widget.fit,
                                 ),
-                                brightness: Theme.of(context).brightness,
                               ),
                             ),
                             for (var i = 0; i < mapped.length; i++)
@@ -473,7 +515,6 @@ class _BoxesPainter extends CustomPainter {
     required this.selectedId,
     required this.scan,
     required this.scanArea,
-    required this.brightness,
   });
 
   final List<DetectionBox> boxes;
@@ -484,7 +525,6 @@ class _BoxesPainter extends CustomPainter {
   /// Scan line position 0..1, or null once it has passed.
   final double? scan;
   final Rect scanArea;
-  final Brightness brightness;
 
   @override
   void paint(Canvas canvas, Size size) {
@@ -563,6 +603,5 @@ class _BoxesPainter extends CustomPainter {
       old.progress != progress ||
       old.scan != scan ||
       old.selectedId != selectedId ||
-      old.rects != rects ||
-      old.brightness != brightness;
+      old.rects != rects;
 }
