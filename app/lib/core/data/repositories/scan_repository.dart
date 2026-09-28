@@ -146,6 +146,17 @@ class ScanRepository {
     return row == null ? null : _toStored(row);
   }
 
+  /// The most recent scan that has recommendations (drop-off tab defaults).
+  Future<StoredScan?> latestWithRecommendation() async {
+    final row =
+        await (_db.select(_db.scans)
+              ..where((s) => s.recommendationJson.isNotNull())
+              ..orderBy([(s) => OrderingTerm.desc(s.createdAt)])
+              ..limit(1))
+            .getSingleOrNull();
+    return row == null ? null : _toStored(row);
+  }
+
   /// Newest first.
   Stream<List<ScanSummary>> watchAll() {
     final query = _db.select(_db.scans)
