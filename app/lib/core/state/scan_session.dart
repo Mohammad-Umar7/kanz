@@ -260,6 +260,9 @@ class ScanSession extends Notifier<ScanSessionState> {
       }
       state = state.copyWith(analysis: response);
       _setStage(PipelineStage.identifying, StageStatus.done);
+      // Later stages use the backend's image id, not the bytes; a retake or a
+      // re-analysis reads the photo back from the device.
+      _photo = null;
       await _recommend(chain);
     } on Object catch (error) {
       final e = ApiException.from(error);
