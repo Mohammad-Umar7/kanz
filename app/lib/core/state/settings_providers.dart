@@ -80,13 +80,32 @@ final appLocaleProvider = Provider<Locale?>((ref) {
   };
 });
 
+/// The phone's preferred languages, most preferred first. `KanzApp` passes
+/// changes in from `didChangeLocales`, so a language switch in the phone's
+/// settings reaches the providers below while the app is running.
+final systemLocalesProvider = NotifierProvider<SystemLocales, List<Locale>>(
+  SystemLocales.new,
+);
+
+class SystemLocales extends Notifier<List<Locale>> {
+  @override
+  List<Locale> build() => PlatformDispatcher.instance.locales;
+
+  void update(List<Locale> locales) => state = locales;
+}
+
 /// Language for AI content (`lang` in every request). With the system setting
-/// it is Arabic when the phone is in Arabic, otherwise English.
+/// it resolves the phone's languages the way MaterialApp picks the UI locale:
+/// the first one that is Arabic or English wins, otherwise English. So the UI
+/// and the AI answers are always in the same language.
 final contentLangProvider = Provider<Lang>((ref) {
   final locale = ref.watch(appLocaleProvider);
-  final code =
-      locale?.languageCode ?? PlatformDispatcher.instance.locale.languageCode;
-  return code == 'ar' ? Lang.ar : Lang.en;
+  if (locale != null) return locale.languageCode == 'ar' ? Lang.ar : Lang.en;
+  for (final preferred in ref.watch(systemLocalesProvider)) {
+    if (preferred.languageCode == 'ar') return Lang.ar;
+    if (preferred.languageCode == 'en') return Lang.en;
+  }
+  return Lang.en;
 });
 
 /// The profile sent with recommend and tutorial requests.

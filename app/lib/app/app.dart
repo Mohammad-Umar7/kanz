@@ -16,13 +16,29 @@ class KanzApp extends ConsumerStatefulWidget {
   ConsumerState<KanzApp> createState() => _KanzAppState();
 }
 
-class _KanzAppState extends ConsumerState<KanzApp> {
+class _KanzAppState extends ConsumerState<KanzApp> with WidgetsBindingObserver {
   @override
   void initState() {
     super.initState();
+    WidgetsBinding.instance.addObserver(this);
     // Wake the backend while the first screen renders: a cold start loads the
     // knowledge base, and the first scan should not pay for it.
     ref.read(healthProvider);
+  }
+
+  @override
+  void dispose() {
+    WidgetsBinding.instance.removeObserver(this);
+    super.dispose();
+  }
+
+  /// With "Phone language" selected, a change of the phone's language also
+  /// switches the language of AI answers and the Arabic type system.
+  @override
+  void didChangeLocales(List<Locale>? locales) {
+    if (locales != null) {
+      ref.read(systemLocalesProvider.notifier).update(locales);
+    }
   }
 
   @override

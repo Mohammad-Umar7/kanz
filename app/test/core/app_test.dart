@@ -4,6 +4,7 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:go_router/go_router.dart';
 import 'package:kanz/app/app.dart';
 import 'package:kanz/app/router.dart';
+import 'package:kanz/core/data/models/models.dart';
 import 'package:kanz/core/state/core_providers.dart';
 import 'package:kanz/core/state/settings_providers.dart';
 import 'package:kanz/features/home/home_screen.dart';
@@ -85,5 +86,38 @@ void main() {
     expect(GoRouter.of(context).state.matchedLocation, AppRoutes.home);
     expect(h.container.read(contentLangProvider).id, 'ar');
     expect(h.container.read(apiBaseUrlProvider), isNotEmpty);
+  });
+
+  testWidgets('phone language drives AI content and follows changes', (
+    tester,
+  ) async {
+    addTearDown(tester.platformDispatcher.clearLocalesTestValue);
+    h =
+        await tester.runAsync(
+              () =>
+                  TestHarness.create(prefs: {'settings.onboarding_done': true}),
+            )
+            as TestHarness;
+    await pumpApp(tester);
+
+    // French is not supported, so like MaterialApp the next preference wins.
+    tester.platformDispatcher.localesTestValue = const [
+      Locale('fr'),
+      Locale('ar', 'AE'),
+    ];
+    await tester.pumpAndSettle();
+    expect(h.container.read(contentLangProvider), Lang.ar);
+    expect(
+      Directionality.of(tester.element(find.byType(HomeScreen))),
+      TextDirection.rtl,
+    );
+
+    tester.platformDispatcher.localesTestValue = const [Locale('en', 'US')];
+    await tester.pumpAndSettle();
+    expect(h.container.read(contentLangProvider), Lang.en);
+    expect(
+      Directionality.of(tester.element(find.byType(HomeScreen))),
+      TextDirection.ltr,
+    );
   });
 }
