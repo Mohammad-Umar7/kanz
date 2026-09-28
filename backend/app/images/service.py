@@ -162,6 +162,7 @@ class ImageService:
 
     # ============================================================ public API
     async def after_image(self, req: AfterImageRequest) -> ImageResponse:
+        """The finished project, edited from the user's photo. Cached per (image_id, idea.id)."""
         image_id, idea = req.image_id, req.idea
         _safe_id(idea.id, "idea id")
         self._require_source(image_id)
@@ -172,6 +173,7 @@ class ImageService:
         return self._response(result, kind="after", key=after_key(image_id, idea.id), timings=timings)
 
     async def step_image(self, req: StepImageRequest) -> ImageResponse:
+        """One tutorial step. Cached per (image_id, idea_id, skill, step); missing earlier steps render first."""
         tutorial = self.tutorials.get(req.tutorial_id)
         if tutorial is None:
             raise NotFound(detail=f"tutorial {req.tutorial_id} unknown")
@@ -192,6 +194,7 @@ class ImageService:
         return self._response(result, kind="step", key=key, timings=timings, step=req.step, skill=tutorial.skill)
 
     async def bin_image(self, req: BinImageRequest) -> ImageResponse:
+        """The item prepared for its bin, edited from a crop around the item. Cached per (image_id, item.id)."""
         image_id, item = req.image_id, req.item
         _safe_id(item.id, "item id")
         self._require_source(image_id)
@@ -264,6 +267,7 @@ class ImageService:
         return self.store.generated_path(image_id, f"idea_{idea_id}").with_suffix(".json")
 
     def save_idea(self, image_id: str, idea: UpcycleIdea) -> None:
+        """Keep the idea beside its after image; step requests only carry a tutorial id."""
         path = self._idea_path(image_id, idea.id)
         data = idea.model_dump_json(indent=1)
         if path.exists() and path.read_text(encoding="utf-8") == data:
@@ -272,6 +276,7 @@ class ImageService:
         path.write_text(data, encoding="utf-8")
 
     def load_idea(self, image_id: str, idea_id: str) -> UpcycleIdea | None:
+        """The saved idea, or None (the final step then renders without the after image)."""
         path = self._idea_path(image_id, idea_id)
         if not path.exists():
             return None
