@@ -51,6 +51,10 @@ class HandsFreeController extends Notifier<HandsFreeState> {
 
   final TutorialKey key;
 
+  /// Increments per utterance. Only the latest one may reopen the microphone:
+  /// an interrupted utterance finishes after its replacement has started.
+  int _utterance = 0;
+
   TtsService get _tts => ref.read(ttsServiceProvider);
   VoiceCommandService get _voice => ref.read(voiceCommandServiceProvider);
   TutorialController get _tutorial =>
@@ -58,9 +62,13 @@ class HandsFreeController extends Notifier<HandsFreeState> {
 
   @override
   HandsFreeState build() {
+    // Captured here: Riverpod forbids reading providers while disposing.
+    final voice = _voice;
+    final tts = _tts;
     ref.onDispose(() {
-      unawaited(_voice.stop());
-      unawaited(_tts.stop());
+      _utterance++;
+      unawaited(voice.stop());
+      unawaited(tts.stop());
     });
     // Any step change (voice or tap) is read aloud while hands-free is on.
     ref.listen(tutorialControllerProvider(key).select((s) => s.currentStep), (
@@ -91,6 +99,7 @@ class HandsFreeController extends Notifier<HandsFreeState> {
   }
 
   Future<void> disable() async {
+    _utterance++;
     state = state.copyWith(enabled: false, listening: false, speaking: false);
     await _voice.stop();
     await _tts.stop();
@@ -110,12 +119,13 @@ class HandsFreeController extends Notifier<HandsFreeState> {
       if (step.tip != null) '${l10n.commonSpeechTip}: ${step.tip}',
     ].join(' ');
 
+    final utterance = ++_utterance;
     await _tts.stop();
     await _voice.pause();
-    if (!ref.mounted) return;
+    if (!ref.mounted || utterance != _utterance) return;
     state = state.copyWith(speaking: true);
     final spoken = await _tts.speak(text, _lang);
-    if (!ref.mounted) return;
+    if (!ref.mounted || utterance != _utterance) return;
     state = state.copyWith(speaking: false, speechUnavailable: !spoken);
     if (state.enabled) await _voice.resume();
   }

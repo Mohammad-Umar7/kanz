@@ -5,6 +5,7 @@ import 'dart:typed_data';
 
 import 'package:dio/dio.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:flutter_riverpod/misc.dart' show Override;
 import 'package:kanz/core/data/db/database.dart';
 import 'package:kanz/core/data/models/models.dart';
 import 'package:kanz/core/data/vocab/vocab.dart';
@@ -245,11 +246,13 @@ class TestHarness {
   final FakeLocation location;
 
   /// [prefs] seeds shared preferences, e.g. {'settings.location_mode': 'city'}.
+  /// [overrides] replaces further providers, such as the speech services.
   static Future<TestHarness> create({
     Map<String, Object> prefs = const {},
     FakeApi? api,
     AppDatabase? db,
     Directory? dir,
+    List<Override> overrides = const [],
   }) async {
     SharedPreferences.setMockInitialValues(prefs);
     final preferences = await SharedPreferences.getInstance();
@@ -272,6 +275,7 @@ class TestHarness {
         imageCompressorProvider.overrideWithValue(FakeCompressor(directory)),
         permissionServiceProvider.overrideWithValue(permissions),
         locationServiceProvider.overrideWithValue(location),
+        ...overrides,
       ],
       retry: (count, error) => null,
     );
