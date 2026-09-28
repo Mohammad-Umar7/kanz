@@ -243,7 +243,8 @@ def _imperative(span: Span, lead: str) -> bool:
     if _ARABIC_CHARS.search(span.word):
         return all(w in _IMPERATIVE_LEAD_AR for w in words)
     following = span.text[span.end :].split()
-    return all(w in _IMPERATIVE_LEAD_EN for w in words) and bool(following) and following[0] in _IMPERATIVE_OBJECT_EN
+    obj = following[0].strip(".,;:!?") if following else ""
+    return all(w in _IMPERATIVE_LEAD_EN for w in words) and obj in _IMPERATIVE_OBJECT_EN
 
 
 def _warning(span: Span) -> bool:
@@ -262,20 +263,12 @@ def live(terms: Terms, s: Sentence, *, warnings: bool = True) -> list[Span]:
 
 
 def sentences(texts: Iterable[str | None]) -> list[Sentence]:
+    """Split texts into sentences at English and Arabic sentence marks and line breaks."""
     out: list[Sentence] = []
     for text in texts:
         if text:
             out.extend(Sentence(part) for part in _SENTENCE_SPLIT.split(text) if part.strip())
     return out
-
-
-def is_negated(s: Sentence) -> bool:
-    """Sentence-level test, used only where a whole sentence may be optional ("No drill? ...")."""
-    if _NEGATION_EN.search(s.en):
-        return True
-    if s.ar_tokens & (_NEGATION_AR | _SHORT_SCOPE_AR):
-        return True
-    return any(tok.startswith(stem) for stem in _NEGATION_AR_STEMS for tok in s.ar_tokens)
 
 
 def quote(s: Sentence) -> str:

@@ -29,6 +29,9 @@ class TestBoundingBoxes:
         assert (box.x, box.y, box.w, box.h) == (0.9, 0.0, 0.1, 1.0)
         assert box.x + box.w <= 1 and box.y + box.h <= 1
 
+    def test_fractional_boxes_are_read_as_fractions(self):
+        assert bbox_from_box2d([0.1, 0.2, 0.5, 0.6]) == bbox_from_box2d([100, 200, 500, 600])
+
     def test_reversed_corners_are_swapped(self):
         assert bbox_from_box2d([500, 600, 100, 200]) == bbox_from_box2d([100, 200, 500, 600])
 

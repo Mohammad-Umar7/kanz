@@ -71,6 +71,9 @@ def hard_rules(items: Sequence[Item]):
         for n, step in enumerate(out.steps, 1):
             problems += safety.check_english(step.image_prompt, field=f"Step {n} image_prompt")
         problems += safety.check_text_rules(_all_texts(out), items=items, where="The tutorial ")
+        # Step pictures teach as much as the text: never show a flame in plastic or paper.
+        prompts = [s.image_prompt for s in out.steps]
+        problems += safety.check_fire_rules(prompts, items=items, where="A step image_prompt ")
         return problems
 
     return check

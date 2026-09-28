@@ -33,6 +33,7 @@ def test_sentences_split_on_english_and_arabic_punctuation():
         ("Keep it away from heat.", []),
         ("It gives off toxic fumes when heated.", []),
         ("Melt it outdoors to avoid toxic fumes.", ["melt"]),
+        ("Heat it, it only gives off toxic fumes in a closed room.", ["heat"]),
         ("لا تسخّن الغطاء ولا تحرقه.", []),
         ("لا حاجة للغراء: قم بصهر الأطراف.", ["بصهر"]),
     ],

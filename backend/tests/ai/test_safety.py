@@ -209,6 +209,13 @@ class TestPlasticHeat:
         assert safety.check_plastic_heat(["Put a candle in the jar."], items=[jar, lid]) == []
         assert safety.check_plastic_heat(["Soften the lid with a heat gun."], items=[jar, lid])
 
+    def test_arabic_advice_about_a_scanned_plastic_bottle(self):
+        bottle = item(name="قارورة مياه بلاستيكية", category="plastic", material="PET")
+        assert safety.check_plastic_heat(["ضع شمعة داخل القارورة."], items=[bottle])
+        assert safety.check_plastic_heat(["سخّن القارورة بمجفف الشعر لتلينها."], items=[bottle])
+        for advice in ("ضع شمعة ليد داخل القارورة.", "البلاستيك يطلق أبخرة سامة عند تسخينه."):
+            assert safety.check_plastic_heat([advice], items=[bottle]) == [], advice
+
 
 class TestOpenFlame:
     def test_candle_in_a_cardboard_lantern_is_rejected(self):
@@ -222,6 +229,9 @@ class TestOpenFlame:
     def test_paper_scans_need_no_explicit_word(self):
         box = item(name="Cardboard box", category="paper", material="Corrugated cardboard")
         assert safety.check_open_flame(["Place a candle inside it."], items=[box])
+        arabic_box = item(name="صندوق كرتون", category="paper", material="كرتون")
+        assert safety.check_open_flame(["ضع شمعة صغيرة داخل الصندوق."], items=[arabic_box])
+        assert safety.check_open_flame(["لا تشعل شمعة داخل الصندوق أبدًا."], items=[arabic_box]) == []
 
 
 class TestChemicalFood:
@@ -339,6 +349,11 @@ class TestToolsAndLanguage:
             [(2, "Drill a hole in the lid."), (3, "Instead of a drill, use a hammer and nail.")], ["drill"]
         )
         assert len(problems) == 1 and problems[0].startswith("Step 2")
+
+    def test_a_later_negation_does_not_hide_a_missing_tool(self):
+        problems = safety.check_missing_tools_used([(4, "Drill a hole in the lid, no glue needed.")], ["drill"])
+        assert len(problems) == 1 and problems[0].startswith("Step 4")
+        assert safety.check_missing_tools_used([(4, "No drill needed: punch the hole with a nail.")], ["drill"]) == []
 
     def test_alternatives_must_exist_and_not_need_other_missing_tools(self):
         problems = safety.check_alternatives(

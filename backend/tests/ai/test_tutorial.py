@@ -109,6 +109,23 @@ async def test_arabic_image_prompts_are_hard_errors():
         await pipeline.tutorial(request(), gateway=FakeGateway({LlmTutorial: [bad, bad]}))
 
 
+async def test_step_images_may_not_show_a_flame_in_plastic(step_chain):
+    bottle = (
+        fixture_analysis("analyze_glass_jar.json")
+        .items[0]
+        .model_copy(update={"name": "PET water bottle", "category": "plastic", "material": "PET #1"})
+    )
+    led = {"name": "LED tea light", "quantity": "1", "from_scan": False, "item_id": None}
+    lit = llm_tutorial(materials=[led], care=["Wipe it with a damp cloth"])
+    lit["steps"][-1]["image_prompt"] = "the same bottle with a lit candle glowing inside"
+    safe = llm_tutorial(materials=[led], care=["Wipe it with a damp cloth"])
+    safe["steps"][-1]["image_prompt"] = "the same bottle with an LED tea light glowing inside"
+    gateway = FakeGateway({LlmTutorial: [lit, safe]})
+    t = (await pipeline.tutorial(request(items=[bottle]), gateway=gateway)).tutorial
+    assert "image_prompt" in gateway.problems[0][0]
+    assert "LED" in t.steps[-1].image_prompt
+
+
 async def test_too_few_steps_are_repaired(step_chain):
     gateway = FakeGateway({LlmTutorial: [llm_tutorial(3), llm_tutorial(5)]})
     t = (await pipeline.tutorial(request(), gateway=gateway)).tutorial

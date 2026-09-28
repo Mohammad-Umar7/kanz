@@ -35,7 +35,8 @@ def bbox_from_box2d(box: Sequence[float] | None) -> BBox | None:
     """Gemini ``box_2d`` ([ymin, xmin, ymax, xmax] on 0-1000) -> ``BBox`` (x, y, w, h on 0-1).
 
     Values are clamped to the grid and min/max are swapped when the model reverses them.
-    Returns None for missing, malformed or degenerate boxes rather than drawing a wrong one.
+    A box given in 0-1 fractions is scaled up. Returns None for missing, malformed or
+    degenerate boxes rather than drawing a wrong one.
     """
     if not box or len(box) != 4:
         return None
@@ -45,6 +46,10 @@ def bbox_from_box2d(box: Sequence[float] | None) -> BBox | None:
         return None
     if any(math.isnan(v) or math.isinf(v) for v in vals):
         return None
+    if 0 < max(vals) <= 1.0:
+        # The model answered in 0-1 fractions instead of the 0-1000 grid; on the grid such a
+        # box would be a sliver in the top-left corner, so read it as fractions.
+        vals = [v * 1000.0 for v in vals]
     ymin, xmin, ymax, xmax = (min(1000.0, max(0.0, v)) / 1000.0 for v in vals)
     if ymin > ymax:
         ymin, ymax = ymax, ymin

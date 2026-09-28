@@ -13,7 +13,9 @@ To plug one in later:
    onnxruntime, or a call to a Vertex AI endpoint. Return None when unsure (below a
    confidence threshold) so a weak guess never biases the analyst.
 2. Register it in ``_REGISTRY`` under a short key.
-3. Select it with ``MATERIAL_CLASSIFIER=<key>`` in ``backend/.env``.
+3. Select it with the ``MATERIAL_CLASSIFIER=<key>`` environment variable. (``backend/.env``
+   only feeds declared ``Settings`` fields; once ``material_classifier`` is added there, the
+   same key works in ``.env`` too.)
 
 The default is ``NoOpClassifier``: no hint, no latency, no extra dependency.
 """

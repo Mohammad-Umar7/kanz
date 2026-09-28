@@ -31,7 +31,8 @@ cd backend
 ```
 
 Options: `--limit N`, `--lang ar`, `--pause S` (seconds between live calls; free-tier keys have
-small per-minute and per-day limits), `--out DIR`.
+small per-minute and per-day limits), `--resume REPORT.json` (re-run only the photos that
+errored in that report and merge the results), `--tag NAME`, `--out DIR`.
 
 Reports are written to `reports/eval_<date>[_<tag>].md` (readable) and `.json` (raw rows).
 The photos themselves are not committed; see `photos/README.md` and `photos/CREDITS.md`.

@@ -2,18 +2,20 @@
 
 Three layers keep Kanz from ever suggesting something dangerous:
 
-1. **Normalisation** (after the Material Analyst). Deterministic rules make sure hazards
-   the model might under-report are flagged: electronics always carry ``e_waste``, broken
-   glass carries ``broken_glass``, batteries, aerosols, medicines and bulbs are recognised
-   by name in English and Arabic, and chemical containers with residue carry ``chemical``.
+1. **Normalisation** (after the Material Analyst, and again in the router for items the
+   user corrected). Deterministic rules make sure hazards the model might under-report are
+   flagged: devices are e-waste whatever category they were filed under, broken glass
+   carries ``broken_glass``, batteries, aerosols, medicines and bulbs are recognised by name
+   in English and Arabic, and chemical containers with residue carry ``chemical``.
 2. **Routing** (before any generation). Items with a disposal-only hazard never reach the
    Upcycle Designer: the router returns ``diy``, ``mixed`` or ``disposal_only``.
 3. **Validators** (after every generating node). Keyword and regex checks in English and
    Arabic return human-readable problems that the gateway feeds back to the model in its
-   repair round: never melt, burn or heat plastic; never reuse chemical containers for
-   food, drink, edible plants or pets; no DIY on disposal-only items; protective gear for
-   cutting, sanding, drilling, painting, glass and sharp metal; no food contact with painted
-   or varnished surfaces unless food-safe is stated.
+   repair round: never melt, burn or heat plastic and no open flame near paper (judged
+   against the scanned items, so "melt the caps" counts for a scan of plastic caps); never
+   reuse chemical containers for food, drink, edible plants or pets; no DIY on
+   disposal-only items; protective gear for cutting, sanding, drilling, painting, glass and
+   sharp metal; no food contact with painted or varnished surfaces unless food-safe is stated.
 
 The checks look at each keyword where it occurs, not at the whole sentence, and skip the
 ones a negation governs ("Never heat, melt or burn plastic" is advice; "Melt the caps in
@@ -34,7 +36,6 @@ from app.ai.textmatch import (
     Span,
     Terms,
     has_arabic,
-    is_negated,
     live,
     negated,
     normalize_ar,
@@ -991,8 +992,12 @@ _OPTIONAL = re.compile(
 _OPTIONAL_AR = ("بدلا", "بدل ", "ان وجد", "ان كان لديك", "اذا كان لديك", "اذا توفر", "لا حاجه", "اختياري")
 
 
-def _optional(s: Sentence) -> bool:
-    return bool(_OPTIONAL.search(s.en)) or any(p in s.ar for p in _OPTIONAL_AR) or is_negated(s)
+def _requires(terms: Terms, s: Sentence) -> bool:
+    """The sentence requires the tool: it names it outside a negation ("no drill needed") and
+    outside an optional phrase ("if you have a drill")."""
+    if _OPTIONAL.search(s.en) or any(p in s.ar for p in _OPTIONAL_AR):
+        return False
+    return bool(live(terms, s, warnings=False))
 
 
 def _tool_terms(tool_id: str) -> Terms:
@@ -1007,7 +1012,7 @@ def check_missing_tools_used(step_texts: Sequence[tuple[int, str]], missing: Ite
     for tool in missing:
         terms = _tool_terms(tool)
         for number, text in step_texts:
-            hits = [s for s in sentences([text]) if terms.found(s) and not _optional(s)]
+            hits = [s for s in sentences([text]) if _requires(terms, s)]
             if hits:
                 problems.append(
                     f"Step {number} needs a {labels.tool_label(tool, 'en').lower()}, which the user does not have "
@@ -1029,7 +1034,7 @@ def check_alternatives(alternatives: dict[str, str | None], missing: Iterable[st
             )
             continue
         for other in missing:
-            if other != tool and any(_tool_terms(other).found(s) and not _optional(s) for s in sentences([alt])):
+            if other != tool and any(_requires(_tool_terms(other), s) for s in sentences([alt])):
                 problems.append(f"tools: the alternative for '{tool}' relies on '{other}', which the user also lacks.")
     return problems
 

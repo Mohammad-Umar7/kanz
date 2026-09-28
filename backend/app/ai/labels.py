@@ -16,15 +16,15 @@ from app.config import BACKEND_DIR
 
 LANG_NAMES = {"en": "English", "ar": "Modern Standard Arabic"}
 
-# contracts/ sits next to backend/ in the repo; a container build may copy it into backend/.
-_CANDIDATES = (BACKEND_DIR.parent / "contracts" / "vocab.json", BACKEND_DIR / "contracts" / "vocab.json")
+# The source of truth is contracts/vocab.json, next to backend/ in the repo. The container
+# image is built from backend/ alone, so an exact copy ships in this package;
+# tests/ai/test_labels.py fails if the two drift apart.
+CONTRACT_VOCAB = BACKEND_DIR.parent / "contracts" / "vocab.json"
+BUNDLED_VOCAB = Path(__file__).with_name("vocab.json")
 
 
 def vocab_path() -> Path:
-    for path in _CANDIDATES:
-        if path.exists():
-            return path
-    raise FileNotFoundError("contracts/vocab.json not found next to or inside backend/")
+    return CONTRACT_VOCAB if CONTRACT_VOCAB.exists() else BUNDLED_VOCAB
 
 
 @lru_cache

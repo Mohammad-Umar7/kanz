@@ -40,6 +40,15 @@ from app.schemas.common import Profile
 from app.schemas.recommend import RecommendRequest
 
 EVAL_DIR = Path(__file__).resolve().parent
+# The agents this eval exercises; other prompts in backend/prompts (swaps, images) are not run here.
+EVAL_AGENTS = (
+    "material_analyst",
+    "upcycle_designer",
+    "recycling_advisor",
+    "donation_advisor",
+    "disposal_advisor",
+    "tutorial_writer",
+)
 # A typical beginner's kit, so tools_have / tools_missing are exercised.
 EVAL_PROFILE_TOOLS = ["scissors", "twine", "pliers", "strong_glue", "acrylic_paint", "paintbrush", "masking_tape"]
 
@@ -330,7 +339,7 @@ def main(args: argparse.Namespace) -> Path:
         "tag": args.tag,
         "lang": args.lang,
         "models": {"vision": settings.model_vision, "text": settings.model_text, "embed": settings.model_embed},
-        "prompts": prompt_versions(),
+        "prompts": {name: v for name, v in prompt_versions().items() if name in EVAL_AGENTS},
         "knowledge": knowledge,
     }
     out_dir = Path(args.out)

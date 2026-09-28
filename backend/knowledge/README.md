@@ -21,7 +21,10 @@ addresses or statistics are invented. Place data comes only from the live facili
 
 Each file is a JSON list. `app/ai/rag/documents.py` validates every document with Pydantic;
 `tests/ai/test_knowledge.py` fails on an unknown tool id, a missing Arabic title, a duplicate
-id or a project count below the minimum.
+id or a project count below the minimum. It also runs the agents' safety validators over the
+documents (each project as if its own items had been scanned), so the knowledge base never
+teaches what an agent would be stopped from saying, and checks that every project names the
+protective gear its techniques need.
 
 ## Common fields (every document)
 
