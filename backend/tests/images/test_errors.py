@@ -1,5 +1,7 @@
 """Failures reach the API as clean KanzErrors; an exhausted quota is not hammered."""
 
+import asyncio
+
 import pytest
 
 from app.core.errors import AiQuotaExhausted, AiTimeout, AiUnavailable
@@ -7,7 +9,7 @@ from app.images.service import ImageService
 from app.schemas.images import AfterImageRequest, StepImageRequest
 from app.schemas.recommend import UpcycleIdea
 from app.schemas.tutorial import Tutorial
-from tests.images.fakes import FakeImageGateway
+from tests.images.fakes import FakeImageGateway, until
 
 
 def quota(_call: object) -> Exception:
@@ -45,6 +47,25 @@ async def test_after_a_quota_error_renders_fail_fast_during_the_cooldown(
     resp = await service.after_image(AfterImageRequest(image_id=photo_id, idea=ideas[1]))
     assert resp.cached is False
     assert len(gateway.calls) == 2
+
+
+async def test_renders_queued_behind_a_quota_error_do_not_call_the_model(
+    service: ImageService, gateway: FakeImageGateway, photo_id: str, idea: UpcycleIdea
+) -> None:
+    # Three renders hold the slots and hit the quota; the two queued behind them must fail
+    # fast when their slot frees up instead of spending two more calls.
+    gateway.gate = asyncio.Event()
+    gateway.fail = quota
+    variants = [idea.model_copy(update={"id": f"idea_{n:08x}"}) for n in range(5)]
+    batch = asyncio.gather(
+        *(service.after_image(AfterImageRequest(image_id=photo_id, idea=v)) for v in variants),
+        return_exceptions=True,
+    )
+    await until(lambda: gateway.active == 3)
+    gateway.gate.set()
+    results = await batch
+    assert all(isinstance(r, AiQuotaExhausted) for r in results)
+    assert len(gateway.calls) == 3
 
 
 @pytest.mark.parametrize("error", [AiUnavailable(detail="503"), AiTimeout(detail="slow")])

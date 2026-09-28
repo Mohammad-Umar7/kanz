@@ -430,41 +430,42 @@ class ImageService:
         timings: Timings | None,
         timing_key: str,
     ) -> StoredImage:
-        """One call to the image model, bounded by the semaphore, stored as JPEG."""
+        """One call to the image model, bounded by the semaphore, stored as JPEG.
+
+        ``timings[timing_key]`` and the log's ``ms`` measure the render itself; time spent
+        waiting for a free slot is logged separately as ``wait_ms``.
+        """
         self._check_quota()
         log.debug("image prompt kind=%s name=%s template=%s\n%s", kind, name, prompt.template, prompt.text)
-        start = time.perf_counter()
-        try:
-            async with self._slots:
+        queued = time.perf_counter()
+        async with self._slots:
+            # Checked again once a slot is free: renders that queued behind one that hit the
+            # quota must not each spend another call on it.
+            self._check_quota()
+            wait_ms, start = _ms(queued), time.perf_counter()
+            try:
                 generated = await self.gateway.image(
                     stage=f"image_{kind}", prompt=prompt.text, references=references, aspect_ratio=aspect_ratio
                 )
-            try:
-                stored = await asyncio.to_thread(self.store.save_generated, image_id, name, generated.data)
-            except (UnidentifiedImageError, OSError, ValueError) as exc:
-                raise AiInvalidOutput(
-                    "The image model returned a picture we couldn't read. Please try again.",
-                    detail=f"{kind} {name}: {exc}",
-                ) from exc
-        except KanzError as exc:
-            if isinstance(exc, AiQuotaExhausted):
-                self._quota_blocked_until = time.monotonic() + QUOTA_COOLDOWN_S
-            log.warning(
-                "image kind=%s image=%s name=%s prompt=%s ms=%d ok=False code=%s detail=%s",
-                kind,
-                image_id,
-                name,
-                prompt.template,
-                _ms(start),
-                exc.code,
-                (exc.detail or exc.message)[:200],
+            except KanzError as exc:
+                if isinstance(exc, AiQuotaExhausted):
+                    self._quota_blocked_until = time.monotonic() + QUOTA_COOLDOWN_S
+                _log_failure(exc, kind=kind, image_id=image_id, name=name, prompt=prompt, start=start)
+                raise
+        try:
+            stored = await asyncio.to_thread(self.store.save_generated, image_id, name, generated.data)
+        except (UnidentifiedImageError, OSError, ValueError) as exc:
+            error = AiInvalidOutput(
+                "The image model returned a picture we couldn't read. Please try again.",
+                detail=f"{kind} {name}: {exc}",
             )
-            raise
+            _log_failure(error, kind=kind, image_id=image_id, name=name, prompt=prompt, start=start)
+            raise error from exc
         ms = _ms(start)
         if timings is not None:
             timings[timing_key] = ms
         log.info(
-            "image kind=%s image=%s name=%s prompt=%s model=%s refs=%d aspect=%s size=%dx%d ms=%d ok=True",
+            "image kind=%s image=%s name=%s prompt=%s model=%s refs=%d aspect=%s size=%dx%d wait_ms=%d ms=%d ok=True",
             kind,
             image_id,
             name,
@@ -474,6 +475,7 @@ class ImageService:
             aspect_ratio,
             stored.width,
             stored.height,
+            wait_ms,
             ms,
         )
         return stored
@@ -542,6 +544,19 @@ class ImageService:
 
 def _ms(start: float) -> int:
     return int((time.perf_counter() - start) * 1000)
+
+
+def _log_failure(exc: KanzError, *, kind: Kind, image_id: str, name: str, prompt: ImagePrompt, start: float) -> None:
+    log.warning(
+        "image kind=%s image=%s name=%s prompt=%s ms=%d ok=False code=%s detail=%s",
+        kind,
+        image_id,
+        name,
+        prompt.template,
+        _ms(start),
+        exc.code,
+        (exc.detail or exc.message)[:200],
+    )
 
 
 # ================================================================ module seam
