@@ -1,6 +1,7 @@
 import 'package:freezed_annotation/freezed_annotation.dart';
 
 import '../data/models/models.dart';
+import '../data/vocab/quantity_display.dart';
 import '../data/vocab/vocab.dart';
 import '../network/api_exception.dart';
 import 'generated_image.dart';
@@ -146,17 +147,18 @@ abstract class ItemCorrection with _$ItemCorrection {
   const ItemCorrection._();
 
   /// Applies the edit and marks the item `user_corrected` so the backend
-  /// trusts it over its own reading. Display strings are rebuilt from [vocab].
+  /// trusts it over its own reading. Display strings are rebuilt in [lang]
+  /// (quality label from [vocab], quantity like the backend formats it).
   Item applyTo(Item item, {required Vocab vocab, required Lang lang}) {
+    final value = quantityValue ?? item.quantity.value;
+    final unit = quantityUnit ?? item.quantity.unit;
     final quantity = (quantityValue != null || quantityUnit != null)
         ? Quantity(
-            value: quantityValue ?? item.quantity.value,
-            unit: quantityUnit ?? item.quantity.unit,
+            value: value,
+            unit: unit,
+            // The user counted it, so it is no longer the model's estimate.
             isEstimate: false,
-            display: _formatQuantity(
-              quantityValue ?? item.quantity.value,
-              quantityUnit ?? item.quantity.unit,
-            ),
+            display: formatQuantity(value, unit, lang),
           )
         : item.quantity;
     final quality = qualityScore != null
@@ -176,12 +178,5 @@ abstract class ItemCorrection with _$ItemCorrection {
       hazards: hazards ?? item.hazards,
       userCorrected: true,
     );
-  }
-
-  static String _formatQuantity(double value, String unit) {
-    final number = value == value.roundToDouble()
-        ? value.toInt().toString()
-        : value.toStringAsFixed(1);
-    return '$number $unit';
   }
 }
