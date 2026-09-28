@@ -227,7 +227,7 @@ class _Placeholder extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final c = context.kanzColors;
-    final color = onPhoto ? const Color(0xFFF2EFE8) : c.inkSecondary;
+    final color = onPhoto ? KanzPhotoColors.ink : c.inkSecondary;
     return Stack(
       fit: StackFit.expand,
       children: [
@@ -270,8 +270,6 @@ class _Inset extends StatelessWidget {
   final ImageProvider image;
   final String label;
 
-  static const Color _paper = Color(0xFFF2EFE8);
-
   @override
   Widget build(BuildContext context) {
     final c = context.kanzColors;
@@ -282,7 +280,7 @@ class _Inset extends StatelessWidget {
         height: 72,
         decoration: BoxDecoration(
           borderRadius: const BorderRadius.all(Radius.circular(10)),
-          border: Border.all(color: _paper, width: 2),
+          border: Border.all(color: KanzPhotoColors.ink, width: 2),
           boxShadow: KanzElevation.floating(c),
         ),
         child: ClipRRect(
@@ -301,7 +299,7 @@ class _Inset extends StatelessWidget {
                 child: Container(
                   width: double.infinity,
                   padding: const EdgeInsets.symmetric(vertical: 2),
-                  color: const Color(0xE6161616),
+                  color: KanzPhotoColors.tag,
                   child: Text(
                     context.kanzType.uppercaseData
                         ? label.toUpperCase()
@@ -311,7 +309,7 @@ class _Inset extends StatelessWidget {
                     overflow: TextOverflow.clip,
                     textScaler: TextScaler.noScaling,
                     style: context.kanzType.data.copyWith(
-                      color: _paper,
+                      color: KanzPhotoColors.ink,
                       fontSize: 9,
                       height: 1.3,
                     ),

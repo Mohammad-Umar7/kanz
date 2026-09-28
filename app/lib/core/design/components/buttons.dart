@@ -210,8 +210,8 @@ class KanzIconButton extends StatelessWidget {
         BorderSide(color: selected ? c.accent : c.line),
       ),
       KanzIconButtonStyle.onPhoto => (
-        selected ? KanzColors.dark.accent : const Color(0xFFF2EFE8),
-        const Color(0xCC161616),
+        selected ? KanzPhotoColors.accent : KanzPhotoColors.ink,
+        KanzPhotoColors.control,
         null,
       ),
     };
@@ -383,7 +383,7 @@ class _ShutterButtonState extends State<ShutterButton> {
 
   @override
   Widget build(BuildContext context) {
-    const ringColor = Color(0xFFF2EFE8);
+    const ringColor = KanzPhotoColors.ink;
     final accent = context.kanzColors.accent;
     final enabled = widget.onPressed != null && !widget.busy;
     final size = widget.size;

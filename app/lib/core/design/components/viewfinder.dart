@@ -9,7 +9,7 @@ class CornerBrackets extends StatelessWidget {
   const CornerBrackets({
     super.key,
     this.active = false,
-    this.color = const Color(0xFFF2EFE8),
+    this.color = KanzPhotoColors.ink,
     this.strokeWidth = 3,
     this.length = 28,
     this.radius = 8,

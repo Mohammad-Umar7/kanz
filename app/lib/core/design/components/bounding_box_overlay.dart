@@ -448,7 +448,7 @@ class _BoxTag extends StatelessWidget {
     height: 1.2,
     fontWeight: FontWeight.w500,
     letterSpacing: arabic ? 0 : 0.8,
-    color: const Color(0xFFF2EFE8),
+    color: KanzPhotoColors.ink,
   );
 
   static String _text(String label, {required bool arabic}) =>
@@ -476,10 +476,10 @@ class _BoxTag extends StatelessWidget {
       height: height,
       padding: const EdgeInsetsDirectional.symmetric(horizontal: 6),
       decoration: BoxDecoration(
-        color: const Color(0xF0161616),
+        color: KanzPhotoColors.tag,
         borderRadius: const BorderRadius.all(Radius.circular(4)),
         border: Border.all(
-          color: selected ? color : const Color(0x00000000),
+          color: selected ? color : Colors.transparent,
           width: 1.5,
         ),
       ),
@@ -549,7 +549,7 @@ class _BoxesPainter extends CustomPainter {
         Offset(scanArea.left, y),
         Offset(scanArea.right, y),
         Paint()
-          ..color = const Color(0xFFF2EFE8).withValues(alpha: 0.85 * fade)
+          ..color = KanzPhotoColors.ink.withValues(alpha: 0.85 * fade)
           ..strokeWidth = 1,
       );
     }

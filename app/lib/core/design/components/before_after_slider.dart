@@ -167,7 +167,7 @@ class _BeforeAfterSliderState extends State<BeforeAfterSlider> {
                         top: 0,
                         bottom: 0,
                         width: 2,
-                        child: const ColoredBox(color: Color(0xFFF2EFE8)),
+                        child: const ColoredBox(color: KanzPhotoColors.ink),
                       ),
                       Positioned(
                         left: splitX - 24,
@@ -247,7 +247,7 @@ class _Handle extends StatelessWidget {
         decoration: BoxDecoration(
           color: color,
           shape: BoxShape.circle,
-          border: Border.all(color: const Color(0xFFF2EFE8), width: 2),
+          border: Border.all(color: KanzPhotoColors.ink, width: 2),
           boxShadow: shadow,
         ),
         child: Icon(KanzIcons.compare, size: 22, color: onColor),
@@ -267,10 +267,10 @@ class _Tag extends StatelessWidget {
       child: Container(
         padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
         decoration: const BoxDecoration(
-          color: Color(0xE6161616),
+          color: KanzPhotoColors.tag,
           borderRadius: BorderRadius.all(Radius.circular(4)),
         ),
-        child: MonoLabel(label, color: const Color(0xFFF2EFE8)),
+        child: MonoLabel(label, color: KanzPhotoColors.ink),
       ),
     );
   }

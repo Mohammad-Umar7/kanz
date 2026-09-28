@@ -231,6 +231,25 @@ class KanzColors extends ThemeExtension<KanzColors> {
   }
 }
 
+/// Colors for chrome laid over photos and the camera preview: bounding box
+/// tags, before/after labels, the shutter ring, controls on the viewfinder.
+/// Photos have no theme, so these are the same in light and dark mode.
+abstract final class KanzPhotoColors {
+  /// Text, hairlines and rings on photos: warm white.
+  static const Color ink = Color(0xFFF2EFE8);
+
+  /// Solid label chips on photos. Near-opaque so text reads on any image.
+  static const Color tag = Color(0xF0161616);
+
+  /// Discs behind icon buttons on photos (80 % ink): a plain tint, never a
+  /// blur or glass effect.
+  static const Color control = Color(0xCC161616);
+
+  /// A toggled control on a photo (flash on): the dark-theme clay, which
+  /// keeps its contrast on the dark disc in both themes.
+  static Color get accent => KanzColors.dark.accent;
+}
+
 /// Spacing on an 8 pt grid (4 pt half steps for tight clusters).
 abstract final class KanzSpace {
   static const double s2 = 2;
