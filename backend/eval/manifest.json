@@ -1,0 +1,150 @@
+[
+  {
+    "file": "glass_jar.jpg",
+    "expected_category": "glass",
+    "expected_hazard": false,
+    "expected_items_min": 1,
+    "notes": "empty clear mason jar with metal screw lid on a countertop"
+  },
+  {
+    "file": "glass_bottle.jpg",
+    "expected_category": "glass",
+    "expected_hazard": false,
+    "expected_items_min": 1,
+    "notes": "empty white zinfandel wine bottle standing against a brick wall"
+  },
+  {
+    "file": "pet_bottle.jpg",
+    "expected_category": "plastic",
+    "expected_hazard": false,
+    "expected_items_min": 1,
+    "notes": "clear PET water bottle with cap, on a glass coaster"
+  },
+  {
+    "file": "plastic_container.jpg",
+    "expected_category": "plastic",
+    "expected_hazard": false,
+    "expected_items_min": 1,
+    "notes": "white PP takeaway clamshell food container, resin code 5 visible"
+  },
+  {
+    "file": "aluminum_can.jpg",
+    "expected_category": "metal",
+    "expected_hazard": false,
+    "expected_items_min": 1,
+    "notes": "aluminium soda can (Diet Sierra Mist) on driftwood"
+  },
+  {
+    "file": "tin_can.jpg",
+    "expected_category": "metal",
+    "expected_hazard": false,
+    "expected_items_min": 1,
+    "notes": "empty steel food can, label removed, white background"
+  },
+  {
+    "file": "aa_batteries.jpg",
+    "expected_category": "hazardous",
+    "expected_hazard": true,
+    "expected_items_min": 1,
+    "notes": "four NiMH AA rechargeable batteries on grey background"
+  },
+  {
+    "file": "old_tshirt.jpg",
+    "expected_category": "textile",
+    "expected_hazard": false,
+    "expected_items_min": 1,
+    "notes": "green cotton T-shirt laid flat, printed logo"
+  },
+  {
+    "file": "denim_jeans.jpg",
+    "expected_category": "textile",
+    "expected_hazard": false,
+    "expected_items_min": 1,
+    "notes": "several pairs of blue denim jeans, back-pocket close-up"
+  },
+  {
+    "file": "wooden_crate.jpg",
+    "expected_category": "wood",
+    "expected_hazard": false,
+    "expected_items_min": 1,
+    "notes": "three stacked empty wooden harvest crates in a vineyard"
+  },
+  {
+    "file": "wooden_pallet.jpg",
+    "expected_category": "wood",
+    "expected_hazard": false,
+    "expected_items_min": 1,
+    "notes": "single wooden shipping pallet on concrete, work glove lying on it"
+  },
+  {
+    "file": "cardboard_box.jpg",
+    "expected_category": "paper",
+    "expected_hazard": false,
+    "expected_items_min": 1,
+    "notes": "empty open corrugated cardboard box"
+  },
+  {
+    "file": "newspapers.jpg",
+    "expected_category": "paper",
+    "expected_hazard": false,
+    "expected_items_min": 1,
+    "notes": "stack of folded newspapers on white background"
+  },
+  {
+    "file": "light_bulb.jpg",
+    "expected_category": "hazardous",
+    "expected_hazard": true,
+    "expected_items_min": 1,
+    "notes": "clear incandescent light bulb with E27 screw base, white background"
+  },
+  {
+    "file": "aerosol_can.jpg",
+    "expected_category": "hazardous",
+    "expected_hazard": true,
+    "expected_items_min": 1,
+    "notes": "WD-40 contact-cleaner aerosol spray can"
+  },
+  {
+    "file": "fabric_scraps.jpg",
+    "expected_category": "textile",
+    "expected_hazard": false,
+    "expected_items_min": 1,
+    "notes": "assorted cut fabric scraps and strips laid out on a table"
+  },
+  {
+    "file": "bottle_caps.jpg",
+    "expected_category": "plastic",
+    "expected_hazard": false,
+    "expected_items_min": 1,
+    "notes": "heart-shaped street collection cage full of colourful plastic bottle caps"
+  },
+  {
+    "file": "smartphone_old.jpg",
+    "expected_category": "electronics",
+    "expected_hazard": true,
+    "expected_items_min": 1,
+    "notes": "old smartphone with shattered screen (e-waste)"
+  },
+  {
+    "file": "medicine_blister.jpg",
+    "expected_category": "hazardous",
+    "expected_hazard": true,
+    "expected_items_min": 1,
+    "notes": "pill blister pack (back side) on a wooden table"
+  },
+  {
+    "file": "mixed_recyclables.jpg",
+    "expected_category": "plastic",
+    "expected_hazard": false,
+    "expected_items_min": 2,
+    "notes": "two kerbside recycling boxes with plastic bottles and mixed plastic packaging, on grass"
+  },
+  {
+    "file": "unclear_blurry.jpg",
+    "expected_category": "glass",
+    "expected_hazard": false,
+    "expected_items_min": 0,
+    "expected_unclear": true,
+    "notes": "glass_jar.jpg with heavy Gaussian blur (radius 25) and darkened exposure; model should flag it as unclear / ask for a retake"
+  }
+]
