@@ -190,26 +190,24 @@ Uri? _packageRoot(String package) {
       final root = Uri.parse(p['rootUri'] as String);
       final base = config.absolute.uri;
       final resolved = base.resolveUri(root);
-      return resolved.path.endsWith('/')
-          ? resolved
-          : Uri.parse('$resolved/');
+      return resolved.path.endsWith('/') ? resolved : Uri.parse('$resolved/');
     }
   }
   return null;
 }
 
+/// Material Icons from the Flutter SDK cache: FLUTTER_ROOT when set,
+/// otherwise the SDK that contains the running flutter_tester binary.
 File? _materialIconsFont() {
-  final roots = <String?>[
-    Platform.environment['FLUTTER_ROOT'],
-    // flutter_tester lives in <flutter>/bin/cache/artifacts/engine/<platform>/
-    File(Platform.resolvedExecutable).parent.parent.parent.parent.parent.parent
-        .path,
-  ];
-  for (final root in roots.nonNulls) {
-    final file = File(
-      '$root/bin/cache/artifacts/material_fonts/MaterialIcons-Regular.otf',
-    );
+  const font = 'bin/cache/artifacts/material_fonts/MaterialIcons-Regular.otf';
+  final root = Platform.environment['FLUTTER_ROOT'];
+  if (root != null && File('$root/$font').existsSync())
+    return File('$root/$font');
+  var dir = File(Platform.resolvedExecutable).parent;
+  while (dir.parent.path != dir.path) {
+    final file = File('${dir.path}/$font');
     if (file.existsSync()) return file;
+    dir = dir.parent;
   }
   return null;
 }
@@ -229,10 +227,7 @@ Future<FixturePhoto> loadFixturePhoto(WidgetTester tester, String name) async {
   final size = await tester.runAsync(() async {
     final codec = await ui.instantiateImageCodec(bytes);
     final frame = await codec.getNextFrame();
-    final s = Size(
-      frame.image.width.toDouble(),
-      frame.image.height.toDouble(),
-    );
+    final s = Size(frame.image.width.toDouble(), frame.image.height.toDouble());
     frame.image.dispose();
     codec.dispose();
     return s;
@@ -262,9 +257,7 @@ Future<File> takeShot(
 }) async {
   await loadKanzFonts();
 
-  final logical = fullPage
-      ? Size(config.size.width, maxHeight)
-      : config.size;
+  final logical = fullPage ? Size(config.size.width, maxHeight) : config.size;
   tester.view
     ..devicePixelRatio = _pixelRatio
     ..physicalSize = logical * _pixelRatio;
