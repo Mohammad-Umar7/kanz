@@ -290,6 +290,16 @@ void main() {
     final events = await h.container.read(impactRepositoryProvider).all();
     expect(events.single.kind, ImpactKind.upcycled);
     expect(events.single.itemId, 'item_1');
+
+    // A second tap on "Finish" changes nothing, including the date that
+    // feeds the streak.
+    final completedAt = stateOf().project?.completedAt;
+    expect(await controller().complete(), projectId);
+    expect(stateOf().project?.completedAt, completedAt);
+    expect(
+      await h.container.read(impactRepositoryProvider).all(),
+      hasLength(1),
+    );
   });
 
   test('an idea that is not in the scan fails with not found', () async {

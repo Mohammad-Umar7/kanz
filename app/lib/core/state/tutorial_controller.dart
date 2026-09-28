@@ -199,6 +199,8 @@ class TutorialController extends Notifier<TutorialState> {
     final project = state.project;
     final idea = state.idea;
     if (project == null || idea == null) return null;
+    // Finishing twice keeps the first completion date (it feeds the streak).
+    if (project.isCompleted) return project.id;
     await _projects.complete(project.id);
     final scan = await ref.read(scanRepositoryProvider).get(key.scanId);
     final items = scan?.analysis?.analysis.items ?? const <Item>[];
