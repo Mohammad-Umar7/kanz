@@ -214,9 +214,10 @@ class TestOpenFlame:
     def test_candle_in_a_cardboard_lantern_is_rejected(self):
         assert safety.check_open_flame(["Put a tea light inside the cardboard lantern."])
 
-    def test_led_light_or_negated_flame_passes(self):
+    def test_led_light_negated_flame_or_warning_passes(self):
         assert safety.check_open_flame(["Put an LED tea light inside the cardboard lantern."]) == []
         assert safety.check_open_flame(["Never use a real candle in a paper lantern."]) == []
+        assert safety.check_open_flame(["A real candle is a fire hazard in a paper lantern, so use an LED."]) == []
 
     def test_paper_scans_need_no_explicit_word(self):
         box = item(name="Cardboard box", category="paper", material="Corrugated cardboard")
@@ -261,6 +262,9 @@ class TestChemicalFood:
 class TestPaintedFoodContact:
     def test_painted_bowl_for_snacks_is_rejected(self):
         assert safety.check_painted_food_contact(["Paint the bowl in bright colors.", "Use it to serve snacks."])
+
+    def test_non_toxic_paint_is_not_a_warning(self):
+        assert safety.check_painted_food_contact(["Paint the bowl with non-toxic paint and serve snacks in it."])
 
     def test_a_negation_carries_through_a_comma_list(self):
         never = (

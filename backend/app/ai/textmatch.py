@@ -160,16 +160,19 @@ _WARNING = Terms(
         r"poisonous",
         r"fumes",
         r"flammable",
-        r"fire",
+        r"catch(?:es)? fire",
+        r"on fire",
+        r"starts? a fire",
         r"harmful",
         r"dangerous",
         r"unsafe",
         r"hazard\w*",
-        r"risk\w*",
         r"carcinogen\w*",
     ),
     ar=("سام", "ابخره", "دخان", "اشتعال", "حريق", "خطر", "ضار", "مسرطن"),
 )
+# "non-toxic paint" and "غير سام" describe a product, not a risk.
+_NOT_A_WARNING = re.compile(r"\bnon[- ]?\w+|\b\w+-free\b|(?:^|\s)غير\s+\S+")
 _CONDITIONAL = re.compile(
     r"\b(?:when|if|once|as)\s+(?:it\s+|they\s+)?(?:is\s+|are\s+|gets?\s+)?$|(?:^|\s)(?:عند|اذا|لو|حين)\s*$"
 )
@@ -249,7 +252,8 @@ def _warning(span: Span) -> bool:
     if _CONDITIONAL.search(before):
         return True  # "... when heated", "if it is burned"
     after = _CLAUSE_END.split(_COMMA.split(span.text[span.end :])[0])[0]
-    return _WARNING.found(Sentence(f"{before} {after}")) and not _imperative(span, before)
+    context = _NOT_A_WARNING.sub(" ", f"{before} {after}")
+    return _WARNING.found(Sentence(context)) and not _imperative(span, before)
 
 
 def live(terms: Terms, s: Sentence, *, warnings: bool = True) -> list[Span]:
