@@ -284,18 +284,20 @@ abstract final class KanzRadii {
 abstract final class KanzElevation {
   static const double hairline = 1;
 
-  /// Soft two-layer shadow for floating elements.
+  /// Soft two-layer shadow for floating elements: a short, low ambient
+  /// shadow and a tight contact shadow. Kept close to the element so it
+  /// separates without looking like a second shape.
   static List<BoxShadow> floating(KanzColors colors) {
     final dark = colors.surface.computeLuminance() < 0.2;
     return [
       BoxShadow(
-        color: colors.shadow.withValues(alpha: dark ? 0.45 : 0.08),
-        blurRadius: 24,
-        offset: const Offset(0, 8),
+        color: colors.shadow.withValues(alpha: dark ? 0.40 : 0.10),
+        blurRadius: 12,
+        offset: const Offset(0, 3),
       ),
       BoxShadow(
-        color: colors.shadow.withValues(alpha: dark ? 0.30 : 0.06),
-        blurRadius: 4,
+        color: colors.shadow.withValues(alpha: dark ? 0.25 : 0.06),
+        blurRadius: 2,
         offset: const Offset(0, 1),
       ),
     ];
