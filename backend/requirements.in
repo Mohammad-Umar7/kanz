@@ -9,3 +9,4 @@ langgraph
 chromadb
 httpx
 pillow
+pyyaml
