@@ -34,6 +34,10 @@ enum ApiErrorCode {
   /// A step was still running when the app was closed; restored from history.
   interrupted;
 
+  /// The code as the API writes it ("places_unavailable"), shown for support.
+  String get wireId =>
+      name.replaceAllMapped(RegExp('[A-Z]'), (m) => '_${m[0]!.toLowerCase()}');
+
   static ApiErrorCode fromServer(ErrorCode code) => switch (code) {
     ErrorCode.badRequest => badRequest,
     ErrorCode.imageInvalid => imageInvalid,

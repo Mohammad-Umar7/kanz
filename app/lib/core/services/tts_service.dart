@@ -6,9 +6,13 @@ import '../data/models/vocab_enums.dart';
 
 /// Reads tutorial steps aloud in the content language (hands-free mode).
 class TtsService {
-  TtsService({FlutterTts? tts}) : _tts = tts ?? FlutterTts();
+  TtsService({FlutterTts? tts}) : _injected = tts;
 
-  final FlutterTts _tts;
+  final FlutterTts? _injected;
+
+  // Created on first use: the plugin registers a platform channel handler,
+  // which needs the Flutter binding.
+  late final FlutterTts _tts = _injected ?? FlutterTts();
   Lang? _lang;
   bool _configured = false;
 

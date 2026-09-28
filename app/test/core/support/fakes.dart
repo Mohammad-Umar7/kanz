@@ -16,6 +16,8 @@ import 'package:kanz/core/services/app_directories.dart';
 import 'package:kanz/core/services/image_compressor.dart';
 import 'package:kanz/core/services/location_service.dart';
 import 'package:kanz/core/services/permission_service.dart';
+import 'package:kanz/core/services/tts_service.dart';
+import 'package:kanz/core/services/voice_command_service.dart';
 import 'package:kanz/core/state/core_providers.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -271,6 +273,8 @@ class TestHarness {
     FakeApi? api,
     AppDatabase? db,
     Directory? dir,
+    TtsService? tts,
+    VoiceCommandService? voice,
     List<Override> overrides = const [],
   }) async {
     SharedPreferences.setMockInitialValues(prefs);
@@ -300,6 +304,8 @@ class TestHarness {
         imageCompressorProvider.overrideWithValue(FakeCompressor(directory)),
         permissionServiceProvider.overrideWithValue(permissions),
         locationServiceProvider.overrideWithValue(location),
+        ttsServiceProvider.overrideWithValue(tts ?? FakeTts()),
+        voiceCommandServiceProvider.overrideWithValue(voice ?? FakeVoice()),
         ...overrides,
       ],
       retry: (count, error) => null,
@@ -335,4 +341,56 @@ Future<void> waitFor(
     }
     await Future<void>.delayed(const Duration(milliseconds: 5));
   }
+}
+
+/// Text-to-speech without the platform plugin: records what would be spoken.
+class FakeTts extends TtsService {
+  final spoken = <String>[];
+
+  @override
+  Future<bool> speak(String text, Lang lang) async {
+    spoken.add(text);
+    return true;
+  }
+
+  @override
+  Future<void> stop() async {}
+}
+
+/// Speech recognition without the platform plugin: unavailable by default,
+/// [say] delivers a command as if it had been heard.
+class FakeVoice extends VoiceCommandService {
+  FakeVoice({this.available = false});
+
+  final bool available;
+  void Function(VoiceCommand)? _handler;
+
+  @override
+  Future<bool> init() async => available;
+
+  @override
+  bool get isListening => _handler != null;
+
+  @override
+  Future<bool> start({
+    required Lang lang,
+    required void Function(VoiceCommand command) onCommand,
+    void Function(bool listening)? onListening,
+  }) async {
+    if (!available) return false;
+    _handler = onCommand;
+    onListening?.call(true);
+    return true;
+  }
+
+  void say(VoiceCommand command) => _handler?.call(command);
+
+  @override
+  Future<void> pause() async {}
+
+  @override
+  Future<void> resume() async {}
+
+  @override
+  Future<void> stop() async => _handler = null;
 }

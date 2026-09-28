@@ -66,10 +66,12 @@ VoiceCommand? parseVoiceCommand(String words) {
 /// restarts listening until [stop] is called. Call [pause] while text-to-speech
 /// is talking so Kanz does not hear itself.
 class VoiceCommandService {
-  VoiceCommandService({SpeechToText? speech})
-    : _speech = speech ?? SpeechToText();
+  VoiceCommandService({SpeechToText? speech}) : _injected = speech;
 
-  final SpeechToText _speech;
+  final SpeechToText? _injected;
+
+  // Created on first use, like the text-to-speech plugin.
+  late final SpeechToText _speech = _injected ?? SpeechToText();
   bool _ready = false;
   bool _active = false;
   bool _paused = false;

@@ -186,7 +186,7 @@ Widget Function(Widget app) scoped(List<Override> overrides) =>
 /// Scans for the Home strip and History, in the config's language, spread
 /// over the last days.
 List<ScanSummary> sampleScans({bool arabic = false, DateTime? now}) {
-  final t = now ?? DateTime.now();
+  final t = now ?? sampleNow();
   String pick(String en, String ar) => arabic ? ar : en;
   return [
     ScanSummary(
@@ -266,7 +266,7 @@ List<ImageProvider> samplePhotos() => [
 ];
 
 List<ProjectRecord> sampleProjects({bool arabic = false, DateTime? now}) {
-  final t = now ?? DateTime.now();
+  final t = now ?? sampleNow();
   String pick(String en, String ar) => arabic ? ar : en;
   return [
     ProjectRecord(
@@ -510,4 +510,11 @@ Future<void> settle(WidgetTester tester, {int frames = 12}) async {
   for (var i = 0; i < frames; i++) {
     await tester.pump(const Duration(milliseconds: 100));
   }
+}
+
+/// "Now" for sample data. Just after midnight, "2 hours ago" would fall on the
+/// previous day and break the day grouping, so early hours use 06:00 today.
+DateTime sampleNow() {
+  final now = DateTime.now();
+  return now.hour >= 6 ? now : DateTime(now.year, now.month, now.day, 6);
 }

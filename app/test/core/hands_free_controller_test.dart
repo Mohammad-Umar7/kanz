@@ -83,12 +83,7 @@ void main() {
   setUp(() async {
     tts = _FakeTts();
     voice = _FakeVoice();
-    h = await TestHarness.create(
-      overrides: [
-        ttsServiceProvider.overrideWithValue(tts),
-        voiceCommandServiceProvider.overrideWithValue(voice),
-      ],
-    );
+    h = await TestHarness.create(tts: tts, voice: voice);
     final scans = h.container.read(scanRepositoryProvider);
     await scans.create(
       id: 'scan_1',
