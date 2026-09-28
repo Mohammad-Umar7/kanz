@@ -1,8 +1,6 @@
 // Renders every Results state at 360 and 412 dp, light and dark, English
 // and Arabic (plus 130 % text for the main state), and whole-page renders
 // of the long states, into test/screenshots/_out/.
-import 'dart:io';
-
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
@@ -26,14 +24,15 @@ Future<void> _shot(
 }) async {
   final preferences = await testPreferences();
   final state = session(config.isArabic);
+  await precacheFiles(tester, [
+    ?state.localImagePath,
+    for (final image in state.afterImages.values) ?image.localPath,
+  ]);
   await takeShot(
     tester,
     name: then == null ? name : '${name}_before',
     config: config,
     localizationsDelegates: AppLocalizations.localizationsDelegates,
-    precache: [
-      if (state.localImagePath case final path?) FileImage(File(path)),
-    ],
     wrap: (app) => withBoundary(
       ProviderScope(
         overrides: screenOverrides(
@@ -215,6 +214,27 @@ void main() {
   }
 
   for (final config in compactMatrix()) {
+    testWidgets('results restoring ${config.id}', (tester) async {
+      await _shot(
+        tester,
+        name: 'results_restoring',
+        config: config,
+        session: (_) => const ScanSessionState(scanId: 'scan_old'),
+      );
+    });
+
+    testWidgets('results missing ${config.id}', (tester) async {
+      await _shot(
+        tester,
+        name: 'results_missing',
+        config: config,
+        session: (_) => const ScanSessionState(
+          scanId: 'scan_gone',
+          origin: ScanOrigin.missing,
+        ),
+      );
+    });
+
     testWidgets('results offline error ${config.id}', (tester) async {
       await _shot(
         tester,
@@ -269,12 +289,21 @@ void main() {
         session: (ar) => ScanFixtures.jar(arabic: ar),
         then: (tester, l10n) async {
           await tester.ensureVisible(
-            find.bySemanticsLabel(l10n.resultsEditItem),
+            find.bySemanticsLabel(l10n.resultsEditItem).first,
           );
           await tester.pump();
-          await tester.tap(find.bySemanticsLabel(l10n.resultsEditItem));
+          await tester.tap(find.bySemanticsLabel(l10n.resultsEditItem).first);
           await tester.pump();
         },
+      );
+    });
+
+    testWidgets('results ideas for the lid ${config.id}', (tester) async {
+      await _shot(
+        tester,
+        name: 'results_focus_lid',
+        config: tall(config, height: 1800),
+        session: (ar) => ScanFixtures.jar(arabic: ar, focusItemId: 'item_2'),
       );
     });
 

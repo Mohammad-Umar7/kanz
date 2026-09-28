@@ -54,7 +54,10 @@ class _IdeaScreenState extends ConsumerState<IdeaScreen> {
 
     final Widget body;
     Widget? bottom;
-    if (session.origin == ScanOrigin.loading) {
+    // Still loading from History, or the ideas are being rebuilt after a
+    // correction: the idea will be back in a moment.
+    if (session.origin == ScanOrigin.loading ||
+        (idea == null && session.stage(PipelineStage.ideas).isRunning)) {
       body = const _LoadingIdea();
     } else if (idea == null) {
       body = ListView(
@@ -182,29 +185,33 @@ class _IdeaBody extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
               // A caption under the figure: how to use it, and another take.
-              ConstrainedBox(
-                constraints: const BoxConstraints(
-                  minHeight: KanzSpace.touchTarget,
-                ),
-                child: Row(
-                  children: [
-                    Expanded(
-                      child: state == MakeoverState.ready
-                          ? ExcludeSemantics(
-                              child: MonoLabel(l10n.ideaDragHint),
-                            )
-                          : const SizedBox.shrink(),
-                    ),
-                    if (canRegenerate)
-                      KanzButton.tertiary(
-                        label: l10n.commonRegenerate,
-                        icon: KanzIcons.retry,
-                        onPressed: onRegenerate,
+              // Without either (image generation paused) the title moves up.
+              if (state == MakeoverState.ready || canRegenerate) ...[
+                ConstrainedBox(
+                  constraints: const BoxConstraints(
+                    minHeight: KanzSpace.touchTarget,
+                  ),
+                  child: Row(
+                    children: [
+                      Expanded(
+                        child: state == MakeoverState.ready
+                            ? ExcludeSemantics(
+                                child: MonoLabel(l10n.ideaDragHint),
+                              )
+                            : const SizedBox.shrink(),
                       ),
-                  ],
+                      if (canRegenerate)
+                        KanzButton.tertiary(
+                          label: l10n.commonRegenerate,
+                          icon: KanzIcons.retry,
+                          onPressed: onRegenerate,
+                        ),
+                    ],
+                  ),
                 ),
-              ),
-              const SizedBox(height: KanzSpace.s16),
+                const SizedBox(height: KanzSpace.s16),
+              ] else
+                const SizedBox(height: KanzSpace.s24),
               MonoLabel(l10n.ideaEyebrow(index + 1, total)),
               const SizedBox(height: KanzSpace.s8),
               Semantics(

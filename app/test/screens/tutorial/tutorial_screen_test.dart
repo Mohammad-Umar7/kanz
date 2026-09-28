@@ -39,6 +39,7 @@ Future<_Rig> _pump(
   Map<String, Object> prefs = const {},
   Locale locale = const Locale('en'),
   int? initialPage,
+  bool reduceMotion = false,
 }) async {
   final rig = _Rig();
   tester.view
@@ -99,6 +100,12 @@ Future<_Rig> _pump(
           GlobalCupertinoLocalizations.delegate,
         ],
         routerConfig: router,
+        builder: (context, child) => MediaQuery(
+          data: MediaQuery.of(
+            context,
+          ).copyWith(disableAnimations: reduceMotion),
+          child: child!,
+        ),
       ),
     ),
   );
@@ -156,6 +163,46 @@ void main() {
     await tester.tap(find.byKey(const ValueKey('step-done')));
     await tester.pumpAndSettle();
     expect(rig.tutorial!.calls, contains('markStepDone:2:false'));
+  });
+
+  testWidgets('with reduced motion the pager jumps without animating', (
+    tester,
+  ) async {
+    await _pump(
+      tester,
+      state: _ready(current: 2, done: {1}),
+      reduceMotion: true,
+    );
+    await tester.tap(find.byKey(const ValueKey('next-step')));
+    await tester.pump();
+    // One frame later the pager is already there: no page animation.
+    expect(_numeral(tester), '3/5');
+  });
+
+  testWidgets('icon-only controls are named and the toggle reports its state', (
+    tester,
+  ) async {
+    final handle = tester.ensureSemantics();
+    await _pump(tester, state: _ready(current: 2, done: {1}));
+    expect(
+      tester.getSemantics(find.bySemanticsLabel('Hands-free mode')),
+      matchesSemantics(
+        label: 'Hands-free mode',
+        isButton: true,
+        hasSelectedState: true,
+        isSelected: false,
+        hasEnabledState: true,
+        isEnabled: true,
+        isFocusable: true,
+        hasTapAction: true,
+        hasFocusAction: true,
+      ),
+    );
+    expect(find.bySemanticsLabel('Adapt to your skill and tools'), findsOne);
+    expect(find.bySemanticsLabel('Next step'), findsOne);
+    expect(find.bySemanticsLabel('Previous step'), findsOne);
+    expect(find.bySemanticsLabel('Step 2 of 5'), findsOne);
+    handle.dispose();
   });
 
   testWidgets('swiping moves the saved step', (tester) async {

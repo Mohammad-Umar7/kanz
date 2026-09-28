@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -93,7 +94,19 @@ Future<void> startPhotoScan(
   });
   unawaited(ref.read(provider.notifier).startFromPhoto(path: path));
   await photoReady.future.timeout(const Duration(seconds: 3), onTimeout: () {});
+  // Closed with the screen if the user left meanwhile; the scan goes on and
+  // waits in History.
+  if (!context.mounted) return;
   subscription.close();
+  // Decode it too, so the results paint the photo on their first frame
+  // instead of an empty frame while it loads.
+  final photo = ref.read(provider).localImagePath;
+  if (photo != null) {
+    await precacheImage(
+      FileImage(File(photo)),
+      context,
+    ).timeout(const Duration(seconds: 1), onTimeout: () {});
+  }
   if (context.mounted) context.go(AppRoutes.results(id));
 }
 

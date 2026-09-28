@@ -163,7 +163,7 @@ class _PlaceList extends StatelessWidget {
             ),
             child: Callout(
               variant: CalloutVariant.tip,
-              title: l10n.resultsDropoffTitle,
+              title: l10n.resultsBeforeYouGo,
               message: notice,
             ),
           ),

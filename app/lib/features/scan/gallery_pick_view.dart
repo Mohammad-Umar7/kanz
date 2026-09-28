@@ -95,7 +95,7 @@ class _GalleryPickViewState extends ConsumerState<GalleryPickView> {
                     padding: KanzSpace.page,
                     child: Align(
                       alignment: AlignmentDirectional.centerStart,
-                      child: KanzButton.tertiary(
+                      child: KanzButton.secondary(
                         label: l10n.scanDescribeInstead,
                         icon: KanzIcons.describe,
                         onPressed: widget.onDescribe,

@@ -153,10 +153,15 @@ class _CameraScanViewState extends ConsumerState<CameraScanView>
           return;
         }
         // First time: explain why before the system dialog. The rationale
-        // screen asks; whatever it returns, the permission itself decides.
+        // asks, and pops false when the user would rather use the gallery;
+        // otherwise the permission itself decides.
         _askedWithRationale = true;
-        await context.push<Object?>(AppRoutes.cameraRationale);
+        final choice = await context.push<bool>(AppRoutes.cameraRationale);
         if (!mounted) return;
+        if (choice == false) {
+          widget.onUseGallery();
+          return;
+        }
         final after = await _status();
         if (!mounted) return;
         if (after == PermissionState.granted) {

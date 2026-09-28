@@ -16,6 +16,7 @@ import '../../core/state/dropoff_controller.dart';
 import '../../core/state/scan_session.dart';
 import '../../core/state/settings_providers.dart';
 import '../../l10n/l10n.dart';
+import '../permissions/city_picker_screen.dart' show CityPickerScreen;
 import '../scan/scan_screen.dart' show scanPhotoHeroTag;
 import 'results_format.dart';
 import 'scan_images.dart';
@@ -56,6 +57,9 @@ class _ResultsScreenState extends ConsumerState<ResultsScreen> {
   /// Specimen cards by item id, to bring one into view from its box.
   final Map<String, GlobalKey> _cardKeys = {};
 
+  /// The item whose card the carousel last scrolled to.
+  String? _shownCardId;
+
   String get _id => widget.scanId;
 
   ScanSession get _session => ref.read(scanSessionProvider(_id).notifier);
@@ -89,6 +93,29 @@ class _ResultsScreenState extends ConsumerState<ResultsScreen> {
         duration: KanzMotion.of(context, KanzMotion.slow),
         curve: KanzMotion.emphasized,
         alignmentPolicy: ScrollPositionAlignmentPolicy.keepVisibleAtEnd,
+      );
+    });
+  }
+
+  /// Scrolls the specimen row (only the row, not the page) so the selected
+  /// card is in view: the ideas may be about the second item of a photo,
+  /// and its card must not hide behind the first one.
+  void _showSelectedCard(String? itemId) {
+    if (itemId == null || itemId == _shownCardId) return;
+    _shownCardId = itemId;
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      final card = _cardKeys[itemId]?.currentContext;
+      if (card == null || !card.mounted) return;
+      final row = Scrollable.maybeOf(card, axis: Axis.horizontal);
+      final box = card.findRenderObject();
+      if (row == null || box == null) return;
+      unawaited(
+        row.position.ensureVisible(
+          box,
+          alignment: 0.5,
+          duration: KanzMotion.of(context, KanzMotion.medium),
+          curve: KanzMotion.emphasized,
+        ),
       );
     });
   }
@@ -138,28 +165,38 @@ class _ResultsScreenState extends ConsumerState<ResultsScreen> {
 
   Future<void> _useMyLocation() async {
     final permissions = ref.read(permissionServiceProvider);
-    var status = await permissions.status(AppPermission.location);
+    final status = await permissions.status(AppPermission.location);
     if (!mounted) return;
-    if (status != PermissionState.granted) {
-      // The rationale explains and asks; the permission itself decides.
-      await context.push<Object?>(AppRoutes.locationRationale);
-      if (!mounted) return;
-      status = await permissions.status(AppPermission.location);
-      if (!mounted) return;
-    }
-    if (status != PermissionState.granted) {
-      setState(() => _locationOff = true);
+    if (status == PermissionState.granted) {
+      await ref
+          .read(settingsProvider.notifier)
+          .setLocationMode(LocationMode.gps);
+      await _session.resumeDropoff();
       return;
     }
-    await ref.read(settingsProvider.notifier).setLocationMode(LocationMode.gps);
-    await _session.resumeDropoff();
+    // The rationale asks, and pops true once there is somewhere to search
+    // from: location granted (GPS mode) or a city picked there instead. The
+    // settings are already updated then.
+    final ready = await context.push<bool>(AppRoutes.locationRationale);
+    if (!mounted) return;
+    if (ready == true) {
+      await _session.resumeDropoff();
+    } else {
+      setState(() => _locationOff = true);
+    }
   }
 
   Future<void> _chooseCity() async {
+    // The picker pops a city id, or "gps" when the user switched to their
+    // location there (settings are already in GPS mode then).
     final id = await context.push<String>(AppRoutes.cityPicker);
+    if (!mounted || id == null) return;
     final city = CityId.tryFromId(id);
-    if (city == null || !mounted) return;
-    await ref.read(settingsProvider.notifier).useCity(city);
+    if (city != null) {
+      await ref.read(settingsProvider.notifier).useCity(city);
+    } else if (id != CityPickerScreen.myLocation) {
+      return;
+    }
     await _session.resumeDropoff();
   }
 
@@ -239,6 +276,7 @@ class _ResultsScreenState extends ConsumerState<ResultsScreen> {
     final identified = identifying.isDone && analysis != null;
     final multi = items.length > 1;
     final selectedId = _selectedItemId ?? session.focusItem?.id;
+    if (multi && identifying.isDone) _showSelectedCard(selectedId);
 
     final Widget header;
     if (textScan) {

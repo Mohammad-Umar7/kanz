@@ -10,7 +10,11 @@ import 'dart:ui' as ui;
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter_riverpod/misc.dart' show Override;
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:go_router/go_router.dart';
+import 'package:kanz/app/routes.dart';
+import 'package:kanz/core/design/design.dart' show KanzTheme;
 import 'package:kanz/core/data/db/database.dart' show ImpactKind;
 import 'package:kanz/core/data/models/models.dart';
 import 'package:kanz/core/data/vocab/vocab.dart';
@@ -19,6 +23,10 @@ import 'package:kanz/core/state/connectivity_providers.dart';
 import 'package:kanz/core/state/core_providers.dart';
 import 'package:kanz/core/state/location_resolver.dart';
 import 'package:kanz/core/state/scan_session.dart';
+import 'package:kanz/features/idea/idea_screen.dart';
+import 'package:kanz/features/results/results_screen.dart';
+import 'package:kanz/features/scan/scan_screen.dart';
+import 'package:kanz/l10n/l10n.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import '../../core/support/fixtures.dart';
@@ -425,3 +433,132 @@ List<ShotConfig> compactMatrix() =>
 Future<void> settleAsync(WidgetTester tester) => tester.runAsync(
   () => Future<void>.delayed(const Duration(milliseconds: 20)),
 );
+
+/// Decodes local photos into the image cache before a screen asks for them.
+///
+/// A `FileImage` first resolved inside the test's fake-async zone never
+/// finishes reading its file, so the photos are loaded here, for real,
+/// before the screen is pumped; the screen then finds them in the cache.
+Future<void> precacheFiles(WidgetTester tester, Iterable<String> paths) async {
+  await tester.pumpWidget(const SizedBox.shrink());
+  final context = tester.element(find.byType(SizedBox));
+  await tester.runAsync(
+    () => Future.wait([
+      for (final path in paths.toSet())
+        precacheImage(FileImage(File(path)), context),
+    ]),
+  );
+}
+
+// ------------------------------------------------------------ interactions
+
+/// A page that pops with [value] as soon as it opens, standing in for the
+/// city picker and the permission rationales (built by another team).
+class PopWith extends StatefulWidget {
+  const PopWith(this.value, {super.key});
+
+  final Object? value;
+
+  @override
+  State<PopWith> createState() => _PopWithState();
+}
+
+class _PopWithState extends State<PopWith> {
+  @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addPostFrameCallback(
+      (_) => Navigator.of(context).pop(widget.value),
+    );
+  }
+
+  @override
+  Widget build(BuildContext context) => const SizedBox.shrink();
+}
+
+/// The app's routes for the core flow, with stand-ins for the screens other
+/// teams build: Home, Drop-off, the tutorial, the city picker ([city] is
+/// what it answers) and the rationales.
+GoRouter coreFlowRouter(String initialLocation, {String? city = 'dubai'}) =>
+    GoRouter(
+      initialLocation: initialLocation,
+      routes: [
+        GoRoute(path: '/', builder: (_, _) => const Text('home')),
+        GoRoute(path: '/dropoff', builder: (_, _) => const Text('dropoff')),
+        GoRoute(path: '/city', builder: (_, _) => PopWith(city)),
+        GoRoute(
+          path: '/permissions/camera',
+          builder: (_, _) => const PopWith(null),
+        ),
+        GoRoute(
+          path: '/permissions/location',
+          builder: (_, _) => const PopWith(null),
+        ),
+        GoRoute(
+          path: '/scan',
+          builder: (_, state) => ScanScreen(
+            mode: ScanMode.parse(state.uri.queryParameters['mode']),
+          ),
+        ),
+        GoRoute(
+          path: '/results/:scanId',
+          builder: (_, state) =>
+              ResultsScreen(scanId: state.pathParameters['scanId']!),
+          routes: [
+            GoRoute(
+              path: 'idea/:ideaId',
+              builder: (_, state) => IdeaScreen(
+                scanId: state.pathParameters['scanId']!,
+                ideaId: state.pathParameters['ideaId']!,
+              ),
+              routes: [
+                GoRoute(
+                  path: 'tutorial',
+                  builder: (_, _) => const Text('tutorial'),
+                ),
+              ],
+            ),
+          ],
+        ),
+      ],
+    );
+
+/// The app shell for interaction tests: theme, both languages, a router and
+/// the provider overrides.
+Widget coreFlowApp({
+  required GoRouter router,
+  required List<Override> overrides,
+  Locale locale = const Locale('en'),
+}) => ProviderScope(
+  overrides: overrides,
+  child: MaterialApp.router(
+    theme: KanzTheme.light(locale: locale),
+    locale: locale,
+    supportedLocales: AppLocalizations.supportedLocales,
+    localizationsDelegates: AppLocalizations.localizationsDelegates,
+    routerConfig: router,
+  ),
+);
+
+/// Pumps frames until nothing is scheduled, without waiting on the spinners
+/// and skeletons that animate forever.
+Future<void> pumpFrames(WidgetTester tester, [int count = 10]) async {
+  for (var i = 0; i < count; i++) {
+    await tester.pump(const Duration(milliseconds: 100));
+  }
+}
+
+/// Scrolls the screen's main (vertical) list until [finder] is built and on
+/// screen. Long screens build their lower sections lazily.
+Future<void> scrollTo(WidgetTester tester, Finder finder) async {
+  await tester.scrollUntilVisible(
+    finder,
+    400,
+    scrollable: find
+        .byWidgetPredicate(
+          (w) => w is Scrollable && w.axisDirection == AxisDirection.down,
+        )
+        .first,
+  );
+  await tester.pump();
+}

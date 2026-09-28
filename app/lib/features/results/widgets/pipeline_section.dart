@@ -109,7 +109,11 @@ class PipelineSection extends StatelessWidget {
         l10n.resultsSummaryPlaces(session.facilities?.places.length ?? 0),
       if (_imagesPaused) l10n.resultsSummaryImagesPaused,
     ];
-    return parts.join('  ·  ');
+    // Each part stays whole when the line wraps ("3 places", never "3" and
+    // "places" on two lines): spaces inside a part do not break.
+    return [
+      for (final part in parts) part.replaceAll(' ', '\u00A0'),
+    ].join('  ·  ');
   }
 
   @override

@@ -95,6 +95,8 @@ class ResultsFormat {
         ? l10n.resultsToolsNone
         : missing.isEmpty
         ? l10n.resultsToolsAll
+        : have.isEmpty
+        ? l10n.resultsToolsNeeded(needed.length)
         : l10n.resultsToolsSome(have.length, needed.length);
     return ToolMatch(have: have, missing: missing, label: label);
   }

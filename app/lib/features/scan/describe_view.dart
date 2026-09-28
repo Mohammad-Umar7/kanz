@@ -99,9 +99,9 @@ class _DescribeViewState extends ConsumerState<DescribeView> {
           if (offline) OfflineBanner(message: l10n.scanOffline),
           Expanded(
             child: ListView(
-              padding: const EdgeInsetsDirectional.fromSTEB(
+              padding: EdgeInsetsDirectional.fromSTEB(
                 KanzSpace.gutter,
-                KanzSpace.s8,
+                offline ? KanzSpace.s24 : KanzSpace.s8,
                 KanzSpace.gutter,
                 KanzSpace.s32,
               ),

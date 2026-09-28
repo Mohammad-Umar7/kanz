@@ -140,12 +140,16 @@ class AdaptingStrip extends StatelessWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
-            LinearProgressIndicator(
-              minHeight: 2,
-              borderRadius: BorderRadius.zero,
-              color: c.ink,
-              backgroundColor: c.track,
-            ),
+            // With reduced motion the sentence alone says what is happening.
+            if (context.reduceMotion)
+              SizedBox(height: 2, child: ColoredBox(color: c.track))
+            else
+              LinearProgressIndicator(
+                minHeight: 2,
+                borderRadius: BorderRadius.zero,
+                color: c.ink,
+                backgroundColor: c.track,
+              ),
             Padding(
               padding: const EdgeInsetsDirectional.fromSTEB(
                 KanzSpace.gutter,

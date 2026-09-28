@@ -66,9 +66,13 @@ class UpcycleIdeas extends StatelessWidget {
             child: Callout(
               variant: CalloutVariant.safety,
               title: l10n.resultsHeldBackTitle,
+              // The backend's reason when it gave one, and where the safe
+              // disposal is when there is some.
               message: [
-                l10n.resultsHeldBackBody(format.list(heldBack)),
-                ?recommendation.routing.reason,
+                recommendation.routing.reason ??
+                    l10n.resultsHeldBackBody(format.list(heldBack)),
+                if (recommendation.disposal.isNotEmpty)
+                  l10n.resultsHeldBackPointer,
               ].join(' '),
             ),
           ),

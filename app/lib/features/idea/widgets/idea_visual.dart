@@ -350,19 +350,16 @@ class _DescriptionFrame extends StatelessWidget {
 }
 
 /// A solid dark label on a photo (the before/after tag style), optionally
-/// with a spinner or a glyph. Solid, not translucent, so it reads on any
-/// image.
+/// with a glyph. Solid, not translucent, so it reads on any image.
 class PhotoTag extends StatelessWidget {
   const PhotoTag({
     super.key,
     required this.label,
-    this.busy = false,
     this.icon,
     this.uppercase = true,
   });
 
   final String label;
-  final bool busy;
   final IconData? icon;
 
   /// Mono uppercase for short tags; sentence case for a note.
@@ -371,7 +368,6 @@ class PhotoTag extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Semantics(
-      liveRegion: busy,
       container: true,
       child: Container(
         padding: const EdgeInsetsDirectional.symmetric(
@@ -385,22 +381,7 @@ class PhotoTag extends StatelessWidget {
         child: Row(
           mainAxisSize: MainAxisSize.min,
           children: [
-            if (busy) ...[
-              SizedBox.square(
-                dimension: 12,
-                child: context.reduceMotion
-                    ? const Icon(
-                        KanzIcons.clock,
-                        size: 12,
-                        color: KanzPhotoColors.ink,
-                      )
-                    : const CircularProgressIndicator(
-                        strokeWidth: 1.5,
-                        color: KanzPhotoColors.ink,
-                      ),
-              ),
-              const SizedBox(width: KanzSpace.s8),
-            ] else if (icon != null) ...[
+            if (icon != null) ...[
               Icon(icon, size: 14, color: KanzPhotoColors.ink),
               const SizedBox(width: KanzSpace.s8),
             ],

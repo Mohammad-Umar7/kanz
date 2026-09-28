@@ -162,7 +162,16 @@
   "resultsIdeaImageRetry": "Try the image again",
   "resultsToolsAll": "You have every tool",
   "resultsToolsNone": "No tools needed",
-  "resultsToolsSome": "You have {have} of {total} tools",
+  "resultsToolsSome": "{total, plural, =1{You have {have} of 1 tool} other{You have {have} of {total} tools}}",
+  "resultsToolsNeeded": "{count, plural, =1{Needs 1 tool you don't have} other{Needs {count} tools you don't have}}",
+  "@resultsToolsNeeded": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "resultsBeforeYouGo": "Before you go",
   "@resultsToolsSome": {
     "placeholders": {
       "have": {
@@ -178,7 +187,8 @@
   "resultsNoIdeasBody": "Recycling or donating may suit it better. If Kanz misread the item, correct it above.",
   "resultsBasedOn": "Based on",
   "resultsHeldBackTitle": "Held back from DIY",
-  "resultsHeldBackBody": "{items} can't be used for DIY. How to get rid of it safely is below the ideas.",
+  "resultsHeldBackBody": "{items} can't be used for DIY.",
+  "resultsHeldBackPointer": "How to get rid of it safely follows the ideas.",
   "@resultsHeldBackBody": {
     "placeholders": {
       "items": {
