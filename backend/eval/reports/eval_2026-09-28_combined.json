@@ -1,0 +1,865 @@
+{
+ "meta": {
+  "date": "2026-09-28",
+  "tag": "combined",
+  "lang": "en",
+  "models": {
+   "vision": "gemini-3.1-flash-lite",
+   "text": "gemini-3.1-flash-lite",
+   "embed": "gemini-embedding-001"
+  },
+  "prompts": {
+   "disposal_advisor": "1",
+   "donation_advisor": "1",
+   "material_analyst": "2",
+   "recycling_advisor": "1",
+   "swap_advisor": "1",
+   "tutorial_writer": "1",
+   "upcycle_designer": "1"
+  },
+  "knowledge": "128 documents, vector (Chroma)"
+ },
+ "summary": {
+  "photos": 21,
+  "errors": 3,
+  "passed": "18/21 (86%)",
+  "category_accuracy": "17/17 (100%)",
+  "category_any_item": "17/17 (100%)",
+  "hazard_accuracy": "17/17 (100%)",
+  "item_count_ok": "17/17 (100%)",
+  "unclear_detected": "1/1 (100%)",
+  "analysis_ms_p50": 7629,
+  "analysis_ms_p90": 17286,
+  "total_ms_p50": 7683,
+  "total_ms_p90": 17309,
+  "recommend_total_ms": [
+   7815,
+   6138,
+   12535
+  ]
+ },
+ "rows": [
+  {
+   "file": "glass_jar.jpg",
+   "expected_category": "glass",
+   "expected_hazard": false,
+   "expected_items_min": 1,
+   "expected_unclear": false,
+   "predicted_category": "glass",
+   "categories": [
+    "glass",
+    "metal"
+   ],
+   "items": [
+    "Glass mason jar",
+    "Metal lid"
+   ],
+   "hazards": [],
+   "top_confidence": 1.0,
+   "usable": true,
+   "retake_tip": null,
+   "category_ok": true,
+   "category_any_ok": true,
+   "hazard_ok": true,
+   "items_ok": true,
+   "timings_ms": {
+    "upload": 27,
+    "classifier": 0,
+    "analysis": 11381,
+    "safety": 0,
+    "total": 11416
+   },
+   "models": [
+    "material_analyst@v2: gemini-3.1-flash-lite"
+   ],
+   "run": "first",
+   "error": null,
+   "recommend": {
+    "mode": "diy",
+    "ideas": [
+     "Hanging jar lantern (easy; sources: proj_glass_jar_lantern)",
+     "Painted jar desk organizer (easy; sources: proj_glass_painted_jar)",
+     "Labelled pantry jars (easy; sources: proj_glass_jar_pantry_storage)"
+    ],
+    "recycle_streams": [
+     "Glass bottle bank",
+     "Metal recycling bin"
+    ],
+    "donate_available": true,
+    "disposal": [],
+    "facility_categories": [
+     "glass",
+     "metal"
+    ],
+    "timings_ms": {
+     "safety_router": 0,
+     "retrieval": 447,
+     "donate": 2717,
+     "dropoff": 8,
+     "recycle": 6529,
+     "upcycle": 7347,
+     "total": 7815
+    },
+    "models": [
+     "embed: gemini-embedding-001",
+     "donation_advisor@v1: gemini-3.1-flash-lite",
+     "recycling_advisor@v1: gemini-3.1-flash-lite"
+    ]
+   },
+   "passed": true
+  },
+  {
+   "file": "glass_bottle.jpg",
+   "expected_category": "glass",
+   "expected_hazard": false,
+   "expected_items_min": 1,
+   "expected_unclear": false,
+   "predicted_category": "glass",
+   "categories": [
+    "glass",
+    "metal"
+   ],
+   "items": [
+    "Glass wine bottle",
+    "Metal screw cap"
+   ],
+   "hazards": [],
+   "top_confidence": 1.0,
+   "usable": true,
+   "retake_tip": null,
+   "category_ok": true,
+   "category_any_ok": true,
+   "hazard_ok": true,
+   "items_ok": true,
+   "timings_ms": {
+    "upload": 51,
+    "classifier": 0,
+    "analysis": 7629,
+    "safety": 0,
+    "total": 7683
+   },
+   "models": [
+    "material_analyst@v2: gemini-3.1-flash-lite"
+   ],
+   "run": "first",
+   "error": null,
+   "recommend": null,
+   "passed": true
+  },
+  {
+   "file": "pet_bottle.jpg",
+   "expected_category": "plastic",
+   "expected_hazard": false,
+   "expected_items_min": 1,
+   "expected_unclear": false,
+   "predicted_category": "plastic",
+   "categories": [
+    "plastic"
+   ],
+   "items": [
+    "PET water bottle"
+   ],
+   "hazards": [],
+   "top_confidence": 1.0,
+   "usable": true,
+   "retake_tip": null,
+   "category_ok": true,
+   "category_any_ok": true,
+   "hazard_ok": true,
+   "items_ok": true,
+   "timings_ms": {
+    "upload": 35,
+    "classifier": 0,
+    "analysis": 4416,
+    "safety": 0,
+    "total": 4454
+   },
+   "models": [
+    "material_analyst@v2: gemini-3.1-flash-lite"
+   ],
+   "run": "first",
+   "error": null,
+   "recommend": null,
+   "passed": true
+  },
+  {
+   "file": "plastic_container.jpg",
+   "expected_category": "plastic",
+   "expected_hazard": false,
+   "expected_items_min": 1,
+   "expected_unclear": false,
+   "predicted_category": "plastic",
+   "categories": [
+    "plastic"
+   ],
+   "items": [
+    "Plastic food container"
+   ],
+   "hazards": [],
+   "top_confidence": 1.0,
+   "usable": true,
+   "retake_tip": null,
+   "category_ok": true,
+   "category_any_ok": true,
+   "hazard_ok": true,
+   "items_ok": true,
+   "timings_ms": {
+    "upload": 37,
+    "classifier": 0,
+    "analysis": 4692,
+    "safety": 0,
+    "total": 4737
+   },
+   "models": [
+    "material_analyst@v2: gemini-3.1-flash-lite"
+   ],
+   "run": "rerun",
+   "error": null,
+   "recommend": null,
+   "passed": true
+  },
+  {
+   "file": "aluminum_can.jpg",
+   "expected_category": "metal",
+   "expected_hazard": false,
+   "expected_items_min": 1,
+   "expected_unclear": false,
+   "predicted_category": "metal",
+   "categories": [
+    "metal"
+   ],
+   "items": [
+    "Aluminium soda can"
+   ],
+   "hazards": [],
+   "top_confidence": 1.0,
+   "usable": true,
+   "retake_tip": null,
+   "category_ok": true,
+   "category_any_ok": true,
+   "hazard_ok": true,
+   "items_ok": true,
+   "timings_ms": {
+    "upload": 38,
+    "classifier": 0,
+    "analysis": 38113,
+    "safety": 0,
+    "total": 38154
+   },
+   "models": [
+    "material_analyst@v2: gemini-3.1-flash-lite"
+   ],
+   "run": "first",
+   "error": null,
+   "recommend": null,
+   "passed": true
+  },
+  {
+   "file": "tin_can.jpg",
+   "expected_category": "metal",
+   "expected_hazard": false,
+   "expected_items_min": 1,
+   "expected_unclear": false,
+   "predicted_category": "metal",
+   "categories": [
+    "metal"
+   ],
+   "items": [
+    "Empty food can"
+   ],
+   "hazards": [],
+   "top_confidence": 1.0,
+   "usable": true,
+   "retake_tip": null,
+   "category_ok": true,
+   "category_any_ok": true,
+   "hazard_ok": true,
+   "items_ok": true,
+   "timings_ms": {
+    "upload": 21,
+    "classifier": 0,
+    "analysis": 3048,
+    "safety": 0,
+    "total": 3072
+   },
+   "models": [
+    "material_analyst@v2: gemini-3.1-flash-lite"
+   ],
+   "run": "rerun",
+   "error": null,
+   "recommend": null,
+   "passed": true
+  },
+  {
+   "file": "aa_batteries.jpg",
+   "expected_category": "hazardous",
+   "expected_hazard": true,
+   "expected_items_min": 1,
+   "expected_unclear": false,
+   "predicted_category": "hazardous",
+   "categories": [
+    "hazardous"
+   ],
+   "items": [
+    "Rechargeable AA batteries"
+   ],
+   "hazards": [
+    "battery"
+   ],
+   "top_confidence": 1.0,
+   "usable": true,
+   "retake_tip": null,
+   "category_ok": true,
+   "category_any_ok": true,
+   "hazard_ok": true,
+   "items_ok": true,
+   "timings_ms": {
+    "upload": 19,
+    "classifier": 0,
+    "analysis": 4285,
+    "safety": 0,
+    "total": 4307
+   },
+   "models": [
+    "material_analyst@v2: gemini-3.1-flash-lite"
+   ],
+   "run": "rerun",
+   "error": null,
+   "recommend": {
+    "mode": "disposal_only",
+    "ideas": [],
+    "recycle_streams": [
+     "Battery collection point"
+    ],
+    "donate_available": false,
+    "disposal": [
+     "battery: Take the rechargeable batteries to a dedicated battery collection point."
+    ],
+    "facility_categories": [
+     "battery"
+    ],
+    "timings_ms": {
+     "safety_router": 0,
+     "disposal": 6129,
+     "dropoff": 10,
+     "total": 6138
+    },
+    "models": [
+     "disposal_advisor@v1: gemini-3.1-flash-lite"
+    ]
+   },
+   "passed": true
+  },
+  {
+   "file": "old_tshirt.jpg",
+   "expected_category": "textile",
+   "expected_hazard": false,
+   "expected_items_min": 1,
+   "expected_unclear": false,
+   "predicted_category": "textile",
+   "categories": [
+    "textile"
+   ],
+   "items": [
+    "Green cotton t-shirt"
+   ],
+   "hazards": [],
+   "top_confidence": 1.0,
+   "usable": true,
+   "retake_tip": null,
+   "category_ok": true,
+   "category_any_ok": true,
+   "hazard_ok": true,
+   "items_ok": true,
+   "timings_ms": {
+    "upload": 36,
+    "classifier": 0,
+    "analysis": 13845,
+    "safety": 0,
+    "total": 13884
+   },
+   "models": [
+    "material_analyst@v2: gemini-3.1-flash-lite"
+   ],
+   "run": "rerun",
+   "error": null,
+   "recommend": {
+    "mode": "diy",
+    "ideas": [
+     "No-sew shopping tote (easy; sources: proj_textile_tshirt_tote)",
+     "Washable cleaning cloths (easy; sources: proj_textile_cleaning_cloths)",
+     "T-shirt yarn plant hanger (easy; sources: proj_textile_braided_coasters, proj_textile_tshirt_tote)"
+    ],
+    "recycle_streams": [
+     "Textile donation bin"
+    ],
+    "donate_available": true,
+    "disposal": [],
+    "facility_categories": [
+     "textile_donation",
+     "textile_recycling"
+    ],
+    "timings_ms": {
+     "safety_router": 0,
+     "retrieval": 523,
+     "donate": 12009,
+     "dropoff": 0,
+     "recycle": 7658,
+     "upcycle": 8178,
+     "total": 12535
+    },
+    "models": [
+     "embed: gemini-embedding-001",
+     "recycling_advisor@v1: gemini-3.1-flash-lite",
+     "upcycle_designer@v1: gemini-3.1-flash-lite"
+    ]
+   },
+   "passed": true
+  },
+  {
+   "file": "denim_jeans.jpg",
+   "expected_category": "textile",
+   "expected_hazard": false,
+   "expected_items_min": 1,
+   "expected_unclear": false,
+   "predicted_category": "textile",
+   "categories": [
+    "textile"
+   ],
+   "items": [
+    "Blue denim jeans"
+   ],
+   "hazards": [],
+   "top_confidence": 1.0,
+   "usable": true,
+   "retake_tip": null,
+   "category_ok": true,
+   "category_any_ok": true,
+   "hazard_ok": true,
+   "items_ok": true,
+   "timings_ms": {
+    "upload": 55,
+    "classifier": 0,
+    "analysis": 7555,
+    "safety": 0,
+    "total": 7613
+   },
+   "models": [
+    "material_analyst@v2: gemini-3.1-flash-lite"
+   ],
+   "run": "rerun",
+   "error": null,
+   "recommend": null,
+   "passed": true
+  },
+  {
+   "file": "wooden_crate.jpg",
+   "expected_category": "wood",
+   "expected_hazard": false,
+   "expected_items_min": 1,
+   "expected_unclear": false,
+   "predicted_category": "wood",
+   "categories": [
+    "wood"
+   ],
+   "items": [
+    "Wooden crates"
+   ],
+   "hazards": [],
+   "top_confidence": 1.0,
+   "usable": true,
+   "retake_tip": null,
+   "category_ok": true,
+   "category_any_ok": true,
+   "hazard_ok": true,
+   "items_ok": true,
+   "timings_ms": {
+    "upload": 35,
+    "classifier": 0,
+    "analysis": 16250,
+    "safety": 0,
+    "total": 16288
+   },
+   "models": [
+    "material_analyst@v2: gemini-3.1-flash-lite"
+   ],
+   "run": "rerun",
+   "error": null,
+   "recommend": null,
+   "passed": true
+  },
+  {
+   "file": "wooden_pallet.jpg",
+   "expected_category": "wood",
+   "expected_hazard": false,
+   "expected_items_min": 1,
+   "expected_unclear": false,
+   "predicted_category": "wood",
+   "categories": [
+    "wood",
+    "textile"
+   ],
+   "items": [
+    "Wooden shipping pallet",
+    "Leather work glove"
+   ],
+   "hazards": [
+    "sharp_edges"
+   ],
+   "top_confidence": 1.0,
+   "usable": true,
+   "retake_tip": null,
+   "category_ok": true,
+   "category_any_ok": true,
+   "hazard_ok": true,
+   "items_ok": true,
+   "timings_ms": {
+    "upload": 22,
+    "classifier": 0,
+    "analysis": 10978,
+    "safety": 0,
+    "total": 11003
+   },
+   "models": [
+    "material_analyst@v2: gemini-3.1-flash-lite"
+   ],
+   "run": "first",
+   "error": null,
+   "recommend": null,
+   "passed": true
+  },
+  {
+   "file": "cardboard_box.jpg",
+   "expected_category": "paper",
+   "expected_hazard": false,
+   "expected_items_min": 1,
+   "expected_unclear": false,
+   "predicted_category": "paper",
+   "categories": [
+    "paper"
+   ],
+   "items": [
+    "Corrugated cardboard box"
+   ],
+   "hazards": [],
+   "top_confidence": 1.0,
+   "usable": true,
+   "retake_tip": null,
+   "category_ok": true,
+   "category_any_ok": true,
+   "hazard_ok": true,
+   "items_ok": true,
+   "timings_ms": {
+    "upload": 20,
+    "classifier": 0,
+    "analysis": 17286,
+    "safety": 0,
+    "total": 17309
+   },
+   "models": [
+    "material_analyst@v2: gemini-3.1-flash-lite"
+   ],
+   "run": "rerun",
+   "error": null,
+   "recommend": null,
+   "passed": true
+  },
+  {
+   "file": "newspapers.jpg",
+   "expected_category": "paper",
+   "expected_hazard": false,
+   "expected_items_min": 1,
+   "expected_unclear": false,
+   "predicted_category": null,
+   "categories": [],
+   "items": [],
+   "hazards": [],
+   "top_confidence": null,
+   "usable": null,
+   "retake_tip": null,
+   "category_ok": false,
+   "category_any_ok": false,
+   "hazard_ok": false,
+   "items_ok": false,
+   "timings_ms": {},
+   "models": [],
+   "run": "rerun",
+   "error": "ai_unavailable: 503 UNAVAILABLE. {'error': {'code': 503, 'message': 'This model is currently experiencing high demand. Spikes in demand are usually temporary. Please try again later.', 'status': 'UNAVAILABLE'}}",
+   "recommend": null,
+   "passed": false
+  },
+  {
+   "file": "light_bulb.jpg",
+   "expected_category": "hazardous",
+   "expected_hazard": true,
+   "expected_items_min": 1,
+   "expected_unclear": false,
+   "predicted_category": "hazardous",
+   "categories": [
+    "hazardous"
+   ],
+   "items": [
+    "Incandescent light bulb"
+   ],
+   "hazards": [
+    "light_bulb"
+   ],
+   "top_confidence": 1.0,
+   "usable": true,
+   "retake_tip": null,
+   "category_ok": true,
+   "category_any_ok": true,
+   "hazard_ok": true,
+   "items_ok": true,
+   "timings_ms": {
+    "upload": 19,
+    "classifier": 0,
+    "analysis": 5851,
+    "safety": 0,
+    "total": 5873
+   },
+   "models": [
+    "material_analyst@v2: gemini-3.1-flash-lite"
+   ],
+   "run": "first",
+   "error": null,
+   "recommend": null,
+   "passed": true
+  },
+  {
+   "file": "aerosol_can.jpg",
+   "expected_category": "hazardous",
+   "expected_hazard": true,
+   "expected_items_min": 1,
+   "expected_unclear": false,
+   "predicted_category": "hazardous",
+   "categories": [
+    "hazardous"
+   ],
+   "items": [
+    "Aerosol contact cleaner"
+   ],
+   "hazards": [
+    "aerosol",
+    "chemical"
+   ],
+   "top_confidence": 1.0,
+   "usable": true,
+   "retake_tip": null,
+   "category_ok": true,
+   "category_any_ok": true,
+   "hazard_ok": true,
+   "items_ok": true,
+   "timings_ms": {
+    "upload": 33,
+    "classifier": 0,
+    "analysis": 12640,
+    "safety": 0,
+    "total": 12676
+   },
+   "models": [
+    "material_analyst@v2: gemini-3.1-flash-lite"
+   ],
+   "run": "first",
+   "error": null,
+   "recommend": null,
+   "passed": true
+  },
+  {
+   "file": "fabric_scraps.jpg",
+   "expected_category": "textile",
+   "expected_hazard": false,
+   "expected_items_min": 1,
+   "expected_unclear": false,
+   "predicted_category": null,
+   "categories": [],
+   "items": [],
+   "hazards": [],
+   "top_confidence": null,
+   "usable": null,
+   "retake_tip": null,
+   "category_ok": false,
+   "category_any_ok": false,
+   "hazard_ok": false,
+   "items_ok": false,
+   "timings_ms": {},
+   "models": [],
+   "run": "rerun",
+   "error": "ai_unavailable: 503 UNAVAILABLE. {'error': {'code': 503, 'message': 'This model is currently experiencing high demand. Spikes in demand are usually temporary. Please try again later.', 'status': 'UNAVAILABLE'}}",
+   "recommend": null,
+   "passed": false
+  },
+  {
+   "file": "bottle_caps.jpg",
+   "expected_category": "plastic",
+   "expected_hazard": false,
+   "expected_items_min": 1,
+   "expected_unclear": false,
+   "predicted_category": null,
+   "categories": [],
+   "items": [],
+   "hazards": [],
+   "top_confidence": null,
+   "usable": null,
+   "retake_tip": null,
+   "category_ok": false,
+   "category_any_ok": false,
+   "hazard_ok": false,
+   "items_ok": false,
+   "timings_ms": {},
+   "models": [],
+   "run": "rerun",
+   "error": "ai_unavailable: 503 UNAVAILABLE. {'error': {'code': 503, 'message': 'This model is currently experiencing high demand. Spikes in demand are usually temporary. Please try again later.', 'status': 'UNAVAILABLE'}}",
+   "recommend": null,
+   "passed": false
+  },
+  {
+   "file": "smartphone_old.jpg",
+   "expected_category": "electronics",
+   "expected_hazard": true,
+   "expected_items_min": 1,
+   "expected_unclear": false,
+   "predicted_category": "electronics",
+   "categories": [
+    "electronics"
+   ],
+   "items": [
+    "Wiko smartphone"
+   ],
+   "hazards": [
+    "battery",
+    "broken_glass",
+    "e_waste"
+   ],
+   "top_confidence": 1.0,
+   "usable": true,
+   "retake_tip": null,
+   "category_ok": true,
+   "category_any_ok": true,
+   "hazard_ok": true,
+   "items_ok": true,
+   "timings_ms": {
+    "upload": 38,
+    "classifier": 0,
+    "analysis": 5762,
+    "safety": 0,
+    "total": 5802
+   },
+   "models": [
+    "material_analyst@v2: gemini-3.1-flash-lite"
+   ],
+   "run": "first",
+   "error": null,
+   "recommend": null,
+   "passed": true
+  },
+  {
+   "file": "medicine_blister.jpg",
+   "expected_category": "hazardous",
+   "expected_hazard": true,
+   "expected_items_min": 1,
+   "expected_unclear": false,
+   "predicted_category": "hazardous",
+   "categories": [
+    "hazardous"
+   ],
+   "items": [
+    "Birth control pill blister pack"
+   ],
+   "hazards": [
+    "medicine"
+   ],
+   "top_confidence": 1.0,
+   "usable": true,
+   "retake_tip": null,
+   "category_ok": true,
+   "category_any_ok": true,
+   "hazard_ok": true,
+   "items_ok": true,
+   "timings_ms": {
+    "upload": 69,
+    "classifier": 0,
+    "analysis": 23225,
+    "safety": 2,
+    "total": 23302
+   },
+   "models": [
+    "material_analyst@v2: gemini-3.1-flash-lite"
+   ],
+   "run": "rerun",
+   "error": null,
+   "recommend": null,
+   "passed": true
+  },
+  {
+   "file": "mixed_recyclables.jpg",
+   "expected_category": "plastic",
+   "expected_hazard": false,
+   "expected_items_min": 2,
+   "expected_unclear": false,
+   "predicted_category": "plastic",
+   "categories": [
+    "plastic",
+    "other"
+   ],
+   "items": [
+    "Plastic milk bottles",
+    "Mixed plastic packaging"
+   ],
+   "hazards": [],
+   "top_confidence": 0.95,
+   "usable": true,
+   "retake_tip": null,
+   "category_ok": true,
+   "category_any_ok": true,
+   "hazard_ok": true,
+   "items_ok": true,
+   "timings_ms": {
+    "upload": 46,
+    "classifier": 0,
+    "analysis": 13829,
+    "safety": 0,
+    "total": 13880
+   },
+   "models": [
+    "material_analyst@v2: gemini-3.1-flash-lite"
+   ],
+   "run": "rerun",
+   "error": null,
+   "recommend": null,
+   "passed": true
+  },
+  {
+   "file": "unclear_blurry.jpg",
+   "expected_category": "glass",
+   "expected_hazard": false,
+   "expected_items_min": 0,
+   "expected_unclear": true,
+   "predicted_category": null,
+   "categories": [],
+   "items": [],
+   "hazards": [],
+   "top_confidence": null,
+   "usable": false,
+   "retake_tip": "Move next to a window or turn on a light, then hold the phone still for a second.",
+   "category_ok": false,
+   "category_any_ok": false,
+   "hazard_ok": true,
+   "items_ok": true,
+   "timings_ms": {
+    "upload": 14,
+    "classifier": 0,
+    "analysis": 2837,
+    "safety": 0,
+    "total": 2853
+   },
+   "models": [
+    "material_analyst@v2: gemini-3.1-flash-lite"
+   ],
+   "run": "rerun",
+   "error": null,
+   "recommend": null,
+   "passed": true
+  }
+ ]
+}
