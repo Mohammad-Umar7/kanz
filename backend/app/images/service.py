@@ -416,6 +416,7 @@ class ImageService:
     ) -> StoredImage:
         """One call to the image model, bounded by the semaphore, stored as JPEG."""
         self._check_quota()
+        log.debug("image prompt kind=%s name=%s template=%s\n%s", kind, name, prompt.template, prompt.text)
         start = time.perf_counter()
         try:
             async with self._slots:
