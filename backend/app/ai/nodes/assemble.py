@@ -10,11 +10,20 @@ from __future__ import annotations
 
 from app.ai import fallbacks
 from app.ai.state import RecommendState
-from app.core.errors import AiUnavailable
+from app.core.errors import AiTimeout, AiUnavailable, KanzError
 from app.schemas.common import SourceRef
 from app.schemas.recommend import RecommendResponse, RecyclePath
 
 GENERATING_BRANCHES = ("upcycle", "recycle", "donate")
+
+
+def as_api_error(exc: Exception | None) -> KanzError:
+    """Branch errors are stored raw; the API needs a typed error with the right code and status."""
+    if isinstance(exc, KanzError):
+        return exc
+    if isinstance(exc, TimeoutError):
+        return AiTimeout(detail="recommendation branches exceeded their time budget")
+    return AiUnavailable(detail=repr(exc) if exc else "upcycle designer returned no usable ideas")
 
 
 def _dedupe_sources(sources: list[SourceRef]) -> list[SourceRef]:
@@ -31,11 +40,9 @@ async def assemble(state: RecommendState) -> dict:
     disposal_only = routing.mode == "disposal_only"
 
     ideas = [] if disposal_only else state.get("upcycle", [])
-    if not disposal_only:
-        if all(branch in errors for branch in GENERATING_BRANCHES):
-            raise errors["upcycle"]
-        if len(ideas) != 3:
-            raise errors.get("upcycle") or AiUnavailable(detail="upcycle designer returned no usable ideas")
+    all_failed = all(branch in errors for branch in GENERATING_BRANCHES)
+    if not disposal_only and (all_failed or len(ideas) != 3):
+        raise as_api_error(errors.get("upcycle"))
 
     advisor = state.get("recycle") or RecyclePath(instructions=[], sources=[])
     by_item = {i.item_id: i for i in [*advisor.instructions, *state.get("disposal_recycle", [])]}

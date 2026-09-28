@@ -228,3 +228,16 @@ async def test_slow_branch_is_cut_off_by_its_time_budget(monkeypatch):
     res = await pipeline.recommend(jar_request(), gateway=gateway)
     assert res.timings_ms["recycle"] < 1000
     assert res.recycle.instructions[0].note  # the deterministic fallback, not the slow model
+
+
+async def test_budget_timeouts_surface_as_typed_ai_timeouts(monkeypatch):
+    class Stalled(FakeGateway):
+        async def structured(self, **kwargs):
+            await asyncio.sleep(5)
+
+    for module in ("upcycle", "recycling", "donation"):
+        budget = "DESIGNER_BUDGET_S" if module == "upcycle" else "ADVISOR_BUDGET_S"
+        monkeypatch.setattr(f"app.ai.nodes.{module}.{budget}", 0.05)
+    monkeypatch.setattr("app.ai.fallbacks.upcycle_from_projects", lambda *a, **k: [])
+    with pytest.raises(AiTimeout):
+        await pipeline.recommend(jar_request(), gateway=Stalled())
