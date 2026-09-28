@@ -1,0 +1,240 @@
+{
+  "_comment": "The single source of truth for drop-off routing. It maps what Kanz recognizes in a photo (material category, hazards, condition) to kinds of drop-off points, and says how each kind is searched on Google Places (text queries) and OpenStreetMap (tag filters). Edit this file, not the code. Loaded and validated by app/places/config.py; see backend/config/README.md.",
+  "version": 1,
+  "categories": {
+    "glass": {
+      "labels": {"en": "Glass recycling", "ar": "إعادة تدوير الزجاج"},
+      "facility_types": ["recycling_center", "collection_point"],
+      "material_categories": ["glass"],
+      "google_queries": {"en": ["glass recycling", "bottle bank"], "ar": ["إعادة تدوير الزجاج"]},
+      "osm": {
+        "include_unlisted": true,
+        "filters": [
+          {"tags": {"amenity": "recycling", "recycling:glass_bottles": "yes"}},
+          {"tags": {"amenity": "recycling", "recycling:glass": "yes"}}
+        ]
+      }
+    },
+    "plastic": {
+      "labels": {"en": "Plastic recycling", "ar": "إعادة تدوير البلاستيك"},
+      "facility_types": ["recycling_center", "collection_point"],
+      "material_categories": ["plastic"],
+      "google_queries": {"en": ["plastic recycling", "plastic bottle recycling"], "ar": ["إعادة تدوير البلاستيك"]},
+      "osm": {
+        "include_unlisted": true,
+        "filters": [
+          {"tags": {"amenity": "recycling", "recycling:plastic_bottles": "yes"}},
+          {"tags": {"amenity": "recycling", "recycling:plastic": "yes"}},
+          {"tags": {"amenity": "recycling", "recycling:plastic_packaging": "yes"}},
+          {"tags": {"amenity": "recycling", "recycling:PET": "yes"}}
+        ]
+      }
+    },
+    "paper": {
+      "labels": {"en": "Paper and cardboard", "ar": "الورق والكرتون"},
+      "facility_types": ["recycling_center", "collection_point"],
+      "material_categories": ["paper"],
+      "google_queries": {"en": ["paper recycling", "cardboard recycling"], "ar": ["إعادة تدوير الورق والكرتون"]},
+      "osm": {
+        "include_unlisted": true,
+        "filters": [
+          {"tags": {"amenity": "recycling", "recycling:paper": "yes"}},
+          {"tags": {"amenity": "recycling", "recycling:cardboard": "yes"}},
+          {"tags": {"amenity": "recycling", "recycling:newspaper": "yes"}},
+          {"tags": {"amenity": "recycling", "recycling:paper_packaging": "yes"}}
+        ]
+      }
+    },
+    "metal": {
+      "labels": {"en": "Metal recycling", "ar": "إعادة تدوير المعادن"},
+      "facility_types": ["recycling_center", "scrap_metal", "collection_point"],
+      "material_categories": ["metal"],
+      "google_queries": {"en": ["scrap metal recycling", "aluminium can recycling"], "ar": ["إعادة تدوير المعادن", "خردة معادن"]},
+      "osm": {
+        "include_unlisted": true,
+        "filters": [
+          {"tags": {"amenity": "recycling", "recycling:cans": "yes"}},
+          {"tags": {"amenity": "recycling", "recycling:scrap_metal": "yes"}, "facility_type": "scrap_metal"},
+          {"tags": {"amenity": "recycling", "recycling:aluminium": "yes"}},
+          {"tags": {"industrial": "scrap_yard"}, "facility_type": "scrap_metal"}
+        ]
+      }
+    },
+    "textile_donation": {
+      "labels": {"en": "Clothes donation", "ar": "التبرع بالملابس"},
+      "facility_types": ["donation", "collection_point"],
+      "material_categories": ["textile"],
+      "google_queries": {"en": ["clothes donation box", "used clothes donation"], "ar": ["التبرع بالملابس", "حاوية ملابس مستعملة"]},
+      "osm": {
+        "include_unlisted": false,
+        "filters": [
+          {"tags": {"amenity": "recycling", "recycling:clothes": "yes"}, "facility_type": "donation"},
+          {"tags": {"amenity": "recycling", "recycling:shoes": "yes"}, "facility_type": "donation"},
+          {"tags": {"shop": "charity"}, "facility_type": "donation"}
+        ]
+      }
+    },
+    "textile_recycling": {
+      "labels": {"en": "Textile recycling", "ar": "إعادة تدوير المنسوجات"},
+      "facility_types": ["recycling_center", "collection_point"],
+      "material_categories": ["textile"],
+      "google_queries": {"en": ["textile recycling", "clothes recycling bin"], "ar": ["إعادة تدوير الملابس والمنسوجات"]},
+      "osm": {
+        "include_unlisted": false,
+        "filters": [
+          {"tags": {"amenity": "recycling", "recycling:clothes": "yes"}},
+          {"tags": {"amenity": "recycling", "recycling:textiles": "yes"}},
+          {"tags": {"amenity": "recycling", "recycling:shoes": "yes"}}
+        ]
+      }
+    },
+    "wood": {
+      "labels": {"en": "Wood collection", "ar": "تجميع الخشب"},
+      "facility_types": ["wood_collection", "recycling_center"],
+      "material_categories": ["wood"],
+      "google_queries": {"en": ["wood recycling", "pallet recycling"], "ar": ["إعادة تدوير الخشب"]},
+      "osm": {
+        "include_unlisted": false,
+        "filters": [
+          {"tags": {"amenity": "recycling", "recycling:wood": "yes"}, "facility_type": "wood_collection"}
+        ]
+      }
+    },
+    "e_waste": {
+      "labels": {"en": "E-waste", "ar": "النفايات الإلكترونية"},
+      "facility_types": ["e_waste", "recycling_center"],
+      "material_categories": ["electronics"],
+      "google_queries": {"en": ["e-waste recycling", "electronics recycling drop off"], "ar": ["إعادة تدوير النفايات الإلكترونية"]},
+      "osm": {
+        "include_unlisted": false,
+        "filters": [
+          {"tags": {"amenity": "recycling", "recycling:electrical_items": "yes"}, "facility_type": "e_waste"},
+          {"tags": {"amenity": "recycling", "recycling:electrical_appliances": "yes"}, "facility_type": "e_waste"},
+          {"tags": {"amenity": "recycling", "recycling:small_appliances": "yes"}, "facility_type": "e_waste"},
+          {"tags": {"amenity": "recycling", "recycling:small_electrical_appliances": "yes"}, "facility_type": "e_waste"},
+          {"tags": {"amenity": "recycling", "recycling:mobile_phones": "yes"}, "facility_type": "e_waste"},
+          {"tags": {"amenity": "recycling", "recycling:computers": "yes"}, "facility_type": "e_waste"}
+        ]
+      }
+    },
+    "battery": {
+      "labels": {"en": "Battery collection", "ar": "جمع البطاريات"},
+      "facility_types": ["collection_point", "hazardous_waste", "e_waste"],
+      "material_categories": ["hazardous"],
+      "google_queries": {"en": ["battery recycling drop off", "used battery collection"], "ar": ["إعادة تدوير البطاريات"]},
+      "osm": {
+        "include_unlisted": false,
+        "filters": [
+          {"tags": {"amenity": "recycling", "recycling:batteries": "yes"}}
+        ]
+      }
+    },
+    "hazardous": {
+      "labels": {"en": "Hazardous waste", "ar": "النفايات الخطرة"},
+      "facility_types": ["hazardous_waste"],
+      "material_categories": ["hazardous"],
+      "google_queries": {"en": ["hazardous waste disposal", "household hazardous waste drop off"], "ar": ["التخلص من النفايات الخطرة"]},
+      "osm": {
+        "include_unlisted": false,
+        "filters": [
+          {"tags": {"amenity": "recycling", "recycling:hazardous_waste": "yes"}, "facility_type": "hazardous_waste"},
+          {"tags": {"amenity": "recycling", "recycling:fluorescent_tubes": "yes"}, "facility_type": "hazardous_waste"},
+          {"tags": {"amenity": "recycling", "recycling:low_energy_bulbs": "yes"}, "facility_type": "hazardous_waste"},
+          {"tags": {"amenity": "recycling", "recycling:paint": "yes"}, "facility_type": "hazardous_waste"},
+          {"tags": {"amenity": "waste_disposal", "waste": "~hazardous"}, "facility_type": "hazardous_waste"}
+        ]
+      }
+    },
+    "donation": {
+      "labels": {"en": "Donation points", "ar": "نقاط التبرع"},
+      "facility_types": ["donation"],
+      "material_categories": ["textile", "wood", "other"],
+      "google_queries": {"en": ["donation center", "charity shop"], "ar": ["مركز تبرعات", "متجر خيري"]},
+      "osm": {
+        "include_unlisted": false,
+        "filters": [
+          {"tags": {"shop": "charity"}, "facility_type": "donation"},
+          {"tags": {"shop": "second_hand"}, "facility_type": "donation"},
+          {"tags": {"amenity": "give_box"}, "facility_type": "donation"}
+        ]
+      }
+    },
+    "general_recycling": {
+      "labels": {"en": "Recycling points", "ar": "نقاط إعادة التدوير"},
+      "facility_types": ["recycling_center", "collection_point"],
+      "material_categories": ["glass", "plastic", "paper", "metal", "other"],
+      "google_queries": {"en": ["recycling center", "recycling drop off point"], "ar": ["مركز إعادة تدوير"]},
+      "osm": {
+        "include_unlisted": true,
+        "filters": [
+          {"tags": {"amenity": "recycling", "recycling_type": "centre"}, "facility_type": "recycling_center"}
+        ]
+      }
+    }
+  },
+  "routing": {
+    "_comment": "For each scanned item: (1) a disposal-only hazard decides alone (by_hazard, in the listed hazard order); (2) otherwise the first matching by_condition rule decides; (3) otherwise by_material decides. Then every matching extras rule appends its keys. An item's first key is its primary route; primary routes of all items are listed before secondary ones.",
+    "by_hazard": {
+      "e_waste": ["e_waste"],
+      "battery": ["battery"],
+      "light_bulb": ["hazardous"],
+      "aerosol": ["hazardous"],
+      "chemical": ["hazardous"],
+      "medicine": ["hazardous"],
+      "broken_glass": ["hazardous"]
+    },
+    "by_condition": [
+      {
+        "id": "textile_wearable",
+        "when": {"category": ["textile"], "min_quality": 3, "no_hazards": true},
+        "keys": ["textile_donation", "textile_recycling"]
+      },
+      {
+        "id": "textile_worn_out",
+        "when": {"category": ["textile"]},
+        "keys": ["textile_recycling"]
+      }
+    ],
+    "by_material": {
+      "glass": ["glass"],
+      "plastic": ["plastic"],
+      "paper": ["paper"],
+      "metal": ["metal"],
+      "textile": ["textile_recycling"],
+      "wood": ["wood"],
+      "electronics": ["e_waste"],
+      "hazardous": ["hazardous"],
+      "organic": [],
+      "other": ["general_recycling"]
+    },
+    "extras": [
+      {
+        "id": "reusable_in_good_condition",
+        "when": {"category": ["wood", "other"], "min_quality": 4, "no_hazards": true, "reuse_level": ["high"], "is_raw_material": false},
+        "keys": ["donation"]
+      }
+    ]
+  },
+  "osm": {
+    "_comment": "How OpenStreetMap features are read. material_tags: recycling:<suffix>=yes -> the material category the point accepts (shown as accepted_materials). known_operators: names that identify a bin's purpose when the feature lists no materials itself.",
+    "material_tags": {
+      "glass": ["glass", "glass_bottles"],
+      "plastic": ["plastic", "plastic_bottles", "plastic_packaging", "plastic_bags", "PET"],
+      "paper": ["paper", "cardboard", "newspaper", "magazines", "paper_packaging", "beverage_cartons"],
+      "metal": ["cans", "scrap_metal", "aluminium", "metal"],
+      "textile": ["clothes", "shoes", "textiles"],
+      "wood": ["wood"],
+      "electronics": ["electrical_items", "electrical_appliances", "small_appliances", "small_electrical_appliances", "mobile_phones", "computers", "hard_drives"],
+      "hazardous": ["batteries", "car_batteries", "hazardous_waste", "fluorescent_tubes", "low_energy_bulbs", "paint", "engine_oil"],
+      "organic": ["green_waste", "organic", "cooking_oil"]
+    },
+    "known_operators": [
+      {
+        "id": "uae_charity_clothing_bins",
+        "_comment": "Many charity clothing bins in the UAE are mapped only by name. The bins with these names that do carry tags are tagged recycling:clothes and recycling:shoes, so untagged ones are read the same way.",
+        "pattern": "make.?a.?wish|red crescent|الهلال الأحمر",
+        "implies": {"recycling:clothes": "yes", "recycling:shoes": "yes"}
+      }
+    ]
+  }
+}
