@@ -18,6 +18,7 @@ from app.ai.nodes.common import (
     log,
     recyclability_line,
     timed,
+    unexpected,
 )
 from app.ai.prompts import load_prompt
 from app.ai.state import PipelineContext, RecommendState
@@ -67,7 +68,7 @@ async def recycling_advisor(state: RecommendState, runtime: Runtime[PipelineCont
             timeout=ADVISOR_BUDGET_S,
         )
     except Exception as exc:
-        log.warning("recycling_advisor failed, using the analyst's recyclability: %r", exc)
+        log.warning("recycling_advisor failed, using the analyst's recyclability: %r", exc, exc_info=unexpected(exc))
         return {"recycle": fallbacks.recycle_path(items, lang, guides), "errors": {"recycle": exc}}
 
     by_id = {i.item_id: i for i in out.instructions}

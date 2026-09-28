@@ -20,6 +20,7 @@ from app.ai.nodes.common import (
     log,
     profile_block,
     timed,
+    unexpected,
 )
 from app.ai.prompts import load_prompt
 from app.ai.rag import KnowledgeHit
@@ -164,7 +165,7 @@ async def upcycle_designer(state: RecommendState, runtime: Runtime[PipelineConte
         return {"upcycle": ideas}
     except Exception as exc:
         # Fall back to the three best retrieved projects so the Upcycle tab still has content.
-        log.warning("upcycle_designer failed, using project fallback: %r", exc)
+        log.warning("upcycle_designer failed, using project fallback: %r", exc, exc_info=unexpected(exc))
         focus = next((it for it in items if it.id == focus_id), items[0])
         ideas = fallbacks.upcycle_from_projects(req.image_id, focus, projects, profile)
         return {"upcycle": ideas if len(ideas) == 3 else [], "errors": {"upcycle": exc}}

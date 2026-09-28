@@ -16,6 +16,7 @@ from typing import Any
 from app.ai import labels, rag
 from app.ai.rag import KnowledgeHit
 from app.ai.safety import has_arabic
+from app.core.errors import KanzError
 from app.core.timing import stage_timer
 from app.schemas.analysis import Item
 from app.schemas.common import Profile, SourceRef
@@ -31,6 +32,11 @@ DESIGNER_BUDGET_S = 20.0
 ADVISOR_BUDGET_S = 12.0
 
 Node = Callable[..., Awaitable[dict[str, Any]]]
+
+
+def unexpected(exc: BaseException) -> bool:
+    """True for errors that are bugs rather than AI outages: those are logged with a traceback."""
+    return not isinstance(exc, KanzError | TimeoutError)
 
 
 def timed(stage: str) -> Callable[[Node], Node]:

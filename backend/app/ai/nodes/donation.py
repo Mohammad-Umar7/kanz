@@ -9,7 +9,15 @@ from langgraph.runtime import Runtime
 from app.ai import fallbacks, safety
 from app.ai.labels import lang_name
 from app.ai.llm_schemas import LlmDonate
-from app.ai.nodes.common import ADVISOR_BUDGET_S, items_block, knowledge_block, language_problems, log, timed
+from app.ai.nodes.common import (
+    ADVISOR_BUDGET_S,
+    items_block,
+    knowledge_block,
+    language_problems,
+    log,
+    timed,
+    unexpected,
+)
 from app.ai.prompts import load_prompt
 from app.ai.state import PipelineContext, RecommendState
 from app.schemas.recommend import DonateOption, DonatePath
@@ -58,7 +66,7 @@ async def donation_advisor(state: RecommendState, runtime: Runtime[PipelineConte
             timeout=ADVISOR_BUDGET_S,
         )
     except Exception as exc:
-        log.warning("donation_advisor failed, using condition rules: %r", exc)
+        log.warning("donation_advisor failed, using condition rules: %r", exc, exc_info=unexpected(exc))
         return {"donate": fallbacks.donate_path(items, lang), "errors": {"donate": exc}}
 
     by_id = {o.item_id: o for o in out.options}

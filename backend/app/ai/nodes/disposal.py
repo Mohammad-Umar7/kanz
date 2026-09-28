@@ -9,7 +9,16 @@ from langgraph.runtime import Runtime
 from app.ai import fallbacks, safety
 from app.ai.labels import lang_name
 from app.ai.llm_schemas import LlmDisposalPlan
-from app.ai.nodes.common import ADVISOR_BUDGET_S, cite, items_block, knowledge_block, language_problems, log, timed
+from app.ai.nodes.common import (
+    ADVISOR_BUDGET_S,
+    cite,
+    items_block,
+    knowledge_block,
+    language_problems,
+    log,
+    timed,
+    unexpected,
+)
 from app.ai.prompts import load_prompt
 from app.ai.rag.index import get_index
 from app.ai.state import PipelineContext, RecommendState
@@ -62,7 +71,7 @@ async def disposal_advisor(state: RecommendState, runtime: Runtime[PipelineConte
         )
         error: dict = {}
     except Exception as exc:
-        log.warning("disposal_advisor failed, using reviewed disposal copy: %r", exc)
+        log.warning("disposal_advisor failed, using reviewed disposal copy: %r", exc, exc_info=unexpected(exc))
         error = {"errors": {"disposal": exc}}
 
     by_id = {g.item_id: g for g in plan.guidance} if plan else {}
