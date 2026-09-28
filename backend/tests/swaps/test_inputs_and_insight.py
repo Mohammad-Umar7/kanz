@@ -20,6 +20,11 @@ def test_unknown_chip_ids_and_free_text():
     assert [i.label for i in inputs] == ["egg cartons", "old phone chargers", "أكياس الخبز"]
 
 
+def test_typed_lists_are_split_into_separate_inputs():
+    assert [i.label for i in normalize_inputs(["plastic bags, cling film"], "en")] == ["plastic bags", "cling film"]
+    assert [i.label for i in normalize_inputs(["أكياس الخبز، علب العصير"], "ar")] == ["أكياس الخبز", "علب العصير"]
+
+
 def test_empty_and_duplicate_inputs_are_dropped_and_the_list_is_capped():
     inputs = normalize_inputs(["plastic_bags", "", "Plastic Bags", "   ", *[f"item {c}" for c in "abcdefgh"]], "en")
     assert inputs[0].label == "plastic bags"

@@ -50,6 +50,7 @@ CHIP_LABELS: dict[str, tuple[str, str]] = {
 
 _CHIP_ID = re.compile(r"^[a-z]+(?:_[a-z]+)+$")
 _SPACES = re.compile(r"\s+")
+_SEPARATORS = re.compile(r"[,،;؛\n]+")  # Latin and Arabic commas and semicolons, new lines
 
 
 @dataclass(frozen=True)
@@ -63,8 +64,10 @@ def normalize_inputs(materials: list[str], lang: str) -> list[UserInput]:
     """Readable, deduplicated inputs (at most ``MAX_INPUTS``), in the order the user gave them."""
     out: list[UserInput] = []
     seen: set[str] = set()
-    for raw in materials:
-        text = _SPACES.sub(" ", raw or "").strip()[:MAX_INPUT_CHARS].strip()
+    # Typed text often lists several things: "plastic bags, cling film" or "أكياس، علب".
+    pieces = [piece for raw in materials for piece in _SEPARATORS.split(raw or "")]
+    for raw in pieces:
+        text = _SPACES.sub(" ", raw).strip()[:MAX_INPUT_CHARS].strip()
         if not text:
             continue
         item = _from_chip(text, lang) or UserInput(raw=raw, label=text, query=text)
