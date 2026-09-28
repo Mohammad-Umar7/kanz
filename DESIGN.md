@@ -84,11 +84,22 @@ Data colors for chips, dots, bounding boxes and map pins only, never large fills
 | organic | `#6B7F3A` | `#6B7F3A` | 3.94 | `#6B7F3A` | 3.89 |
 | other | `#9A968C` | `#858175` | 3.45 | `#9A968C` | 5.86 |
 
+### On photos
+
+Chrome laid over photos and the camera preview (box tags, before/after labels, the shutter ring, viewfinder controls) uses `KanzPhotoColors`, the same in both themes because photos have no theme. Ratios are measured over the worst case, a white photo, and enforced by `contrast_test.dart`.
+
+| Token | Value | Use | Contrast over a white photo |
+|---|---|---|---|
+| `KanzPhotoColors.ink` | `#F2EFE8` | Text, hairlines, rings, the slider divider | 13.52 on `tag` · 8.35 on `control` |
+| `KanzPhotoColors.tag` | `#161616` at 94 % | Solid label chips | |
+| `KanzPhotoColors.control` | `#161616` at 80 % | Discs behind icon buttons (a tint, never blur) | |
+| `KanzPhotoColors.accent` | dark clay `#F07A4F` | A toggled control on a photo (flash on) | 3.47 on `control` |
+
 A dot is never the only carrier of meaning: the category name is always next to it, or in the semantics label (`PlaceRow.materialsLabel`). Avoid text on material fills; if needed, `MaterialSwatch.onColor` picks ink or white by contrast.
 
 ## 3. Typography
 
-Fraunces for large headings, step numbers and big numerals, sparingly. IBM Plex Sans for interface text. IBM Plex Mono, uppercase and tracked, for data labels (`PET · #1 · 3 PCS`). For Arabic every role switches to IBM Plex Sans Arabic with taller line heights and zero tracking (tracking breaks Arabic joins; Fraunces has no Arabic glyphs). Every style carries the other script's family as a fallback so mixed strings render. Pass the locale to the theme: `KanzTheme.light(locale: locale)`.
+Fraunces for large headings, step numbers and big numerals, sparingly. IBM Plex Sans for interface text. IBM Plex Mono, uppercase and tracked, for data labels (`PET · #1 · 3 PCS`). For Arabic every role switches to IBM Plex Sans Arabic with taller line heights and zero tracking (tracking breaks Arabic joins; Fraunces has no Arabic glyphs). Every style carries the other script's family as a fallback so mixed strings render. Pass the locale to the theme: `KanzTheme.light(locale: locale)`. Each theme is built once per brightness and script and then reused, so rebuilding the app root never starts a theme animation.
 
 | Role | Latin | Arabic | Use |
 |---|---|---|---|
@@ -146,15 +157,15 @@ All components are pure widgets: no Riverpod, no localization lookups (every str
 
 | Component | Use it for | Rules |
 |---|---|---|
-| `KanzButton` (primary, `.secondary`, `.tertiary`, `.destructive`) | Actions | One primary per screen. Primary is ink. `loading` keeps size and color, shows a spinner, ignores taps. |
-| `KanzIconButton` (plain, outlined, onPhoto) | Toolbar and photo controls | Always 48 dp with a semantics label (doubles as tooltip). `selected` uses clay. |
+| `KanzButton` (primary, `.secondary`, `.tertiary`, `.destructive`) | Actions | One primary per screen. Primary is ink. `icon` leads the label; `trailingIcon` follows it for forward actions ("See the tutorial" with `KanzIcons.forward`). `loading` keeps size and color, shows a spinner, ignores taps and is announced by its `loadingLabel`. |
+| `KanzIconButton` (plain, outlined, onPhoto) | Toolbar and photo controls | Always 48 dp with a semantics label, which also shows as a visual tooltip. `selected` (clay) makes it a toggle; leave it null for plain actions so they are not announced as toggles. |
 | `ScanActionButton` | The scan action | Round in the nav bar, wide with a label on Home. The only clay button. Flat in the bar, `elevated` over content. |
 | `ShutterButton` | Camera capture | Clay disc in a thin ring; sinks on press, fires the capture haptic; `busy` turns the ring into a spinner. |
 | `CornerBrackets` | Viewfinder frame | Warm white; clay when an item is framed. |
 | `KanzChip` | Filters and choices | Outlined; selected is ink. Optional `MaterialDot` or glyph, optional count. 48 dp target. |
-| `MaterialDot`, `MonoLabel`, `DataGrid`, `QualityBar`, `StateTags` | Recognition data | Mono label above plain value; quality always as five segments with a word. |
-| `SpecimenCard` (+ `compact`, `SpecimenCarousel`) | A recognized item | Dot + name, then MATERIAL, TYPE, QTY, QUALITY, RECYCLABLE, CONFIDENCE, STATE. Edit affordance on the full card. Selected = 1.5 px ink border. Carousel cards share the tallest height. |
-| `BoundingBoxOverlay` | Photo with detections | Boxes in 0..1 image space mapped with the image's `BoxFit`; tags placed so they never overlap; selected box heavier, others recede. |
+| `MaterialDot`, `MonoLabel`, `DataGrid`, `QualityBar`, `StateTags` | Recognition data | Mono label above plain value; quality always as five segments with a word, which wraps under the bar rather than being cut. `MonoLabel` shows uppercase but reads the original text to screen readers ("950 m", not "950 M"); pass `textDirection: TextDirection.ltr` for numeric sequences. |
+| `SpecimenCard` (+ `compact`, `SpecimenCarousel`) | A recognized item | Dot + name, then MATERIAL, TYPE, QTY, QUALITY, RECYCLABLE, CONFIDENCE, STATE. `hazardLabel` adds a danger row for disposal-only items. Edit affordance on the full card. Selected = 1.5 px ink border. Carousel cards share the tallest height. The index ("01 / 02") always reads left to right. |
+| `BoundingBoxOverlay` | Photo with detections | Boxes in 0..1 image space mapped with the image's `BoxFit` (onto the whole photo when the size is unknown); tags placed so they never overlap; selected box heavier, others recede. Show the photo before the analysis returns with no boxes: the reveal waits for the first detections and replays for a new set of items. |
 | `PipelineTimeline` | The live analysis | One row per real backend stage with honest labels; failed stages explain and offer retry; collapses to one summary line when done. |
 | `SegmentedTabs` | Upcycle / Recycle / Donate | Equal segments, sliding raised thumb, optional glyph and count. |
 | `IdeaCard` + `ToolMatchBadge` | Upcycling ideas | 4:3 after image with the original photo inset; skeleton while rendering, desaturated original with a note if the image fails; Fraunces title; mono meta. |
@@ -177,7 +188,7 @@ Maps use `KanzMapStyles.assetFor(brightness)`: muted paper (or warm near-black) 
 
 ## 8. Signature moments
 
-1. **Capture to recognition.** Clay shutter with a haptic; the captured photo flies (Hero) into the results screen; one thin scan line passes over the photo once, then material-colored outlines draw in item by item and their mono tags fade in; the specimen carousel fades up below.
+1. **Capture to recognition.** Clay shutter with a haptic; the captured photo flies (Hero) into the results screen and waits there while the analysis runs; when the detections arrive one thin scan line passes over the photo once, then material-colored outlines draw in item by item and their mono tags fade in; the specimen carousel fades up below.
 2. **The pipeline, told honestly.** Stages tick from pending to done with real durations, then fold into one line ("Done in 12.2 s · 3 ideas · 3 places").
 3. **Makeovers arriving.** Idea cards appear with skeletons that name what is happening; each after image fades in as it lands, the user's photo inset in the corner for comparison.
 4. **Before and after.** A full-width slider with a clay handle turns the idea into a visible transformation.
@@ -192,8 +203,9 @@ Short, specific and human. Say what is happening and what to do next. Name the a
 - Contrast: AA for all text (4.5:1) and 3:1 for control boundaries, the accent and data dots, tested in both themes.
 - Targets: 48 dp minimum for every interactive element (chips, tabs, icon buttons, nav items, slider).
 - Text scale: every component lays out at 130 % without overflow in both directions (`components_test.dart`); nav labels scale to 130 % and then shrink to fit rather than wrap. Photo tags stay fixed (they are anchored to the image) and each box carries a full semantics label.
-- Semantics: icon buttons have labels; quality bars, step bars and tool matches announce a sentence; the before/after slider is a real slider with increase and decrease; tabs report selection; live regions for pipeline progress, errors and offline state.
-- RTL: `EdgeInsetsDirectional` and `AlignmentDirectional` everywhere; directional icons mirror, others do not; numerals ("02 / 05", "4.4 s") stay left to right; the before image sits on the right in Arabic; bounding boxes never mirror (they are image space).
+- Semantics: icon buttons have labels; quality bars, step bars and tool matches announce a sentence; the before/after slider is a real slider with increase and decrease; tabs report selection; live regions for pipeline progress, errors and offline state. Controls that replace their children's semantics with one clean label (scan action, shutter, chips, segments, nav items, the pipeline summary) declare the tap action themselves, and `semantics_test.dart` activates each one through the semantics tree the way TalkBack does.
+- Nothing is cut: at 130 % text in both languages no text in the component catalog is ellipsized or clipped (`components_test.dart` fails on any `didExceedMaxLines`). Long values wrap; only the compact carousel card limits the material line (to two lines).
+- RTL: `EdgeInsetsDirectional` and `AlignmentDirectional` everywhere; directional icons mirror, others do not; numeric sequences ("02 / 05", "01 / 02") are laid out left to right, since the bidi algorithm would otherwise show "05 / 02"; the before image sits on the right in Arabic; bounding boxes never mirror (they are image space).
 
 ## 11. Bans
 
@@ -205,7 +217,7 @@ Purple, blue or neon gradients; gradient text; glassmorphism and blur; glow; emo
 |---|---|
 | Design gallery (every component, theme / Arabic / 130 % toggles) | `app/lib/features/gallery/`, route `/gallery` |
 | Screenshot harness (real fonts, 360 and 412 dp, light/dark, EN/AR, text scale) | `app/test/screenshots/harness.dart`; run `flutter test test/screenshots`, PNGs in `test/screenshots/_out/` |
-| Design tests (contrast, theme hues, material colors, 130 % layout, behavior) | `app/test/design/` |
+| Design tests (contrast, theme hues and caching, material colors, 130 % layout with no cut text, behavior, screen-reader actions, reduced motion) | `app/test/design/` |
 | Brand PNGs from the mark geometry | `app/tool/brand/make_brand.py`, then `dart run flutter_launcher_icons` and `dart run flutter_native_splash:create` |
 | Map styles | `app/assets/map_styles/light.json`, `dark.json` |
 
