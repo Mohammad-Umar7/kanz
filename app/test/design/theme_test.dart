@@ -120,6 +120,34 @@ void main() {
     });
   }
 
+  test('each theme is built once per brightness and script', () {
+    // MaterialApp animates between unequal themes; the app root calls
+    // KanzTheme.light() on every rebuild, so repeated calls must return
+    // the same theme or every rebuild would start a theme animation.
+    expect(identical(KanzTheme.light(), KanzTheme.light()), isTrue);
+    expect(
+      identical(
+        KanzTheme.dark(locale: const Locale('en', 'GB')),
+        KanzTheme.dark(locale: const Locale('en')),
+      ),
+      isTrue,
+    );
+    expect(
+      KanzTheme.light(locale: const Locale('ar')),
+      isNot(KanzTheme.light()),
+    );
+    expect(KanzTheme.light(), isNot(KanzTheme.dark()));
+  });
+
+  test('theme extensions compare by value', () {
+    expect(KanzColors.light.copyWith(), KanzColors.light);
+    expect(
+      KanzColors.light.copyWith(accent: KanzColors.dark.accent),
+      isNot(KanzColors.light),
+    );
+    expect(KanzType.build(KanzColors.light), KanzType.build(KanzColors.light));
+  });
+
   test('Arabic locale switches every text role to IBM Plex Sans Arabic', () {
     final text = KanzTheme.light(locale: const Locale('ar')).textTheme;
     for (final style in [
