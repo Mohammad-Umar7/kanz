@@ -1,0 +1,58 @@
+{
+  "@@locale": "en",
+  "swapsTitle": "Swaps",
+  "@swapsTitle": {"description": "Title of the Swaps tab (eco-friendly alternatives)."},
+  "swapsIntro": "Pick what you throw away most. Kanz suggests a lasting alternative for each, with one tip to make it stick.",
+  "swapsChipsLabel": "Often in your bin",
+
+  "swapsChipPlasticBags": "Plastic bags",
+  "swapsChipClingFilm": "Cling film",
+  "swapsChipTakeawayContainers": "Takeaway containers",
+  "swapsChipCoffeeCapsules": "Coffee capsules",
+  "swapsChipPlasticBottles": "Plastic bottles",
+  "swapsChipPaperTowels": "Paper towels",
+  "swapsChipWetWipes": "Wet wipes",
+  "swapsChipBatteries": "Batteries",
+
+  "swapsFreeTextLabel": "Add something else",
+  "swapsFreeTextHint": "Straws, foil trays, razors",
+  "swapsFreeTextHelper": "Separate items with commas",
+
+  "swapsHistoryTitle": "Use my scan history",
+  "swapsHistorySubtitle": "{days, plural, =1{Also covers what you scanned today} other{Also covers what you scanned in the last {days} days}}",
+  "@swapsHistorySubtitle": {"placeholders": {"days": {"type": "int"}}},
+  "swapsHistoryCount": "{label} {count}",
+  "@swapsHistoryCount": {"placeholders": {"label": {"type": "String"}, "count": {"type": "int"}}},
+
+  "swapsSubmit": "Find swaps",
+  "swapsUpdate": "Update swaps",
+  "swapsSubmitHint": "Pick at least one item, or type your own.",
+  "swapsLoading": "Finding swaps for {items}",
+  "@swapsLoading": {"placeholders": {"items": {"type": "String"}}},
+  "swapsLoadingHistory": "Finding swaps from your scan history",
+
+  "swapsHowTitle": "What you get",
+  "swapsHowSwap": "One lasting alternative for each item you pick.",
+  "swapsHowTip": "Why it helps, and one tip to make the switch stick.",
+  "swapsHowCost": "Effort and cost at a glance, with the sources behind it.",
+
+  "swapsResultsTitle": "Swaps for you",
+  "swapsCount": "{count, plural, =1{1 swap} other{{count} swaps}}",
+  "@swapsCount": {"placeholders": {"count": {"type": "int"}}},
+  "swapsStartOver": "Start over",
+  "swapsInsightLabel": "From your scans",
+  "swapsInsteadOf": "Instead of",
+  "swapsTry": "Try",
+  "swapsTip": "Tip",
+  "swapsEffort": "Effort: {level}",
+  "@swapsEffort": {"placeholders": {"level": {"type": "String"}}},
+  "swapsCost": "Cost: {level}",
+  "@swapsCost": {"placeholders": {"level": {"type": "String"}}},
+  "swapsFromScans": "From your scans",
+  "swapsSources": "Sources",
+
+  "swapsEmptyTitle": "No swaps for that yet",
+  "swapsEmptyMessage": "Kanz couldn't match those items. Try a common one, like plastic bottles or cling film.",
+  "swapsErrorTitle": "Swaps didn't load",
+  "swapsOfflineTitle": "You're offline"
+}

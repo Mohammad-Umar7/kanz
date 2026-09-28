@@ -1,0 +1,55 @@
+{
+  "swaps": [
+    {
+      "id": "swap_plastic_bag_tote",
+      "from_item": "الأكياس البلاستيكية ذات الاستخدام الواحد",
+      "to_item": "حقيبة قماشية قابلة للطي",
+      "why": "حقيبة واحدة تغني عن مئات الأكياس الرقيقة التي تتمزق بسرعة وينتهي بها المطاف في الطرقات.",
+      "tip": "احتفظ بواحدة مطوية في السيارة وأخرى معلقة بمفاتيحك، فتكون معك كلما تسوّقت.",
+      "effort": "low",
+      "cost": "low",
+      "category": "plastic",
+      "impact_note": null,
+      "matched_input": "أكياس بلاستيكية",
+      "from_history": false,
+      "sources": [
+        {"id": "swap_plastic_bag_tote", "title": "حقائب التسوق القابلة لإعادة الاستخدام", "kind": "swap"}
+      ]
+    },
+    {
+      "id": "swap_cling_film_beeswax",
+      "from_item": "غلاف الطعام البلاستيكي",
+      "to_item": "أغلفة شمع العسل، أو طبق فوق الوعاء",
+      "why": "أغلفة الشمع تُغسل وتدوم نحو عام، والطبق لا يكلّف شيئًا.",
+      "tip": "دفّئ الغلاف بين يديك قليلًا ليلتصق بحافة الوعاء.",
+      "effort": "low",
+      "cost": "medium",
+      "category": "plastic",
+      "impact_note": null,
+      "matched_input": "غلاف بلاستيكي للطعام",
+      "from_history": false,
+      "sources": [
+        {"id": "swap_cling_film_beeswax", "title": "أغلفة الطعام", "kind": "swap"}
+      ]
+    },
+    {
+      "id": "swap_bottled_water_filter",
+      "from_item": "مياه الشرب المعبأة",
+      "to_item": "إبريق بفلتر وقارورة من الفولاذ",
+      "why": "معظم ما فحصته زجاجات بلاستيكية، وإعادة ملء قارورة واحدة تُنهي هذا المصدر كله.",
+      "tip": "املأ القارورة في الليلة السابقة وضعها بجانب مفاتيحك.",
+      "effort": "low",
+      "cost": "medium",
+      "category": "plastic",
+      "impact_note": null,
+      "matched_input": null,
+      "from_history": true,
+      "sources": [
+        {"id": "swap_bottled_water_filter", "title": "المياه القابلة لإعادة التعبئة", "kind": "swap"}
+      ]
+    }
+  ],
+  "history_insight": "فحصت 6 زجاجات بلاستيكية هذا الشهر.",
+  "lang": "ar",
+  "timings_ms": {"retrieval": 350, "swap_advisor": 4200, "total": 4600}
+}

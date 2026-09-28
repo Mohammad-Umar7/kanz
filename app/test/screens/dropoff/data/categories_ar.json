@@ -1,0 +1,155 @@
+{
+ "categories": [
+  {
+   "key": "glass",
+   "label": "إعادة تدوير الزجاج",
+   "facility_types": [
+    "recycling_center",
+    "collection_point"
+   ],
+   "material_categories": [
+    "glass"
+   ],
+   "item_ids": []
+  },
+  {
+   "key": "plastic",
+   "label": "إعادة تدوير البلاستيك",
+   "facility_types": [
+    "recycling_center",
+    "collection_point"
+   ],
+   "material_categories": [
+    "plastic"
+   ],
+   "item_ids": []
+  },
+  {
+   "key": "paper",
+   "label": "الورق والكرتون",
+   "facility_types": [
+    "recycling_center",
+    "collection_point"
+   ],
+   "material_categories": [
+    "paper"
+   ],
+   "item_ids": []
+  },
+  {
+   "key": "metal",
+   "label": "إعادة تدوير المعادن",
+   "facility_types": [
+    "recycling_center",
+    "scrap_metal",
+    "collection_point"
+   ],
+   "material_categories": [
+    "metal"
+   ],
+   "item_ids": []
+  },
+  {
+   "key": "textile_donation",
+   "label": "التبرع بالملابس",
+   "facility_types": [
+    "donation",
+    "collection_point"
+   ],
+   "material_categories": [
+    "textile"
+   ],
+   "item_ids": []
+  },
+  {
+   "key": "textile_recycling",
+   "label": "إعادة تدوير المنسوجات",
+   "facility_types": [
+    "recycling_center",
+    "collection_point"
+   ],
+   "material_categories": [
+    "textile"
+   ],
+   "item_ids": []
+  },
+  {
+   "key": "wood",
+   "label": "تجميع الخشب",
+   "facility_types": [
+    "wood_collection",
+    "recycling_center"
+   ],
+   "material_categories": [
+    "wood"
+   ],
+   "item_ids": []
+  },
+  {
+   "key": "e_waste",
+   "label": "النفايات الإلكترونية",
+   "facility_types": [
+    "e_waste",
+    "recycling_center"
+   ],
+   "material_categories": [
+    "electronics"
+   ],
+   "item_ids": []
+  },
+  {
+   "key": "battery",
+   "label": "جمع البطاريات",
+   "facility_types": [
+    "collection_point",
+    "hazardous_waste",
+    "e_waste"
+   ],
+   "material_categories": [
+    "hazardous"
+   ],
+   "item_ids": []
+  },
+  {
+   "key": "hazardous",
+   "label": "النفايات الخطرة",
+   "facility_types": [
+    "hazardous_waste"
+   ],
+   "material_categories": [
+    "hazardous"
+   ],
+   "item_ids": []
+  },
+  {
+   "key": "donation",
+   "label": "نقاط التبرع",
+   "facility_types": [
+    "donation"
+   ],
+   "material_categories": [
+    "textile",
+    "wood",
+    "other"
+   ],
+   "item_ids": []
+  },
+  {
+   "key": "general_recycling",
+   "label": "نقاط إعادة التدوير",
+   "facility_types": [
+    "recycling_center",
+    "collection_point"
+   ],
+   "material_categories": [
+    "glass",
+    "plastic",
+    "paper",
+    "metal",
+    "other"
+   ],
+   "item_ids": []
+  }
+ ],
+ "lang": "ar"
+}

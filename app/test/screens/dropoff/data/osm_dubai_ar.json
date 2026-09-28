@@ -1,0 +1,328 @@
+{
+ "places": [
+  {
+   "id": "osm:node/12309264004",
+   "name": "نقطة إعادة تدوير",
+   "address": null,
+   "lat": 25.193458,
+   "lng": 55.273899,
+   "distance_m": 1299,
+   "open_now": null,
+   "phone": null,
+   "website": null,
+   "maps_url": "https://www.google.com/maps/search/?api=1&query=25.19346,55.27390",
+   "facility_types": [
+    "collection_point"
+   ],
+   "category_keys": [
+    "glass",
+    "metal",
+    "paper",
+    "plastic"
+   ],
+   "accepted_materials": null,
+   "accepted_note": "المواد المقبولة غير مذكورة. تحقّق من ملصقات الحاوية قبل الذهاب.",
+   "rating": null,
+   "source": "osm"
+  },
+  {
+   "id": "osm:node/13413981059",
+   "name": "نقطة إعادة تدوير",
+   "address": null,
+   "lat": 25.218142,
+   "lng": 55.278974,
+   "distance_m": 1696,
+   "open_now": null,
+   "phone": null,
+   "website": null,
+   "maps_url": "https://www.google.com/maps/search/?api=1&query=25.21814,55.27897",
+   "facility_types": [
+    "collection_point"
+   ],
+   "category_keys": [
+    "glass",
+    "metal",
+    "paper",
+    "plastic"
+   ],
+   "accepted_materials": null,
+   "accepted_note": "المواد المقبولة غير مذكورة. تحقّق من ملصقات الحاوية قبل الذهاب.",
+   "rating": null,
+   "source": "osm"
+  },
+  {
+   "id": "osm:node/9042427668",
+   "name": "نقطة إعادة تدوير",
+   "address": null,
+   "lat": 25.232147,
+   "lng": 55.259934,
+   "distance_m": 3231,
+   "open_now": null,
+   "phone": null,
+   "website": null,
+   "maps_url": "https://www.google.com/maps/search/?api=1&query=25.23215,55.25993",
+   "facility_types": [
+    "collection_point"
+   ],
+   "category_keys": [
+    "plastic"
+   ],
+   "accepted_materials": [
+    "plastic"
+   ],
+   "accepted_note": null,
+   "rating": null,
+   "source": "osm"
+  },
+  {
+   "id": "osm:node/264075695",
+   "name": "نقطة إعادة تدوير",
+   "address": null,
+   "lat": 25.167913,
+   "lng": 55.22835,
+   "distance_m": 5922,
+   "open_now": null,
+   "phone": null,
+   "website": null,
+   "maps_url": "https://www.google.com/maps/search/?api=1&query=25.16791,55.22835",
+   "facility_types": [
+    "collection_point"
+   ],
+   "category_keys": [
+    "glass",
+    "metal",
+    "paper",
+    "plastic"
+   ],
+   "accepted_materials": null,
+   "accepted_note": "المواد المقبولة غير مذكورة. تحقّق من ملصقات الحاوية قبل الذهاب.",
+   "rating": null,
+   "source": "osm"
+  },
+  {
+   "id": "osm:node/13849979107",
+   "name": "نقطة إعادة تدوير",
+   "address": null,
+   "lat": 25.22045,
+   "lng": 55.352392,
+   "distance_m": 8391,
+   "open_now": null,
+   "phone": null,
+   "website": null,
+   "maps_url": "https://www.google.com/maps/search/?api=1&query=25.22045,55.35239",
+   "facility_types": [
+    "collection_point"
+   ],
+   "category_keys": [
+    "glass",
+    "metal",
+    "paper",
+    "plastic"
+   ],
+   "accepted_materials": null,
+   "accepted_note": "المواد المقبولة غير مذكورة. تحقّق من ملصقات الحاوية قبل الذهاب.",
+   "rating": null,
+   "source": "osm"
+  },
+  {
+   "id": "osm:node/13849979092",
+   "name": "نقطة إعادة تدوير",
+   "address": null,
+   "lat": 25.221018,
+   "lng": 55.352956,
+   "distance_m": 8459,
+   "open_now": null,
+   "phone": null,
+   "website": null,
+   "maps_url": "https://www.google.com/maps/search/?api=1&query=25.22102,55.35296",
+   "facility_types": [
+    "collection_point"
+   ],
+   "category_keys": [
+    "glass",
+    "metal",
+    "paper",
+    "plastic"
+   ],
+   "accepted_materials": null,
+   "accepted_note": "المواد المقبولة غير مذكورة. تحقّق من ملصقات الحاوية قبل الذهاب.",
+   "rating": null,
+   "source": "osm"
+  },
+  {
+   "id": "osm:node/13812637825",
+   "name": "نقطة إعادة تدوير",
+   "address": null,
+   "lat": 25.261757,
+   "lng": 55.332603,
+   "distance_m": 8874,
+   "open_now": null,
+   "phone": null,
+   "website": null,
+   "maps_url": "https://www.google.com/maps/search/?api=1&query=25.26176,55.33260",
+   "facility_types": [
+    "collection_point"
+   ],
+   "category_keys": [
+    "glass",
+    "metal",
+    "paper",
+    "plastic"
+   ],
+   "accepted_materials": null,
+   "accepted_note": "المواد المقبولة غير مذكورة. تحقّق من ملصقات الحاوية قبل الذهاب.",
+   "rating": null,
+   "source": "osm"
+  },
+  {
+   "id": "osm:node/13849979119",
+   "name": "نقطة إعادة تدوير",
+   "address": null,
+   "lat": 25.223144,
+   "lng": 55.359384,
+   "distance_m": 9142,
+   "open_now": null,
+   "phone": null,
+   "website": null,
+   "maps_url": "https://www.google.com/maps/search/?api=1&query=25.22314,55.35938",
+   "facility_types": [
+    "collection_point"
+   ],
+   "category_keys": [
+    "glass",
+    "metal",
+    "paper",
+    "plastic"
+   ],
+   "accepted_materials": null,
+   "accepted_note": "المواد المقبولة غير مذكورة. تحقّق من ملصقات الحاوية قبل الذهاب.",
+   "rating": null,
+   "source": "osm"
+  },
+  {
+   "id": "osm:node/10285576433",
+   "name": "نقطة إعادة تدوير",
+   "address": null,
+   "lat": 25.094894,
+   "lng": 55.310921,
+   "distance_m": 12871,
+   "open_now": null,
+   "phone": null,
+   "website": null,
+   "maps_url": "https://www.google.com/maps/search/?api=1&query=25.09489,55.31092",
+   "facility_types": [
+    "collection_point"
+   ],
+   "category_keys": [
+    "glass",
+    "metal",
+    "paper",
+    "plastic"
+   ],
+   "accepted_materials": null,
+   "accepted_note": "المواد المقبولة غير مذكورة. تحقّق من ملصقات الحاوية قبل الذهاب.",
+   "rating": null,
+   "source": "osm"
+  },
+  {
+   "id": "osm:node/12505600658",
+   "name": "نقطة إعادة تدوير",
+   "address": null,
+   "lat": 25.190287,
+   "lng": 55.40093,
+   "distance_m": 13192,
+   "open_now": null,
+   "phone": null,
+   "website": null,
+   "maps_url": "https://www.google.com/maps/search/?api=1&query=25.19029,55.40093",
+   "facility_types": [
+    "collection_point"
+   ],
+   "category_keys": [
+    "glass",
+    "metal",
+    "paper",
+    "plastic"
+   ],
+   "accepted_materials": null,
+   "accepted_note": "المواد المقبولة غير مذكورة. تحقّق من ملصقات الحاوية قبل الذهاب.",
+   "rating": null,
+   "source": "osm"
+  },
+  {
+   "id": "osm:node/11064381455",
+   "name": "نقطة إعادة تدوير",
+   "address": null,
+   "lat": 25.123686,
+   "lng": 55.380946,
+   "distance_m": 14291,
+   "open_now": null,
+   "phone": null,
+   "website": null,
+   "maps_url": "https://www.google.com/maps/search/?api=1&query=25.12369,55.38095",
+   "facility_types": [
+    "collection_point"
+   ],
+   "category_keys": [
+    "glass",
+    "metal",
+    "paper",
+    "plastic"
+   ],
+   "accepted_materials": [
+    "glass",
+    "plastic",
+    "paper",
+    "metal"
+   ],
+   "accepted_note": null,
+   "rating": null,
+   "source": "osm"
+  },
+  {
+   "id": "osm:node/12097504901",
+   "name": "نقطة إعادة تدوير",
+   "address": null,
+   "lat": 25.118803,
+   "lng": 55.377994,
+   "distance_m": 14416,
+   "open_now": null,
+   "phone": null,
+   "website": null,
+   "maps_url": "https://www.google.com/maps/search/?api=1&query=25.11880,55.37799",
+   "facility_types": [
+    "collection_point"
+   ],
+   "category_keys": [
+    "glass",
+    "metal",
+    "paper",
+    "plastic"
+   ],
+   "accepted_materials": [
+    "glass",
+    "plastic",
+    "paper",
+    "metal"
+   ],
+   "accepted_note": null,
+   "rating": null,
+   "source": "osm"
+  }
+ ],
+ "center": {
+  "lat": 25.2048,
+  "lng": 55.2708
+ },
+ "center_label": "دبي",
+ "sources_used": [
+  "osm"
+ ],
+ "notice": "هذه النقاط من بيانات متطوعي OpenStreetMap، وقد تنقصها المواعيد والتفاصيل، فتحقّق قبل الذهاب.",
+ "timings_ms": {
+  "curated": 0,
+  "osm": 2470,
+  "merge": 0,
+  "total": 2471
+ }
+}

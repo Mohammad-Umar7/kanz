@@ -13,8 +13,10 @@ import 'motion.dart';
 ///
 /// The after image may not exist yet: pass [after] as null while it is
 /// being generated (a skeleton with [pendingLabel] shows), and when the
-/// image fails to load the card falls back to the original photo with
-/// [errorLabel]. The image fades in once decoded.
+/// image fails to load, or [failed] says it could not be generated, the
+/// card falls back to the original photo with [errorLabel]. The image fades
+/// in once decoded. Text scans have no photo: pass [original] as null and
+/// the card shows no inset.
 class IdeaCard extends StatelessWidget {
   const IdeaCard({
     super.key,
@@ -30,13 +32,14 @@ class IdeaCard extends StatelessWidget {
     this.heroTag,
     this.onTap,
     this.semanticsLabel,
+    this.failed = false,
   });
 
   final String title;
   final String pitch;
 
-  /// The user's photo.
-  final ImageProvider original;
+  /// The user's photo, or null when there is none (a text scan).
+  final ImageProvider? original;
 
   /// The generated makeover, or null while it is being rendered.
   final ImageProvider? after;
@@ -58,6 +61,10 @@ class IdeaCard extends StatelessWidget {
   final Object? heroTag;
   final VoidCallback? onTap;
   final String? semanticsLabel;
+
+  /// The makeover could not be generated: show the failure state with
+  /// [errorLabel] (no [after] image is needed).
+  final bool failed;
 
   @override
   Widget build(BuildContext context) {
@@ -82,6 +89,7 @@ class IdeaCard extends StatelessWidget {
                 child: _Visual(
                   original: original,
                   after: after,
+                  failed: failed,
                   pendingLabel: pendingLabel,
                   errorLabel: errorLabel,
                   beforeLabel: beforeLabel,
@@ -132,14 +140,16 @@ class _Visual extends StatelessWidget {
   const _Visual({
     required this.original,
     required this.after,
+    required this.failed,
     required this.pendingLabel,
     required this.errorLabel,
     required this.beforeLabel,
     required this.heroTag,
   });
 
-  final ImageProvider original;
+  final ImageProvider? original;
   final ImageProvider? after;
+  final bool failed;
   final String pendingLabel;
   final String errorLabel;
   final String beforeLabel;
@@ -149,8 +159,30 @@ class _Visual extends StatelessWidget {
   Widget build(BuildContext context) {
     final c = context.kanzColors;
     final after = this.after;
+    final original = this.original;
+    // The failure state: the original photo, desaturated and dimmed, with the
+    // note; without a photo (a text scan) a quiet sunken panel.
+    Widget failure() => original == null
+        ? _Placeholder(label: errorLabel, pending: false)
+        : Stack(
+            fit: StackFit.expand,
+            children: [
+              ColorFiltered(
+                colorFilter: const ColorFilter.matrix(_desaturate),
+                child: Image(
+                  image: original,
+                  fit: BoxFit.cover,
+                  excludeFromSemantics: true,
+                ),
+              ),
+              ColoredBox(color: c.photoBackdrop.withValues(alpha: 0.35)),
+              _Placeholder(label: errorLabel, pending: false, onPhoto: true),
+            ],
+          );
     Widget main;
-    if (after == null) {
+    if (failed) {
+      main = failure();
+    } else if (after == null) {
       main = _Placeholder(label: pendingLabel, pending: true);
     } else {
       main = Image(
@@ -173,21 +205,7 @@ class _Visual extends StatelessWidget {
             ],
           );
         },
-        errorBuilder: (context, error, stack) => Stack(
-          fit: StackFit.expand,
-          children: [
-            ColorFiltered(
-              colorFilter: const ColorFilter.matrix(_desaturate),
-              child: Image(
-                image: original,
-                fit: BoxFit.cover,
-                excludeFromSemantics: true,
-              ),
-            ),
-            ColoredBox(color: c.photoBackdrop.withValues(alpha: 0.35)),
-            _Placeholder(label: errorLabel, pending: false, onPhoto: true),
-          ],
-        ),
+        errorBuilder: (context, error, stack) => failure(),
       );
       if (heroTag != null) main = Hero(tag: heroTag!, child: main);
     }
@@ -196,11 +214,12 @@ class _Visual extends StatelessWidget {
       fit: StackFit.expand,
       children: [
         main,
-        PositionedDirectional(
-          start: KanzSpace.s12,
-          bottom: KanzSpace.s12,
-          child: _Inset(image: original, label: beforeLabel),
-        ),
+        if (original != null)
+          PositionedDirectional(
+            start: KanzSpace.s12,
+            bottom: KanzSpace.s12,
+            child: _Inset(image: original, label: beforeLabel),
+          ),
       ],
     );
   }
@@ -231,11 +250,13 @@ class _Placeholder extends StatelessWidget {
     return Stack(
       fit: StackFit.expand,
       children: [
-        if (!onPhoto)
+        if (!onPhoto && pending)
           const Skeleton(
             height: double.infinity,
             borderRadius: BorderRadius.zero,
-          ),
+          )
+        else if (!onPhoto)
+          ColoredBox(color: c.surfaceSunken),
         PositionedDirectional(
           top: KanzSpace.s16,
           start: KanzSpace.s16,

@@ -1,0 +1,51 @@
+{
+  "@@locale": "ar",
+  "swapsTitle": "البدائل",
+  "swapsIntro": "اختر ما ترميه أكثر من غيره، وسيقترح كنز بديلًا يدوم لكلٍّ منها، مع نصيحة واحدة تساعدك على الالتزام به.",
+  "swapsChipsLabel": "يتكرر في سلة المهملات",
+
+  "swapsChipPlasticBags": "أكياس بلاستيكية",
+  "swapsChipClingFilm": "غلاف بلاستيكي للطعام",
+  "swapsChipTakeawayContainers": "علب الطعام الجاهز",
+  "swapsChipCoffeeCapsules": "كبسولات القهوة",
+  "swapsChipPlasticBottles": "زجاجات بلاستيكية",
+  "swapsChipPaperTowels": "مناشف ورقية",
+  "swapsChipWetWipes": "مناديل مبللة",
+  "swapsChipBatteries": "بطاريات",
+
+  "swapsFreeTextLabel": "أضف شيئًا آخر",
+  "swapsFreeTextHint": "مصاصات، صوانٍ من الألمنيوم، شفرات حلاقة",
+  "swapsFreeTextHelper": "افصل بين العناصر بفاصلة",
+
+  "swapsHistoryTitle": "استخدم سجل فحوصي",
+  "swapsHistorySubtitle": "{days, plural, =1{تشمل الاقتراحات أيضًا ما فحصته اليوم} =2{تشمل الاقتراحات أيضًا ما فحصته خلال آخر يومين} few{تشمل الاقتراحات أيضًا ما فحصته خلال آخر {days} أيام} many{تشمل الاقتراحات أيضًا ما فحصته خلال آخر {days} يومًا} other{تشمل الاقتراحات أيضًا ما فحصته خلال آخر {days} يوم}}",
+  "swapsHistoryCount": "{label} {count}",
+
+  "swapsSubmit": "اقترح بدائل",
+  "swapsUpdate": "حدّث البدائل",
+  "swapsSubmitHint": "اختر عنصرًا واحدًا على الأقل، أو اكتب ما تريد.",
+  "swapsLoading": "البحث عن بدائل: {items}",
+  "swapsLoadingHistory": "البحث عن بدائل بناءً على فحوصك",
+
+  "swapsHowTitle": "ما الذي ستحصل عليه",
+  "swapsHowSwap": "بديل يدوم لكل عنصر تختاره.",
+  "swapsHowTip": "لماذا يفيد، ونصيحة واحدة تساعدك على الالتزام به.",
+  "swapsHowCost": "الجهد والتكلفة بنظرة سريعة، مع المصادر التي بُني عليها.",
+
+  "swapsResultsTitle": "بدائل مقترحة لك",
+  "swapsCount": "{count, plural, =1{بديل واحد} =2{بديلان} few{{count} بدائل} many{{count} بديلًا} other{{count} بديل}}",
+  "swapsStartOver": "ابدأ من جديد",
+  "swapsInsightLabel": "من فحوصك",
+  "swapsInsteadOf": "بدلًا من",
+  "swapsTry": "جرّب",
+  "swapsTip": "نصيحة",
+  "swapsEffort": "الجهد: {level}",
+  "swapsCost": "التكلفة: {level}",
+  "swapsFromScans": "من فحوصك",
+  "swapsSources": "المصادر",
+
+  "swapsEmptyTitle": "لا بدائل لذلك بعد",
+  "swapsEmptyMessage": "لم يجد كنز ما يطابق هذه العناصر. جرّب عنصرًا شائعًا، مثل الزجاجات البلاستيكية أو غلاف الطعام البلاستيكي.",
+  "swapsErrorTitle": "تعذّر تحميل البدائل",
+  "swapsOfflineTitle": "أنت غير متصل"
+}
