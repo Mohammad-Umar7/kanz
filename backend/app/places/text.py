@@ -28,6 +28,10 @@ _TEXT: dict[str, dict[str, str]] = {
         "en": "No drop-off points found within {km} km. Try a wider radius or another category.",
         "ar": "لم نجد نقاط تسليم ضمن {km} كم. جرّب نطاقًا أوسع أو فئة أخرى.",
     },
+    "notice_widened": {
+        "en": "Nothing within {near} km, so these are the nearest within {far} km.",
+        "ar": "لا شيء ضمن {near} كم، لذا هذه أقرب النقاط ضمن {far} كم.",
+    },
     "notice_osm_only": {
         "en": "These points come from OpenStreetMap volunteers. Hours and details may be missing, so check before you go.",
         "ar": "هذه النقاط من بيانات متطوعي OpenStreetMap، وقد تنقصها المواعيد والتفاصيل، فتحقّق قبل الذهاب.",

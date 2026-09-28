@@ -1,18 +1,24 @@
 """Assemble node: joins the parallel branches into one ``RecommendResponse``.
 
-Failure policy: a failed branch has already been replaced by its deterministic fallback,
-so the response is still complete. The request only fails when the Upcycle Designer and
-every other generating branch failed together (the AI service is effectively down), or
-when three ideas could not be produced at all.
+Failure policy: a failed branch has already been replaced by its deterministic fallback
+(ideas from matching knowledge-base projects, recycling advice from the analysis,
+condition-based donation), so the response is still complete and still grounded. Even
+when every generating branch failed together (Gemini overloaded or out of quota) the user
+gets those grounded answers instead of an error. The request only fails when three ideas
+could not be produced at all.
 """
 
 from __future__ import annotations
+
+import logging
 
 from app.ai import fallbacks
 from app.ai.state import RecommendState
 from app.core.errors import AiTimeout, AiUnavailable, KanzError
 from app.schemas.common import SourceRef
 from app.schemas.recommend import RecommendResponse, RecyclePath
+
+log = logging.getLogger("kanz.ai.assemble")
 
 GENERATING_BRANCHES = ("upcycle", "recycle", "donate")
 
@@ -40,9 +46,10 @@ async def assemble(state: RecommendState) -> dict:
     disposal_only = routing.mode == "disposal_only"
 
     ideas = [] if disposal_only else state.get("upcycle", [])
-    all_failed = all(branch in errors for branch in GENERATING_BRANCHES)
-    if not disposal_only and (all_failed or len(ideas) != 3):
+    if not disposal_only and len(ideas) != 3:
         raise as_api_error(errors.get("upcycle"))
+    if all(branch in errors for branch in GENERATING_BRANCHES):
+        log.warning("recommend: every generating branch failed; answering from the knowledge base")
 
     advisor = state.get("recycle") or RecyclePath(instructions=[], sources=[])
     by_item = {i.item_id: i for i in [*advisor.instructions, *state.get("disposal_recycle", [])]}

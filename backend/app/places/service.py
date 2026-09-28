@@ -57,9 +57,28 @@ class _Outcome:
     error: Exception | None = None
 
 
+WIDE_RADIUS_M = 40_000  # one automatic retry when nothing is within the requested radius
+
+
 async def search(req: FacilitiesRequest, *, settings: Settings | None = None) -> FacilitiesResponse:
-    started = time.perf_counter()
+    """Nearest matching drop-off points. If none are within the radius (common for battery
+    and e-waste bins in OpenStreetMap), searches once more up to 40 km and says so.
+    """
     settings = settings or get_settings()
+    response = await _search(req, settings)
+    if response.places or req.radius_m >= WIDE_RADIUS_M:
+        return response
+    wider = await _search(req.model_copy(update={"radius_m": WIDE_RADIUS_M}), settings)
+    if not wider.places:
+        return response
+    note = t("notice_widened", req.lang, near=f"{req.radius_m / 1000:g}", far=f"{WIDE_RADIUS_M / 1000:g}")
+    notice = f"{note} {wider.notice}" if wider.notice else note
+    timings = {**response.timings_ms, **{f"wide_{k}": v for k, v in wider.timings_ms.items()}}
+    return wider.model_copy(update={"notice": notice, "timings_ms": timings})
+
+
+async def _search(req: FacilitiesRequest, settings: Settings) -> FacilitiesResponse:
+    started = time.perf_counter()
     keys = _known_keys(req.categories)
     center, center_label = resolve_center(req)
     timings: dict[str, int] = {}

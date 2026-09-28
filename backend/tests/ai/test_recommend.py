@@ -153,7 +153,17 @@ async def test_unsafe_ideas_twice_fall_back_instead_of_reaching_the_user():
     assert len(gateway.problems) == 2
 
 
-async def test_every_generating_branch_failing_fails_the_request():
+async def test_every_generating_branch_failing_still_answers_from_the_knowledge_base():
+    gateway = diy_gateway({LlmIdeas: AiUnavailable(), LlmRecycle: AiUnavailable(), LlmDonate: AiUnavailable()})
+    res = await pipeline.recommend(jar_request(), gateway=gateway)
+    assert len(res.upcycle) == 3
+    assert all(s.id.startswith("proj_") for i in res.upcycle for s in i.sources)
+    assert res.recycle.instructions  # from the analysis' recyclability fields
+    assert res.donate.options
+
+
+async def test_no_matching_projects_and_a_failed_designer_fails_the_request(monkeypatch):
+    monkeypatch.setattr("app.ai.fallbacks.upcycle_from_projects", lambda *a, **k: [])
     gateway = diy_gateway({LlmIdeas: AiUnavailable(), LlmRecycle: AiUnavailable(), LlmDonate: AiUnavailable()})
     with pytest.raises(AiUnavailable):
         await pipeline.recommend(jar_request(), gateway=gateway)
