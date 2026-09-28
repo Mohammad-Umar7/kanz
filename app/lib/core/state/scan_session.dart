@@ -303,15 +303,17 @@ class ScanSession extends Notifier<ScanSessionState> {
       state = state.copyWith(recommendation: response);
       _setStage(PipelineStage.ideas, StageStatus.done);
       await _persistStages();
-      // Drop-off points and makeovers are independent: run them side by side
-      // so places appear without waiting for image generation.
-      await Future.wait([_dropoff(), _makeovers(chain)]);
     } on Object catch (error) {
       final e = ApiException.from(error);
       if (!_current(chain) || e.isCancelled) return;
       _setStage(PipelineStage.ideas, StageStatus.failed, error: e);
       await _persistStages();
+      return;
     }
+    // Drop-off points and makeovers are independent: run them side by side
+    // so places appear without waiting for image generation. Each one ends
+    // its own stage, so a failure there never marks the ideas as failed.
+    await Future.wait([_dropoff(), _makeovers(chain)]);
   }
 
   Future<void> _dropoff() async {
@@ -331,17 +333,19 @@ class ScanSession extends Notifier<ScanSessionState> {
       return;
     }
     _setStage(PipelineStage.dropoff, StageStatus.running);
-    final location = await ref
-        .read(locationResolverProvider)
-        .resolve(ref.read(settingsProvider));
-    if (!current()) return;
-    if (location == null) {
-      _setStage(PipelineStage.dropoff, StageStatus.needsLocation);
-      await _persistStages();
-      return;
-    }
-    state = state.copyWith(dropoffLocation: location);
     try {
+      // Inside the try: a permission or GPS plugin error must end this stage,
+      // not leave it running.
+      final location = await ref
+          .read(locationResolverProvider)
+          .resolve(ref.read(settingsProvider));
+      if (!current()) return;
+      if (location == null) {
+        _setStage(PipelineStage.dropoff, StageStatus.needsLocation);
+        await _persistStages();
+        return;
+      }
+      state = state.copyWith(dropoffLocation: location);
       final response = await _api.facilities(
         location.toRequest(categories, state.lang),
         cancelToken: token,
@@ -379,9 +383,10 @@ class ScanSession extends Notifier<ScanSessionState> {
 
   Future<void> _retryFailedImages() async {
     final chain = _chain;
+    // Images still loading keep their request; only finished failures retry.
     final failed = [
       for (final idea in state.ideas)
-        if (!state.afterImage(idea.id).isReady) idea,
+        if (state.afterImage(idea.id).status == ImageStatus.failed) idea,
     ];
     if (failed.isEmpty) return;
     _setStage(PipelineStage.makeovers, StageStatus.running);

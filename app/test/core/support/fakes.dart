@@ -196,9 +196,16 @@ class FakeCompressor implements ImageCompressor {
 class FakePermissions implements PermissionService {
   PermissionState location = PermissionState.denied;
 
+  /// Thrown by [status] when set, like a platform channel failure.
+  Object? statusError;
+
   @override
-  Future<PermissionState> status(AppPermission permission) async =>
-      permission == AppPermission.location ? location : PermissionState.granted;
+  Future<PermissionState> status(AppPermission permission) async {
+    if (statusError case final error?) throw error;
+    return permission == AppPermission.location
+        ? location
+        : PermissionState.granted;
+  }
 
   @override
   Future<PermissionState> request(AppPermission permission) =>

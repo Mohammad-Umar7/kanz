@@ -6,6 +6,7 @@ import 'package:kanz/core/data/models/models.dart';
 import 'package:kanz/core/network/api_exception.dart';
 import 'package:kanz/core/services/location_service.dart';
 import 'package:kanz/core/services/permission_service.dart';
+import 'package:kanz/core/state/location_resolver.dart';
 import 'package:kanz/core/state/scan_session.dart';
 import 'package:kanz/core/state/settings_providers.dart';
 
@@ -212,6 +213,40 @@ void main() {
     expect(ideas.error?.code, ApiErrorCode.internal);
     expect(ideas.error?.retryable, isTrue);
   });
+
+  test(
+    'a location plugin error fails drop-off only, and retry recovers',
+    () async {
+      h = await TestHarness.create(prefs: {'settings.location_mode': 'gps'});
+      h.permissions.statusError = StateError('permission channel unavailable');
+      final id = newScanId();
+      final session = h.container.read(scanSessionProvider(id).notifier);
+
+      await session.startFromPhoto(bytes: _photo);
+      await waitFor(() => settled(id));
+
+      final s = stateOf(id);
+      expect(s.stage(PipelineStage.ideas).status, StageStatus.done);
+      expect(s.stage(PipelineStage.dropoff).status, StageStatus.failed);
+      expect(s.stage(PipelineStage.dropoff).error?.retryable, isTrue);
+      expect(s.stage(PipelineStage.makeovers).status, StageStatus.done);
+
+      h.permissions
+        ..statusError = null
+        ..location = PermissionState.granted;
+      h.location.fix = LocationFix(
+        lat: 24.45,
+        lng: 54.38,
+        accuracyM: 20,
+        timestamp: DateTime.now(),
+        isWeak: false,
+      );
+      await session.retry(PipelineStage.dropoff);
+      expect(stateOf(id).stage(PipelineStage.dropoff).status, StageStatus.done);
+      expect(h.api.facilitiesRequests.single.lat, 24.45);
+      expect(stateOf(id).dropoffLocation?.source, SearchLocationSource.gps);
+    },
+  );
 
   test('drop-off waits for a location decision, then resumes', () async {
     h = await TestHarness.create();
