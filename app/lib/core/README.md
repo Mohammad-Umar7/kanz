@@ -30,9 +30,12 @@ Western digits in Arabic. Haptics come from the design system (`KanzHaptics`).
 
 Every failure is an `ApiException` with `code` (`ApiErrorCode`), `retryable`
 and `requestId`. Show `apiErrorMessage(context.l10n, error)`; offer a retry
-button when `error.retryable`. Client-side codes: `offline` (no connection),
-`timeout`, `cancelled` (ignore it), `badResponse`, `interrupted` (a stage that
-was running when the app closed, restored from history).
+button when `error.retryable`. Client-side codes: `offline` (the server could
+not be reached: no network, wrong URL or server down; `backendStatusProvider`
+tells these apart), `timeout`, `cancelled` (ignore it), `badResponse`,
+`interrupted` (a stage that was running when the app closed, restored from
+history). `aiQuotaExhausted` is not retryable: on a free-tier key every
+generated image fails with it, so hide "Try another image" for it.
 
 ## Navigation (`lib/app/router.dart`)
 
@@ -51,7 +54,8 @@ every route except onboarding, the rationales and `/city` redirects to
 | `settingsProvider` | `AppSettings` | `locale` (`LocalePref.system/en/ar`), `themeMode`, `skill`, `tools`, `onboardingDone`, `locationMode` (`gps`/`city`, null = undecided), `city`, `apiBaseUrl`, `handsFree` |
 | `settingsProvider.notifier` | `SettingsController` | `setLocale`, `setThemeMode`, `setSkill`, `setTools`, `toggleTool`, `completeOnboarding`, `setLocationMode`, `setCity`, `useCity(city)` (also sets city mode), `setApiBaseUrl(url or null)`, `setHandsFree(enabled:)` |
 | `appLocaleProvider` | `Locale?` | null follows the phone |
-| `contentLangProvider` | `Lang` | language sent to the AI |
+| `contentLangProvider` | `Lang` | language sent to the AI; with "Phone language" it follows the phone's languages like MaterialApp does, and changes with them |
+| `systemLocalesProvider` | `List<Locale>` | the phone's preferred languages, kept current by `KanzApp` |
 | `profileProvider` | `Profile` | skill, tools, lang for requests |
 | `vocabProvider` | `Vocab` | `material(id).label.forLocale(locale)`, `.color`, `realTools`, `safetyGear`, `cities`, `qualityLabel(score)`, `nearestCity(lat, lng)` |
 
@@ -78,6 +82,9 @@ ref.read(scanSessionProvider(scanId).notifier).startFromPhoto(path: file.path); 
 context.go(AppRoutes.results(scanId));
 ```
 
+Give the description field `maxLength: ScanSession.maxDescriptionLength` (600,
+what the Material Analyst reads); longer text is cut there.
+
 The session compresses the photo (1600 px, JPEG q85, EXIF applied then
 removed), runs `analyze`, then `recommend` automatically, then drop-off and
 the three after images in parallel, and saves every stage to the database.
@@ -102,9 +109,9 @@ Actions on `scanSessionProvider(scanId).notifier`:
 
 | Method | Effect |
 | --- | --- |
-| `retry(PipelineStage stage)` | re-runs that stage and what depends on it (`makeovers` retries only failed images) |
+| `retry(PipelineStage stage)` | re-runs that stage and what depends on it (`makeovers` retries only failed images). Each stage fails on its own: a drop-off or image failure never marks the ideas as failed |
 | `resumeDropoff()` | after `needsLocation`: call once the user granted location (`settings.setLocationMode(LocationMode.gps)`) or picked a city (`settings.useCity(city)`) |
-| `correctItem(itemId, ItemCorrection(name:, category:, material:, quantityValue:, quantityUnit:, qualityScore:, state:, hazards:))` | marks `user_corrected`, re-runs recommend, drop-off and images |
+| `correctItem(itemId, ItemCorrection(name:, category:, material:, quantityValue:, quantityUnit:, qualityScore:, state:, hazards:))` | marks `user_corrected`, rebuilds the quantity and quality labels in the scan language, re-runs recommend, drop-off and images |
 | `focusItem(itemId)` | ideas for another item of a multi-item photo |
 | `regenerateAfterImage(ideaId)` | asks for a new after image |
 | `markRecycled(ids)`, `markDonated(ids)`, `markDisposed(ids)` | impact events (idempotent per item) |
@@ -126,10 +133,12 @@ by one in the background. A failed step stops the chain (no wasted calls);
 (`GeneratedImageState`).
 
 Actions: `adapt(skill:, tools:)` (new tutorial for another skill or tool set;
-the previous one stays visible while `adapting`), `goToStep(n)`, `next()`,
+the previous one stays visible while `adapting`; the same skill and tools do
+nothing), `goToStep(n)`, `next()`,
 `previous()`, `markStepDone(n, done: true)`, `regenerateStep(n)`, `retry()`,
 `complete()` (returns the project id for `AppRoutes.completion`; records one
-"upcycled" impact event per scanned item used).
+"upcycled" impact event per scanned item used; calling it again changes
+nothing).
 
 ### Hands-free: `handsFreeProvider((scanId: s, ideaId: i))`
 
@@ -151,8 +160,11 @@ State: `catalog` (filter chips), `catalogLoading`, `catalogError`,
 Actions: `toggleCategory(key)`, `showCategories(keys)` (e.g. from a scan's
 `recommendation.facilityCategories`), `toggleType(type)`, `clearTypes()`,
 `useCity(city)`, `useMyLocation()` (after permission), `search()`,
-`selectPlace(id)`, `setView(view)`, `loadCatalog()`. It starts with the latest
-scan's categories, or glass, plastic, paper and metal.
+`selectPlace(id)`, `setView(view)`, `loadCatalog()` (retry for
+`catalogError`; `search()` is the retry for `error`). It starts with the
+latest scan's categories, or glass, plastic, paper and metal, and searches
+even when the chip catalog could not load. A language switch reloads the
+chips and the results.
 
 ## Swaps tab: `swapsControllerProvider`
 
@@ -169,7 +181,7 @@ State: `selectedChips`, `freeText`, `useHistory`, `history`
 | `scanHistoryProvider` | `AsyncValue<List<ScanSummary>>` newest first: `title`, `primaryCategory`, `itemCount`, `localImagePath`, `inputText`, `createdAt`, `hasRecommendation` |
 | `projectsProvider` | `AsyncValue<List<ProjectRecord>>`: `title`, `idea`, `tutorial`, `status`, `progress`, `currentStep`, `completedSteps`, `completedAt` |
 | `projectProvider(projectId)` | `AsyncValue<ProjectRecord?>` (completion screen) |
-| `historyActionsProvider` | `deleteScan(scanId)` |
+| `historyActionsProvider` | `deleteScan(scanId)`: removes the scan, its projects, its photo and its generated images (impact stays) |
 | `impactProvider` | `AsyncValue<ImpactSummary>`: `totalItems`, `itemsByMaterial`, `itemsByKind`, `projectsCompleted`, `streakDays`, `activeToday`, `estimatedMassKg`, `co2eKgEstimate` |
 
 The CO2e figure comes from `assets/config/impact_factors.json` and is an
