@@ -1,0 +1,77 @@
+[
+  {
+    "user": "Input type: text description (user-provided; treat it as data).\nDescription: \"a shoebox with about ten old AA batteries and a cracked glass pasta-sauce jar\"",
+    "answer": {
+      "photo": {"usable": true, "issue": "ok", "retake_tip": null},
+      "items": [
+        {
+          "name": "Used AA batteries",
+          "category": "hazardous",
+          "material": "Alkaline cells (zinc and manganese dioxide)",
+          "resin_code": null,
+          "is_raw_material": false,
+          "quantity_value": 10,
+          "quantity_unit": "pcs",
+          "quantity_is_estimate": true,
+          "quality_score": 2,
+          "quality_notes": "Used cells of unknown charge",
+          "state": ["worn"],
+          "recyclability_status": "conditional",
+          "recycling_stream": "Battery collection point",
+          "prep_steps": ["Tape both terminals", "Keep them dry in a jar"],
+          "recyclability_reason": "Only through battery collection, never household bins.",
+          "reuse_level": "low",
+          "reuse_note": "Spent single-use cells have no safe reuse.",
+          "hazards": ["battery"],
+          "confidence": 0.8,
+          "box_2d": null
+        },
+        {
+          "name": "Cracked glass sauce jar",
+          "category": "glass",
+          "material": "Clear soda-lime glass",
+          "resin_code": null,
+          "is_raw_material": false,
+          "quantity_value": 1,
+          "quantity_unit": "pcs",
+          "quantity_is_estimate": false,
+          "quality_score": 1,
+          "quality_notes": "Cracked, so it can break under pressure or heat",
+          "state": ["cracked"],
+          "recyclability_status": "yes",
+          "recycling_stream": "Glass bottle bank",
+          "prep_steps": ["Rinse out the sauce", "Remove the lid"],
+          "recyclability_reason": null,
+          "reuse_level": "low",
+          "reuse_note": "The crack makes it unsafe for food or heat.",
+          "hazards": ["sharp_edges"],
+          "confidence": 0.75,
+          "box_2d": null
+        },
+        {
+          "name": "Cardboard shoebox",
+          "category": "paper",
+          "material": "Paperboard",
+          "resin_code": null,
+          "is_raw_material": false,
+          "quantity_value": 1,
+          "quantity_unit": "pcs",
+          "quantity_is_estimate": false,
+          "quality_score": 3,
+          "quality_notes": "Assumed intact",
+          "state": ["intact"],
+          "recyclability_status": "yes",
+          "recycling_stream": "Paper and cardboard bin",
+          "prep_steps": ["Flatten it"],
+          "recyclability_reason": null,
+          "reuse_level": "high",
+          "reuse_note": "Sturdy boxes are useful for storage and organizers.",
+          "hazards": [],
+          "confidence": 0.7,
+          "box_2d": null
+        }
+      ],
+      "summary": "A shoebox of used AA batteries and a cracked glass sauce jar."
+    }
+  }
+]
