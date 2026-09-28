@@ -318,12 +318,14 @@ class TestToolsAndLanguage:
 
 
 class TestTwoTierValidator:
-    def test_soft_rules_only_count_on_the_first_attempt(self):
+    def test_soft_rules_count_until_the_repair_round(self):
         validator = safety.TwoTierValidator(hard=lambda _: [], soft=lambda _: ["add gloves"])
         assert validator(object()) == ["add gloves"]
+        validator.begin_repair()
         assert validator(object()) == []
 
     def test_hard_rules_count_every_time(self):
         validator = safety.TwoTierValidator(hard=lambda _: ["unsafe"], soft=lambda _: ["style"])
         assert validator(object()) == ["unsafe", "style"]
+        validator.begin_repair()
         assert validator(object()) == ["unsafe"]

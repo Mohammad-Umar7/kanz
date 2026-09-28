@@ -61,6 +61,8 @@ class FakeGateway:
         """Like the real gateway: validate the schema and the node's rules, repair once, then give up."""
         self.calls.append({"stage": stage, "system": system, "contents": contents, "schema": schema, **kwargs})
         for attempt in (0, 1):
+            if attempt == 1 and callable(getattr(validator, "begin_repair", None)):
+                validator.begin_repair()
             try:
                 obj = self._next(schema, attempt, contents)
             except ValidationError as err:

@@ -1222,18 +1222,24 @@ class TwoTierValidator(Generic[T]):
     Hard rules (dangerous advice, wrong language for image prompts, DIY on hazardous items)
     are checked on every attempt: if the repair round still breaks one, the request fails
     rather than showing unsafe advice. Soft rules (missing gear lines, tool adaptation) are
-    reported on the first attempt so the model can fix them itself; if it still misses them,
-    the node repairs the output deterministically instead of failing the user's request.
+    reported only before the repair round, so the model gets one chance to fix them; after
+    that the node repairs the output deterministically instead of failing the request.
+
+    The gateway calls ``begin_repair()`` before the repair round. That matters when the first
+    answer was not even valid JSON: the validator never saw it, yet the repair round is
+    already the last attempt, so soft rules must not fail it.
     """
 
     def __init__(self, hard: Callable[[T], list[str]], soft: Callable[[T], list[str]] | None = None) -> None:
         self.hard = hard
         self.soft = soft
-        self.calls = 0
+        self.repairing = False
+
+    def begin_repair(self) -> None:
+        self.repairing = True
 
     def __call__(self, obj: T) -> list[str]:
-        self.calls += 1
         problems = self.hard(obj)
-        if self.soft is not None and self.calls == 1:
+        if self.soft is not None and not self.repairing:
             problems = problems + self.soft(obj)
         return problems

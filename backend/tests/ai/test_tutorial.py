@@ -116,6 +116,17 @@ async def test_too_few_steps_are_repaired(step_chain):
     assert "steps" in gateway.problems[0][0]
 
 
+async def test_a_repair_after_too_few_steps_is_not_failed_by_soft_rules(step_chain):
+    # The first answer breaks the schema, so the repair round is the last attempt: a missing
+    # gear line there is added by the backend instead of failing the tutorial.
+    knife = llm_tutorial(safety=["Work on a stable table"])
+    knife["steps"][1]["instruction"] = "Cut the cardboard base with a craft knife."
+    gateway = FakeGateway({LlmTutorial: [llm_tutorial(3), knife]})
+    t = (await pipeline.tutorial(request(), gateway=gateway)).tutorial
+    assert len(t.steps) == 5
+    assert "gloves" in t.safety[0]
+
+
 async def test_hazardous_items_never_get_a_tutorial():
     battery = fixture_analysis("analyze_battery.json").items[0]
     idea = lantern_idea().model_copy(update={"uses_item_ids": [battery.id]})

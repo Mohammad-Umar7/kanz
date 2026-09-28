@@ -8,7 +8,8 @@ the same rules:
 * **One repair round.** If the JSON fails validation, or a node's own ``validator``
   reports problems (e.g. a safety rule was broken), the model gets its previous answer
   plus the list of problems and must return corrected JSON. A second failure raises
-  ``AiInvalidOutput``.
+  ``AiInvalidOutput``. A validator with a ``begin_repair()`` method is told when the
+  repair round starts (``safety.TwoTierValidator`` stops checking its soft rules then).
 * **Few-shot examples** are sent as prior user/model turns.
 * **Resilience.** Per-call timeouts, exponential backoff with jitter on 429/5xx, then
   fallback models from config. Quota exhaustion ("limit: 0") skips straight to the
@@ -262,8 +263,12 @@ class GeminiGateway:
         if obj is not None and not problems:
             return obj
 
-        # Repair round: show the model its own answer and exactly what was wrong.
+        # Repair round: show the model its own answer and exactly what was wrong. A validator
+        # may relax rules it can repair itself once the model has used its one chance.
         log.info("gemini stage=%s repair problems=%s", stage, problems[:5])
+        begin_repair = getattr(validator, "begin_repair", None)
+        if callable(begin_repair):
+            begin_repair()
         repair = list(turns)
         repair.append(types.Content(role="model", parts=[types.Part.from_text(text=raw or "{}")]))
         repair.append(
