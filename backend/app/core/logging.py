@@ -5,8 +5,8 @@ Example::
     ts=2026-09-28T10:15:02.114Z level=info logger=kanz.timing request_id=req_5f3c2a1b stage=analysis ms=4120 ok=True
     ts=2026-09-28T10:15:02.120Z level=info logger=kanz.access request_id=req_5f3c2a1b method=POST path=/v1/analyze status=200 ms=4133
 
-Messages already written as ``key=value`` pairs are kept as they are; free-text messages
-(mostly from libraries) are wrapped as ``msg="..."`` so every line stays machine-parsable.
+Kanz messages are written as ``event key=value ...`` and kept as they are; free-text
+messages (mostly from libraries) are wrapped as ``msg="..."`` so every line stays parsable.
 """
 
 from __future__ import annotations
@@ -19,7 +19,9 @@ from datetime import UTC, datetime
 
 from app.core.request_id import request_id_var
 
-_KV_MESSAGE = re.compile(r"^[a-z_][a-z0-9_.]*=")
+# "stage=analysis ms=4120", "error code=not_found status=404" (an event name, then pairs)
+# or a bare event name such as "knowledge_seed_failed". Anything else is free text.
+_KV_MESSAGE = re.compile(r"^[a-z_][a-z0-9_.]*(?:=|\s+[a-z_][a-z0-9_.]*=|$)")
 
 # Libraries that are chatty at INFO. The Gemini SDK logs an "AFC is enabled" notice on
 # every call, httpx logs every request line, and Chroma logs telemetry setup.

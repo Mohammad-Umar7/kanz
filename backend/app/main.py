@@ -98,7 +98,7 @@ async def seed_knowledge_in_background() -> None:
             docs = await rag.seed_knowledge()
         log.info("knowledge_seeded docs=%d", docs)
     except Exception:
-        log.exception("knowledge_seed_failed retrieval stays unavailable until the next restart")
+        log.exception("knowledge_seed_failed")
 
 
 @contextlib.asynccontextmanager
