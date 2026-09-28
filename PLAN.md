@@ -183,7 +183,8 @@ Voice mode, then streak, then share. Never the four required features, the core 
 ## 10. Status
 
 - [x] Phase 0: toolchain, repo, contracts, fixtures, gateway, scaffolds
-- [ ] Phase 1
+- [x] Phase 1: backend (543+ tests), AI pipeline (52 projects, 128 knowledge docs, eval 21/21), image pipeline, places + swaps, design system, app core. Live: analyze, recommend and OpenStreetMap drop-off work end to end through the API
+- Free-tier key: about 20 requests per model per day and no image quota. Billing is required before on-device testing and the demo
 - [ ] Phase 2
 - [ ] Phase 3
 - [ ] Phase 4

@@ -100,6 +100,10 @@ abstract class ScanSessionState with _$ScanSessionState {
     @Default(<String, GeneratedImageState>{})
     Map<String, GeneratedImageState> afterImages,
 
+    /// Text scans only: a generated photo of the described item, the "before"
+    /// side of the before/after slider (photo scans use [localImagePath]).
+    @Default(GeneratedImageState()) GeneratedImageState referenceImage,
+
     /// Item the ideas focus on (null: the analysis' primary item).
     String? focusItemId,
   }) = _ScanSessionState;

@@ -167,6 +167,17 @@ class ApiClient {
     cancelToken,
   );
 
+  Future<ImageResponse> referenceImage(
+    ReferenceImageRequest request, {
+    CancelToken? cancelToken,
+  }) => _postJson(
+    '/v1/images/reference',
+    request.toJson(),
+    ApiTimeouts.images,
+    ImageResponse.fromJson,
+    cancelToken,
+  );
+
   Future<FacilitiesResponse> facilities(
     FacilitiesRequest request, {
     CancelToken? cancelToken,

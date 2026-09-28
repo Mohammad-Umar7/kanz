@@ -382,6 +382,7 @@ class ScanSession extends Notifier<ScanSessionState> {
     }
     _setStage(PipelineStage.makeovers, StageStatus.running);
     await Future.wait([
+      if (state.source == AnalysisSource.text) _referenceImage(chain),
       for (final idea in recommendation.upcycle) _afterImage(idea, chain),
     ]);
     if (!_current(chain)) return;
@@ -402,6 +403,54 @@ class ScanSession extends Notifier<ScanSessionState> {
     if (!_current(chain)) return;
     _settleMakeovers(chain);
     await _persistStages();
+  }
+
+  /// Text scans have no photo: the backend renders one of the described item,
+  /// which becomes the "before" picture. It never fails the makeovers stage;
+  /// the slider falls back to the description when it is missing.
+  Future<void> _referenceImage(int chain) async {
+    final analysis = state.analysis;
+    if (analysis == null) return;
+    final cache = ref.read(imageCacheRepositoryProvider);
+    void set(GeneratedImageState image) {
+      if (ref.mounted && _current(chain)) {
+        state = state.copyWith(referenceImage: image);
+      }
+    }
+
+    set(const GeneratedImageState(status: ImageStatus.loading));
+    try {
+      final cached = await cache.referenceImage(scanId);
+      if (cached != null) {
+        set(
+          GeneratedImageState(
+            status: ImageStatus.ready,
+            url: _api.resolveUrl(cached.remoteUrl),
+            localPath: cached.localPath,
+          ),
+        );
+        return;
+      }
+      final image = await _api.referenceImage(
+        ReferenceImageRequest(imageId: analysis.imageId),
+        cancelToken: _chainToken,
+      );
+      final ready = GeneratedImageState(
+        status: ImageStatus.ready,
+        url: _api.resolveUrl(image.url),
+      );
+      set(ready);
+      try {
+        final entry = await cache.store(image, scanId: scanId);
+        set(ready.copyWith(localPath: entry.localPath));
+      } on Object catch (e) {
+        debugPrint('Reference image not cached: $e');
+      }
+    } on Object catch (error) {
+      final e = ApiException.from(error);
+      if (e.isCancelled) return;
+      set(GeneratedImageState(status: ImageStatus.failed, error: e));
+    }
   }
 
   /// Loads one after image: the offline copy if there is one, otherwise the
@@ -538,6 +587,9 @@ class ScanSession extends Notifier<ScanSessionState> {
               localPath: cached.localPath,
             );
     }
+    final reference = stored.source == AnalysisSource.text
+        ? await cache.referenceImage(scanId)
+        : null;
     if (_started || !ref.mounted) return;
 
     state = ScanSessionState(
@@ -557,6 +609,13 @@ class ScanSession extends Notifier<ScanSessionState> {
       recommendation: stored.recommendation,
       facilities: stored.facilities,
       afterImages: images,
+      referenceImage: reference == null
+          ? const GeneratedImageState()
+          : GeneratedImageState(
+              status: ImageStatus.ready,
+              url: _api.resolveUrl(reference.remoteUrl),
+              localPath: reference.localPath,
+            ),
       focusItemId: stored.focusItemId,
     );
     if (stages[PipelineStage.makeovers]!.status == StageStatus.done) {

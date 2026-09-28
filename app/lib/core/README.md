@@ -103,6 +103,7 @@ Opening an id that is not running restores it from History (offline).
 | `recommendation` | `RecommendResponse`; shortcuts `ideas`, `isDisposalOnly` |
 | `facilities`, `dropoffLocation` | places and where they were searched (`SearchLocationSource.gps/city/nearestCity`) |
 | `afterImage(ideaId)` | `GeneratedImageState {status idle/loading/ready/failed, url, localPath, error}`; prefer `localPath`, fall back to `url` |
+| `referenceImage` | text scans only: a generated photo of the described item, the "before" side of the before/after slider (photo scans use `localImagePath`); may stay `failed` (e.g. no image quota), then show the description instead |
 | `isBusy` | any stage running |
 
 Actions on `scanSessionProvider(scanId).notifier`:

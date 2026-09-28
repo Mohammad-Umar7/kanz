@@ -280,7 +280,9 @@ mixin _$ScanSessionState {
 /// show [PhotoCheck.retakeTip] and a retake button.
  PhotoCheck? get rejectedPhoto; RecommendResponse? get recommendation; FacilitiesResponse? get facilities;/// Where the drop-off search ran (GPS, chosen city or nearest city).
  SearchLocation? get dropoffLocation;/// Idea id -> after image.
- Map<String, GeneratedImageState> get afterImages;/// Item the ideas focus on (null: the analysis' primary item).
+ Map<String, GeneratedImageState> get afterImages;/// Text scans only: a generated photo of the described item, the "before"
+/// side of the before/after slider (photo scans use [localImagePath]).
+ GeneratedImageState get referenceImage;/// Item the ideas focus on (null: the analysis' primary item).
  String? get focusItemId;
 /// Create a copy of ScanSessionState
 /// with the given fields replaced by the non-null parameter values.
@@ -292,16 +294,16 @@ $ScanSessionStateCopyWith<ScanSessionState> get copyWith => _$ScanSessionStateCo
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is ScanSessionState&&(identical(other.scanId, scanId) || other.scanId == scanId)&&(identical(other.origin, origin) || other.origin == origin)&&(identical(other.source, source) || other.source == source)&&(identical(other.lang, lang) || other.lang == lang)&&(identical(other.inputText, inputText) || other.inputText == inputText)&&(identical(other.localImagePath, localImagePath) || other.localImagePath == localImagePath)&&const DeepCollectionEquality().equals(other.stages, stages)&&(identical(other.analysis, analysis) || other.analysis == analysis)&&(identical(other.rejectedPhoto, rejectedPhoto) || other.rejectedPhoto == rejectedPhoto)&&(identical(other.recommendation, recommendation) || other.recommendation == recommendation)&&(identical(other.facilities, facilities) || other.facilities == facilities)&&(identical(other.dropoffLocation, dropoffLocation) || other.dropoffLocation == dropoffLocation)&&const DeepCollectionEquality().equals(other.afterImages, afterImages)&&(identical(other.focusItemId, focusItemId) || other.focusItemId == focusItemId));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is ScanSessionState&&(identical(other.scanId, scanId) || other.scanId == scanId)&&(identical(other.origin, origin) || other.origin == origin)&&(identical(other.source, source) || other.source == source)&&(identical(other.lang, lang) || other.lang == lang)&&(identical(other.inputText, inputText) || other.inputText == inputText)&&(identical(other.localImagePath, localImagePath) || other.localImagePath == localImagePath)&&const DeepCollectionEquality().equals(other.stages, stages)&&(identical(other.analysis, analysis) || other.analysis == analysis)&&(identical(other.rejectedPhoto, rejectedPhoto) || other.rejectedPhoto == rejectedPhoto)&&(identical(other.recommendation, recommendation) || other.recommendation == recommendation)&&(identical(other.facilities, facilities) || other.facilities == facilities)&&(identical(other.dropoffLocation, dropoffLocation) || other.dropoffLocation == dropoffLocation)&&const DeepCollectionEquality().equals(other.afterImages, afterImages)&&(identical(other.referenceImage, referenceImage) || other.referenceImage == referenceImage)&&(identical(other.focusItemId, focusItemId) || other.focusItemId == focusItemId));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,scanId,origin,source,lang,inputText,localImagePath,const DeepCollectionEquality().hash(stages),analysis,rejectedPhoto,recommendation,facilities,dropoffLocation,const DeepCollectionEquality().hash(afterImages),focusItemId);
+int get hashCode => Object.hash(runtimeType,scanId,origin,source,lang,inputText,localImagePath,const DeepCollectionEquality().hash(stages),analysis,rejectedPhoto,recommendation,facilities,dropoffLocation,const DeepCollectionEquality().hash(afterImages),referenceImage,focusItemId);
 
 @override
 String toString() {
-  return 'ScanSessionState(scanId: $scanId, origin: $origin, source: $source, lang: $lang, inputText: $inputText, localImagePath: $localImagePath, stages: $stages, analysis: $analysis, rejectedPhoto: $rejectedPhoto, recommendation: $recommendation, facilities: $facilities, dropoffLocation: $dropoffLocation, afterImages: $afterImages, focusItemId: $focusItemId)';
+  return 'ScanSessionState(scanId: $scanId, origin: $origin, source: $source, lang: $lang, inputText: $inputText, localImagePath: $localImagePath, stages: $stages, analysis: $analysis, rejectedPhoto: $rejectedPhoto, recommendation: $recommendation, facilities: $facilities, dropoffLocation: $dropoffLocation, afterImages: $afterImages, referenceImage: $referenceImage, focusItemId: $focusItemId)';
 }
 
 
@@ -312,11 +314,11 @@ abstract mixin class $ScanSessionStateCopyWith<$Res>  {
   factory $ScanSessionStateCopyWith(ScanSessionState value, $Res Function(ScanSessionState) _then) = _$ScanSessionStateCopyWithImpl;
 @useResult
 $Res call({
- String scanId, ScanOrigin origin, AnalysisSource source, Lang lang, String? inputText, String? localImagePath, Map<PipelineStage, StageState> stages, AnalyzeResponse? analysis, PhotoCheck? rejectedPhoto, RecommendResponse? recommendation, FacilitiesResponse? facilities, SearchLocation? dropoffLocation, Map<String, GeneratedImageState> afterImages, String? focusItemId
+ String scanId, ScanOrigin origin, AnalysisSource source, Lang lang, String? inputText, String? localImagePath, Map<PipelineStage, StageState> stages, AnalyzeResponse? analysis, PhotoCheck? rejectedPhoto, RecommendResponse? recommendation, FacilitiesResponse? facilities, SearchLocation? dropoffLocation, Map<String, GeneratedImageState> afterImages, GeneratedImageState referenceImage, String? focusItemId
 });
 
 
-$AnalyzeResponseCopyWith<$Res>? get analysis;$PhotoCheckCopyWith<$Res>? get rejectedPhoto;$RecommendResponseCopyWith<$Res>? get recommendation;$FacilitiesResponseCopyWith<$Res>? get facilities;
+$AnalyzeResponseCopyWith<$Res>? get analysis;$PhotoCheckCopyWith<$Res>? get rejectedPhoto;$RecommendResponseCopyWith<$Res>? get recommendation;$FacilitiesResponseCopyWith<$Res>? get facilities;$GeneratedImageStateCopyWith<$Res> get referenceImage;
 
 }
 /// @nodoc
@@ -329,7 +331,7 @@ class _$ScanSessionStateCopyWithImpl<$Res>
 
 /// Create a copy of ScanSessionState
 /// with the given fields replaced by the non-null parameter values.
-@pragma('vm:prefer-inline') @override $Res call({Object? scanId = null,Object? origin = null,Object? source = null,Object? lang = null,Object? inputText = freezed,Object? localImagePath = freezed,Object? stages = null,Object? analysis = freezed,Object? rejectedPhoto = freezed,Object? recommendation = freezed,Object? facilities = freezed,Object? dropoffLocation = freezed,Object? afterImages = null,Object? focusItemId = freezed,}) {
+@pragma('vm:prefer-inline') @override $Res call({Object? scanId = null,Object? origin = null,Object? source = null,Object? lang = null,Object? inputText = freezed,Object? localImagePath = freezed,Object? stages = null,Object? analysis = freezed,Object? rejectedPhoto = freezed,Object? recommendation = freezed,Object? facilities = freezed,Object? dropoffLocation = freezed,Object? afterImages = null,Object? referenceImage = null,Object? focusItemId = freezed,}) {
   return _then(_self.copyWith(
 scanId: null == scanId ? _self.scanId : scanId // ignore: cast_nullable_to_non_nullable
 as String,origin: null == origin ? _self.origin : origin // ignore: cast_nullable_to_non_nullable
@@ -344,7 +346,8 @@ as PhotoCheck?,recommendation: freezed == recommendation ? _self.recommendation 
 as RecommendResponse?,facilities: freezed == facilities ? _self.facilities : facilities // ignore: cast_nullable_to_non_nullable
 as FacilitiesResponse?,dropoffLocation: freezed == dropoffLocation ? _self.dropoffLocation : dropoffLocation // ignore: cast_nullable_to_non_nullable
 as SearchLocation?,afterImages: null == afterImages ? _self.afterImages : afterImages // ignore: cast_nullable_to_non_nullable
-as Map<String, GeneratedImageState>,focusItemId: freezed == focusItemId ? _self.focusItemId : focusItemId // ignore: cast_nullable_to_non_nullable
+as Map<String, GeneratedImageState>,referenceImage: null == referenceImage ? _self.referenceImage : referenceImage // ignore: cast_nullable_to_non_nullable
+as GeneratedImageState,focusItemId: freezed == focusItemId ? _self.focusItemId : focusItemId // ignore: cast_nullable_to_non_nullable
 as String?,
   ));
 }
@@ -395,6 +398,15 @@ $FacilitiesResponseCopyWith<$Res>? get facilities {
 
   return $FacilitiesResponseCopyWith<$Res>(_self.facilities!, (value) {
     return _then(_self.copyWith(facilities: value));
+  });
+}/// Create a copy of ScanSessionState
+/// with the given fields replaced by the non-null parameter values.
+@override
+@pragma('vm:prefer-inline')
+$GeneratedImageStateCopyWith<$Res> get referenceImage {
+  
+  return $GeneratedImageStateCopyWith<$Res>(_self.referenceImage, (value) {
+    return _then(_self.copyWith(referenceImage: value));
   });
 }
 }
@@ -478,10 +490,10 @@ return $default(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( String scanId,  ScanOrigin origin,  AnalysisSource source,  Lang lang,  String? inputText,  String? localImagePath,  Map<PipelineStage, StageState> stages,  AnalyzeResponse? analysis,  PhotoCheck? rejectedPhoto,  RecommendResponse? recommendation,  FacilitiesResponse? facilities,  SearchLocation? dropoffLocation,  Map<String, GeneratedImageState> afterImages,  String? focusItemId)?  $default,{required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( String scanId,  ScanOrigin origin,  AnalysisSource source,  Lang lang,  String? inputText,  String? localImagePath,  Map<PipelineStage, StageState> stages,  AnalyzeResponse? analysis,  PhotoCheck? rejectedPhoto,  RecommendResponse? recommendation,  FacilitiesResponse? facilities,  SearchLocation? dropoffLocation,  Map<String, GeneratedImageState> afterImages,  GeneratedImageState referenceImage,  String? focusItemId)?  $default,{required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case _ScanSessionState() when $default != null:
-return $default(_that.scanId,_that.origin,_that.source,_that.lang,_that.inputText,_that.localImagePath,_that.stages,_that.analysis,_that.rejectedPhoto,_that.recommendation,_that.facilities,_that.dropoffLocation,_that.afterImages,_that.focusItemId);case _:
+return $default(_that.scanId,_that.origin,_that.source,_that.lang,_that.inputText,_that.localImagePath,_that.stages,_that.analysis,_that.rejectedPhoto,_that.recommendation,_that.facilities,_that.dropoffLocation,_that.afterImages,_that.referenceImage,_that.focusItemId);case _:
   return orElse();
 
 }
@@ -499,10 +511,10 @@ return $default(_that.scanId,_that.origin,_that.source,_that.lang,_that.inputTex
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( String scanId,  ScanOrigin origin,  AnalysisSource source,  Lang lang,  String? inputText,  String? localImagePath,  Map<PipelineStage, StageState> stages,  AnalyzeResponse? analysis,  PhotoCheck? rejectedPhoto,  RecommendResponse? recommendation,  FacilitiesResponse? facilities,  SearchLocation? dropoffLocation,  Map<String, GeneratedImageState> afterImages,  String? focusItemId)  $default,) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( String scanId,  ScanOrigin origin,  AnalysisSource source,  Lang lang,  String? inputText,  String? localImagePath,  Map<PipelineStage, StageState> stages,  AnalyzeResponse? analysis,  PhotoCheck? rejectedPhoto,  RecommendResponse? recommendation,  FacilitiesResponse? facilities,  SearchLocation? dropoffLocation,  Map<String, GeneratedImageState> afterImages,  GeneratedImageState referenceImage,  String? focusItemId)  $default,) {final _that = this;
 switch (_that) {
 case _ScanSessionState():
-return $default(_that.scanId,_that.origin,_that.source,_that.lang,_that.inputText,_that.localImagePath,_that.stages,_that.analysis,_that.rejectedPhoto,_that.recommendation,_that.facilities,_that.dropoffLocation,_that.afterImages,_that.focusItemId);case _:
+return $default(_that.scanId,_that.origin,_that.source,_that.lang,_that.inputText,_that.localImagePath,_that.stages,_that.analysis,_that.rejectedPhoto,_that.recommendation,_that.facilities,_that.dropoffLocation,_that.afterImages,_that.referenceImage,_that.focusItemId);case _:
   throw StateError('Unexpected subclass');
 
 }
@@ -519,10 +531,10 @@ return $default(_that.scanId,_that.origin,_that.source,_that.lang,_that.inputTex
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( String scanId,  ScanOrigin origin,  AnalysisSource source,  Lang lang,  String? inputText,  String? localImagePath,  Map<PipelineStage, StageState> stages,  AnalyzeResponse? analysis,  PhotoCheck? rejectedPhoto,  RecommendResponse? recommendation,  FacilitiesResponse? facilities,  SearchLocation? dropoffLocation,  Map<String, GeneratedImageState> afterImages,  String? focusItemId)?  $default,) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( String scanId,  ScanOrigin origin,  AnalysisSource source,  Lang lang,  String? inputText,  String? localImagePath,  Map<PipelineStage, StageState> stages,  AnalyzeResponse? analysis,  PhotoCheck? rejectedPhoto,  RecommendResponse? recommendation,  FacilitiesResponse? facilities,  SearchLocation? dropoffLocation,  Map<String, GeneratedImageState> afterImages,  GeneratedImageState referenceImage,  String? focusItemId)?  $default,) {final _that = this;
 switch (_that) {
 case _ScanSessionState() when $default != null:
-return $default(_that.scanId,_that.origin,_that.source,_that.lang,_that.inputText,_that.localImagePath,_that.stages,_that.analysis,_that.rejectedPhoto,_that.recommendation,_that.facilities,_that.dropoffLocation,_that.afterImages,_that.focusItemId);case _:
+return $default(_that.scanId,_that.origin,_that.source,_that.lang,_that.inputText,_that.localImagePath,_that.stages,_that.analysis,_that.rejectedPhoto,_that.recommendation,_that.facilities,_that.dropoffLocation,_that.afterImages,_that.referenceImage,_that.focusItemId);case _:
   return null;
 
 }
@@ -534,7 +546,7 @@ return $default(_that.scanId,_that.origin,_that.source,_that.lang,_that.inputTex
 
 
 class _ScanSessionState extends ScanSessionState {
-  const _ScanSessionState({required this.scanId, this.origin = ScanOrigin.loading, this.source = AnalysisSource.image, this.lang = Lang.en, this.inputText, this.localImagePath, final  Map<PipelineStage, StageState> stages = const <PipelineStage, StageState>{}, this.analysis, this.rejectedPhoto, this.recommendation, this.facilities, this.dropoffLocation, final  Map<String, GeneratedImageState> afterImages = const <String, GeneratedImageState>{}, this.focusItemId}): _stages = stages,_afterImages = afterImages,super._();
+  const _ScanSessionState({required this.scanId, this.origin = ScanOrigin.loading, this.source = AnalysisSource.image, this.lang = Lang.en, this.inputText, this.localImagePath, final  Map<PipelineStage, StageState> stages = const <PipelineStage, StageState>{}, this.analysis, this.rejectedPhoto, this.recommendation, this.facilities, this.dropoffLocation, final  Map<String, GeneratedImageState> afterImages = const <String, GeneratedImageState>{}, this.referenceImage = const GeneratedImageState(), this.focusItemId}): _stages = stages,_afterImages = afterImages,super._();
   
 
 @override final  String scanId;
@@ -569,6 +581,9 @@ class _ScanSessionState extends ScanSessionState {
   return EqualUnmodifiableMapView(_afterImages);
 }
 
+/// Text scans only: a generated photo of the described item, the "before"
+/// side of the before/after slider (photo scans use [localImagePath]).
+@override@JsonKey() final  GeneratedImageState referenceImage;
 /// Item the ideas focus on (null: the analysis' primary item).
 @override final  String? focusItemId;
 
@@ -582,16 +597,16 @@ _$ScanSessionStateCopyWith<_ScanSessionState> get copyWith => __$ScanSessionStat
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _ScanSessionState&&(identical(other.scanId, scanId) || other.scanId == scanId)&&(identical(other.origin, origin) || other.origin == origin)&&(identical(other.source, source) || other.source == source)&&(identical(other.lang, lang) || other.lang == lang)&&(identical(other.inputText, inputText) || other.inputText == inputText)&&(identical(other.localImagePath, localImagePath) || other.localImagePath == localImagePath)&&const DeepCollectionEquality().equals(other._stages, _stages)&&(identical(other.analysis, analysis) || other.analysis == analysis)&&(identical(other.rejectedPhoto, rejectedPhoto) || other.rejectedPhoto == rejectedPhoto)&&(identical(other.recommendation, recommendation) || other.recommendation == recommendation)&&(identical(other.facilities, facilities) || other.facilities == facilities)&&(identical(other.dropoffLocation, dropoffLocation) || other.dropoffLocation == dropoffLocation)&&const DeepCollectionEquality().equals(other._afterImages, _afterImages)&&(identical(other.focusItemId, focusItemId) || other.focusItemId == focusItemId));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _ScanSessionState&&(identical(other.scanId, scanId) || other.scanId == scanId)&&(identical(other.origin, origin) || other.origin == origin)&&(identical(other.source, source) || other.source == source)&&(identical(other.lang, lang) || other.lang == lang)&&(identical(other.inputText, inputText) || other.inputText == inputText)&&(identical(other.localImagePath, localImagePath) || other.localImagePath == localImagePath)&&const DeepCollectionEquality().equals(other._stages, _stages)&&(identical(other.analysis, analysis) || other.analysis == analysis)&&(identical(other.rejectedPhoto, rejectedPhoto) || other.rejectedPhoto == rejectedPhoto)&&(identical(other.recommendation, recommendation) || other.recommendation == recommendation)&&(identical(other.facilities, facilities) || other.facilities == facilities)&&(identical(other.dropoffLocation, dropoffLocation) || other.dropoffLocation == dropoffLocation)&&const DeepCollectionEquality().equals(other._afterImages, _afterImages)&&(identical(other.referenceImage, referenceImage) || other.referenceImage == referenceImage)&&(identical(other.focusItemId, focusItemId) || other.focusItemId == focusItemId));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,scanId,origin,source,lang,inputText,localImagePath,const DeepCollectionEquality().hash(_stages),analysis,rejectedPhoto,recommendation,facilities,dropoffLocation,const DeepCollectionEquality().hash(_afterImages),focusItemId);
+int get hashCode => Object.hash(runtimeType,scanId,origin,source,lang,inputText,localImagePath,const DeepCollectionEquality().hash(_stages),analysis,rejectedPhoto,recommendation,facilities,dropoffLocation,const DeepCollectionEquality().hash(_afterImages),referenceImage,focusItemId);
 
 @override
 String toString() {
-  return 'ScanSessionState(scanId: $scanId, origin: $origin, source: $source, lang: $lang, inputText: $inputText, localImagePath: $localImagePath, stages: $stages, analysis: $analysis, rejectedPhoto: $rejectedPhoto, recommendation: $recommendation, facilities: $facilities, dropoffLocation: $dropoffLocation, afterImages: $afterImages, focusItemId: $focusItemId)';
+  return 'ScanSessionState(scanId: $scanId, origin: $origin, source: $source, lang: $lang, inputText: $inputText, localImagePath: $localImagePath, stages: $stages, analysis: $analysis, rejectedPhoto: $rejectedPhoto, recommendation: $recommendation, facilities: $facilities, dropoffLocation: $dropoffLocation, afterImages: $afterImages, referenceImage: $referenceImage, focusItemId: $focusItemId)';
 }
 
 
@@ -602,11 +617,11 @@ abstract mixin class _$ScanSessionStateCopyWith<$Res> implements $ScanSessionSta
   factory _$ScanSessionStateCopyWith(_ScanSessionState value, $Res Function(_ScanSessionState) _then) = __$ScanSessionStateCopyWithImpl;
 @override @useResult
 $Res call({
- String scanId, ScanOrigin origin, AnalysisSource source, Lang lang, String? inputText, String? localImagePath, Map<PipelineStage, StageState> stages, AnalyzeResponse? analysis, PhotoCheck? rejectedPhoto, RecommendResponse? recommendation, FacilitiesResponse? facilities, SearchLocation? dropoffLocation, Map<String, GeneratedImageState> afterImages, String? focusItemId
+ String scanId, ScanOrigin origin, AnalysisSource source, Lang lang, String? inputText, String? localImagePath, Map<PipelineStage, StageState> stages, AnalyzeResponse? analysis, PhotoCheck? rejectedPhoto, RecommendResponse? recommendation, FacilitiesResponse? facilities, SearchLocation? dropoffLocation, Map<String, GeneratedImageState> afterImages, GeneratedImageState referenceImage, String? focusItemId
 });
 
 
-@override $AnalyzeResponseCopyWith<$Res>? get analysis;@override $PhotoCheckCopyWith<$Res>? get rejectedPhoto;@override $RecommendResponseCopyWith<$Res>? get recommendation;@override $FacilitiesResponseCopyWith<$Res>? get facilities;
+@override $AnalyzeResponseCopyWith<$Res>? get analysis;@override $PhotoCheckCopyWith<$Res>? get rejectedPhoto;@override $RecommendResponseCopyWith<$Res>? get recommendation;@override $FacilitiesResponseCopyWith<$Res>? get facilities;@override $GeneratedImageStateCopyWith<$Res> get referenceImage;
 
 }
 /// @nodoc
@@ -619,7 +634,7 @@ class __$ScanSessionStateCopyWithImpl<$Res>
 
 /// Create a copy of ScanSessionState
 /// with the given fields replaced by the non-null parameter values.
-@override @pragma('vm:prefer-inline') $Res call({Object? scanId = null,Object? origin = null,Object? source = null,Object? lang = null,Object? inputText = freezed,Object? localImagePath = freezed,Object? stages = null,Object? analysis = freezed,Object? rejectedPhoto = freezed,Object? recommendation = freezed,Object? facilities = freezed,Object? dropoffLocation = freezed,Object? afterImages = null,Object? focusItemId = freezed,}) {
+@override @pragma('vm:prefer-inline') $Res call({Object? scanId = null,Object? origin = null,Object? source = null,Object? lang = null,Object? inputText = freezed,Object? localImagePath = freezed,Object? stages = null,Object? analysis = freezed,Object? rejectedPhoto = freezed,Object? recommendation = freezed,Object? facilities = freezed,Object? dropoffLocation = freezed,Object? afterImages = null,Object? referenceImage = null,Object? focusItemId = freezed,}) {
   return _then(_ScanSessionState(
 scanId: null == scanId ? _self.scanId : scanId // ignore: cast_nullable_to_non_nullable
 as String,origin: null == origin ? _self.origin : origin // ignore: cast_nullable_to_non_nullable
@@ -634,7 +649,8 @@ as PhotoCheck?,recommendation: freezed == recommendation ? _self.recommendation 
 as RecommendResponse?,facilities: freezed == facilities ? _self.facilities : facilities // ignore: cast_nullable_to_non_nullable
 as FacilitiesResponse?,dropoffLocation: freezed == dropoffLocation ? _self.dropoffLocation : dropoffLocation // ignore: cast_nullable_to_non_nullable
 as SearchLocation?,afterImages: null == afterImages ? _self._afterImages : afterImages // ignore: cast_nullable_to_non_nullable
-as Map<String, GeneratedImageState>,focusItemId: freezed == focusItemId ? _self.focusItemId : focusItemId // ignore: cast_nullable_to_non_nullable
+as Map<String, GeneratedImageState>,referenceImage: null == referenceImage ? _self.referenceImage : referenceImage // ignore: cast_nullable_to_non_nullable
+as GeneratedImageState,focusItemId: freezed == focusItemId ? _self.focusItemId : focusItemId // ignore: cast_nullable_to_non_nullable
 as String?,
   ));
 }
@@ -686,6 +702,15 @@ $FacilitiesResponseCopyWith<$Res>? get facilities {
 
   return $FacilitiesResponseCopyWith<$Res>(_self.facilities!, (value) {
     return _then(_self.copyWith(facilities: value));
+  });
+}/// Create a copy of ScanSessionState
+/// with the given fields replaced by the non-null parameter values.
+@override
+@pragma('vm:prefer-inline')
+$GeneratedImageStateCopyWith<$Res> get referenceImage {
+  
+  return $GeneratedImageStateCopyWith<$Res>(_self.referenceImage, (value) {
+    return _then(_self.copyWith(referenceImage: value));
   });
 }
 }

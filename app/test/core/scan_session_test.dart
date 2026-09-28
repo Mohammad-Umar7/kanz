@@ -157,6 +157,40 @@ void main() {
     expect(s.stage(PipelineStage.ideas).status, StageStatus.done);
   });
 
+  test(
+    'a text scan asks for a reference photo to use as its before picture',
+    () async {
+      h = await TestHarness.create(prefs: _cityMode);
+      h.api.onAnalyze = () async =>
+          AnalyzeResponse.fromJson(fixture('analyze_text_caps.json'));
+      final id = newScanId();
+
+      await h.container
+          .read(scanSessionProvider(id).notifier)
+          .startFromText('a jar of bottle caps');
+      await waitFor(
+        () =>
+            settled(id) &&
+            stateOf(id).referenceImage.status != ImageStatus.loading,
+      );
+
+      expect(h.api.calls, contains('reference'));
+      final reference = stateOf(id).referenceImage;
+      expect(reference.status, ImageStatus.ready);
+      expect(reference.url, contains('/reference.jpg'));
+    },
+  );
+
+  test('a photo scan never asks for a reference photo', () async {
+    h = await TestHarness.create(prefs: _cityMode);
+    final id = newScanId();
+    await h.container
+        .read(scanSessionProvider(id).notifier)
+        .startFromPhoto(bytes: _photo);
+    await waitFor(() => settled(id));
+    expect(h.api.calls, isNot(contains('reference')));
+  });
+
   test('disposal-only items request no makeovers', () async {
     h = await TestHarness.create(prefs: _cityMode);
     h.api.onAnalyze = () async =>

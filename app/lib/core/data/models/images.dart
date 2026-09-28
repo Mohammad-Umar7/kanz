@@ -55,6 +55,17 @@ abstract class BinImageRequest with _$BinImageRequest {
       _$BinImageRequestFromJson(json);
 }
 
+/// Text scans only: a realistic photo of the described item, used as the
+/// "before" picture of the before/after slider.
+@freezed
+abstract class ReferenceImageRequest with _$ReferenceImageRequest {
+  const factory ReferenceImageRequest({required String imageId}) =
+      _ReferenceImageRequest;
+
+  factory ReferenceImageRequest.fromJson(Map<String, dynamic> json) =>
+      _$ReferenceImageRequestFromJson(json);
+}
+
 enum ImageKind {
   @JsonValue('after')
   after,

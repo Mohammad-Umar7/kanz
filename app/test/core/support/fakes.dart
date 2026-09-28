@@ -143,6 +143,22 @@ class FakeApi implements ApiClient {
   }) async => throw UnimplementedError();
 
   @override
+  Future<ImageResponse> referenceImage(
+    ReferenceImageRequest request, {
+    CancelToken? cancelToken,
+  }) async {
+    calls.add('reference');
+    return ImageResponse(
+      url: '/static/generated/${request.imageId}/reference.jpg?v=1',
+      width: 1184,
+      height: 880,
+      kind: ImageKind.reference,
+      key: '${request.imageId}:reference',
+      cached: false,
+    );
+  }
+
+  @override
   Future<FacilitiesResponse> facilities(
     FacilitiesRequest request, {
     CancelToken? cancelToken,

@@ -870,6 +870,269 @@ $ItemCopyWith<$Res> get item {
 
 
 /// @nodoc
+mixin _$ReferenceImageRequest {
+
+ String get imageId;
+/// Create a copy of ReferenceImageRequest
+/// with the given fields replaced by the non-null parameter values.
+@JsonKey(includeFromJson: false, includeToJson: false)
+@pragma('vm:prefer-inline')
+$ReferenceImageRequestCopyWith<ReferenceImageRequest> get copyWith => _$ReferenceImageRequestCopyWithImpl<ReferenceImageRequest>(this as ReferenceImageRequest, _$identity);
+
+  /// Serializes this ReferenceImageRequest to a JSON map.
+  Map<String, dynamic> toJson();
+
+
+@override
+bool operator ==(Object other) {
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is ReferenceImageRequest&&(identical(other.imageId, imageId) || other.imageId == imageId));
+}
+
+@JsonKey(includeFromJson: false, includeToJson: false)
+@override
+int get hashCode => Object.hash(runtimeType,imageId);
+
+@override
+String toString() {
+  return 'ReferenceImageRequest(imageId: $imageId)';
+}
+
+
+}
+
+/// @nodoc
+abstract mixin class $ReferenceImageRequestCopyWith<$Res>  {
+  factory $ReferenceImageRequestCopyWith(ReferenceImageRequest value, $Res Function(ReferenceImageRequest) _then) = _$ReferenceImageRequestCopyWithImpl;
+@useResult
+$Res call({
+ String imageId
+});
+
+
+
+
+}
+/// @nodoc
+class _$ReferenceImageRequestCopyWithImpl<$Res>
+    implements $ReferenceImageRequestCopyWith<$Res> {
+  _$ReferenceImageRequestCopyWithImpl(this._self, this._then);
+
+  final ReferenceImageRequest _self;
+  final $Res Function(ReferenceImageRequest) _then;
+
+/// Create a copy of ReferenceImageRequest
+/// with the given fields replaced by the non-null parameter values.
+@pragma('vm:prefer-inline') @override $Res call({Object? imageId = null,}) {
+  return _then(_self.copyWith(
+imageId: null == imageId ? _self.imageId : imageId // ignore: cast_nullable_to_non_nullable
+as String,
+  ));
+}
+
+}
+
+
+/// Adds pattern-matching-related methods to [ReferenceImageRequest].
+extension ReferenceImageRequestPatterns on ReferenceImageRequest {
+/// A variant of `map` that fallback to returning `orElse`.
+///
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case final Subclass value:
+///     return ...;
+///   case _:
+///     return orElse();
+/// }
+/// ```
+
+@optionalTypeArgs TResult maybeMap<TResult extends Object?>(TResult Function( _ReferenceImageRequest value)?  $default,{required TResult orElse(),}){
+final _that = this;
+switch (_that) {
+case _ReferenceImageRequest() when $default != null:
+return $default(_that);case _:
+  return orElse();
+
+}
+}
+/// A `switch`-like method, using callbacks.
+///
+/// Callbacks receives the raw object, upcasted.
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case final Subclass value:
+///     return ...;
+///   case final Subclass2 value:
+///     return ...;
+/// }
+/// ```
+
+@optionalTypeArgs TResult map<TResult extends Object?>(TResult Function( _ReferenceImageRequest value)  $default,){
+final _that = this;
+switch (_that) {
+case _ReferenceImageRequest():
+return $default(_that);case _:
+  throw StateError('Unexpected subclass');
+
+}
+}
+/// A variant of `map` that fallback to returning `null`.
+///
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case final Subclass value:
+///     return ...;
+///   case _:
+///     return null;
+/// }
+/// ```
+
+@optionalTypeArgs TResult? mapOrNull<TResult extends Object?>(TResult? Function( _ReferenceImageRequest value)?  $default,){
+final _that = this;
+switch (_that) {
+case _ReferenceImageRequest() when $default != null:
+return $default(_that);case _:
+  return null;
+
+}
+}
+/// A variant of `when` that fallback to an `orElse` callback.
+///
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case Subclass(:final field):
+///     return ...;
+///   case _:
+///     return orElse();
+/// }
+/// ```
+
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( String imageId)?  $default,{required TResult orElse(),}) {final _that = this;
+switch (_that) {
+case _ReferenceImageRequest() when $default != null:
+return $default(_that.imageId);case _:
+  return orElse();
+
+}
+}
+/// A `switch`-like method, using callbacks.
+///
+/// As opposed to `map`, this offers destructuring.
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case Subclass(:final field):
+///     return ...;
+///   case Subclass2(:final field2):
+///     return ...;
+/// }
+/// ```
+
+@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( String imageId)  $default,) {final _that = this;
+switch (_that) {
+case _ReferenceImageRequest():
+return $default(_that.imageId);case _:
+  throw StateError('Unexpected subclass');
+
+}
+}
+/// A variant of `when` that fallback to returning `null`
+///
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case Subclass(:final field):
+///     return ...;
+///   case _:
+///     return null;
+/// }
+/// ```
+
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( String imageId)?  $default,) {final _that = this;
+switch (_that) {
+case _ReferenceImageRequest() when $default != null:
+return $default(_that.imageId);case _:
+  return null;
+
+}
+}
+
+}
+
+/// @nodoc
+@JsonSerializable()
+
+class _ReferenceImageRequest implements ReferenceImageRequest {
+  const _ReferenceImageRequest({required this.imageId});
+  factory _ReferenceImageRequest.fromJson(Map<String, dynamic> json) => _$ReferenceImageRequestFromJson(json);
+
+@override final  String imageId;
+
+/// Create a copy of ReferenceImageRequest
+/// with the given fields replaced by the non-null parameter values.
+@override @JsonKey(includeFromJson: false, includeToJson: false)
+@pragma('vm:prefer-inline')
+_$ReferenceImageRequestCopyWith<_ReferenceImageRequest> get copyWith => __$ReferenceImageRequestCopyWithImpl<_ReferenceImageRequest>(this, _$identity);
+
+@override
+Map<String, dynamic> toJson() {
+  return _$ReferenceImageRequestToJson(this, );
+}
+
+@override
+bool operator ==(Object other) {
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _ReferenceImageRequest&&(identical(other.imageId, imageId) || other.imageId == imageId));
+}
+
+@JsonKey(includeFromJson: false, includeToJson: false)
+@override
+int get hashCode => Object.hash(runtimeType,imageId);
+
+@override
+String toString() {
+  return 'ReferenceImageRequest(imageId: $imageId)';
+}
+
+
+}
+
+/// @nodoc
+abstract mixin class _$ReferenceImageRequestCopyWith<$Res> implements $ReferenceImageRequestCopyWith<$Res> {
+  factory _$ReferenceImageRequestCopyWith(_ReferenceImageRequest value, $Res Function(_ReferenceImageRequest) _then) = __$ReferenceImageRequestCopyWithImpl;
+@override @useResult
+$Res call({
+ String imageId
+});
+
+
+
+
+}
+/// @nodoc
+class __$ReferenceImageRequestCopyWithImpl<$Res>
+    implements _$ReferenceImageRequestCopyWith<$Res> {
+  __$ReferenceImageRequestCopyWithImpl(this._self, this._then);
+
+  final _ReferenceImageRequest _self;
+  final $Res Function(_ReferenceImageRequest) _then;
+
+/// Create a copy of ReferenceImageRequest
+/// with the given fields replaced by the non-null parameter values.
+@override @pragma('vm:prefer-inline') $Res call({Object? imageId = null,}) {
+  return _then(_ReferenceImageRequest(
+imageId: null == imageId ? _self.imageId : imageId // ignore: cast_nullable_to_non_nullable
+as String,
+  ));
+}
+
+
+}
+
+
+/// @nodoc
 mixin _$ImageResponse {
 
 /// Path under the API base URL: '/static/generated/img_ab12/after_idea_9f.jpg'.

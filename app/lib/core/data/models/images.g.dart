@@ -82,6 +82,19 @@ Map<String, dynamic> _$BinImageRequestToJson(_BinImageRequest instance) =>
       'regenerate': instance.regenerate,
     };
 
+_ReferenceImageRequest _$ReferenceImageRequestFromJson(
+  Map<String, dynamic> json,
+) => $checkedCreate('_ReferenceImageRequest', json, ($checkedConvert) {
+  final val = _ReferenceImageRequest(
+    imageId: $checkedConvert('image_id', (v) => v as String),
+  );
+  return val;
+}, fieldKeyMap: const {'imageId': 'image_id'});
+
+Map<String, dynamic> _$ReferenceImageRequestToJson(
+  _ReferenceImageRequest instance,
+) => <String, dynamic>{'image_id': instance.imageId};
+
 _ImageResponse _$ImageResponseFromJson(Map<String, dynamic> json) =>
     $checkedCreate('_ImageResponse', json, ($checkedConvert) {
       final val = _ImageResponse(

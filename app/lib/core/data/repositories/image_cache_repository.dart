@@ -101,6 +101,19 @@ class ImageCacheRepository {
     return _onDisk(rows.firstOrNull);
   }
 
+  /// The cached "before" picture of a text scan, if it is still on disk.
+  Future<ImageCacheEntry?> referenceImage(String scanId) async {
+    final rows =
+        await (_db.select(_db.imageCache)
+              ..where(
+                (e) => e.scanId.equals(scanId) & e.kind.equals('reference'),
+              )
+              ..orderBy([(e) => OrderingTerm.desc(e.createdAt)])
+              ..limit(1))
+            .get();
+    return _onDisk(rows.firstOrNull);
+  }
+
   /// The cached image of one tutorial step, if it is still on disk.
   Future<ImageCacheEntry?> stepImage(String tutorialId, int step) async {
     final rows =
