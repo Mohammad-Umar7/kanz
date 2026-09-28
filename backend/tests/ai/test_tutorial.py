@@ -64,6 +64,15 @@ async def test_changing_skill_or_tools_gives_a_new_adapted_tutorial(step_chain):
     assert fewer_tools.tutorial.tools[0].have is False  # pliers are now missing
 
 
+async def test_missing_tools_are_recomputed_for_the_current_profile(step_chain):
+    # The idea says only craft_wire is missing; this user has since lost the pliers too.
+    gateway = FakeGateway({LlmTutorial: llm_tutorial()})
+    await pipeline.tutorial(request(BEGINNER.model_copy(update={"tools": ["scissors", "twine"]})), gateway=gateway)
+    lines = gateway.calls[0]["contents"][0].splitlines()
+    missing_line = next(line for line in lines if line.startswith("Tools they do NOT"))
+    assert "pliers" in missing_line and "craft_wire" in missing_line
+
+
 async def test_writer_prompt_carries_idea_items_profile_and_knowledge(step_chain):
     gateway = FakeGateway({LlmTutorial: llm_tutorial()})
     await pipeline.tutorial(request(), gateway=gateway)

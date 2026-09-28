@@ -119,7 +119,8 @@ def _user_message(state: TutorialState) -> str:
             items_block(req.items) or "(none: the idea was described in text)",
             "",
             "## Person",
-            profile_block(req.profile, missing=idea.tools_missing),
+            # Recomputed: the user may have changed their tools since the idea was generated.
+            profile_block(req.profile, missing=[t for t in idea.tools_needed if t not in req.profile.tools]),
             "",
             "## Knowledge (cite only these ids)",
             knowledge_block(state.get("knowledge", [])),
