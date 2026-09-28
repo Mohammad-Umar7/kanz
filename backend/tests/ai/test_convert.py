@@ -44,6 +44,7 @@ class TestQuantityAndQuality:
         ("value", "unit", "estimate", "lang", "expected"),
         [
             (1, "pcs", False, "en", "1 pc"),
+            (1, "bag", True, "en", "~1 bag"),
             (3, "pcs", False, "en", "3 pcs"),
             (30, "pcs", True, "en", "~30 pcs"),
             (0.5, "kg", True, "en", "~0.5 kg"),
@@ -96,6 +97,16 @@ class TestPhotoCheck:
     def test_model_tip_is_kept(self):
         raw = LlmAnalysis.model_validate(llm_analysis(usable=False, issue="blurry", tip="Hold still."))
         assert to_analysis(raw, "en", source="image").photo.retake_tip == "Hold still."
+
+    def test_empty_description_asks_for_a_better_description_not_a_photo(self):
+        raw = LlmAnalysis.model_validate(llm_analysis(usable=False, issue="blurry"))
+        photo = to_analysis(raw, "en", source="text").photo
+        assert (photo.usable, photo.issue) == (False, "no_items")
+        assert "made of" in photo.retake_tip
+
+    def test_description_with_items_is_usable(self):
+        raw = LlmAnalysis.model_validate(llm_analysis(llm_item(), usable=False, issue="too_dark"))
+        assert to_analysis(raw, "en", source="text").photo.usable
 
 
 class TestIdsAndTools:

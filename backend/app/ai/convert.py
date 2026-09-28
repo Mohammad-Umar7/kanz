@@ -100,7 +100,7 @@ def quantity_display(value: float, unit: str, is_estimate: bool, lang: str) -> s
         prefix = "حوالي " if is_estimate else ""
         return f"{prefix}{_num(value)} {_MEASURE_AR.get(unit, unit)}"
     singular, plural = _UNITS_EN.get(unit, (unit, unit))
-    noun = singular if value == 1 and not is_estimate else plural
+    noun = singular if value == 1 else plural
     if unit in {"kg", "g", "m", "m2", "L"}:
         noun = singular
     return f"{approx}{_num(value)} {noun}"
@@ -184,16 +184,31 @@ RETAKE_TIPS: dict[str, dict[str, str]] = {
 }
 
 
-def to_photo_check(raw: LlmAnalysis, lang: str, has_items: bool) -> PhotoCheck:
+# A description that names nothing gets a writing tip, not a camera tip.
+DESCRIBE_TIP: dict[str, str] = {
+    "en": "Name the item and what it is made of, for example 'an empty glass jam jar'.",
+    "ar": "اذكر اسم الغرض ومادته، مثل: برطمان مربى زجاجي فارغ.",
+}
+
+
+def to_photo_check(raw: LlmAnalysis, lang: str, has_items: bool, *, source: str = "image") -> PhotoCheck:
     """Normalise the photo verdict: an unusable photo always carries exactly one retake tip."""
     usable, issue = raw.photo.usable, raw.photo.issue
+    key = "ar" if lang == "ar" else "en"
+    if source == "text":
+        # There is no photo to judge: a description is usable exactly when it names something.
+        if has_items:
+            return PhotoCheck(usable=True, issue="ok", retake_tip=None)
+        return PhotoCheck(
+            usable=False, issue="no_items", retake_tip=(raw.photo.retake_tip or "").strip() or DESCRIBE_TIP[key]
+        )
     if usable and not has_items:
         usable, issue = False, "no_items"
     if not usable and issue == "ok":
         issue = "blurry"
     if usable:
         return PhotoCheck(usable=True, issue="ok", retake_tip=None)
-    tip = (raw.photo.retake_tip or "").strip() or RETAKE_TIPS[issue][lang if lang == "ar" else "en"]
+    tip = (raw.photo.retake_tip or "").strip() or RETAKE_TIPS[issue][key]
     return PhotoCheck(usable=False, issue=issue, retake_tip=tip)
 
 
@@ -211,7 +226,7 @@ def to_analysis(raw: LlmAnalysis, lang: str, *, source: str, classifier_hint: st
     """Analyst output -> API ``Analysis`` (before safety normalisation and primary choice)."""
     with_box = source == "image"
     items = [to_item(r, i, lang, with_box=with_box) for i, r in enumerate(raw.items[:MAX_ITEMS])]
-    photo = to_photo_check(raw, lang, has_items=bool(items))
+    photo = to_photo_check(raw, lang, has_items=bool(items), source=source)
     if not photo.usable:
         # An unusable photo must not produce confident-looking items the app would act on.
         items = [it for it in items if it.confidence >= 0.6]
