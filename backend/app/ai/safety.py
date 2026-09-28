@@ -485,7 +485,9 @@ def normalise_item(item: Item, lang: str) -> Item:
         add("chemical")  # an unexplained "hazardous" item is treated as the most cautious case
 
     category = item.category
-    if set(hazards) & _PROMOTE_TO_HAZARDOUS and category != "electronics":
+    # Devices keep "electronics" (they go to e-waste); a bulb is a hazardous item even when
+    # the model files it under electronics.
+    if set(hazards) & _PROMOTE_TO_HAZARDOUS and (category != "electronics" or "light_bulb" in hazards):
         category = "hazardous"
 
     recyclability = item.recyclability

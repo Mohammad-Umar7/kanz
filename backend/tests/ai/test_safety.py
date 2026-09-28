@@ -25,6 +25,14 @@ class TestNormalisation:
         cells = safety.normalise_item(item(name="AA batteries", category="other", material="Alkaline cells"), "en")
         assert cells.hazards == ["battery"] and cells.category == "hazardous"
 
+    def test_bulb_filed_as_electronics_becomes_hazardous_but_phones_stay_electronics(self):
+        bulb = safety.normalise_item(
+            item(name="Incandescent light bulb", category="electronics", material="Glass"), "en"
+        )
+        assert bulb.category == "hazardous" and {"light_bulb", "e_waste"} <= set(bulb.hazards)
+        phone = safety.normalise_item(item(name="Phone with battery", category="electronics", material="Mixed"), "en")
+        assert phone.category == "electronics"
+
     def test_arabic_battery_name_is_recognised(self):
         cells = safety.normalise_item(item(name="بطاريات قديمة", category="other", material="خلايا قلوية"), "ar")
         assert "battery" in cells.hazards
