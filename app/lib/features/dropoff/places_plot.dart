@@ -7,11 +7,12 @@ import '../../core/design/design.dart';
 import 'place_info.dart';
 
 /// A drawn field-guide plot of the results around the search centre: range
-/// rings, a north mark, a surveyor's cross for the centre and one dot per
-/// place at its real bearing and distance, colored by the one material it
-/// takes (ink when it takes several). A key under the plot names the centre
-/// and the ring spacing. It gives the list a sense of place when there is
-/// no map; tapping a dot opens that place.
+/// rings, a north mark, a surveyor's cross for the centre and one mark per
+/// place at its real bearing and distance ([PinMark]: a filled dot when the
+/// listing names what it accepts, a hollow ring when it does not). A key
+/// under the plot names the centre, the ring spacing and the two marks. It
+/// gives the list a sense of place when there is no map; tapping a mark
+/// opens that place.
 ///
 /// Geography never mirrors: east stays on the right in Arabic, like the
 /// bounding boxes on photos. Only the key follows the reading direction.
@@ -20,11 +21,13 @@ class PlacesPlot extends StatelessWidget {
     super.key,
     required this.center,
     required this.places,
-    required this.pinMaterials,
+    required this.pinMarks,
     required this.northLabel,
     required this.semanticsLabel,
     this.centerLabel,
     this.ringsLabel,
+    this.listedLabel,
+    this.unlistedLabel,
     this.selectedId,
     this.onPinTap,
     this.height,
@@ -35,8 +38,8 @@ class PlacesPlot extends StatelessWidget {
   /// Nearest first.
   final List<Place> places;
 
-  /// Place id to material id (null draws a neutral ink dot).
-  final Map<String, String?> pinMaterials;
+  /// Place id to its mark (a missing id draws a neutral ring).
+  final Map<String, PinMark> pinMarks;
   final String northLabel;
   final String semanticsLabel;
 
@@ -45,6 +48,11 @@ class PlacesPlot extends StatelessWidget {
 
   /// "Rings every 5 km" for the ring spacing the plot picked.
   final String Function(double km)? ringsLabel;
+
+  /// Key entries for the two marks ("Materials listed", "Not listed"),
+  /// shown when some places have no listed materials.
+  final String? listedLabel;
+  final String? unlistedLabel;
 
   /// Drawn larger with an ink ring.
   final String? selectedId;
@@ -74,6 +82,10 @@ class PlacesPlot extends StatelessWidget {
             places,
             selectedId: selectedId,
           );
+          final marks = [
+            for (final p in layout.pins)
+              pinMarks[p.place.id] ?? const PinMark(listed: false),
+          ];
           final plot = GestureDetector(
             behavior: HitTestBehavior.opaque,
             onTapUp: onPinTap == null
@@ -86,10 +98,8 @@ class PlacesPlot extends StatelessWidget {
               size: Size(width, h),
               painter: _PlotPainter(
                 layout: layout,
-                colors: [
-                  for (final p in layout.pins)
-                    pinColor(context, pinMaterials[p.place.id]),
-                ],
+                marks: marks,
+                colors: [for (final m in marks) pinColor(context, m)],
                 line: c.line,
                 axis: c.lineStrong,
                 ink: c.ink,
@@ -100,6 +110,8 @@ class PlacesPlot extends StatelessWidget {
             ),
           );
           if (centerLabel == null) return plot;
+          final anyUnlisted = marks.any((m) => !m.listed);
+          final anyListed = marks.any((m) => m.listed);
           return Column(
             mainAxisSize: MainAxisSize.min,
             crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -113,24 +125,36 @@ class PlacesPlot extends StatelessWidget {
                   KanzSpace.s16,
                   KanzSpace.s12,
                 ),
+                // A map key: each glyph with its label, wrapping onto new
+                // start-aligned lines rather than squeezing.
                 child: Wrap(
-                  alignment: WrapAlignment.spaceBetween,
                   spacing: KanzSpace.s16,
-                  runSpacing: KanzSpace.s4,
+                  runSpacing: KanzSpace.s8,
                   children: [
-                    Row(
-                      mainAxisSize: MainAxisSize.min,
-                      children: [
-                        CustomPaint(
-                          size: const Size.square(10),
-                          painter: _CrossPainter(c.ink),
-                        ),
-                        const SizedBox(width: KanzSpace.s8),
-                        Flexible(child: MonoLabel(centerLabel!)),
-                      ],
-                    ),
+                    _KeyEntry(glyph: _CrossPainter(c.ink), label: centerLabel!),
                     if (ringsLabel != null)
-                      MonoLabel(ringsLabel!(layout.ringStepKm)),
+                      _KeyEntry(
+                        glyph: _RingsPainter(c.lineStrong),
+                        label: ringsLabel!(layout.ringStepKm),
+                      ),
+                    if (anyUnlisted && anyListed && listedLabel != null)
+                      _KeyEntry(
+                        glyph: _MarkPainter(
+                          const PinMark(listed: true),
+                          color: c.ink,
+                          surface: c.surface,
+                        ),
+                        label: listedLabel!,
+                      ),
+                    if (anyUnlisted && unlistedLabel != null)
+                      _KeyEntry(
+                        glyph: _MarkPainter(
+                          const PinMark(listed: false),
+                          color: c.lineStrong,
+                          surface: c.surface,
+                        ),
+                        label: unlistedLabel!,
+                      ),
                   ],
                 ),
               ),
@@ -138,6 +162,26 @@ class PlacesPlot extends StatelessWidget {
           );
         },
       ),
+    );
+  }
+}
+
+/// One entry of the key under the plot: a small drawn glyph and its label.
+class _KeyEntry extends StatelessWidget {
+  const _KeyEntry({required this.glyph, required this.label});
+
+  final CustomPainter glyph;
+  final String label;
+
+  @override
+  Widget build(BuildContext context) {
+    return Row(
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        CustomPaint(size: const Size.square(12), painter: glyph),
+        const SizedBox(width: KanzSpace.s8),
+        Flexible(child: MonoLabel(label)),
+      ],
     );
   }
 }
@@ -155,7 +199,9 @@ class _PlotLayout {
   _PlotLayout(this.size, this.origin, this.scale, this.ringStepKm, this.pins);
 
   /// Projects the places so every one fits with a margin, then picks a ring
-  /// step that gives two to four rings.
+  /// step that gives two to four rings. Marks that would touch are pushed
+  /// apart along their bearing from the centre, so each stays readable and
+  /// tappable while keeping its direction.
   factory _PlotLayout.compute(
     Size size,
     GeoPoint center,
@@ -181,17 +227,58 @@ class _PlotLayout {
       (s) => reach / s <= 3.2,
       orElse: () => steps.last,
     );
+    final projected = [
+      for (final o in offsets)
+        origin + Offset(o.east * scale, -o.north * scale),
+    ];
+    final separated = _separate(projected, origin, size, margin: margin / 2);
     final pins = [
       for (var i = 0; i < places.length; i++)
         _PlotPin(
           places[i],
-          origin + Offset(offsets[i].east * scale, -offsets[i].north * scale),
+          separated[i],
           emphasized: places[i].id == selectedId,
         ),
     ];
     // The selected pin last, so it draws on top.
     pins.sort((a, b) => (a.emphasized ? 1 : 0) - (b.emphasized ? 1 : 0));
     return _PlotLayout(size, origin, scale, step, pins);
+  }
+
+  /// Closest two marks may sit, centre to centre: a dot (9) and a gap.
+  static const double minGap = 12;
+
+  /// Walks the points nearest first and moves each one that would touch the
+  /// centre cross or a mark already placed outward along its bearing, in
+  /// small steps, until it is clear (or the plot's edge stops it).
+  static List<Offset> _separate(
+    List<Offset> points,
+    Offset origin,
+    Size size, {
+    required double margin,
+  }) {
+    final placed = <Offset>[];
+    final taken = [origin];
+    for (var i = 0; i < points.length; i++) {
+      var p = points[i];
+      var bearing = p - origin;
+      if (bearing.distance < 0.5) {
+        // At the centre: fan out, starting towards north-east.
+        final angle = -math.pi / 4 + i * 2.399;
+        bearing = Offset(math.cos(angle), math.sin(angle));
+      }
+      final unit = bearing / bearing.distance;
+      for (var tries = 0; tries < 16; tries++) {
+        if (!taken.any((q) => (q - p).distance < minGap)) break;
+        p = Offset(
+          (p.dx + unit.dx * 3).clamp(margin, size.width - margin),
+          (p.dy + unit.dy * 3).clamp(margin, size.height - margin),
+        );
+      }
+      placed.add(p);
+      taken.add(p);
+    }
+    return placed;
   }
 
   final Size size;
@@ -228,6 +315,34 @@ void _paintCross(Canvas canvas, Offset at, Color ink, {double arm = 5}) {
     ..drawLine(at - Offset(0, arm), at + Offset(0, arm), paint);
 }
 
+/// A place's mark without its paper halo: a filled dot, or a hollow ring
+/// ([radius] is the outer edge in both cases, so the two read the same
+/// size).
+void _paintMark(
+  Canvas canvas,
+  Offset at,
+  PinMark mark,
+  Color color,
+  Color surface, {
+  required double radius,
+  double stroke = 1.5,
+}) {
+  if (mark.listed) {
+    canvas.drawCircle(at, radius, Paint()..color = color);
+    return;
+  }
+  canvas
+    ..drawCircle(at, radius, Paint()..color = surface)
+    ..drawCircle(
+      at,
+      radius - stroke / 2,
+      Paint()
+        ..style = PaintingStyle.stroke
+        ..strokeWidth = stroke
+        ..color = color,
+    );
+}
+
 class _CrossPainter extends CustomPainter {
   _CrossPainter(this.ink);
 
@@ -241,9 +356,55 @@ class _CrossPainter extends CustomPainter {
   bool shouldRepaint(_CrossPainter old) => old.ink != ink;
 }
 
+/// Two concentric hairline rings, the key glyph for the ring spacing.
+class _RingsPainter extends CustomPainter {
+  _RingsPainter(this.color);
+
+  final Color color;
+
+  @override
+  void paint(Canvas canvas, Size size) {
+    final paint = Paint()
+      ..style = PaintingStyle.stroke
+      ..strokeWidth = 1
+      ..color = color;
+    final o = size.center(Offset.zero);
+    canvas
+      ..drawCircle(o, size.width / 2 - 0.5, paint)
+      ..drawCircle(o, size.width / 4, paint);
+  }
+
+  @override
+  bool shouldRepaint(_RingsPainter old) => old.color != color;
+}
+
+/// A place mark as a key glyph.
+class _MarkPainter extends CustomPainter {
+  _MarkPainter(this.mark, {required this.color, required this.surface});
+
+  final PinMark mark;
+  final Color color;
+  final Color surface;
+
+  @override
+  void paint(Canvas canvas, Size size) => _paintMark(
+    canvas,
+    size.center(Offset.zero),
+    mark,
+    color,
+    surface,
+    radius: 4.5,
+  );
+
+  @override
+  bool shouldRepaint(_MarkPainter old) =>
+      old.mark != mark || old.color != color || old.surface != surface;
+}
+
 class _PlotPainter extends CustomPainter {
   _PlotPainter({
     required this.layout,
+    required this.marks,
     required this.colors,
     required this.line,
     required this.axis,
@@ -256,6 +417,7 @@ class _PlotPainter extends CustomPainter {
   final _PlotLayout layout;
 
   /// Aligned with `layout.pins`.
+  final List<PinMark> marks;
   final List<Color> colors;
   final Color line;
   final Color axis;
@@ -304,30 +466,38 @@ class _PlotPainter extends CustomPainter {
       ..drawLine(tip, tip + const Offset(3, 4), arrow);
     north.paint(canvas, Offset(nx - north.width / 2, KanzSpace.s12));
 
-    _paintCross(canvas, o, ink);
-
-    // Places: dots in a paper ring; the selected one larger, ringed in ink.
+    // Places in two passes: every paper halo first, then every mark, so a
+    // neighbour's halo never bites into a dot. The selected one is last in
+    // the list: larger, ringed in ink.
+    final halo = Paint()..color = surface;
+    for (final pin in layout.pins) {
+      canvas.drawCircle(pin.offset, pin.emphasized ? 12 : 6.5, halo);
+    }
     for (var i = 0; i < layout.pins.length; i++) {
       final pin = layout.pins[i];
-      final p = pin.offset;
       if (pin.emphasized) {
-        canvas
-          ..drawCircle(
-            p,
-            10.5,
-            Paint()
-              ..style = PaintingStyle.stroke
-              ..strokeWidth = 1.5
-              ..color = ink,
-          )
-          ..drawCircle(p, 8, Paint()..color = surface)
-          ..drawCircle(p, 6, Paint()..color = colors[i]);
-      } else {
-        canvas
-          ..drawCircle(p, 6.5, Paint()..color = surface)
-          ..drawCircle(p, 4.5, Paint()..color = colors[i]);
+        canvas.drawCircle(
+          pin.offset,
+          10.5,
+          Paint()
+            ..style = PaintingStyle.stroke
+            ..strokeWidth = 1.5
+            ..color = ink,
+        );
       }
+      _paintMark(
+        canvas,
+        pin.offset,
+        marks[i],
+        colors[i],
+        surface,
+        radius: pin.emphasized ? 6 : 4.5,
+        stroke: pin.emphasized ? 2 : 1.5,
+      );
     }
+
+    // The centre last, so no mark ever hides it.
+    _paintCross(canvas, o, ink);
     canvas.restore();
   }
 
@@ -349,6 +519,7 @@ class _PlotPainter extends CustomPainter {
       if (pa[i].place.id != pb[i].place.id ||
           pa[i].offset != pb[i].offset ||
           pa[i].emphasized != pb[i].emphasized ||
+          a.marks[i] != b.marks[i] ||
           a.colors[i] != b.colors[i]) {
         return false;
       }

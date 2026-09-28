@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import '../../../core/data/models/models.dart';
 import '../../../core/design/design.dart';
 import '../../../l10n/l10n.dart';
+import 'content_direction.dart';
 import 'page_parts.dart';
 
 /// The last page: the finished object (last step picture, makeover or the
@@ -27,6 +28,7 @@ class TutorialFinishPage extends StatelessWidget {
     final t = context.textStyles;
     final total = tutorial.steps.length;
     final open = (total - doneCount).clamp(0, total);
+    final direction = contentDirection(tutorial.lang);
     return ListView(
       padding: const EdgeInsetsDirectional.fromSTEB(
         KanzSpace.gutter,
@@ -48,12 +50,12 @@ class TutorialFinishPage extends StatelessWidget {
         if (tutorial.finishing.isNotEmpty) ...[
           const SizedBox(height: KanzSpace.s24),
           PageSectionTitle(l10n.tutorialFinishingLabel),
-          NumberedList(items: tutorial.finishing),
+          NumberedList(items: tutorial.finishing, textDirection: direction),
         ],
         if (tutorial.care.isNotEmpty) ...[
           const SizedBox(height: KanzSpace.s24),
           PageSectionTitle(l10n.tutorialCareLabel),
-          NumberedList(items: tutorial.care),
+          NumberedList(items: tutorial.care, textDirection: direction),
         ],
         const SizedBox(height: KanzSpace.s32),
         DecoratedBox(

@@ -376,6 +376,46 @@ void main() {
     expect(h.api.calls, isEmpty, reason: 'restoring must not call the API');
   });
 
+  test('a reopened scan keeps why its stages failed', () async {
+    h = await TestHarness.create(prefs: _cityMode);
+    h.api.onFacilities = () async => throw const ApiException(
+      code: ApiErrorCode.placesUnavailable,
+      message: 'down',
+      retryable: true,
+    );
+    h.api.onAfter = (req) async => throw const ApiException(
+      code: ApiErrorCode.aiQuotaExhausted,
+      message: 'no image quota',
+      retryable: false,
+    );
+    final id = newScanId();
+    await h.container
+        .read(scanSessionProvider(id).notifier)
+        .startFromPhoto(bytes: _photo);
+    await waitFor(() => settled(id));
+    final db = h.db;
+    final dir = h.dir;
+    await h.dispose(keepDatabase: true);
+
+    h = await TestHarness.create(prefs: _cityMode, db: db, dir: dir);
+    h.container.read(scanSessionProvider(id));
+    await waitFor(() => stateOf(id).origin != ScanOrigin.loading);
+
+    final s = stateOf(id);
+    final dropoff = s.stage(PipelineStage.dropoff);
+    expect(dropoff.status, StageStatus.failed);
+    expect(dropoff.error?.code, ApiErrorCode.placesUnavailable);
+    expect(dropoff.error?.retryable, isTrue);
+    final makeovers = s.stage(PipelineStage.makeovers);
+    expect(makeovers.status, StageStatus.failed);
+    expect(makeovers.error?.code, ApiErrorCode.aiQuotaExhausted);
+    expect(makeovers.error?.retryable, isFalse);
+    for (final idea in s.ideas) {
+      expect(s.afterImage(idea.id).error?.code, ApiErrorCode.aiQuotaExhausted);
+    }
+    expect(h.api.calls, isEmpty, reason: 'restoring must not call the API');
+  });
+
   test('an unknown scan id is reported missing', () async {
     h = await TestHarness.create();
     h.container.read(scanSessionProvider('nope'));

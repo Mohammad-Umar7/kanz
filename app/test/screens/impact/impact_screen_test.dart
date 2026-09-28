@@ -99,12 +99,12 @@ void main() {
     expect(find.text('Active today'), findsOneWidget);
     final list = find.byType(Scrollable).first;
     await tester.scrollUntilVisible(
-      find.text('Estimate, verify before quoting.'),
+      find.text('Rough estimate from average factors.'),
       300,
       scrollable: list,
     );
-    expect(find.textContaining('kg CO2e'), findsOneWidget);
-    expect(find.text('Estimate, verify before quoting.'), findsOneWidget);
+    expect(find.textContaining('kg CO₂e'), findsOneWidget);
+    expect(find.text('Rough estimate from average factors.'), findsOneWidget);
   });
 
   testWidgets('a failed load retries by reading the events again', (

@@ -12,6 +12,7 @@ import '../../core/state/impact_providers.dart';
 import '../../core/state/scan_session.dart';
 import '../../core/state/tutorial_controller.dart';
 import '../../l10n/l10n.dart';
+import '../tutorial/widgets/content_direction.dart';
 import '../tutorial/widgets/image_sources.dart';
 import '../tutorial/widgets/page_parts.dart';
 import 'share_card.dart';
@@ -112,7 +113,7 @@ class _CompletionScreenState extends ConsumerState<CompletionScreen> {
         alignment: AlignmentDirectional.topStart,
         child: ErrorState(
           title: l10n.completionErrorTitle,
-          message: l10n.commonErrorGeneric,
+          message: l10n.completionErrorBody,
           retryLabel: l10n.commonRetry,
           onRetry: () => ref.invalidate(projectProvider(widget.projectId)),
         ),
@@ -160,6 +161,10 @@ class _CompletionScreenState extends ConsumerState<CompletionScreen> {
     final events = ref.watch(impactEventsProvider).value ?? const [];
     final tutorial = project.tutorial;
     final idea = project.idea;
+    // The project's own words (its title, the scanned items) keep the
+    // direction of the language they were written in.
+    final contentLang = tutorial?.lang ?? scan.lang;
+    final direction = contentDirection(contentLang);
 
     final madeFrom = [
       for (final id in idea?.usesItemIds ?? const <String>[])
@@ -172,7 +177,13 @@ class _CompletionScreenState extends ConsumerState<CompletionScreen> {
       after:
           generatedImageProvider(scan.afterImage(project.ideaId)) ??
           (lastStep == null ? null : generatedImageProvider(lastStep)),
-      madeFrom: madeFrom.isEmpty ? null : madeFrom.join(', '),
+      madeFrom: madeFrom.isEmpty
+          ? null
+          : isolateContent(
+              context,
+              formatList(l10n, madeFrom, sentence: true),
+              contentLang,
+            ),
     );
     final projectItems = events.where((e) => e.projectId == project.id).length;
     final completedAt = project.completedAt;
@@ -180,7 +191,7 @@ class _CompletionScreenState extends ConsumerState<CompletionScreen> {
         ? [
             l10n.completionEyebrow,
             if (completedAt != null) formatRelative(l10n, completedAt),
-          ].join('  ·  ')
+          ].join(' · ')
         : l10n.completionEyebrowInProgress;
     final totalSteps = tutorial?.steps.length ?? project.totalSteps;
 
@@ -197,7 +208,11 @@ class _CompletionScreenState extends ConsumerState<CompletionScreen> {
         FadeUp(
           child: Semantics(
             header: true,
-            child: Text(project.title, style: t.displayMedium),
+            child: Text(
+              project.title,
+              style: t.displayMedium,
+              textDirection: direction,
+            ),
           ),
         ),
         const SizedBox(height: KanzSpace.s24),
@@ -246,19 +261,35 @@ class _CompletionScreenState extends ConsumerState<CompletionScreen> {
               ),
           ],
         ),
+        const SizedBox(height: KanzSpace.s40),
+        SectionHeader(
+          title: l10n.completionImpactTitle,
+          large: true,
+          padding: EdgeInsets.zero,
+        ),
+        const SizedBox(height: KanzSpace.s16),
+        // This project first: the one number it changed.
+        if (projectItems > 0)
+          StatNumeral(
+            value: '$projectItems',
+            label: l10n.completionProjectItems(projectItems),
+          )
+        else
+          Text(
+            project.isCompleted
+                ? l10n.completionThisProject(0)
+                : l10n.completionNotFinished,
+            style: t.bodyMedium?.copyWith(color: c.inkSecondary),
+          ),
         const SizedBox(height: KanzSpace.s32),
-        PageSectionTitle(l10n.completionImpactTitle),
-        const SizedBox(height: KanzSpace.s12),
+        // Then where the user stands overall.
+        MonoLabel(l10n.completionAllTime),
+        const SizedBox(height: KanzSpace.s8),
         _ImpactRow(
           impact: impact.value,
           itemsLabel: l10n.completionItems,
           projectsLabel: l10n.completionProjects,
           streakLabel: l10n.completionStreak,
-        ),
-        const SizedBox(height: KanzSpace.s16),
-        Text(
-          l10n.completionThisProject(projectItems),
-          style: t.bodyMedium?.copyWith(color: c.inkSecondary),
         ),
         const SizedBox(height: KanzSpace.s40),
         KanzButton(
@@ -418,9 +449,9 @@ class _PhotoTag extends StatelessWidget {
   }
 }
 
-/// Items kept out of the bin, projects finished and the streak, as three
-/// Fraunces numerals over hairline-separated labels. Dashes while the
-/// numbers load.
+/// All time: items kept out of the bin, projects finished and the streak,
+/// as three Fraunces numerals under a hairline, a step smaller than this
+/// project's own number above them. Dashes while the numbers load.
 class _ImpactRow extends StatelessWidget {
   const _ImpactRow({
     required this.impact,
@@ -486,7 +517,7 @@ class _Stat extends StatelessWidget {
             alignment: AlignmentDirectional.centerStart,
             child: Text(
               value,
-              style: context.kanzType.numeralLarge,
+              style: context.kanzType.numeral,
               textDirection: TextDirection.ltr,
             ),
           ),
@@ -497,12 +528,15 @@ class _Stat extends StatelessWidget {
   }
 }
 
+/// Mirrors the finished page: eyebrow, title, the 4:3 picture, the share
+/// button, the spec grid, then this project's number over the all-time row.
 class _CompletionSkeleton extends StatelessWidget {
   const _CompletionSkeleton();
 
   @override
   Widget build(BuildContext context) {
     final l10n = context.l10n;
+    final c = context.kanzColors;
     return ListView(
       padding: const EdgeInsetsDirectional.fromSTEB(
         KanzSpace.gutter,
@@ -513,7 +547,7 @@ class _CompletionSkeleton extends StatelessWidget {
       children: [
         Semantics(liveRegion: true, child: MonoLabel(l10n.completionLoading)),
         const SizedBox(height: KanzSpace.s12),
-        const Skeleton(width: 240, height: 40),
+        const _Start(Skeleton(width: 240, height: 40)),
         const SizedBox(height: KanzSpace.s24),
         const AspectRatio(
           aspectRatio: 4 / 3,
@@ -525,17 +559,53 @@ class _CompletionSkeleton extends StatelessWidget {
         const SizedBox(height: KanzSpace.s16),
         const Skeleton(height: 48, borderRadius: KanzRadii.buttonAll),
         const SizedBox(height: KanzSpace.s32),
-        const Skeleton(width: 140, height: 20),
-        const SizedBox(height: KanzSpace.s16),
-        const Row(
-          children: [
-            Expanded(child: Skeleton(height: 56)),
-            SizedBox(width: KanzSpace.s16),
-            Expanded(child: Skeleton(height: 56)),
-            SizedBox(width: KanzSpace.s16),
-            Expanded(child: Skeleton(height: 56)),
-          ],
+        Divider(height: 1, thickness: 1, color: c.line),
+        const Padding(
+          padding: EdgeInsetsDirectional.symmetric(vertical: KanzSpace.s16),
+          child: Row(
+            children: [
+              Expanded(child: _Cell()),
+              SizedBox(width: KanzSpace.s16),
+              Expanded(child: _Cell()),
+              SizedBox(width: KanzSpace.s16),
+              Expanded(child: _Cell()),
+            ],
+          ),
         ),
+        const SizedBox(height: KanzSpace.s24),
+        const _Start(Skeleton(width: 220, height: 24)),
+        const SizedBox(height: KanzSpace.s16),
+        const _Start(Skeleton(width: 48, height: 56)),
+        const SizedBox(height: KanzSpace.s8),
+        const _Start(Skeleton(width: 160, height: 14)),
+      ],
+    );
+  }
+}
+
+/// A fixed-width skeleton kept at its size on the start edge (a list
+/// would stretch it to the full width).
+class _Start extends StatelessWidget {
+  const _Start(this.child);
+
+  final Widget child;
+
+  @override
+  Widget build(BuildContext context) =>
+      Align(alignment: AlignmentDirectional.centerStart, child: child);
+}
+
+class _Cell extends StatelessWidget {
+  const _Cell();
+
+  @override
+  Widget build(BuildContext context) {
+    return const Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Skeleton(width: 48, height: 10),
+        SizedBox(height: KanzSpace.s8),
+        FractionallySizedBox(widthFactor: 0.7, child: Skeleton(height: 14)),
       ],
     );
   }

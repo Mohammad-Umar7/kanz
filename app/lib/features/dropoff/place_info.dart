@@ -4,6 +4,7 @@ library;
 
 import 'dart:math' as math;
 
+import 'package:flutter/foundation.dart' show kDebugMode;
 import 'package:flutter/widgets.dart';
 
 import '../../core/data/models/models.dart';
@@ -32,9 +33,14 @@ String facilityTypeLabel(Vocab vocab, Locale locale, FacilityType type) =>
     vocab.facilityType(type).label.forLocale(locale);
 
 /// "Collection point", or "Recycling center, E-waste" for several types.
-String placeTypeLabel(Vocab vocab, Locale locale, Place place) => [
+String placeTypeLabel(
+  AppLocalizations l10n,
+  Vocab vocab,
+  Locale locale,
+  Place place,
+) => formatList(l10n, [
   for (final t in place.facilityTypes) facilityTypeLabel(vocab, locale, t),
-].join(', ');
+]);
 
 String materialLabel(Vocab vocab, Locale locale, MaterialCategory m) =>
     vocab.material(m).label.forLocale(locale);
@@ -60,14 +66,42 @@ String? searchPlaceName(
   return vocab.city(city).label.forLocale(locale);
 }
 
-/// The material a pin is colored by: the one material a place is known to
-/// take, else the one material its matched categories cover. Places that
-/// take several materials (or unknown ones) get a neutral ink pin, so a
-/// color always means one specific stream.
-String? pinMaterialOf(Place place, Map<String, FacilityCategory> catalog) {
+/// How a place is marked on the plot and the map. A filled dot means the
+/// listing names what it accepts: in that material's color when it is one
+/// material, in ink when it is several. A hollow ring means the materials
+/// are not listed (most OpenStreetMap points); it takes the material's
+/// color when the place was found for one material only, and stays
+/// neutral otherwise, so filled dots always lead.
+@immutable
+class PinMark {
+  const PinMark({required this.listed, this.materialId});
+
+  /// The listing names the materials it accepts.
+  final bool listed;
+
+  /// The one material the pin is colored by; null for several or unknown.
+  final String? materialId;
+
+  @override
+  bool operator ==(Object other) =>
+      other is PinMark &&
+      other.listed == listed &&
+      other.materialId == materialId;
+
+  @override
+  int get hashCode => Object.hash(listed, materialId);
+}
+
+/// The [PinMark] for [place]: its accepted materials when listed, else the
+/// materials of the categories it was found for.
+PinMark pinMarkOf(Place place, Map<String, FacilityCategory> catalog) {
   final accepted = place.acceptedMaterials;
   if (accepted != null && accepted.isNotEmpty) {
-    return accepted.length == 1 ? accepted.first.id : null;
+    final ids = {for (final m in accepted) m.id};
+    return PinMark(
+      listed: true,
+      materialId: ids.length == 1 ? ids.first : null,
+    );
   }
   final materials = <String>{
     for (final key in place.categoryKeys)
@@ -75,13 +109,22 @@ String? pinMaterialOf(Place place, Map<String, FacilityCategory> catalog) {
     for (final key in place.categoryKeys)
       if (catalog[key] == null) ?MaterialCategory.tryFromId(key)?.id,
   };
-  return materials.length == 1 ? materials.first : null;
+  return PinMark(
+    listed: false,
+    materialId: materials.length == 1 ? materials.first : null,
+  );
 }
 
-/// The dot color for a pin: the material color, or ink when mixed.
-Color pinColor(BuildContext context, String? materialId) => materialId == null
-    ? context.kanzColors.ink
-    : KanzMaterialColors.pin(context, materialId);
+/// The color a pin is drawn in: the material color, ink for a listed place
+/// that takes several materials, the strong hairline for an unlisted one.
+Color pinColor(BuildContext context, PinMark? mark) {
+  final c = context.kanzColors;
+  return switch (mark) {
+    PinMark(:final materialId?) => KanzMaterialColors.pin(context, materialId),
+    PinMark(listed: true) => c.ink,
+    _ => c.lineStrong,
+  };
+}
 
 /// East and north offsets of [point] from [origin] in kilometres (a flat
 /// projection, exact enough within a 15 km search radius).
@@ -131,16 +174,17 @@ String? acceptsLabel(
   final accepted = place.acceptedMaterials;
   if (accepted == null || accepted.isEmpty) return null;
   return l10n.dropoffAcceptsList(
-    accepted.map((m) => materialLabel(vocab, locale, m)).join(', '),
+    formatList(l10n, [
+      for (final m in accepted) materialLabel(vocab, locale, m),
+    ], sentence: true),
   );
 }
 
-/// "places_unavailable · req_85b6e682": the error code as the backend names
-/// it, for support.
-String supportCode(ApiException error) => [
-  error.code.name.replaceAllMapped(
-    RegExp('[A-Z]'),
-    (m) => '_${m[0]!.toLowerCase()}',
-  ),
-  ?error.requestId,
-].join(' · ');
+/// What support needs to find a failure: the request id, with the error
+/// code as the backend spells it ("places_unavailable") in debug builds.
+/// Null when there is nothing to look up.
+String? supportCode(ApiException error) {
+  final id = error.requestId;
+  if (id == null) return null;
+  return [if (kDebugMode) error.code.wireId, id].join(' · ');
+}

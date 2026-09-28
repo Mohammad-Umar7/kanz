@@ -84,10 +84,10 @@ void main() {
     await _pump(tester, scan: _noPictures());
     expect(find.text('Hanging jar lantern'), findsOneWidget);
     expect(find.text('Glass jam jar'), findsOneWidget);
-    expect(
-      find.text('This project kept 1 item out of the bin.'),
-      findsOneWidget,
-    );
+    // This project's own number leads, then the all-time totals.
+    expect(find.text('What this project changed'), findsOneWidget);
+    expect(find.text('1'), findsOneWidget);
+    expect(find.text('item kept out of the bin'), findsOneWidget);
     expect(find.text('7'), findsOneWidget);
     expect(find.text('Days in a row'), findsOneWidget);
   });

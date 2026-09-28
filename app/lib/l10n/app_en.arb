@@ -11,11 +11,11 @@
   "commonBackendUnreachable": "Server not reachable",
   "commonCancel": "Cancel",
   "commonClose": "Close",
-  "commonCo2eDisclaimer": "Estimate, verify before quoting.",
+  "commonCo2eDisclaimer": "Rough estimate from average factors.",
   "@commonCo2eDisclaimer": {
-    "description": "Always shown next to the CO2e figure on the Impact tab."
+    "description": "Always shown next to the CO₂e figure on the Impact tab."
   },
-  "commonCo2eKg": "{kg} kg CO2e",
+  "commonCo2eKg": "{kg} kg CO₂e",
   "@commonCo2eKg": {
     "placeholders": {
       "kg": {
@@ -59,14 +59,14 @@
   "commonErrorBadRequest": "Something in that request was off. Please try again.",
   "commonErrorBadResponse": "The server sent an answer Kanz didn't expect. Try again.",
   "commonErrorCancelled": "Cancelled.",
-  "commonErrorGeneric": "Something went wrong. Try again.",
+  "commonErrorGeneric": "Kanz hit an unexpected error.",
   "commonErrorImageInvalid": "That file isn't a photo Kanz can read. Try another one.",
   "commonErrorImageTooLarge": "That photo is too large. Try a smaller one.",
   "commonErrorInternal": "Something went wrong on our side. Try again.",
   "commonErrorInterrupted": "This step didn't finish last time. Try again.",
   "commonErrorNotFound": "Kanz can't find that anymore.",
-  "commonErrorOffline": "Can't reach Kanz. Check your connection and try again.",
-  "commonErrorPlacesUnavailable": "Drop-off points can't be loaded right now. Try again soon.",
+  "commonErrorOffline": "No connection. Saved scans and tutorials still open.",
+  "commonErrorPlacesUnavailable": "The map services didn't answer. Ideas and tutorials still work.",
   "commonErrorRateLimited": "Lots of requests at once. Wait a moment, then try again.",
   "commonErrorTimeout": "This is taking too long. Check your connection and try again.",
   "commonHoursAgo": "{count, plural, =1{1 hour ago} other{{count} hours ago}}",
@@ -159,6 +159,10 @@
       }
     }
   },
+  "commonSupportCode": "Support code",
+  "@commonSupportCode": {
+    "description": "Mono label over the request id at the end of an error state, for support."
+  },
   "commonThemeDark": "Dark",
   "commonThemeLight": "Light",
   "commonThemeSystem": "Match phone",
@@ -171,8 +175,19 @@
     }
   },
   "commonYesterday": "Yesterday",
+  "completionAddPhoto": "Add a photo of what you made",
   "completionAfter": "After",
+  "completionAllTime": "All time",
   "completionBefore": "Before",
+  "completionCameraAllow": "Allow the camera",
+  "completionCameraBlocked": "The camera is turned off for Kanz in your phone's settings. You can choose a photo from your gallery instead.",
+  "completionCameraDenied": "Allow the camera to photograph your project, or choose a photo you already took.",
+  "completionCameraNone": "This phone's camera couldn't be opened. You can choose a photo from your gallery instead.",
+  "completionCameraTitle": "The camera isn't available",
+  "completionCaptureGallery": "Choose from gallery",
+  "completionCaptureGuidance": "Photograph what you made",
+  "completionCaptureShutter": "Take the photo",
+  "completionCaptureStarting": "Opening the camera",
   "completionCardMadeFrom": "Made from {item}",
   "@completionCardMadeFrom": {
     "placeholders": {
@@ -183,6 +198,7 @@
   },
   "completionCompare": "Compare your item before and after",
   "completionDescribedLabel": "You described",
+  "completionErrorBody": "Your project couldn't be read from this phone.",
   "completionErrorTitle": "The project didn't load",
   "completionEyebrow": "Project finished",
   "completionEyebrowInProgress": "In progress",
@@ -194,15 +210,28 @@
       }
     }
   },
-  "completionImpactTitle": "What changed",
+  "completionImpactTitle": "What this project changed",
   "completionItems": "Items kept out of the bin",
   "completionLoading": "Loading your project",
   "completionMadeFrom": "Made from",
   "completionMissingBody": "It may have been deleted with its scan. Your other projects are in History.",
   "completionMissingTitle": "This project isn't on this phone",
   "completionNoPhoto": "You described this item in words, so there's no photo to compare.",
+  "completionNotFinished": "This project isn't finished yet.",
+  "completionPhotoFailed": "Couldn't save the photo. Try again.",
   "completionPhotoOnly": "The makeover image isn't available on this server, so this is your original photo.",
+  "completionProjectItems": "{count, plural, =1{item kept out of the bin} other{items kept out of the bin}}",
+  "@completionProjectItems": {
+    "description": "Label under the big number of items this project used.",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
   "completionProjects": "Projects finished",
+  "completionReplacePhoto": "Take a new photo",
+  "completionSavingPhoto": "Saving your photo",
   "completionScanAgain": "Scan something else",
   "completionSeeProjects": "See my projects",
   "completionShare": "Share before and after",
@@ -325,7 +354,6 @@
   "dropoffLocationDenied": "Location wasn't allowed. You can choose a city instead.",
   "dropoffLocationFootnote": "You can change this at any time from the top of this tab.",
   "dropoffLocationPickCity": "Choose a city",
-  "dropoffLocationReasonCity": "Prefer not to share? Choose your city instead.",
   "dropoffLocationReasonDistance": "Places are sorted by how far they are from you.",
   "dropoffLocationReasonHazard": "Batteries and electronics go to places that take them.",
   "dropoffLocationSheetSubtitle": "Kanz lists drop-off points within {km} km.",
@@ -349,7 +377,7 @@
   "dropoffNearYou": "Near you",
   "dropoffNoCategoryMessage": "Choose at least one material above to see drop-off points near you.",
   "dropoffNoCategoryTitle": "Pick a material",
-  "dropoffOfflineTitle": "You're offline",
+  "dropoffOfflineTitle": "Drop-off points need a connection",
   "dropoffOpenFailed": "Couldn't open that. Try again.",
   "dropoffOpenNow": "Open now",
   "dropoffPlaceCount": "{count, plural, =1{1 place} other{{count} places}}",
@@ -382,6 +410,10 @@
       }
     }
   },
+  "dropoffPlotListed": "Materials listed",
+  "@dropoffPlotListed": {
+    "description": "Key under the drop-off plot, next to a filled dot: the place lists what it accepts."
+  },
   "dropoffPlotNorth": "N",
   "@dropoffPlotNorth": {
     "description": "Compass letter for north on the drop-off plot."
@@ -393,6 +425,10 @@
         "type": "String"
       }
     }
+  },
+  "dropoffPlotUnlisted": "Not listed",
+  "@dropoffPlotUnlisted": {
+    "description": "Key under the drop-off plot, next to a hollow ring: the place does not list what it accepts."
   },
   "dropoffPlotYou": "Your location",
   "dropoffSearching": "Looking for drop-off points",
@@ -436,8 +472,9 @@
   "dropoffViewList": "List",
   "dropoffViewMap": "Map",
   "dropoffWebsite": "Website",
-  "dropoffWithinKm": "within {km} km",
+  "dropoffWithinKm": "within {km} km",
   "@dropoffWithinKm": {
+    "description": "The space before km is a no-break space, so the figure and unit stay on one line.",
     "placeholders": {
       "km": {
         "type": "int"
@@ -450,7 +487,7 @@
   "historyDeleteFailed": "The scan couldn't be deleted. Try again.",
   "historyDeleteTitle": "Delete this scan?",
   "historyDeleted": "Scan deleted",
-  "historyErrorBody": "Kanz couldn't read what's saved on this phone. Try again.",
+  "historyErrorBody": "Your saved scans and projects couldn't be read from this phone.",
   "historyErrorTitle": "History didn't load",
   "historyFinished": "Finished",
   "historyFinishedOn": "Finished {date}",
@@ -499,7 +536,7 @@
   "@homeDescription": {
     "description": "Mono label on the tile of a scan made from a typed description instead of a photo."
   },
-  "homeErrorMessage": "Kanz couldn't read the scans saved on this phone. Try again.",
+  "homeErrorMessage": "Your saved scans couldn't be read from this phone.",
   "homeErrorTitle": "Your scans didn't load",
   "homeGallery": "From gallery",
   "homeGuideEyebrow": "What to photograph",
@@ -589,8 +626,8 @@
     }
   },
   "ideaFromDescription": "From your description",
-  "ideaImageFailed": "The preview didn't render.",
-  "ideaImagePaused": "Image generation is paused on this server, so there's no preview yet.",
+  "ideaImageFailed": "Makeover didn't render",
+  "ideaImagePaused": "Makeover images paused",
   "ideaMaterialsTitle": "Also needed",
   "ideaMissingBody": "The ideas for this scan changed. Go back to see the current ones.",
   "ideaMissingTitle": "This idea isn't available anymore",
@@ -666,7 +703,7 @@
       }
     }
   },
-  "onboardingSkillTitle": "How much have you made before?",
+  "onboardingSkillTitle": "How handy are you?",
   "onboardingToolGroupBuilding": "Drilling and fixing",
   "onboardingToolGroupCount": "{selected} of {total} selected",
   "@onboardingToolGroupCount": {
@@ -694,7 +731,7 @@
       }
     }
   },
-  "onboardingToolsNone": "No tools is fine: Kanz puts ideas that need none first.",
+  "onboardingToolsNone": "No tools? That's fine. Ideas that need none come first.",
   "onboardingToolsTitle": "Which tools do you have?",
   "onboardingWelcomeBody": "Photograph something you're about to throw away and Kanz tells you what it's made of and what to do with it.",
   "onboardingWelcomeStep1Body": "Materials, condition and quantity from one photo.",
@@ -824,7 +861,14 @@
   "resultsEditUnit": "Unit",
   "resultsFindingIdeas": "Finding ideas that suit your tools",
   "resultsFocusItem": "Focus ideas on this item",
-  "resultsFocusedItem": "Ideas below are for this item",
+  "resultsFocusedItem": "Ideas below are for the {item}",
+  "@resultsFocusedItem": {
+    "placeholders": {
+      "item": {
+        "type": "String"
+      }
+    }
+  },
   "resultsHazardLabel": "{hazards}: safe disposal only, no DIY",
   "@resultsHazardLabel": {
     "placeholders": {
@@ -852,6 +896,8 @@
   "resultsIdeaRendering": "Rendering the makeover",
   "resultsIdeasErrorTitle": "Ideas didn't load",
   "resultsIdentifyErrorTitle": "Kanz couldn't identify the materials",
+  "resultsImagesPausedBody": "This server can't draw pictures right now. The ideas and their step-by-step tutorials still work.",
+  "resultsImagesPausedTitle": "Makeover images paused",
   "resultsInCity": "In {city}",
   "@resultsInCity": {
     "placeholders": {
@@ -975,7 +1021,7 @@
       }
     }
   },
-  "resultsSummaryImagesPaused": "images paused",
+  "resultsSummaryImagesPaused": "Makeover images paused",
   "resultsSummaryPlaces": "{count, plural, =0{no places nearby} =1{1 place} other{{count} places}}",
   "@resultsSummaryPlaces": {
     "placeholders": {
@@ -1053,7 +1099,7 @@
   },
   "scanExamplesTitle": "Or start from an example",
   "scanGallery": "Gallery",
-  "scanGalleryErrorBody": "Check that Kanz may read your photos, then try again.",
+  "scanGalleryErrorBody": "Allow Kanz to see your photos, then try again.",
   "scanGalleryErrorTitle": "Your photos didn't open",
   "scanGallerySemantics": "Choose a photo from your gallery",
   "scanGuidance": "Fill the frame with one item, in good light",
@@ -1070,9 +1116,14 @@
   "@scanTorch": {
     "description": "Toggle for the camera light; announced as on or off."
   },
+  "scanUseCamera": "Use the camera",
   "settingsAbout": "About",
   "settingsAboutBody": "Kanz identifies what your things are made of, suggests how to upcycle, recycle or donate them, and finds drop-off points in the UAE.",
-  "settingsCo2eNote": "CO2e figures in Kanz are estimates from average emission factors, not measurements.",
+  "settingsCity": "City",
+  "@settingsCity": {
+    "description": "Row under the fixed-city choice that opens the city picker; the city name follows in mono."
+  },
+  "settingsCo2eNote": "CO₂e figures in Kanz are estimates from average emission factors, not measurements.",
   "settingsEstimates": "Estimates",
   "settingsHandsFree": "Hands-free by default",
   "settingsHandsFreeDetail": "Reads each step aloud and listens for \"next\", \"back\" and \"repeat\".",
@@ -1166,6 +1217,10 @@
   },
   "settingsToolsNone": "None yet. Ideas that need no tools come first.",
   "settingsTutorials": "Tutorials",
+  "settingsVersion": "Version",
+  "@settingsVersion": {
+    "description": "Settings > About row; the installed version (1.0.0 (1)) follows in mono."
+  },
   "settingsWorkshop": "Your workshop",
   "shellChecking": "Checking the connection",
   "shellOffline": "You're offline. Saved scans still open.",
@@ -1197,8 +1252,9 @@
   "swapsChipTakeawayContainers": "Takeaway containers",
   "swapsChipWetWipes": "Wet wipes",
   "swapsChipsLabel": "Often in your bin",
-  "swapsCost": "Cost: {level}",
-  "@swapsCost": {
+  "swapsCostLevel": "{level, select, low{Low cost} medium{Medium cost} high{High cost} other{{level}}}",
+  "@swapsCostLevel": {
+    "description": "What a swap costs, from Level ids low, medium, high.",
     "placeholders": {
       "level": {
         "type": "String"
@@ -1213,8 +1269,9 @@
       }
     }
   },
-  "swapsEffort": "Effort: {level}",
-  "@swapsEffort": {
+  "swapsEffortLevel": "{level, select, low{Low effort} medium{Medium effort} high{High effort} other{{level}}}",
+  "@swapsEffortLevel": {
+    "description": "Effort a swap takes, from Level ids low, medium, high.",
     "placeholders": {
       "level": {
         "type": "String"
@@ -1253,7 +1310,7 @@
     }
   },
   "swapsLoadingHistory": "Finding swaps from your scan history",
-  "swapsOfflineTitle": "You're offline",
+  "swapsOfflineTitle": "Swaps need a connection",
   "swapsResultsTitle": "Swaps for you",
   "swapsSources": "Sources",
   "swapsStartOver": "Start over",
@@ -1266,6 +1323,7 @@
   },
   "swapsTry": "Try",
   "swapsUpdate": "Update swaps",
+  "tutorialAdaptAdd": "Add a tool",
   "tutorialAdaptBody": "Kanz rewrites the steps for your skill and the tools you have.",
   "tutorialAdaptFailed": "Couldn't rewrite the tutorial. {reason}",
   "@tutorialAdaptFailed": {
@@ -1275,12 +1333,20 @@
       }
     }
   },
+  "tutorialAdaptHave": "You have",
   "tutorialAdaptOffline": "Adapting needs a connection.",
   "tutorialAdaptProgressNote": "Your progress starts over, because the steps change.",
   "tutorialAdaptSkill": "Your skill",
   "tutorialAdaptSubmit": "Rewrite the steps",
   "tutorialAdaptTitle": "Adapt this tutorial",
-  "tutorialAdaptTools": "Tools you have",
+  "tutorialAdaptToolsCount": "{count, plural, =0{Tools · none selected} other{Tools · {count} selected}}",
+  "@tutorialAdaptToolsCount": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
   "tutorialAdaptToolsHint": "Leave a tool off and Kanz works around it.",
   "tutorialAdaptTooltip": "Adapt to your skill and tools",
   "tutorialAdaptedLabel": "Your version",
@@ -1295,6 +1361,7 @@
       }
     }
   },
+  "tutorialAdaptingRow": "Adapting to your tools",
   "tutorialBefore": "Before",
   "tutorialCareLabel": "Care",
   "tutorialCareful": "Careful",
@@ -1360,6 +1427,7 @@
       }
     }
   },
+  "tutorialImageOffline": "Pictures need a connection",
   "tutorialImagePaused": "Image generation is paused on this server",
   "tutorialImageQueued": "In line after step {number}",
   "@tutorialImageQueued": {
@@ -1382,14 +1450,14 @@
   "tutorialLoadingTitle": "Writing your tutorial",
   "tutorialMarkDone": "Mark step done",
   "tutorialMaterialsTitle": "Materials",
-  "tutorialMissingAction": "Back to the idea",
+  "tutorialMissingAction": "Back to the ideas",
   "tutorialMissingBody": "Its scan may have been deleted. Go back and pick another idea.",
   "tutorialMissingTitle": "This idea isn't available",
   "tutorialNext": "Next step",
   "tutorialNoHandsFree": "Hands-free isn't available on this phone. The buttons still work.",
   "tutorialNoSpeech": "This phone has no voice to read steps aloud. Voice commands still work.",
   "tutorialNoVoice": "Voice commands aren't available on this phone. Steps are read aloud; use the buttons to move.",
-  "tutorialOfflineBanner": "You're offline. This tutorial is saved; new images and adapting need a connection.",
+  "tutorialOfflineBanner": "You're offline. This tutorial is saved; new pictures and adapting need a connection.",
   "@tutorialOfflineBanner": {
     "description": "Thin banner under the app bar while a stored tutorial is open offline."
   },
@@ -1397,6 +1465,7 @@
   "tutorialOfflineTitle": "You're offline",
   "tutorialOverview": "Back to the overview",
   "tutorialPrevious": "Previous step",
+  "tutorialRedraw": "Redraw picture",
   "tutorialSafetyNotes": "Before you start",
   "tutorialSafetyTitle": "Safety",
   "tutorialSourcesLabel": "Based on",

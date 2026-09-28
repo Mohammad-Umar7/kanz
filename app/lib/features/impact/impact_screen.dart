@@ -121,12 +121,17 @@ class ImpactScreen extends ConsumerWidget {
       ];
     }
 
+    // Page sections take the Fraunces section title, like Results.
     Widget section(String title) => Padding(
       padding: const EdgeInsetsDirectional.only(
         top: KanzSpace.s40,
         bottom: KanzSpace.s16,
       ),
-      child: SectionHeader(title: title, padding: EdgeInsetsDirectional.zero),
+      child: SectionHeader(
+        title: title,
+        large: true,
+        padding: EdgeInsetsDirectional.zero,
+      ),
     );
 
     final hasItems = summary.totalItems > 0;

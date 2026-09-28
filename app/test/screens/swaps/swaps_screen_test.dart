@@ -83,13 +83,14 @@ void main() {
 
   testWidgets('loading names what it is looking for', (tester) async {
     await pump(tester, loadingState());
+    // A sentence, not a shouted list.
     await tester.scrollUntilVisible(
-      find.text('FINDING SWAPS FOR PLASTIC BAGS, CLING FILM'),
+      find.text('Finding swaps for plastic bags and cling film'),
       300,
       scrollable: find.byType(Scrollable).first,
     );
     expect(
-      find.text('FINDING SWAPS FOR PLASTIC BAGS, CLING FILM'),
+      find.text('Finding swaps for plastic bags and cling film'),
       findsOneWidget,
     );
   });
@@ -158,7 +159,10 @@ void main() {
       scrollable: find.byType(Scrollable).first,
     );
     expect(find.text('Swaps didn\'t load'), findsOneWidget);
+    // The request id for support (with the wire code in debug builds).
     expect(find.text('ai_unavailable · req_5f3c2a1b'), findsOneWidget);
+    await tester.ensureVisible(find.text('Try again'));
+    await tester.pump();
     await tester.tap(find.text('Try again'));
     await tester.pump();
     expect(controller.calls.last, startsWith('submit:'));
@@ -167,7 +171,7 @@ void main() {
   testWidgets('offline says so without a support code', (tester) async {
     await pump(tester, errorState(const ApiException.offline()));
     await tester.scrollUntilVisible(
-      find.text('You\'re offline'),
+      find.text('Swaps need a connection'),
       300,
       scrollable: find.byType(Scrollable).first,
     );

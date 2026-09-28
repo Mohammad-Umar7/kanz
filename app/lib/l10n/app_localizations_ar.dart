@@ -33,11 +33,11 @@ class AppLocalizationsAr extends AppLocalizations {
   String get commonClose => 'إغلاق';
 
   @override
-  String get commonCo2eDisclaimer => 'تقدير، تحقّق منه قبل الاستشهاد به.';
+  String get commonCo2eDisclaimer => 'تقدير تقريبي من متوسطات عامة.';
 
   @override
   String commonCo2eKg(String kg) {
-    return '$kg كغ مكافئ CO2';
+    return '$kg كغ مكافئ CO₂';
   }
 
   @override
@@ -105,7 +105,7 @@ class AppLocalizationsAr extends AppLocalizations {
   String get commonErrorCancelled => 'أُلغي.';
 
   @override
-  String get commonErrorGeneric => 'حدث خطأ ما. حاول مرة أخرى.';
+  String get commonErrorGeneric => 'واجه كنز خطأً غير متوقع.';
 
   @override
   String get commonErrorImageInvalid =>
@@ -126,11 +126,11 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get commonErrorOffline =>
-      'تعذّر الوصول إلى كنز. تحقّق من الاتصال وحاول مجدداً.';
+      'لا يوجد اتصال. الفحوص والدروس المحفوظة ما زالت تُفتح.';
 
   @override
   String get commonErrorPlacesUnavailable =>
-      'تعذّر تحميل نقاط التسليم الآن. حاول بعد قليل.';
+      'لم تستجب خدمات الخرائط. الأفكار والدروس ما زالت تعمل.';
 
   @override
   String get commonErrorRateLimited =>
@@ -287,6 +287,9 @@ class AppLocalizationsAr extends AppLocalizations {
   }
 
   @override
+  String get commonSupportCode => 'رمز الدعم';
+
+  @override
   String get commonThemeDark => 'داكن';
 
   @override
@@ -304,10 +307,46 @@ class AppLocalizationsAr extends AppLocalizations {
   String get commonYesterday => 'أمس';
 
   @override
+  String get completionAddPhoto => 'أضف صورة لما صنعته';
+
+  @override
   String get completionAfter => 'بعد';
 
   @override
+  String get completionAllTime => 'الإجمالي';
+
+  @override
   String get completionBefore => 'قبل';
+
+  @override
+  String get completionCameraAllow => 'اسمح باستخدام الكاميرا';
+
+  @override
+  String get completionCameraBlocked =>
+      'الكاميرا متوقفة لكنز في إعدادات هاتفك. يمكنك اختيار صورة من المعرض بدلاً منها.';
+
+  @override
+  String get completionCameraDenied =>
+      'اسمح باستخدام الكاميرا لتصوير مشروعك، أو اختر صورة التقطتها من قبل.';
+
+  @override
+  String get completionCameraNone =>
+      'تعذّر فتح كاميرا هذا الهاتف. يمكنك اختيار صورة من المعرض بدلاً منها.';
+
+  @override
+  String get completionCameraTitle => 'الكاميرا غير متاحة';
+
+  @override
+  String get completionCaptureGallery => 'اختر من المعرض';
+
+  @override
+  String get completionCaptureGuidance => 'صوّر ما صنعته';
+
+  @override
+  String get completionCaptureShutter => 'التقط الصورة';
+
+  @override
+  String get completionCaptureStarting => 'نفتح الكاميرا';
 
   @override
   String completionCardMadeFrom(String item) {
@@ -319,6 +358,9 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get completionDescribedLabel => 'وصفك';
+
+  @override
+  String get completionErrorBody => 'تعذّرت قراءة مشروعك من هذا الهاتف.';
 
   @override
   String get completionErrorTitle => 'تعذّر تحميل المشروع';
@@ -335,10 +377,10 @@ class AppLocalizationsAr extends AppLocalizations {
   }
 
   @override
-  String get completionImpactTitle => 'ما الذي تغيّر';
+  String get completionImpactTitle => 'ما الذي غيّره هذا المشروع';
 
   @override
-  String get completionItems => 'أغراض أنقذتها من النفايات';
+  String get completionItems => 'أغراض أبعدتها عن النفايات';
 
   @override
   String get completionLoading => 'نحمّل مشروعك';
@@ -348,7 +390,7 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get completionMissingBody =>
-      'ربما حُذف مع المسح الخاص به. تجد مشاريعك الأخرى في السجل.';
+      'ربما حُذف مع الفحص الخاص به. تجد مشاريعك الأخرى في السجل.';
 
   @override
   String get completionMissingTitle => 'هذا المشروع غير موجود على هاتفك';
@@ -358,11 +400,37 @@ class AppLocalizationsAr extends AppLocalizations {
       'وصفتَ هذا الغرض بالكلمات، فلا توجد صورة للمقارنة.';
 
   @override
+  String get completionNotFinished => 'لم يكتمل هذا المشروع بعد.';
+
+  @override
+  String get completionPhotoFailed => 'تعذّر حفظ الصورة. حاول مجدداً.';
+
+  @override
   String get completionPhotoOnly =>
       'صورة التحويل غير متاحة على هذا الخادم، لذا تظهر هنا صورتك الأصلية.';
 
   @override
+  String completionProjectItems(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: 'غرض أبعدته عن النفايات',
+      many: 'غرضاً أبعدتها عن النفايات',
+      few: 'أغراض أبعدتها عن النفايات',
+      two: 'غرضان أبعدتهما عن النفايات',
+      one: 'غرض أبعدته عن النفايات',
+    );
+    return '$_temp0';
+  }
+
+  @override
   String get completionProjects => 'مشاريع مكتملة';
+
+  @override
+  String get completionReplacePhoto => 'التقط صورة جديدة';
+
+  @override
+  String get completionSavingPhoto => 'نحفظ صورتك';
 
   @override
   String get completionScanAgain => 'صوّر غرضاً آخر';
@@ -407,11 +475,11 @@ class AppLocalizationsAr extends AppLocalizations {
     String _temp0 = intl.Intl.pluralLogic(
       count,
       locale: localeName,
-      other: 'أنقذ هذا المشروع $count غرض من النفايات.',
-      many: 'أنقذ هذا المشروع $count غرضاً من النفايات.',
-      few: 'أنقذ هذا المشروع $count أغراض من النفايات.',
-      two: 'أنقذ هذا المشروع غرضين من النفايات.',
-      one: 'أنقذ هذا المشروع غرضاً واحداً من النفايات.',
+      other: 'أبعد هذا المشروع $count غرض عن النفايات.',
+      many: 'أبعد هذا المشروع $count غرضاً عن النفايات.',
+      few: 'أبعد هذا المشروع $count أغراض عن النفايات.',
+      two: 'أبعد هذا المشروع غرضين عن النفايات.',
+      one: 'أبعد هذا المشروع غرضاً واحداً عن النفايات.',
       zero: 'أُضيف هذا المشروع إلى مشاريعك المكتملة.',
     );
     return '$_temp0';
@@ -562,10 +630,6 @@ class AppLocalizationsAr extends AppLocalizations {
   String get dropoffLocationPickCity => 'اختر مدينة';
 
   @override
-  String get dropoffLocationReasonCity =>
-      'لا تريد مشاركة موقعك؟ اختر مدينتك بدلًا من ذلك.';
-
-  @override
   String get dropoffLocationReasonDistance => 'تُرتَّب الأماكن حسب بُعدها عنك.';
 
   @override
@@ -599,7 +663,7 @@ class AppLocalizationsAr extends AppLocalizations {
   String get dropoffNoCategoryTitle => 'اختر مادة';
 
   @override
-  String get dropoffOfflineTitle => 'أنت غير متصل';
+  String get dropoffOfflineTitle => 'البحث عن نقاط التسليم يحتاج إلى اتصال';
 
   @override
   String get dropoffOpenFailed => 'تعذّر فتح الرابط. حاول مرة أخرى.';
@@ -642,12 +706,18 @@ class AppLocalizationsAr extends AppLocalizations {
   }
 
   @override
+  String get dropoffPlotListed => 'المواد مذكورة';
+
+  @override
   String get dropoffPlotNorth => 'ش';
 
   @override
   String dropoffPlotRings(String distance) {
     return 'المسافة بين الحلقات $distance';
   }
+
+  @override
+  String get dropoffPlotUnlisted => 'غير مذكورة';
 
   @override
   String get dropoffPlotYou => 'موقعك';
@@ -728,11 +798,11 @@ class AppLocalizationsAr extends AppLocalizations {
   String get dropoffViewMap => 'خريطة';
 
   @override
-  String get dropoffWebsite => 'الموقع الإلكتروني';
+  String get dropoffWebsite => 'موقع الويب';
 
   @override
   String dropoffWithinKm(int km) {
-    return 'ضمن $km كم';
+    return 'ضمن $km كم';
   }
 
   @override
@@ -756,7 +826,7 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get historyErrorBody =>
-      'تعذّر على كنز قراءة ما حُفظ على هذا الهاتف. حاول مرة أخرى.';
+      'تعذّرت قراءة الفحوص والمشاريع المحفوظة على هذا الهاتف.';
 
   @override
   String get historyErrorTitle => 'لم يُحمَّل السجل';
@@ -830,8 +900,7 @@ class AppLocalizationsAr extends AppLocalizations {
   String get homeDescription => 'وصف';
 
   @override
-  String get homeErrorMessage =>
-      'تعذّر على كنز قراءة الفحوص المحفوظة على هذا الهاتف. حاول مرة أخرى.';
+  String get homeErrorMessage => 'تعذّرت قراءة فحوصك المحفوظة على هذا الهاتف.';
 
   @override
   String get homeErrorTitle => 'لم تُحمَّل فحوصك';
@@ -1006,18 +1075,17 @@ class AppLocalizationsAr extends AppLocalizations {
   String get ideaFromDescription => 'من وصفك';
 
   @override
-  String get ideaImageFailed => 'لم تُرسم المعاينة.';
+  String get ideaImageFailed => 'لم يُرسم الشكل الجديد';
 
   @override
-  String get ideaImagePaused =>
-      'توليد الصور متوقف على هذا الخادم، لذلك لا توجد معاينة بعد.';
+  String get ideaImagePaused => 'رسم الصور متوقف';
 
   @override
   String get ideaMaterialsTitle => 'ستحتاج أيضًا';
 
   @override
   String get ideaMissingBody =>
-      'تغيّرت أفكار هذا المسح. ارجع لترى الأفكار الحالية.';
+      'تغيّرت أفكار هذا الفحص. ارجع لترى الأفكار الحالية.';
 
   @override
   String get ideaMissingTitle => 'هذه الفكرة لم تعد متاحة';
@@ -1108,7 +1176,7 @@ class AppLocalizationsAr extends AppLocalizations {
   }
 
   @override
-  String get impactItemsLabel => 'أغراض أبعدتها عن سلة المهملات';
+  String get impactItemsLabel => 'أغراض أبعدتها عن النفايات';
 
   @override
   String get impactKeepStreak =>
@@ -1513,7 +1581,9 @@ class AppLocalizationsAr extends AppLocalizations {
   String get resultsFocusItem => 'اجعل الأفكار لهذا الغرض';
 
   @override
-  String get resultsFocusedItem => 'الأفكار أدناه لهذا الغرض';
+  String resultsFocusedItem(String item) {
+    return 'الأفكار أدناه عن $item';
+  }
 
   @override
   String resultsHazardLabel(String hazards) {
@@ -1557,6 +1627,13 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get resultsIdentifyErrorTitle => 'لم يتمكن كنز من التعرّف على المواد';
+
+  @override
+  String get resultsImagesPausedBody =>
+      'لا يستطيع هذا الخادم رسم الصور الآن. الأفكار ودروسها خطوة بخطوة تعمل كالمعتاد.';
+
+  @override
+  String get resultsImagesPausedTitle => 'رسم الصور متوقف';
 
   @override
   String resultsInCity(String city) {
@@ -1633,10 +1710,10 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get resultsMissingBody =>
-      'ربما حُذف من السجل. ابدأ مسحًا جديدًا لترى الأفكار.';
+      'ربما حُذف من السجل. ابدأ فحصًا جديدًا لترى الأفكار.';
 
   @override
-  String get resultsMissingTitle => 'هذا المسح غير موجود على هذا الهاتف';
+  String get resultsMissingTitle => 'هذا الفحص غير موجود على هذا الهاتف';
 
   @override
   String get resultsNearYou => 'بالقرب من موقعك';
@@ -1649,7 +1726,7 @@ class AppLocalizationsAr extends AppLocalizations {
   String get resultsNeedsLocationTitle => 'أين يبحث كنز؟';
 
   @override
-  String get resultsNewScan => 'مسح جديد';
+  String get resultsNewScan => 'فحص جديد';
 
   @override
   String get resultsNoDiyTitle => 'لا أعمال يدوية لهذا الغرض';
@@ -1719,7 +1796,7 @@ class AppLocalizationsAr extends AppLocalizations {
   }
 
   @override
-  String get resultsRecycleEmpty => 'لم تصل خطوات لإعادة التدوير في هذا المسح.';
+  String get resultsRecycleEmpty => 'لم تصل خطوات لإعادة التدوير في هذا الفحص.';
 
   @override
   String get resultsRetake => 'أعد التقاط الصورة';
@@ -1786,7 +1863,7 @@ class AppLocalizationsAr extends AppLocalizations {
   }
 
   @override
-  String get resultsSummaryImagesPaused => 'الصور متوقفة';
+  String get resultsSummaryImagesPaused => 'رسم الصور متوقف';
 
   @override
   String resultsSummaryPlaces(int count) {
@@ -1823,13 +1900,13 @@ class AppLocalizationsAr extends AppLocalizations {
   String get resultsTextRejectedTitle => 'لم يتمكن كنز من معرفة ما هو';
 
   @override
-  String get resultsTextScan => 'مسح بالوصف';
+  String get resultsTextScan => 'فحص بالوصف';
 
   @override
   String get resultsTip => 'جرّب هذا';
 
   @override
-  String get resultsTitle => 'نتائج المسح';
+  String get resultsTitle => 'نتائج الفحص';
 
   @override
   String get resultsToolsAll => 'لديك كل الأدوات';
@@ -1970,7 +2047,7 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get scanGalleryErrorBody =>
-      'تأكد من أن كنز مسموح له بقراءة صورك، ثم حاول مرة أخرى.';
+      'اسمح لكنز بالوصول إلى صورك ثم حاول مجددًا.';
 
   @override
   String get scanGalleryErrorTitle => 'تعذّر فتح صورك';
@@ -1999,10 +2076,13 @@ class AppLocalizationsAr extends AppLocalizations {
   String get scanStartingCamera => 'جارٍ تشغيل الكاميرا';
 
   @override
-  String get scanTextScan => 'مسح بالوصف';
+  String get scanTextScan => 'فحص بالوصف';
 
   @override
   String get scanTorch => 'الكشّاف';
+
+  @override
+  String get scanUseCamera => 'استخدم الكاميرا';
 
   @override
   String get settingsAbout => 'حول كنز';
@@ -2010,6 +2090,9 @@ class AppLocalizationsAr extends AppLocalizations {
   @override
   String get settingsAboutBody =>
       'يتعرّف كنز على المواد التي صُنعت منها أغراضك، ويقترح إعادة ابتكارها أو تدويرها أو التبرع بها، ويدلّك على نقاط التسليم في الإمارات.';
+
+  @override
+  String get settingsCity => 'المدينة';
 
   @override
   String get settingsCo2eNote =>
@@ -2180,7 +2263,16 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String settingsToolsMore(String names, int count) {
-    return '$names و$count أخرى';
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: 'و$count أداة أخرى',
+      many: 'و$count أداة أخرى',
+      few: 'و$count أدوات أخرى',
+      two: 'وأداتان أخريان',
+      one: 'وأداة أخرى',
+    );
+    return '$names $_temp0';
   }
 
   @override
@@ -2189,6 +2281,9 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get settingsTutorials => 'الدروس';
+
+  @override
+  String get settingsVersion => 'الإصدار';
 
   @override
   String get settingsWorkshop => 'ورشتك';
@@ -2250,8 +2345,14 @@ class AppLocalizationsAr extends AppLocalizations {
   String get swapsChipsLabel => 'يتكرر في سلة المهملات';
 
   @override
-  String swapsCost(String level) {
-    return 'التكلفة: $level';
+  String swapsCostLevel(String level) {
+    String _temp0 = intl.Intl.selectLogic(level, {
+      'low': 'تكلفة منخفضة',
+      'medium': 'تكلفة متوسطة',
+      'high': 'تكلفة مرتفعة',
+      'other': '$level',
+    });
+    return '$_temp0';
   }
 
   @override
@@ -2269,8 +2370,14 @@ class AppLocalizationsAr extends AppLocalizations {
   }
 
   @override
-  String swapsEffort(String level) {
-    return 'الجهد: $level';
+  String swapsEffortLevel(String level) {
+    String _temp0 = intl.Intl.selectLogic(level, {
+      'low': 'جهد قليل',
+      'medium': 'جهد متوسط',
+      'high': 'جهد كبير',
+      'other': '$level',
+    });
+    return '$_temp0';
   }
 
   @override
@@ -2344,7 +2451,7 @@ class AppLocalizationsAr extends AppLocalizations {
   String get swapsLoadingHistory => 'البحث عن بدائل بناءً على فحوصك';
 
   @override
-  String get swapsOfflineTitle => 'أنت غير متصل';
+  String get swapsOfflineTitle => 'اقتراح البدائل يحتاج إلى اتصال';
 
   @override
   String get swapsResultsTitle => 'بدائل مقترحة لك';
@@ -2375,6 +2482,9 @@ class AppLocalizationsAr extends AppLocalizations {
   String get swapsUpdate => 'حدّث البدائل';
 
   @override
+  String get tutorialAdaptAdd => 'أضف أداة';
+
+  @override
   String get tutorialAdaptBody =>
       'يعيد كنز كتابة الخطوات بما يناسب مهارتك والأدوات المتوفرة لديك.';
 
@@ -2382,6 +2492,9 @@ class AppLocalizationsAr extends AppLocalizations {
   String tutorialAdaptFailed(String reason) {
     return 'تعذّرت إعادة كتابة الدليل. $reason';
   }
+
+  @override
+  String get tutorialAdaptHave => 'لديك';
 
   @override
   String get tutorialAdaptOffline => 'تعديل الدليل يحتاج إلى اتصال بالإنترنت.';
@@ -2400,7 +2513,19 @@ class AppLocalizationsAr extends AppLocalizations {
   String get tutorialAdaptTitle => 'عدّل هذا الدليل';
 
   @override
-  String get tutorialAdaptTools => 'الأدوات المتوفرة لديك';
+  String tutorialAdaptToolsCount(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: 'الأدوات · $count أداة مختارة',
+      many: 'الأدوات · $count أداة مختارة',
+      few: 'الأدوات · $count أدوات مختارة',
+      two: 'الأدوات · أداتان مختارتان',
+      one: 'الأدوات · أداة واحدة مختارة',
+      zero: 'الأدوات · لم تختر شيئاً',
+    );
+    return '$_temp0';
+  }
 
   @override
   String get tutorialAdaptToolsHint =>
@@ -2416,6 +2541,9 @@ class AppLocalizationsAr extends AppLocalizations {
   String tutorialAdapting(String skill) {
     return 'نعيد الكتابة لمستوى $skill وبأدواتك. تبقى الخطوات الحالية هنا حتى تصل الجديدة.';
   }
+
+  @override
+  String get tutorialAdaptingRow => 'نعدّل الدليل حسب أدواتك';
 
   @override
   String get tutorialBefore => 'قبل';
@@ -2471,7 +2599,7 @@ class AppLocalizationsAr extends AppLocalizations {
   String get tutorialFinishingLabel => 'اللمسات الأخيرة';
 
   @override
-  String get tutorialFromScan => 'من صورتك';
+  String get tutorialFromScan => 'من فحصك';
 
   @override
   String get tutorialGearLabel => 'معدات الوقاية';
@@ -2509,6 +2637,9 @@ class AppLocalizationsAr extends AppLocalizations {
   }
 
   @override
+  String get tutorialImageOffline => 'الصور تحتاج إلى اتصال بالإنترنت';
+
+  @override
   String get tutorialImagePaused => 'توليد الصور متوقف مؤقتاً على هذا الخادم';
 
   @override
@@ -2538,11 +2669,11 @@ class AppLocalizationsAr extends AppLocalizations {
   String get tutorialMaterialsTitle => 'المواد';
 
   @override
-  String get tutorialMissingAction => 'العودة إلى الفكرة';
+  String get tutorialMissingAction => 'العودة إلى الأفكار';
 
   @override
   String get tutorialMissingBody =>
-      'ربما حُذف المسح الخاص بها. ارجع واختر فكرة أخرى.';
+      'ربما حُذف الفحص الخاص بها. ارجع واختر فكرة أخرى.';
 
   @override
   String get tutorialMissingTitle => 'هذه الفكرة لم تعد متاحة';
@@ -2578,6 +2709,9 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get tutorialPrevious => 'الخطوة السابقة';
+
+  @override
+  String get tutorialRedraw => 'أعد رسم الصورة';
 
   @override
   String get tutorialSafetyNotes => 'قبل أن تبدأ';

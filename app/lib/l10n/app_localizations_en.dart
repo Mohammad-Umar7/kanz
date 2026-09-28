@@ -33,11 +33,11 @@ class AppLocalizationsEn extends AppLocalizations {
   String get commonClose => 'Close';
 
   @override
-  String get commonCo2eDisclaimer => 'Estimate, verify before quoting.';
+  String get commonCo2eDisclaimer => 'Rough estimate from average factors.';
 
   @override
   String commonCo2eKg(String kg) {
-    return '$kg kg CO2e';
+    return '$kg kg CO₂e';
   }
 
   @override
@@ -104,7 +104,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get commonErrorCancelled => 'Cancelled.';
 
   @override
-  String get commonErrorGeneric => 'Something went wrong. Try again.';
+  String get commonErrorGeneric => 'Kanz hit an unexpected error.';
 
   @override
   String get commonErrorImageInvalid =>
@@ -127,11 +127,11 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get commonErrorOffline =>
-      'Can\'t reach Kanz. Check your connection and try again.';
+      'No connection. Saved scans and tutorials still open.';
 
   @override
   String get commonErrorPlacesUnavailable =>
-      'Drop-off points can\'t be loaded right now. Try again soon.';
+      'The map services didn\'t answer. Ideas and tutorials still work.';
 
   @override
   String get commonErrorRateLimited =>
@@ -284,6 +284,9 @@ class AppLocalizationsEn extends AppLocalizations {
   }
 
   @override
+  String get commonSupportCode => 'Support code';
+
+  @override
   String get commonThemeDark => 'Dark';
 
   @override
@@ -301,10 +304,46 @@ class AppLocalizationsEn extends AppLocalizations {
   String get commonYesterday => 'Yesterday';
 
   @override
+  String get completionAddPhoto => 'Add a photo of what you made';
+
+  @override
   String get completionAfter => 'After';
 
   @override
+  String get completionAllTime => 'All time';
+
+  @override
   String get completionBefore => 'Before';
+
+  @override
+  String get completionCameraAllow => 'Allow the camera';
+
+  @override
+  String get completionCameraBlocked =>
+      'The camera is turned off for Kanz in your phone\'s settings. You can choose a photo from your gallery instead.';
+
+  @override
+  String get completionCameraDenied =>
+      'Allow the camera to photograph your project, or choose a photo you already took.';
+
+  @override
+  String get completionCameraNone =>
+      'This phone\'s camera couldn\'t be opened. You can choose a photo from your gallery instead.';
+
+  @override
+  String get completionCameraTitle => 'The camera isn\'t available';
+
+  @override
+  String get completionCaptureGallery => 'Choose from gallery';
+
+  @override
+  String get completionCaptureGuidance => 'Photograph what you made';
+
+  @override
+  String get completionCaptureShutter => 'Take the photo';
+
+  @override
+  String get completionCaptureStarting => 'Opening the camera';
 
   @override
   String completionCardMadeFrom(String item) {
@@ -316,6 +355,10 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get completionDescribedLabel => 'You described';
+
+  @override
+  String get completionErrorBody =>
+      'Your project couldn\'t be read from this phone.';
 
   @override
   String get completionErrorTitle => 'The project didn\'t load';
@@ -332,7 +375,7 @@ class AppLocalizationsEn extends AppLocalizations {
   }
 
   @override
-  String get completionImpactTitle => 'What changed';
+  String get completionImpactTitle => 'What this project changed';
 
   @override
   String get completionItems => 'Items kept out of the bin';
@@ -355,11 +398,34 @@ class AppLocalizationsEn extends AppLocalizations {
       'You described this item in words, so there\'s no photo to compare.';
 
   @override
+  String get completionNotFinished => 'This project isn\'t finished yet.';
+
+  @override
+  String get completionPhotoFailed => 'Couldn\'t save the photo. Try again.';
+
+  @override
   String get completionPhotoOnly =>
       'The makeover image isn\'t available on this server, so this is your original photo.';
 
   @override
+  String completionProjectItems(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: 'items kept out of the bin',
+      one: 'item kept out of the bin',
+    );
+    return '$_temp0';
+  }
+
+  @override
   String get completionProjects => 'Projects finished';
+
+  @override
+  String get completionReplacePhoto => 'Take a new photo';
+
+  @override
+  String get completionSavingPhoto => 'Saving your photo';
 
   @override
   String get completionScanAgain => 'Scan something else';
@@ -556,10 +622,6 @@ class AppLocalizationsEn extends AppLocalizations {
   String get dropoffLocationPickCity => 'Choose a city';
 
   @override
-  String get dropoffLocationReasonCity =>
-      'Prefer not to share? Choose your city instead.';
-
-  @override
   String get dropoffLocationReasonDistance =>
       'Places are sorted by how far they are from you.';
 
@@ -594,7 +656,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get dropoffNoCategoryTitle => 'Pick a material';
 
   @override
-  String get dropoffOfflineTitle => 'You\'re offline';
+  String get dropoffOfflineTitle => 'Drop-off points need a connection';
 
   @override
   String get dropoffOpenFailed => 'Couldn\'t open that. Try again.';
@@ -631,12 +693,18 @@ class AppLocalizationsEn extends AppLocalizations {
   }
 
   @override
+  String get dropoffPlotListed => 'Materials listed';
+
+  @override
   String get dropoffPlotNorth => 'N';
 
   @override
   String dropoffPlotRings(String distance) {
     return 'Rings every $distance';
   }
+
+  @override
+  String get dropoffPlotUnlisted => 'Not listed';
 
   @override
   String get dropoffPlotYou => 'Your location';
@@ -719,7 +787,7 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String dropoffWithinKm(int km) {
-    return 'within $km km';
+    return 'within $km km';
   }
 
   @override
@@ -743,7 +811,7 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get historyErrorBody =>
-      'Kanz couldn\'t read what\'s saved on this phone. Try again.';
+      'Your saved scans and projects couldn\'t be read from this phone.';
 
   @override
   String get historyErrorTitle => 'History didn\'t load';
@@ -818,7 +886,7 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get homeErrorMessage =>
-      'Kanz couldn\'t read the scans saved on this phone. Try again.';
+      'Your saved scans couldn\'t be read from this phone.';
 
   @override
   String get homeErrorTitle => 'Your scans didn\'t load';
@@ -983,11 +1051,10 @@ class AppLocalizationsEn extends AppLocalizations {
   String get ideaFromDescription => 'From your description';
 
   @override
-  String get ideaImageFailed => 'The preview didn\'t render.';
+  String get ideaImageFailed => 'Makeover didn\'t render';
 
   @override
-  String get ideaImagePaused =>
-      'Image generation is paused on this server, so there\'s no preview yet.';
+  String get ideaImagePaused => 'Makeover images paused';
 
   @override
   String get ideaMaterialsTitle => 'Also needed';
@@ -1171,7 +1238,7 @@ class AppLocalizationsEn extends AppLocalizations {
   }
 
   @override
-  String get onboardingSkillTitle => 'How much have you made before?';
+  String get onboardingSkillTitle => 'How handy are you?';
 
   @override
   String get onboardingToolGroupBuilding => 'Drilling and fixing';
@@ -1217,7 +1284,7 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get onboardingToolsNone =>
-      'No tools is fine: Kanz puts ideas that need none first.';
+      'No tools? That\'s fine. Ideas that need none come first.';
 
   @override
   String get onboardingToolsTitle => 'Which tools do you have?';
@@ -1489,7 +1556,9 @@ class AppLocalizationsEn extends AppLocalizations {
   String get resultsFocusItem => 'Focus ideas on this item';
 
   @override
-  String get resultsFocusedItem => 'Ideas below are for this item';
+  String resultsFocusedItem(String item) {
+    return 'Ideas below are for the $item';
+  }
 
   @override
   String resultsHazardLabel(String hazards) {
@@ -1535,6 +1604,13 @@ class AppLocalizationsEn extends AppLocalizations {
   @override
   String get resultsIdentifyErrorTitle =>
       'Kanz couldn\'t identify the materials';
+
+  @override
+  String get resultsImagesPausedBody =>
+      'This server can\'t draw pictures right now. The ideas and their step-by-step tutorials still work.';
+
+  @override
+  String get resultsImagesPausedTitle => 'Makeover images paused';
 
   @override
   String resultsInCity(String city) {
@@ -1756,7 +1832,7 @@ class AppLocalizationsEn extends AppLocalizations {
   }
 
   @override
-  String get resultsSummaryImagesPaused => 'images paused';
+  String get resultsSummaryImagesPaused => 'Makeover images paused';
 
   @override
   String resultsSummaryPlaces(int count) {
@@ -1931,7 +2007,7 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get scanGalleryErrorBody =>
-      'Check that Kanz may read your photos, then try again.';
+      'Allow Kanz to see your photos, then try again.';
 
   @override
   String get scanGalleryErrorTitle => 'Your photos didn\'t open';
@@ -1966,6 +2042,9 @@ class AppLocalizationsEn extends AppLocalizations {
   String get scanTorch => 'Flashlight';
 
   @override
+  String get scanUseCamera => 'Use the camera';
+
+  @override
   String get settingsAbout => 'About';
 
   @override
@@ -1973,8 +2052,11 @@ class AppLocalizationsEn extends AppLocalizations {
       'Kanz identifies what your things are made of, suggests how to upcycle, recycle or donate them, and finds drop-off points in the UAE.';
 
   @override
+  String get settingsCity => 'City';
+
+  @override
   String get settingsCo2eNote =>
-      'CO2e figures in Kanz are estimates from average emission factors, not measurements.';
+      'CO₂e figures in Kanz are estimates from average emission factors, not measurements.';
 
   @override
   String get settingsEstimates => 'Estimates';
@@ -2146,6 +2228,9 @@ class AppLocalizationsEn extends AppLocalizations {
   String get settingsTutorials => 'Tutorials';
 
   @override
+  String get settingsVersion => 'Version';
+
+  @override
   String get settingsWorkshop => 'Your workshop';
 
   @override
@@ -2204,8 +2289,14 @@ class AppLocalizationsEn extends AppLocalizations {
   String get swapsChipsLabel => 'Often in your bin';
 
   @override
-  String swapsCost(String level) {
-    return 'Cost: $level';
+  String swapsCostLevel(String level) {
+    String _temp0 = intl.Intl.selectLogic(level, {
+      'low': 'Low cost',
+      'medium': 'Medium cost',
+      'high': 'High cost',
+      'other': '$level',
+    });
+    return '$_temp0';
   }
 
   @override
@@ -2220,8 +2311,14 @@ class AppLocalizationsEn extends AppLocalizations {
   }
 
   @override
-  String swapsEffort(String level) {
-    return 'Effort: $level';
+  String swapsEffortLevel(String level) {
+    String _temp0 = intl.Intl.selectLogic(level, {
+      'low': 'Low effort',
+      'medium': 'Medium effort',
+      'high': 'High effort',
+      'other': '$level',
+    });
+    return '$_temp0';
   }
 
   @override
@@ -2293,7 +2390,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get swapsLoadingHistory => 'Finding swaps from your scan history';
 
   @override
-  String get swapsOfflineTitle => 'You\'re offline';
+  String get swapsOfflineTitle => 'Swaps need a connection';
 
   @override
   String get swapsResultsTitle => 'Swaps for you';
@@ -2323,6 +2420,9 @@ class AppLocalizationsEn extends AppLocalizations {
   String get swapsUpdate => 'Update swaps';
 
   @override
+  String get tutorialAdaptAdd => 'Add a tool';
+
+  @override
   String get tutorialAdaptBody =>
       'Kanz rewrites the steps for your skill and the tools you have.';
 
@@ -2330,6 +2430,9 @@ class AppLocalizationsEn extends AppLocalizations {
   String tutorialAdaptFailed(String reason) {
     return 'Couldn\'t rewrite the tutorial. $reason';
   }
+
+  @override
+  String get tutorialAdaptHave => 'You have';
 
   @override
   String get tutorialAdaptOffline => 'Adapting needs a connection.';
@@ -2348,7 +2451,15 @@ class AppLocalizationsEn extends AppLocalizations {
   String get tutorialAdaptTitle => 'Adapt this tutorial';
 
   @override
-  String get tutorialAdaptTools => 'Tools you have';
+  String tutorialAdaptToolsCount(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: 'Tools · $count selected',
+      zero: 'Tools · none selected',
+    );
+    return '$_temp0';
+  }
 
   @override
   String get tutorialAdaptToolsHint =>
@@ -2364,6 +2475,9 @@ class AppLocalizationsEn extends AppLocalizations {
   String tutorialAdapting(String skill) {
     return 'Rewriting for $skill with your tools. The current steps stay here until the new ones arrive.';
   }
+
+  @override
+  String get tutorialAdaptingRow => 'Adapting to your tools';
 
   @override
   String get tutorialBefore => 'Before';
@@ -2457,6 +2571,9 @@ class AppLocalizationsEn extends AppLocalizations {
   }
 
   @override
+  String get tutorialImageOffline => 'Pictures need a connection';
+
+  @override
   String get tutorialImagePaused => 'Image generation is paused on this server';
 
   @override
@@ -2486,7 +2603,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get tutorialMaterialsTitle => 'Materials';
 
   @override
-  String get tutorialMissingAction => 'Back to the idea';
+  String get tutorialMissingAction => 'Back to the ideas';
 
   @override
   String get tutorialMissingBody =>
@@ -2512,7 +2629,7 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get tutorialOfflineBanner =>
-      'You\'re offline. This tutorial is saved; new images and adapting need a connection.';
+      'You\'re offline. This tutorial is saved; new pictures and adapting need a connection.';
 
   @override
   String get tutorialOfflineBody =>
@@ -2526,6 +2643,9 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get tutorialPrevious => 'Previous step';
+
+  @override
+  String get tutorialRedraw => 'Redraw picture';
 
   @override
   String get tutorialSafetyNotes => 'Before you start';

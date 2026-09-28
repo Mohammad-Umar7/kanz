@@ -42,15 +42,15 @@
   "swapsInsteadOf": "Instead of",
   "swapsTry": "Try",
   "swapsTip": "Tip",
-  "swapsEffort": "Effort: {level}",
-  "@swapsEffort": {"placeholders": {"level": {"type": "String"}}},
-  "swapsCost": "Cost: {level}",
-  "@swapsCost": {"placeholders": {"level": {"type": "String"}}},
+  "swapsEffortLevel": "{level, select, low{Low effort} medium{Medium effort} high{High effort} other{{level}}}",
+  "@swapsEffortLevel": {"description": "Effort a swap takes, from Level ids low, medium, high.", "placeholders": {"level": {"type": "String"}}},
+  "swapsCostLevel": "{level, select, low{Low cost} medium{Medium cost} high{High cost} other{{level}}}",
+  "@swapsCostLevel": {"description": "What a swap costs, from Level ids low, medium, high.", "placeholders": {"level": {"type": "String"}}},
   "swapsFromScans": "From your scans",
   "swapsSources": "Sources",
 
   "swapsEmptyTitle": "No swaps for that yet",
   "swapsEmptyMessage": "Kanz couldn't match those items. Try a common one, like plastic bottles or cling film.",
   "swapsErrorTitle": "Swaps didn't load",
-  "swapsOfflineTitle": "You're offline"
+  "swapsOfflineTitle": "Swaps need a connection"
 }

@@ -437,9 +437,10 @@ class _DropoffScreenState extends ConsumerState<DropoffScreen>
   ) {
     final l10n = context.l10n;
     return ResultsBar(
-      summary:
-          '${l10n.dropoffPlaceCount(state.visiblePlaces.length)} · '
-          '${l10n.dropoffWithinKm(dropoffRadiusKm)}',
+      summary: [
+        l10n.dropoffPlaceCount(state.visiblePlaces.length),
+        l10n.dropoffWithinKm(dropoffRadiusKm),
+      ],
       searching: state.searching,
       searchingLabel: _searchingLabel(where),
       filterLabel: _filterLabel(state, vocab),
@@ -448,11 +449,9 @@ class _DropoffScreenState extends ConsumerState<DropoffScreen>
     );
   }
 
-  Map<String, String?> _pinMaterials(DropoffState state) {
+  Map<String, PinMark> _pinMarks(DropoffState state) {
     final catalog = {for (final c in state.catalog) c.key: c};
-    return {
-      for (final p in state.visiblePlaces) p.id: pinMaterialOf(p, catalog),
-    };
+    return {for (final p in state.visiblePlaces) p.id: pinMarkOf(p, catalog)};
   }
 
   String _ringLabel(double km) => context.l10n.commonDistanceKm(
@@ -485,11 +484,13 @@ class _DropoffScreenState extends ConsumerState<DropoffScreen>
           child: PlacesPlot(
             center: results.center,
             places: places,
-            pinMaterials: _pinMaterials(state),
+            pinMarks: _pinMarks(state),
             selectedId: state.selectedPlaceId,
             centerLabel: centreName,
             northLabel: l10n.dropoffPlotNorth,
             ringsLabel: (km) => l10n.dropoffPlotRings(_ringLabel(km)),
+            listedLabel: l10n.dropoffPlotListed,
+            unlistedLabel: l10n.dropoffPlotUnlisted,
             semanticsLabel: l10n.dropoffPlotLabel(
               places.length,
               results.centerLabel,
@@ -573,10 +574,6 @@ class _DropoffScreenState extends ConsumerState<DropoffScreen>
                         icon: KanzIcons.safety,
                         text: l10n.dropoffLocationReasonHazard,
                       ),
-                      RationaleReason(
-                        icon: KanzIcons.map,
-                        text: l10n.dropoffLocationReasonCity,
-                      ),
                     ],
               primaryLabel: blocked
                   ? l10n.commonOpenSettings
@@ -616,6 +613,7 @@ class _DropoffScreenState extends ConsumerState<DropoffScreen>
                 ? () => unawaited(_controller.search())
                 : null,
             code: offline ? null : supportCode(error),
+            codeLabel: l10n.commonSupportCode,
           ),
         ),
       ];
@@ -722,7 +720,7 @@ class _DropoffScreenState extends ConsumerState<DropoffScreen>
                     PlacesMapSpec(
                       places: places,
                       center: results.center,
-                      pinMaterials: _pinMaterials(state),
+                      pinMarks: _pinMarks(state),
                       selectedId: state.selectedPlaceId,
                       bottomPadding:
                           box.maxHeight * _sheetExtent.clamp(_sheetMin, 0.6),

@@ -84,12 +84,15 @@ class _SwapsScreenState extends ConsumerState<SwapsScreen> {
     }
   }
 
+  /// "Finding swaps for plastic bags and cling film".
   String _loadingLabel(SwapsState state) {
     final l10n = context.l10n;
     final entries = state.requestMaterials;
     if (entries.isEmpty) return l10n.swapsLoadingHistory;
     return l10n.swapsLoading(
-      entries.map((e) => swapEntryLabel(l10n, e)).join(', '),
+      formatList(l10n, [
+        for (final e in entries) swapEntryLabel(l10n, e, inSentence: true),
+      ], sentence: true),
     );
   }
 
@@ -152,6 +155,7 @@ class _SwapsScreenState extends ConsumerState<SwapsScreen> {
           retryLabel: l10n.commonRetry,
           onRetry: error.retryable && state.canSubmit ? _submit : null,
           code: offline ? null : _supportCode(error),
+          codeLabel: l10n.commonSupportCode,
         ),
       ];
     }
@@ -197,7 +201,11 @@ class _SwapsScreenState extends ConsumerState<SwapsScreen> {
           index: i,
           child: Padding(
             padding: KanzSpace.page,
-            child: SwapEntry(swap: results.swaps[i], vocab: vocab),
+            child: SwapEntry(
+              swap: results.swaps[i],
+              vocab: vocab,
+              lang: results.lang,
+            ),
           ),
         ),
       ],
@@ -338,11 +346,11 @@ class _SwapsScreenState extends ConsumerState<SwapsScreen> {
   }
 }
 
-/// "ai_unavailable · req_5f3c2a1b": the backend's error code, for support.
-String _supportCode(ApiException error) => [
-  error.code.name.replaceAllMapped(
-    RegExp('[A-Z]'),
-    (m) => '_${m[0]!.toLowerCase()}',
-  ),
-  ?error.requestId,
-].join(' · ');
+/// What support needs to find a failure: the request id, with the error
+/// code as the backend spells it ("ai_unavailable") in debug builds. Null
+/// when there is nothing to look up.
+String? _supportCode(ApiException error) {
+  final id = error.requestId;
+  if (id == null) return null;
+  return [if (kDebugMode) error.code.wireId, id].join(' · ');
+}

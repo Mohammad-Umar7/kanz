@@ -273,7 +273,7 @@ class _TutorialScreenState extends ConsumerState<TutorialScreen> {
         hero: after ?? photo,
         error: state.error,
         onRetry: () => unawaited(_controller.retry()),
-        onBack: _back,
+        onBackToIdeas: () => context.go(AppRoutes.results(widget.scanId)),
       );
     } else {
       final idea = state.idea ?? scan.recommendation?.ideaById(widget.ideaId);
@@ -349,9 +349,13 @@ class _TutorialScreenState extends ConsumerState<TutorialScreen> {
             ),
             retryLabel: l10n.commonRetry,
             dismissLabel: l10n.tutorialDismiss,
-            onRetry: adaptError.retryable && _lastAdapt != null && !offline
-                ? () => _adapt(_lastAdapt!)
-                : null,
+            // Always a way forward while online: the same request again
+            // when it can help, otherwise the sheet to choose again.
+            onRetry: offline
+                ? null
+                : (adaptError.retryable && _lastAdapt != null
+                      ? () => _adapt(_lastAdapt!)
+                      : () => unawaited(_openAdapt(offline: offline))),
             onDismiss: () => setState(() => _dismissedAdaptError = adaptError),
           ),
         if (handsFree.enabled)
@@ -389,6 +393,8 @@ class _TutorialScreenState extends ConsumerState<TutorialScreen> {
                   heroInset: after == null ? null : photo,
                   categoryOf: (id) => scan.itemById(id)?.category,
                   noteHighlighted: _noteHighlighted,
+                  adapting: state.adapting,
+                  offline: offline,
                   onAdapt: offline || state.adapting
                       ? null
                       : () => unawaited(_openAdapt(offline: offline)),
@@ -411,6 +417,8 @@ class _TutorialScreenState extends ConsumerState<TutorialScreen> {
                 image: image,
                 blockedBy: _blockFor(state, step.number),
                 fallbackPhoto: photo,
+                lang: tutorial.lang,
+                offline: offline,
                 onRegenerate: offline || isQuotaPaused(image)
                     ? null
                     : () => unawaited(_controller.regenerateStep(step.number)),
@@ -487,7 +495,8 @@ class _TutorialScreenState extends ConsumerState<TutorialScreen> {
             child: KanzButton(
               key: const ValueKey('finish-project'),
               label: l10n.tutorialFinish,
-              icon: glyphs ? KanzIcons.checkCircle : null,
+              // One arrow beside it leaves room for the glyph at any size.
+              icon: KanzIcons.checkCircle,
               expand: true,
               loading: _finishing,
               loadingLabel: l10n.tutorialFinishSaving,

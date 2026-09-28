@@ -5,8 +5,9 @@ import '../../core/data/vocab/vocab.dart';
 import '../../core/design/design.dart';
 import '../../l10n/l10n.dart';
 
-/// While the Swap Advisor works: a live line naming what it is looking at,
-/// and two placeholder cards shaped like [SwapCard].
+/// While the Swap Advisor works: a live line naming what it is looking at
+/// ("Finding swaps for plastic bags and cling film"), and two placeholder
+/// cards shaped like [SwapCard].
 class SwapsLoading extends StatelessWidget {
   const SwapsLoading({super.key, required this.label});
 
@@ -26,7 +27,7 @@ class SwapsLoading extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Padding(
-                  padding: const EdgeInsetsDirectional.only(top: 2),
+                  padding: const EdgeInsetsDirectional.only(top: 4),
                   child: SizedBox.square(
                     dimension: 12,
                     child: CircularProgressIndicator(
@@ -36,7 +37,9 @@ class SwapsLoading extends StatelessWidget {
                   ),
                 ),
                 const SizedBox(width: KanzSpace.s8),
-                Expanded(child: MonoLabel(label)),
+                Expanded(
+                  child: Text(label, style: context.textStyles.bodySmall),
+                ),
               ],
             ),
           ),
@@ -55,11 +58,9 @@ class SwapsLoading extends StatelessWidget {
                     ],
                   ),
                   const SizedBox(height: KanzSpace.s16),
-                  const Skeleton(width: 64, height: 10),
-                  const SizedBox(height: KanzSpace.s8),
                   FractionallySizedBox(
-                    widthFactor: i.isEven ? 0.55 : 0.45,
-                    child: const Skeleton(height: 16),
+                    widthFactor: i.isEven ? 0.65 : 0.5,
+                    child: const Skeleton(height: 14),
                   ),
                   const SizedBox(height: KanzSpace.s16),
                   const Skeleton(width: 48, height: 10),
@@ -119,61 +120,118 @@ class SwapsInsight extends StatelessWidget {
   }
 }
 
-/// One suggested swap: the [SwapCard] and, under it, the knowledge
-/// documents it was grounded in.
+/// One suggested swap as a [SwapCard], with its impact note and the
+/// knowledge documents it was grounded in inside the card. The advisor's
+/// text keeps the direction of the language it was written in, so an
+/// English answer reopened with the app in Arabic still reads left to
+/// right.
 class SwapEntry extends StatelessWidget {
-  const SwapEntry({super.key, required this.swap, required this.vocab});
+  const SwapEntry({
+    super.key,
+    required this.swap,
+    required this.vocab,
+    required this.lang,
+  });
 
   final Swap swap;
   final Vocab vocab;
 
+  /// The language the advisor answered in (`SwapsResponse.lang`).
+  final Lang lang;
+
   @override
   Widget build(BuildContext context) {
     final l10n = context.l10n;
+    final c = context.kanzColors;
+    final t = context.textStyles;
     final locale = Localizations.localeOf(context);
+    String content(String text) => _inContentDirection(context, text, lang);
     final matched = swap.matchedInput?.trim();
     final badge = swap.fromHistory
         ? l10n.swapsFromScans
         : (matched != null && matched.isNotEmpty
-              ? matched
+              ? content(matched)
               : vocab.material(swap.category).label.forLocale(locale));
     final impact = swap.impactNote?.trim();
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.stretch,
-      children: [
-        SwapCard(
-          fromLabel: l10n.swapsInsteadOf,
-          from: swap.fromItem,
-          toLabel: l10n.swapsTry,
-          to: swap.toItem,
-          why: impact == null || impact.isEmpty
-              ? swap.why
-              : '${swap.why} $impact',
-          tipLabel: l10n.swapsTip,
-          tip: swap.tip.trim().isEmpty ? null : swap.tip,
-          meta: [
-            l10n.swapsEffort(levelLabel(l10n, swap.effort)),
-            l10n.swapsCost(levelLabel(l10n, swap.cost)),
-          ],
-          categoryId: swap.category.id,
-          badge: badge,
-        ),
-        if (swap.sources.isNotEmpty)
-          Padding(
-            padding: const EdgeInsetsDirectional.fromSTEB(
-              KanzSpace.s16,
-              KanzSpace.s12,
-              KanzSpace.s16,
-              0,
-            ),
-            child: SourceChips(
-              title: l10n.swapsSources,
-              sources: [for (final s in swap.sources) s.title],
-            ),
-          ),
+    final hasImpact = impact != null && impact.isNotEmpty;
+    final tip = swap.tip.trim();
+    return SwapCard(
+      fromLabel: l10n.swapsInsteadOf,
+      from: content(_midSentence(swap.fromItem, lang)),
+      toLabel: l10n.swapsTry,
+      to: content(swap.toItem),
+      why: content(swap.why),
+      tipLabel: l10n.swapsTip,
+      tip: tip.isEmpty ? null : content(tip),
+      meta: [
+        l10n.swapsEffortLevel(swap.effort.id),
+        l10n.swapsCostLevel(swap.cost.id),
       ],
+      categoryId: swap.category.id,
+      badge: badge,
+      footer: !hasImpact && swap.sources.isEmpty
+          ? null
+          : Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                if (hasImpact)
+                  MergeSemantics(
+                    child: Row(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Padding(
+                          padding: const EdgeInsetsDirectional.only(top: 2),
+                          child: Icon(
+                            KanzIcons.leaf,
+                            size: 16,
+                            color: c.inkSecondary,
+                          ),
+                        ),
+                        const SizedBox(width: KanzSpace.s8),
+                        Expanded(
+                          child: Text(content(impact), style: t.bodySmall),
+                        ),
+                      ],
+                    ),
+                  ),
+                if (hasImpact && swap.sources.isNotEmpty)
+                  const SizedBox(height: KanzSpace.s16),
+                if (swap.sources.isNotEmpty)
+                  SourceChips(
+                    title: l10n.swapsSources,
+                    sources: [for (final s in swap.sources) content(s.title)],
+                  ),
+              ],
+            ),
     );
   }
+}
+
+/// "Single-use plastic bags" as it reads after "Instead of": English item
+/// names start lower case mid-sentence, unless the first word is an
+/// abbreviation ("PET bottles").
+String _midSentence(String item, Lang lang) {
+  final text = item.trim();
+  if (lang != Lang.en || text.length < 2) return text;
+  final firstWord = text.split(' ').first;
+  if (firstWord.length > 1 && firstWord == firstWord.toUpperCase()) {
+    return text;
+  }
+  return text[0].toLowerCase() + text.substring(1);
+}
+
+/// [text] wrapped in a Unicode directional isolate when the advisor wrote
+/// it in the other direction than the app's, so its punctuation and
+/// numbers stay where they belong inside the card's layout.
+String _inContentDirection(BuildContext context, String text, Lang lang) {
+  final direction = lang == Lang.ar ? TextDirection.rtl : TextDirection.ltr;
+  if (Directionality.of(context) == direction) return text;
+  // LRI or RLI, then PDI, from their code points (no invisible characters
+  // in the source).
+  final open = String.fromCharCode(
+    direction == TextDirection.ltr ? 0x2066 : 0x2067,
+  );
+  return '$open$text${String.fromCharCode(0x2069)}';
 }
 
 /// Before the first request: what the tab will give back, so the empty

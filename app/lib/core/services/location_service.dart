@@ -54,13 +54,22 @@ class LocationService {
         );
         return _toFix(position);
       } on TimeoutException {
-        final last = await Geolocator.getLastKnownPosition();
-        return last == null ? null : _toFix(last);
+        return _lastKnown();
+      } on LocationServiceDisabledException {
+        // Location is on, but the phone asked to also turn on Google Location
+        // Accuracy and the user said no: the last known position still gives
+        // a search nearby (or the nearest city) instead of asking again.
+        return _lastKnown();
       }
     } on Exception {
       // Services toggled mid-request, platform errors: the caller uses a city.
       return null;
     }
+  }
+
+  static Future<LocationFix?> _lastKnown() async {
+    final last = await Geolocator.getLastKnownPosition();
+    return last == null ? null : _toFix(last);
   }
 
   static LocationFix _toFix(Position p) {

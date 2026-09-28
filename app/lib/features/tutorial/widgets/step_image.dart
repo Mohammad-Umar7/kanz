@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 import '../../../core/design/design.dart';
+import '../../../core/network/api_exception.dart';
 import '../../../core/state/generated_image.dart';
 import '../../../l10n/l10n.dart';
 import 'image_sources.dart';
@@ -11,12 +12,15 @@ typedef StepImageBlock = ({int step, bool quotaPaused});
 
 /// The 4:3 picture of one tutorial step, finished in every state:
 ///
-/// - ready: the generated image fades in, with a "try another image" control;
+/// - ready: the generated image fades in, clean (the step page offers the
+///   redraw under it, so nothing sits on a good picture);
 /// - loading: a skeleton that says which step is being drawn;
 /// - idle: waiting in line behind the previous step, or blocked by an
 ///   earlier failure;
 /// - failed: the user's photo, desaturated, with the step number and a retry
-///   (or, when the server has no image quota, a quiet note and no retry).
+///   (or, when the server has no image quota, a quiet note and no retry);
+/// - offline: any picture still to come says it needs a connection, the same
+///   reason the banner above gives.
 class StepImage extends StatelessWidget {
   const StepImage({
     super.key,
@@ -26,6 +30,7 @@ class StepImage extends StatelessWidget {
     required this.onRegenerate,
     this.blockedBy,
     this.fallbackPhoto,
+    this.offline = false,
   });
 
   final int number;
@@ -44,19 +49,25 @@ class StepImage extends StatelessWidget {
   /// desaturated behind failure notes so the page still carries their item.
   final ImageProvider? fallbackPhoto;
 
+  /// The phone has no connection: pictures that are not here yet cannot
+  /// arrive until it is back.
+  final bool offline;
+
   @override
   Widget build(BuildContext context) {
     final l10n = context.l10n;
     final provider = generatedImageProvider(image);
     final Widget content;
     String status;
+    final noConnection =
+        (offline && provider == null) ||
+        (image.status == ImageStatus.failed &&
+            image.error?.code == ApiErrorCode.offline);
     switch (image.status) {
       case ImageStatus.ready when provider != null:
         status = l10n.tutorialImageLabel(number, title);
         content = _Ready(
           image: provider,
-          regenerateLabel: l10n.commonRegenerate,
-          onRegenerate: onRegenerate,
           fallback: _Fallback(
             number: number,
             photo: fallbackPhoto,
@@ -65,6 +76,16 @@ class StepImage extends StatelessWidget {
             retryLabel: l10n.commonRetry,
             onRetry: onRegenerate,
           ),
+        );
+      case _ when noConnection:
+        status = l10n.tutorialImageOffline;
+        content = _Fallback(
+          number: number,
+          photo: fallbackPhoto,
+          message: status,
+          icon: KanzIcons.noWifi,
+          retryLabel: l10n.commonRetry,
+          onRetry: offline ? null : onRegenerate,
         );
       case ImageStatus.loading:
         status = l10n.tutorialImageDrawing(number);
@@ -129,62 +150,41 @@ class StepImage extends StatelessWidget {
 }
 
 class _Ready extends StatelessWidget {
-  const _Ready({
-    required this.image,
-    required this.regenerateLabel,
-    required this.onRegenerate,
-    required this.fallback,
-  });
+  const _Ready({required this.image, required this.fallback});
 
   final ImageProvider image;
-  final String regenerateLabel;
-  final VoidCallback? onRegenerate;
   final Widget fallback;
 
   @override
   Widget build(BuildContext context) {
-    return Stack(
-      fit: StackFit.expand,
-      children: [
-        ExcludeSemantics(
-          child: Image(
-            image: image,
-            fit: BoxFit.cover,
-            gaplessPlayback: true,
-            frameBuilder: (context, child, frame, sync) {
-              if (sync) return child;
-              return Stack(
-                fit: StackFit.expand,
-                children: [
-                  if (frame == null)
-                    const Skeleton(
-                      height: double.infinity,
-                      borderRadius: BorderRadius.zero,
-                    ),
-                  AnimatedOpacity(
-                    opacity: frame == null ? 0 : 1,
-                    duration: KanzMotion.of(context, KanzMotion.slow),
-                    curve: KanzMotion.standard,
-                    child: child,
-                  ),
-                ],
-              );
-            },
-            errorBuilder: (context, error, stack) => fallback,
-          ),
-        ),
-        if (onRegenerate != null)
-          PositionedDirectional(
-            top: KanzSpace.s8,
-            end: KanzSpace.s8,
-            child: KanzIconButton(
-              icon: KanzIcons.retry,
-              semanticsLabel: regenerateLabel,
-              style: KanzIconButtonStyle.onPhoto,
-              onPressed: onRegenerate,
-            ),
-          ),
-      ],
+    return ExcludeSemantics(
+      child: Image(
+        image: image,
+        width: double.infinity,
+        height: double.infinity,
+        fit: BoxFit.cover,
+        gaplessPlayback: true,
+        frameBuilder: (context, child, frame, sync) {
+          if (sync) return child;
+          return Stack(
+            fit: StackFit.expand,
+            children: [
+              if (frame == null)
+                const Skeleton(
+                  height: double.infinity,
+                  borderRadius: BorderRadius.zero,
+                ),
+              AnimatedOpacity(
+                opacity: frame == null ? 0 : 1,
+                duration: KanzMotion.of(context, KanzMotion.slow),
+                curve: KanzMotion.standard,
+                child: child,
+              ),
+            ],
+          );
+        },
+        errorBuilder: (context, error, stack) => fallback,
+      ),
     );
   }
 }

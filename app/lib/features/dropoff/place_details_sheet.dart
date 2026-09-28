@@ -47,7 +47,7 @@ class PlaceDetailsSheet extends StatelessWidget {
     };
     final accepted = place.acceptedMaterials ?? const <MaterialCategory>[];
     final subtitle = [
-      placeTypeLabel(vocab, locale, place),
+      placeTypeLabel(l10n, vocab, locale, place),
       if (origin != null)
         directionLabel(l10n, origin!, place, cityName: cityName),
     ].where((s) => s.isNotEmpty).join(' · ');
@@ -60,28 +60,32 @@ class PlaceDetailsSheet extends StatelessWidget {
       subtitle: subtitle.isEmpty ? null : subtitle,
       actions: [
         if (hasCall || hasWebsite)
-          Row(
-            spacing: KanzSpace.s8,
-            children: [
-              if (hasCall)
-                Expanded(
-                  child: KanzButton.secondary(
-                    label: l10n.dropoffCall,
-                    icon: KanzIcons.phone,
-                    onPressed: onCall,
-                    expand: true,
+          // Equal heights even when one label wraps (large text, Arabic).
+          IntrinsicHeight(
+            child: Row(
+              spacing: KanzSpace.s8,
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              children: [
+                if (hasCall)
+                  Expanded(
+                    child: KanzButton.secondary(
+                      label: l10n.dropoffCall,
+                      icon: KanzIcons.phone,
+                      onPressed: onCall,
+                      expand: true,
+                    ),
                   ),
-                ),
-              if (hasWebsite)
-                Expanded(
-                  child: KanzButton.secondary(
-                    label: l10n.dropoffWebsite,
-                    icon: KanzIcons.website,
-                    onPressed: onWebsite,
-                    expand: true,
+                if (hasWebsite)
+                  Expanded(
+                    child: KanzButton.secondary(
+                      label: l10n.dropoffWebsite,
+                      icon: KanzIcons.website,
+                      onPressed: onWebsite,
+                      expand: true,
+                    ),
                   ),
-                ),
-            ],
+              ],
+            ),
           ),
         KanzButton(
           label: l10n.dropoffDirections,

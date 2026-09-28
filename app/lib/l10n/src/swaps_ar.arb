@@ -38,13 +38,13 @@
   "swapsInsteadOf": "بدلًا من",
   "swapsTry": "جرّب",
   "swapsTip": "نصيحة",
-  "swapsEffort": "الجهد: {level}",
-  "swapsCost": "التكلفة: {level}",
+  "swapsEffortLevel": "{level, select, low{جهد قليل} medium{جهد متوسط} high{جهد كبير} other{{level}}}",
+  "swapsCostLevel": "{level, select, low{تكلفة منخفضة} medium{تكلفة متوسطة} high{تكلفة مرتفعة} other{{level}}}",
   "swapsFromScans": "من فحوصك",
   "swapsSources": "المصادر",
 
   "swapsEmptyTitle": "لا بدائل لذلك بعد",
   "swapsEmptyMessage": "لم يجد كنز ما يطابق هذه العناصر. جرّب عنصرًا شائعًا، مثل الزجاجات البلاستيكية أو غلاف الطعام البلاستيكي.",
   "swapsErrorTitle": "تعذّر تحميل البدائل",
-  "swapsOfflineTitle": "أنت غير متصل"
+  "swapsOfflineTitle": "اقتراح البدائل يحتاج إلى اتصال"
 }

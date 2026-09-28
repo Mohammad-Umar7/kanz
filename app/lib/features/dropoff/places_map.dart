@@ -7,6 +7,7 @@ import 'package:google_maps_flutter/google_maps_flutter.dart';
 
 import '../../core/data/models/models.dart';
 import '../../core/design/design.dart';
+import 'place_info.dart';
 
 /// What the map view draws: the places, the selection and how to react.
 @immutable
@@ -14,7 +15,7 @@ class PlacesMapSpec {
   const PlacesMapSpec({
     required this.places,
     required this.center,
-    required this.pinMaterials,
+    required this.pinMarks,
     required this.onPinTap,
     required this.semanticsLabel,
     this.selectedId,
@@ -26,8 +27,9 @@ class PlacesMapSpec {
   final List<Place> places;
   final GeoPoint center;
 
-  /// Place id to material id (null draws a neutral ink pin).
-  final Map<String, String?> pinMaterials;
+  /// Place id to its mark: a filled dot when the listing names what it
+  /// accepts, a hollow ring when it does not.
+  final Map<String, PinMark> pinMarks;
   final ValueChanged<Place> onPinTap;
   final String semanticsLabel;
   final String? selectedId;
@@ -46,8 +48,9 @@ typedef PlacesMapBuilder =
 Widget googlePlacesMap(BuildContext context, PlacesMapSpec spec) =>
     PlacesGoogleMap(spec: spec);
 
-/// Google map in the Kanz map style with material-colored circular pins
-/// drawn on a canvas; the selected pin is larger with an ink ring.
+/// Google map in the Kanz map style with the same marks as the drawn plot
+/// (filled material dots, hollow rings for unlisted places) painted on a
+/// canvas; the selected pin is larger with an ink ring.
 class PlacesGoogleMap extends StatefulWidget {
   const PlacesGoogleMap({super.key, required this.spec});
 
@@ -140,8 +143,12 @@ class _PlacesGoogleMapState extends State<PlacesGoogleMap> {
 
   /// The pin for [fill], or null while it is being drawn (the marker then
   /// appears a frame later instead of flashing Google's default pin).
-  BitmapDescriptor? _icon(Color fill, {required bool selected}) {
-    final key = _PinKey(fill, selected);
+  BitmapDescriptor? _icon(
+    Color fill, {
+    required bool listed,
+    required bool selected,
+  }) {
+    final key = _PinKey(fill, listed: listed, selected: selected);
     final cached = _icons[key];
     if (cached != null) return cached;
     if (_pending.add(key)) {
@@ -152,6 +159,7 @@ class _PlacesGoogleMapState extends State<PlacesGoogleMap> {
           fill: fill,
           ring: c.surface,
           outline: c.ink,
+          listed: listed,
           selected: selected,
           pixelRatio: ratio,
         ).then((icon) {
@@ -168,12 +176,8 @@ class _PlacesGoogleMapState extends State<PlacesGoogleMap> {
     final markers = <Marker>{
       for (final place in spec.places)
         if (_icon(
-              spec.pinMaterials[place.id] == null
-                  ? context.kanzColors.ink
-                  : KanzMaterialColors.pin(
-                      context,
-                      spec.pinMaterials[place.id]!,
-                    ),
+              pinColor(context, spec.pinMarks[place.id]),
+              listed: spec.pinMarks[place.id]?.listed ?? false,
               selected: place.id == spec.selectedId,
             )
             case final icon?)
@@ -215,25 +219,31 @@ class _PlacesGoogleMapState extends State<PlacesGoogleMap> {
 
 @immutable
 class _PinKey {
-  const _PinKey(this.fill, this.selected);
+  const _PinKey(this.fill, {required this.listed, required this.selected});
 
   final Color fill;
+  final bool listed;
   final bool selected;
 
   @override
   bool operator ==(Object other) =>
-      other is _PinKey && other.fill == fill && other.selected == selected;
+      other is _PinKey &&
+      other.fill == fill &&
+      other.listed == listed &&
+      other.selected == selected;
 
   @override
-  int get hashCode => Object.hash(fill, selected);
+  int get hashCode => Object.hash(fill, listed, selected);
 }
 
-/// A circular pin: a material-colored disc in a paper ring with a hairline
-/// outline; selected pins are larger and ringed in ink.
+/// A circular pin in a paper ring with a hairline outline: a disc in [fill]
+/// for a listed place, a hollow ring in [fill] for an unlisted one. Selected
+/// pins are larger and ringed in ink.
 Future<BitmapDescriptor> _drawPin({
   required Color fill,
   required Color ring,
   required Color outline,
+  required bool listed,
   required bool selected,
   required double pixelRatio,
 }) async {
@@ -243,10 +253,11 @@ Future<BitmapDescriptor> _drawPin({
   final canvas = Canvas(recorder)..scale(pixelRatio);
   final center = Offset(size / 2, size / 2);
   final radius = size / 2 - 1;
+  final double mark;
   if (selected) {
     canvas.drawCircle(center, radius, Paint()..color = outline);
     canvas.drawCircle(center, radius - 2.5, Paint()..color = ring);
-    canvas.drawCircle(center, radius - 4.5, Paint()..color = fill);
+    mark = radius - 4.5;
   } else {
     canvas.drawCircle(
       center,
@@ -254,7 +265,20 @@ Future<BitmapDescriptor> _drawPin({
       Paint()..color = outline.withValues(alpha: 0.28),
     );
     canvas.drawCircle(center, radius - 1, Paint()..color = ring);
-    canvas.drawCircle(center, radius - 3.5, Paint()..color = fill);
+    mark = radius - 3.5;
+  }
+  if (listed) {
+    canvas.drawCircle(center, mark, Paint()..color = fill);
+  } else {
+    const stroke = 1.75;
+    canvas.drawCircle(
+      center,
+      mark - stroke / 2,
+      Paint()
+        ..style = PaintingStyle.stroke
+        ..strokeWidth = stroke
+        ..color = fill,
+    );
   }
   final image = await recorder.endRecording().toImage(px, px);
   final bytes = await image.toByteData(format: ui.ImageByteFormat.png);

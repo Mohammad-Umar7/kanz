@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 
 import '../../../core/design/design.dart';
@@ -61,7 +62,10 @@ class TutorialLoadingView extends StatelessWidget {
         if (title != null)
           Text(title!, style: t.headlineLarge)
         else
-          const Skeleton(width: 220, height: 28),
+          const Align(
+            alignment: AlignmentDirectional.centerStart,
+            child: Skeleton(width: 220, height: 28),
+          ),
         const SizedBox(height: KanzSpace.s8),
         Text(
           l10n.tutorialLoadingBody,
@@ -84,7 +88,10 @@ class TutorialLoadingView extends StatelessWidget {
           ),
         ],
         const SizedBox(height: KanzSpace.s32),
-        const Skeleton(width: 120, height: 20),
+        const Align(
+          alignment: AlignmentDirectional.centerStart,
+          child: Skeleton(width: 120, height: 20),
+        ),
         const SizedBox(height: KanzSpace.s12),
         for (var i = 0; i < 3; i++) ...[
           if (i > 0) Divider(height: 1, thickness: 1, color: c.line),
@@ -130,14 +137,16 @@ class TutorialFailedView extends StatelessWidget {
     this.hero,
     required this.error,
     required this.onRetry,
-    required this.onBack,
+    required this.onBackToIdeas,
   });
 
   /// The idea's picture, kept on screen so the failure stays in context.
   final ImageProvider? hero;
   final ApiException? error;
   final VoidCallback onRetry;
-  final VoidCallback onBack;
+
+  /// Leaves for the scan's ideas when this idea is gone.
+  final VoidCallback onBackToIdeas;
 
   @override
   Widget build(BuildContext context) {
@@ -154,10 +163,9 @@ class TutorialFailedView extends StatelessWidget {
             ? l10n.tutorialMissingBody
             : apiErrorMessage(l10n, error),
         actionLabel: l10n.tutorialMissingAction,
-        onAction: onBack,
+        onAction: onBackToIdeas,
       );
     } else {
-      final requestId = error?.requestId;
       content = ErrorState(
         icon: offline ? KanzIcons.noWifi : KanzIcons.error,
         title: offline ? l10n.tutorialOfflineTitle : l10n.tutorialErrorTitle,
@@ -166,15 +174,15 @@ class TutorialFailedView extends StatelessWidget {
             : apiErrorMessage(l10n, error),
         retryLabel: l10n.commonRetry,
         onRetry: onRetry,
-        code: requestId == null || error == null
-            ? null
-            : '${wireCode(error.code)} · $requestId',
+        code: supportCode(error),
       );
     }
     return SingleChildScrollView(
       padding: const EdgeInsetsDirectional.only(top: KanzSpace.s8),
       child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
+        // Stretch, so the state block spans the width and starts on the
+        // gutter in both directions instead of shrinking to its text.
+        crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
           if (hero != null && retryable)
             Padding(
@@ -190,8 +198,11 @@ class TutorialFailedView extends StatelessWidget {
   }
 }
 
-/// The error code as the backend spells it ("ai_unavailable"), for support.
-String wireCode(ApiErrorCode code) => code.name.replaceAllMapped(
-  RegExp('[A-Z]'),
-  (m) => '_${m[0]!.toLowerCase()}',
-);
+/// What support needs to find a failure: the request id, and the error code
+/// as the backend spells it ("ai_unavailable") in debug builds. Null when
+/// there is nothing to look up (a phone with no connection, say).
+String? supportCode(ApiException? error) {
+  if (error == null) return null;
+  final parts = [if (kDebugMode) error.code.wireId, ?error.requestId];
+  return error.requestId == null ? null : parts.join(' · ');
+}

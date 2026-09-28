@@ -60,11 +60,31 @@ class FakeSwapsController extends SwapsController {
   }
 }
 
-SwapsResponse swapsResponse({required bool ar}) => SwapsResponse.fromJson(
-  ar
-      ? readJson('test/screens/swaps/data/swaps_plastic_ar.json')
-      : fixture('swaps_plastic.json'),
-);
+/// The contract fixture (English) or its Arabic counterpart. The first swap
+/// carries the impact note the knowledge base has for it, as live answers
+/// do.
+SwapsResponse swapsResponse({required bool ar}) {
+  final response = SwapsResponse.fromJson(
+    ar
+        ? readJson('test/screens/swaps/data/swaps_plastic_ar.json')
+        : fixture('swaps_plastic.json'),
+  );
+  final first = response.swaps.first;
+  return response.copyWith(
+    swaps: [
+      first.copyWith(
+        impactNote:
+            first.impactNote ??
+            (ar
+                ? 'أكياس رقيقة أقل في التداول تعني نفايات أقل تتطاير مع الريح، '
+                      'وبلاستيكًا أقل تبتلعه الحيوانات.'
+                : 'Fewer thin bags in circulation means less wind-blown '
+                      'litter and less plastic that animals can swallow.'),
+      ),
+      ...response.swaps.skip(1),
+    ],
+  );
+}
 
 const history = HistorySummary(
   counts: {MaterialCategory.plastic: 6, MaterialCategory.glass: 2},

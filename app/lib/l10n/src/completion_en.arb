@@ -17,7 +17,11 @@
   "completionDescribedLabel": "You described",
   "completionNoPhoto": "You described this item in words, so there's no photo to compare.",
 
-  "completionImpactTitle": "What changed",
+  "completionImpactTitle": "What this project changed",
+  "completionProjectItems": "{count, plural, =1{item kept out of the bin} other{items kept out of the bin}}",
+  "@completionProjectItems": {"description": "Label under the big number of items this project used.", "placeholders": {"count": {"type": "int"}}},
+  "completionNotFinished": "This project isn't finished yet.",
+  "completionAllTime": "All time",
   "completionItems": "Items kept out of the bin",
   "completionProjects": "Projects finished",
   "completionStreak": "Days in a row",
@@ -38,5 +42,6 @@
   "completionLoading": "Loading your project",
   "completionMissingTitle": "This project isn't on this phone",
   "completionMissingBody": "It may have been deleted with its scan. Your other projects are in History.",
+  "completionErrorBody": "Your project couldn't be read from this phone.",
   "completionErrorTitle": "The project didn't load"
 }

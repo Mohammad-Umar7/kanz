@@ -4,6 +4,7 @@ import '../../../core/data/models/models.dart';
 import '../../../core/data/vocab/vocab.dart';
 import '../../../core/design/design.dart';
 import '../../../l10n/l10n.dart';
+import 'content_direction.dart';
 import 'page_parts.dart';
 
 /// The first page of the tutorial: what the project needs before step 1.
@@ -23,6 +24,8 @@ class TutorialOverviewPage extends StatelessWidget {
     required this.categoryOf,
     required this.noteHighlighted,
     required this.onAdapt,
+    this.adapting = false,
+    this.offline = false,
   });
 
   final Tutorial tutorial;
@@ -39,8 +42,14 @@ class TutorialOverviewPage extends StatelessWidget {
   final MaterialCategory? Function(String itemId) categoryOf;
   final bool noteHighlighted;
 
-  /// Opens the adapt sheet; null hides the action (offline).
+  /// Opens the adapt sheet; null disables the action.
   final VoidCallback? onAdapt;
+
+  /// A new version is being written: the action stays, busy.
+  final bool adapting;
+
+  /// No connection: the action stays, disabled, and says why.
+  final bool offline;
 
   @override
   Widget build(BuildContext context) {
@@ -48,6 +57,7 @@ class TutorialOverviewPage extends StatelessWidget {
     final t = context.textStyles;
     final locale = Localizations.localeOf(context);
     final have = tutorial.tools.where((tool) => tool.have).length;
+    final direction = contentDirection(tutorial.lang);
     return ListView(
       padding: const EdgeInsetsDirectional.fromSTEB(
         KanzSpace.gutter,
@@ -68,15 +78,29 @@ class TutorialOverviewPage extends StatelessWidget {
         const SizedBox(height: KanzSpace.s4),
         Semantics(
           header: true,
-          child: Text(tutorial.title, style: t.headlineLarge),
+          child: Text(
+            tutorial.title,
+            style: t.headlineLarge,
+            textDirection: direction,
+          ),
         ),
         const SizedBox(height: KanzSpace.s20),
         AdaptedNote(
           label: l10n.tutorialAdaptedLabel,
           note: tutorial.adaptedNote,
+          noteDirection: direction,
           highlighted: noteHighlighted,
           updatedLabel: l10n.tutorialUpdated,
-          actionLabel: l10n.tutorialChangeSetup,
+          actionLabel: adapting
+              ? l10n.tutorialAdaptingRow
+              : (offline
+                    ? l10n.tutorialAdaptOffline
+                    : l10n.tutorialChangeSetup),
+          actionState: adapting
+              ? AdaptActionState.busy
+              : (offline || onAdapt == null
+                    ? AdaptActionState.unavailable
+                    : AdaptActionState.ready),
           onAction: onAdapt,
         ),
         const SizedBox(height: KanzSpace.s24),
@@ -110,6 +134,7 @@ class TutorialOverviewPage extends StatelessWidget {
                   ? null
                   : categoryOf(tutorial.materials[i].itemId!),
               fromScanLabel: l10n.tutorialFromScan,
+              direction: direction,
               divider: i > 0,
             ),
         ],
@@ -126,6 +151,7 @@ class TutorialOverviewPage extends StatelessWidget {
               haveLabel: l10n.tutorialToolHave,
               missingLabel: l10n.tutorialToolMissing,
               insteadLabel: l10n.tutorialToolInstead,
+              direction: direction,
               divider: i > 0,
             ),
         ],
@@ -136,7 +162,11 @@ class TutorialOverviewPage extends StatelessWidget {
           Callout(
             variant: CalloutVariant.safety,
             title: l10n.tutorialSafetyNotes,
-            message: tutorial.safety.join('\n'),
+            message: isolateContent(
+              context,
+              tutorial.safety.join('\n'),
+              tutorial.lang,
+            ),
           ),
           const SizedBox(height: KanzSpace.s20),
         ],
@@ -157,7 +187,10 @@ class TutorialOverviewPage extends StatelessWidget {
           const SizedBox(height: KanzSpace.s32),
           SourceChips(
             title: l10n.tutorialSourcesLabel,
-            sources: [for (final s in tutorial.sources) s.title],
+            sources: [
+              for (final s in tutorial.sources)
+                isolateContent(context, s.title, tutorial.lang),
+            ],
           ),
         ],
       ],
@@ -196,8 +229,22 @@ IconData gearIcon(ToolId id) => switch (id) {
   _ => KanzIcons.safety,
 };
 
+/// What the "Change skill or tools" row under the note can do right now.
+enum AdaptActionState {
+  /// Opens the adapt sheet.
+  ready,
+
+  /// A new version is being written: disabled, with a spinner.
+  busy,
+
+  /// Offline: disabled, saying why.
+  unavailable,
+}
+
 /// "Your version": the backend's adapted note with the way to change it.
-/// Right after a rewrite it takes an ink outline and an "Updated" tag.
+/// Right after a rewrite it takes an ink outline and an "Updated" tag. The
+/// action row stays in place while a rewrite runs or the phone is offline,
+/// so the page does not jump; only what it says changes.
 class AdaptedNote extends StatelessWidget {
   const AdaptedNote({
     super.key,
@@ -207,6 +254,8 @@ class AdaptedNote extends StatelessWidget {
     required this.updatedLabel,
     required this.actionLabel,
     required this.onAction,
+    this.actionState = AdaptActionState.ready,
+    this.noteDirection,
   });
 
   final String label;
@@ -215,11 +264,36 @@ class AdaptedNote extends StatelessWidget {
   final String updatedLabel;
   final String actionLabel;
   final VoidCallback? onAction;
+  final AdaptActionState actionState;
+
+  /// Direction of the language the note was written in.
+  final TextDirection? noteDirection;
 
   @override
   Widget build(BuildContext context) {
     final c = context.kanzColors;
     final t = context.textStyles;
+    final enabled = actionState == AdaptActionState.ready && onAction != null;
+    final Widget glyph = switch (actionState) {
+      AdaptActionState.busy when !context.reduceMotion => SizedBox.square(
+        dimension: 14,
+        child: CircularProgressIndicator(
+          strokeWidth: 1.5,
+          color: c.inkSecondary,
+        ),
+      ),
+      AdaptActionState.busy => Icon(
+        KanzIcons.clock,
+        size: 18,
+        color: c.inkSecondary,
+      ),
+      AdaptActionState.unavailable => Icon(
+        KanzIcons.offline,
+        size: 18,
+        color: c.inkSecondary,
+      ),
+      AdaptActionState.ready => Icon(KanzIcons.filters, size: 18, color: c.ink),
+    };
     return AnimatedContainer(
       key: const ValueKey('adapted-note'),
       duration: KanzMotion.of(context, KanzMotion.medium),
@@ -243,7 +317,7 @@ class AdaptedNote extends StatelessWidget {
               KanzSpace.s12,
             ),
             child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
+              crossAxisAlignment: CrossAxisAlignment.stretch,
               children: [
                 Row(
                   children: [
@@ -254,15 +328,23 @@ class AdaptedNote extends StatelessWidget {
                 const SizedBox(height: KanzSpace.s4),
                 Semantics(
                   liveRegion: true,
-                  child: Text(note, style: t.bodyLarge),
+                  child: Text(
+                    note,
+                    style: t.bodyLarge,
+                    textDirection: noteDirection,
+                  ),
                 ),
               ],
             ),
           ),
-          if (onAction != null) ...[
-            Divider(height: 1, thickness: 1, color: c.line),
-            InkWell(
-              onTap: onAction,
+          Divider(height: 1, thickness: 1, color: c.line),
+          Semantics(
+            button: true,
+            enabled: enabled,
+            liveRegion: actionState == AdaptActionState.busy,
+            child: InkWell(
+              key: const ValueKey('adapt-row'),
+              onTap: enabled ? onAction : null,
               borderRadius: const BorderRadius.vertical(
                 bottom: Radius.circular(KanzRadii.input),
               ),
@@ -277,20 +359,31 @@ class AdaptedNote extends StatelessWidget {
                   ),
                   child: Row(
                     children: [
-                      Icon(KanzIcons.filters, size: 18, color: c.ink),
-                      const SizedBox(width: KanzSpace.s12),
-                      Expanded(child: Text(actionLabel, style: t.labelLarge)),
-                      Icon(
-                        KanzIcons.chevronForward,
-                        size: 18,
-                        color: c.inkSecondary,
+                      SizedBox.square(
+                        dimension: 18,
+                        child: Center(child: glyph),
                       ),
+                      const SizedBox(width: KanzSpace.s12),
+                      Expanded(
+                        child: Text(
+                          actionLabel,
+                          style: enabled
+                              ? t.labelLarge
+                              : t.labelLarge?.copyWith(color: c.inkSecondary),
+                        ),
+                      ),
+                      if (enabled)
+                        Icon(
+                          KanzIcons.chevronForward,
+                          size: 18,
+                          color: c.inkSecondary,
+                        ),
                     ],
                   ),
                 ),
               ),
             ),
-          ],
+          ),
         ],
       ),
     );
@@ -302,12 +395,16 @@ class _MaterialRow extends StatelessWidget {
     required this.material,
     required this.category,
     required this.fromScanLabel,
+    required this.direction,
     required this.divider,
   });
 
   final TutorialMaterial material;
   final MaterialCategory? category;
   final String fromScanLabel;
+
+  /// Direction of the tutorial's language, for the material's name.
+  final TextDirection direction;
   final bool divider;
 
   @override
@@ -341,7 +438,11 @@ class _MaterialRow extends StatelessWidget {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Text(material.name, style: t.bodyLarge),
+                  Text(
+                    material.name,
+                    style: t.bodyLarge,
+                    textDirection: direction,
+                  ),
                   if (material.fromScan) ...[
                     const SizedBox(height: KanzSpace.s2),
                     MonoLabel(fromScanLabel, color: c.ink),
@@ -370,6 +471,7 @@ class _ToolRow extends StatelessWidget {
     required this.haveLabel,
     required this.missingLabel,
     required this.insteadLabel,
+    required this.direction,
     required this.divider,
   });
 
@@ -378,6 +480,9 @@ class _ToolRow extends StatelessWidget {
   final String haveLabel;
   final String missingLabel;
   final String insteadLabel;
+
+  /// Direction of the tutorial's language, for the suggested stand-in.
+  final TextDirection direction;
   final bool divider;
 
   @override
@@ -411,7 +516,11 @@ class _ToolRow extends StatelessWidget {
                     const SizedBox(height: KanzSpace.s8),
                     MonoLabel(insteadLabel),
                     const SizedBox(height: KanzSpace.s2),
-                    Text(alternative, style: t.bodyMedium),
+                    Text(
+                      alternative,
+                      style: t.bodyMedium,
+                      textDirection: direction,
+                    ),
                   ],
                 ],
               ),

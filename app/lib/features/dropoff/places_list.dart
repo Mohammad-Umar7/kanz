@@ -21,8 +21,9 @@ class ResultsBar extends StatelessWidget {
     this.onFilter,
   });
 
-  /// "12 places · within 15 km".
-  final String summary;
+  /// "12 places", "within 15 km": one line "12 PLACES · WITHIN 15 KM"
+  /// when it fits, else one part per line, never broken mid-phrase.
+  final List<String> summary;
   final bool searching;
   final String searchingLabel;
 
@@ -68,7 +69,7 @@ class ResultsBar extends StatelessWidget {
                       : Align(
                           key: const ValueKey('summary'),
                           alignment: AlignmentDirectional.centerStart,
-                          child: MonoLabel(summary),
+                          child: _Summary(parts: summary),
                         ),
                 ),
               ),
@@ -91,9 +92,49 @@ class ResultsBar extends StatelessWidget {
   }
 }
 
+/// The results summary: the parts joined with " · " on one line when they
+/// fit, else stacked one per line without separators, so no line starts
+/// or ends on a dot (large text, a long filter label).
+class _Summary extends StatelessWidget {
+  const _Summary({required this.parts});
+
+  final List<String> parts;
+
+  @override
+  Widget build(BuildContext context) {
+    final line = parts.join(' · ');
+    return LayoutBuilder(
+      builder: (context, constraints) {
+        final type = context.kanzType;
+        final painter = TextPainter(
+          text: TextSpan(
+            text: type.uppercaseData ? line.toUpperCase() : line,
+            style: type.data,
+          ),
+          textDirection: Directionality.of(context),
+          textScaler: MediaQuery.textScalerOf(context),
+          maxLines: 1,
+        )..layout();
+        final fits = painter.width <= constraints.maxWidth;
+        painter.dispose();
+        if (fits) return MonoLabel(line);
+        return MergeSemantics(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            mainAxisSize: MainAxisSize.min,
+            children: [for (final part in parts) MonoLabel(part)],
+          ),
+        );
+      },
+    );
+  }
+}
+
 /// A [PlaceRow] for a [Place]: type and address (or its compass direction
-/// from the search centre when the listing has no address), distance, open
-/// state and the materials it is known to accept.
+/// from the search centre when the listing has no address), distance, the
+/// materials it is known to accept and, when the listing has them, its
+/// opening hours (most OpenStreetMap points have none, and "Hours not
+/// listed" on every row would only repeat itself; the details say it).
 class PlaceListRow extends StatelessWidget {
   const PlaceListRow({
     super.key,
@@ -134,13 +175,14 @@ class PlaceListRow extends StatelessWidget {
           m.id,
       ],
       materialsLabel: acceptsLabel(l10n, vocab, locale, place),
-      typeLabel: placeTypeLabel(vocab, locale, place),
+      typeLabel: placeTypeLabel(l10n, vocab, locale, place),
       address: address != null && address.isNotEmpty
           ? address
           : (origin == null
                 ? null
                 : directionLabel(l10n, origin!, place, cityName: cityName)),
       directionsLabel: l10n.dropoffDirectionsTo(place.name),
+      hideUnknownHours: true,
       selected: selected,
       divider: divider,
       onTap: onTap,

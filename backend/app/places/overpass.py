@@ -38,8 +38,11 @@ log = logging.getLogger("kanz.places.osm")
 
 USER_AGENT = "Kanz/1.0 (student project)"
 # Public instances, in order of preference; 429 and 504 are common at peak times.
+# overpass-api.de is served by two machines with separate load; lz4.overpass-api.de
+# names the other one, so the first hedge is an independent chance, not the same queue.
 MIRRORS = (
     "https://overpass-api.de/api/interpreter",
+    "https://lz4.overpass-api.de/api/interpreter",
     "https://overpass.kumi.systems/api/interpreter",
 )
 # Seconds to wait for a mirror before also asking the next one (typical answers take 1-3 s).

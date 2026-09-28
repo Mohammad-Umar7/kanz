@@ -8,6 +8,7 @@
 /// AI writes inside Arabic text, so a figure reads the same everywhere.
 library;
 
+import 'package:flutter/foundation.dart' show kDebugMode;
 import 'package:flutter/widgets.dart';
 import 'package:intl/intl.dart';
 
@@ -48,6 +49,17 @@ String apiErrorMessage(AppLocalizations l10n, ApiException? error) =>
       ApiErrorCode.interrupted => l10n.commonErrorInterrupted,
       null => l10n.commonErrorGeneric,
     };
+
+/// What an error state quotes for support under `l10n.commonSupportCode`:
+/// the request id, with the wire code in front of it in debug builds
+/// ("ai_unavailable · req_5f3c2a1b"). Null when there is nothing to quote,
+/// for example a failure with no request id in a release build.
+String? errorSupportCode(ApiException? error) {
+  if (error == null) return null;
+  final id = error.requestId;
+  if (!kDebugMode) return id;
+  return [error.code.wireId, ?id].join(' · ');
+}
 
 String stageLabel(AppLocalizations l10n, PipelineStage stage) =>
     switch (stage) {
@@ -122,10 +134,34 @@ String formatKg(AppLocalizations l10n, double kg) => l10n.commonWeightKg(
   kg < 10 ? _oneDecimal.format(kg) : _integer.format(kg.round()),
 );
 
-/// "1.2 kg CO2e". Always pair it with `l10n.commonCo2eDisclaimer`.
+/// "1.2 kg CO₂e". Always pair it with `l10n.commonCo2eDisclaimer`.
 String formatCo2e(AppLocalizations l10n, double kg) => l10n.commonCo2eKg(
   kg < 10 ? _oneDecimal.format(kg) : _integer.format(kg.round()),
 );
+
+/// Joins [items] with the language's own comma: "Recycling center, E-waste",
+/// "مركز إعادة تدوير، نفايات إلكترونية". With [sentence], the last item is
+/// joined with "and" / "و" as a sentence reads it: "glass, paper and metal",
+/// "الزجاج، الورق، والمعادن".
+String formatList(
+  AppLocalizations l10n,
+  Iterable<String> items, {
+  bool sentence = false,
+}) {
+  final list = items.where((s) => s.trim().isNotEmpty).toList();
+  final arabic = l10n.localeName.startsWith('ar');
+  final comma = arabic ? '، ' : ', ';
+  if (!sentence || list.length < 2) return list.join(comma);
+  final head = list.sublist(0, list.length - 1);
+  final last = list.last;
+  if (arabic) {
+    // "أ وب", then "أ، ب، وج" (the conjunction joins the last word).
+    return list.length == 2
+        ? '${head.single} و$last'
+        : '${head.join(comma)}$commaو$last';
+  }
+  return '${head.join(comma)} and $last';
+}
 
 /// "Just now", "5 min ago", "3 hours ago", "Yesterday", "4 days ago", then a
 /// date such as "12 Sep 2026" (month name localized, digits Western).

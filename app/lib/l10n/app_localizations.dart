@@ -146,16 +146,16 @@ abstract class AppLocalizations {
   /// **'Close'**
   String get commonClose;
 
-  /// Always shown next to the CO2e figure on the Impact tab.
+  /// Always shown next to the CO₂e figure on the Impact tab.
   ///
   /// In en, this message translates to:
-  /// **'Estimate, verify before quoting.'**
+  /// **'Rough estimate from average factors.'**
   String get commonCo2eDisclaimer;
 
   /// No description provided for @commonCo2eKg.
   ///
   /// In en, this message translates to:
-  /// **'{kg} kg CO2e'**
+  /// **'{kg} kg CO₂e'**
   String commonCo2eKg(String kg);
 
   /// No description provided for @commonContinue.
@@ -251,7 +251,7 @@ abstract class AppLocalizations {
   /// No description provided for @commonErrorGeneric.
   ///
   /// In en, this message translates to:
-  /// **'Something went wrong. Try again.'**
+  /// **'Kanz hit an unexpected error.'**
   String get commonErrorGeneric;
 
   /// No description provided for @commonErrorImageInvalid.
@@ -287,13 +287,13 @@ abstract class AppLocalizations {
   /// No description provided for @commonErrorOffline.
   ///
   /// In en, this message translates to:
-  /// **'Can\'t reach Kanz. Check your connection and try again.'**
+  /// **'No connection. Saved scans and tutorials still open.'**
   String get commonErrorOffline;
 
   /// No description provided for @commonErrorPlacesUnavailable.
   ///
   /// In en, this message translates to:
-  /// **'Drop-off points can\'t be loaded right now. Try again soon.'**
+  /// **'The map services didn\'t answer. Ideas and tutorials still work.'**
   String get commonErrorPlacesUnavailable;
 
   /// No description provided for @commonErrorRateLimited.
@@ -548,6 +548,12 @@ abstract class AppLocalizations {
   /// **'Step {current} of {total}'**
   String commonStepOf(int current, int total);
 
+  /// Mono label over the request id at the end of an error state, for support.
+  ///
+  /// In en, this message translates to:
+  /// **'Support code'**
+  String get commonSupportCode;
+
   /// No description provided for @commonThemeDark.
   ///
   /// In en, this message translates to:
@@ -578,17 +584,83 @@ abstract class AppLocalizations {
   /// **'Yesterday'**
   String get commonYesterday;
 
+  /// No description provided for @completionAddPhoto.
+  ///
+  /// In en, this message translates to:
+  /// **'Add a photo of what you made'**
+  String get completionAddPhoto;
+
   /// No description provided for @completionAfter.
   ///
   /// In en, this message translates to:
   /// **'After'**
   String get completionAfter;
 
+  /// No description provided for @completionAllTime.
+  ///
+  /// In en, this message translates to:
+  /// **'All time'**
+  String get completionAllTime;
+
   /// No description provided for @completionBefore.
   ///
   /// In en, this message translates to:
   /// **'Before'**
   String get completionBefore;
+
+  /// No description provided for @completionCameraAllow.
+  ///
+  /// In en, this message translates to:
+  /// **'Allow the camera'**
+  String get completionCameraAllow;
+
+  /// No description provided for @completionCameraBlocked.
+  ///
+  /// In en, this message translates to:
+  /// **'The camera is turned off for Kanz in your phone\'s settings. You can choose a photo from your gallery instead.'**
+  String get completionCameraBlocked;
+
+  /// No description provided for @completionCameraDenied.
+  ///
+  /// In en, this message translates to:
+  /// **'Allow the camera to photograph your project, or choose a photo you already took.'**
+  String get completionCameraDenied;
+
+  /// No description provided for @completionCameraNone.
+  ///
+  /// In en, this message translates to:
+  /// **'This phone\'s camera couldn\'t be opened. You can choose a photo from your gallery instead.'**
+  String get completionCameraNone;
+
+  /// No description provided for @completionCameraTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'The camera isn\'t available'**
+  String get completionCameraTitle;
+
+  /// No description provided for @completionCaptureGallery.
+  ///
+  /// In en, this message translates to:
+  /// **'Choose from gallery'**
+  String get completionCaptureGallery;
+
+  /// No description provided for @completionCaptureGuidance.
+  ///
+  /// In en, this message translates to:
+  /// **'Photograph what you made'**
+  String get completionCaptureGuidance;
+
+  /// No description provided for @completionCaptureShutter.
+  ///
+  /// In en, this message translates to:
+  /// **'Take the photo'**
+  String get completionCaptureShutter;
+
+  /// No description provided for @completionCaptureStarting.
+  ///
+  /// In en, this message translates to:
+  /// **'Opening the camera'**
+  String get completionCaptureStarting;
 
   /// No description provided for @completionCardMadeFrom.
   ///
@@ -607,6 +679,12 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'You described'**
   String get completionDescribedLabel;
+
+  /// No description provided for @completionErrorBody.
+  ///
+  /// In en, this message translates to:
+  /// **'Your project couldn\'t be read from this phone.'**
+  String get completionErrorBody;
 
   /// No description provided for @completionErrorTitle.
   ///
@@ -635,7 +713,7 @@ abstract class AppLocalizations {
   /// No description provided for @completionImpactTitle.
   ///
   /// In en, this message translates to:
-  /// **'What changed'**
+  /// **'What this project changed'**
   String get completionImpactTitle;
 
   /// No description provided for @completionItems.
@@ -674,17 +752,47 @@ abstract class AppLocalizations {
   /// **'You described this item in words, so there\'s no photo to compare.'**
   String get completionNoPhoto;
 
+  /// No description provided for @completionNotFinished.
+  ///
+  /// In en, this message translates to:
+  /// **'This project isn\'t finished yet.'**
+  String get completionNotFinished;
+
+  /// No description provided for @completionPhotoFailed.
+  ///
+  /// In en, this message translates to:
+  /// **'Couldn\'t save the photo. Try again.'**
+  String get completionPhotoFailed;
+
   /// No description provided for @completionPhotoOnly.
   ///
   /// In en, this message translates to:
   /// **'The makeover image isn\'t available on this server, so this is your original photo.'**
   String get completionPhotoOnly;
 
+  /// Label under the big number of items this project used.
+  ///
+  /// In en, this message translates to:
+  /// **'{count, plural, =1{item kept out of the bin} other{items kept out of the bin}}'**
+  String completionProjectItems(int count);
+
   /// No description provided for @completionProjects.
   ///
   /// In en, this message translates to:
   /// **'Projects finished'**
   String get completionProjects;
+
+  /// No description provided for @completionReplacePhoto.
+  ///
+  /// In en, this message translates to:
+  /// **'Take a new photo'**
+  String get completionReplacePhoto;
+
+  /// No description provided for @completionSavingPhoto.
+  ///
+  /// In en, this message translates to:
+  /// **'Saving your photo'**
+  String get completionSavingPhoto;
 
   /// No description provided for @completionScanAgain.
   ///
@@ -962,12 +1070,6 @@ abstract class AppLocalizations {
   /// **'Choose a city'**
   String get dropoffLocationPickCity;
 
-  /// No description provided for @dropoffLocationReasonCity.
-  ///
-  /// In en, this message translates to:
-  /// **'Prefer not to share? Choose your city instead.'**
-  String get dropoffLocationReasonCity;
-
   /// No description provided for @dropoffLocationReasonDistance.
   ///
   /// In en, this message translates to:
@@ -1025,7 +1127,7 @@ abstract class AppLocalizations {
   /// No description provided for @dropoffOfflineTitle.
   ///
   /// In en, this message translates to:
-  /// **'You\'re offline'**
+  /// **'Drop-off points need a connection'**
   String get dropoffOfflineTitle;
 
   /// No description provided for @dropoffOpenFailed.
@@ -1058,6 +1160,12 @@ abstract class AppLocalizations {
   /// **'{count, plural, =1{1 drop-off point around {place}, {distance} away.} other{{count} drop-off points around {place}. The nearest is {distance} away.}}'**
   String dropoffPlotLabel(int count, String place, String distance);
 
+  /// Key under the drop-off plot, next to a filled dot: the place lists what it accepts.
+  ///
+  /// In en, this message translates to:
+  /// **'Materials listed'**
+  String get dropoffPlotListed;
+
   /// Compass letter for north on the drop-off plot.
   ///
   /// In en, this message translates to:
@@ -1069,6 +1177,12 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Rings every {distance}'**
   String dropoffPlotRings(String distance);
+
+  /// Key under the drop-off plot, next to a hollow ring: the place does not list what it accepts.
+  ///
+  /// In en, this message translates to:
+  /// **'Not listed'**
+  String get dropoffPlotUnlisted;
 
   /// No description provided for @dropoffPlotYou.
   ///
@@ -1202,10 +1316,10 @@ abstract class AppLocalizations {
   /// **'Website'**
   String get dropoffWebsite;
 
-  /// No description provided for @dropoffWithinKm.
+  /// The space before km is a no-break space, so the figure and unit stay on one line.
   ///
   /// In en, this message translates to:
-  /// **'within {km} km'**
+  /// **'within {km} km'**
   String dropoffWithinKm(int km);
 
   /// No description provided for @historyDelete.
@@ -1247,7 +1361,7 @@ abstract class AppLocalizations {
   /// No description provided for @historyErrorBody.
   ///
   /// In en, this message translates to:
-  /// **'Kanz couldn\'t read what\'s saved on this phone. Try again.'**
+  /// **'Your saved scans and projects couldn\'t be read from this phone.'**
   String get historyErrorBody;
 
   /// No description provided for @historyErrorTitle.
@@ -1379,7 +1493,7 @@ abstract class AppLocalizations {
   /// No description provided for @homeErrorMessage.
   ///
   /// In en, this message translates to:
-  /// **'Kanz couldn\'t read the scans saved on this phone. Try again.'**
+  /// **'Your saved scans couldn\'t be read from this phone.'**
   String get homeErrorMessage;
 
   /// No description provided for @homeErrorTitle.
@@ -1631,13 +1745,13 @@ abstract class AppLocalizations {
   /// No description provided for @ideaImageFailed.
   ///
   /// In en, this message translates to:
-  /// **'The preview didn\'t render.'**
+  /// **'Makeover didn\'t render'**
   String get ideaImageFailed;
 
   /// No description provided for @ideaImagePaused.
   ///
   /// In en, this message translates to:
-  /// **'Image generation is paused on this server, so there\'s no preview yet.'**
+  /// **'Makeover images paused'**
   String get ideaImagePaused;
 
   /// No description provided for @ideaMaterialsTitle.
@@ -1955,7 +2069,7 @@ abstract class AppLocalizations {
   /// No description provided for @onboardingSkillTitle.
   ///
   /// In en, this message translates to:
-  /// **'How much have you made before?'**
+  /// **'How handy are you?'**
   String get onboardingSkillTitle;
 
   /// No description provided for @onboardingToolGroupBuilding.
@@ -2021,7 +2135,7 @@ abstract class AppLocalizations {
   /// No description provided for @onboardingToolsNone.
   ///
   /// In en, this message translates to:
-  /// **'No tools is fine: Kanz puts ideas that need none first.'**
+  /// **'No tools? That\'s fine. Ideas that need none come first.'**
   String get onboardingToolsNone;
 
   /// No description provided for @onboardingToolsTitle.
@@ -2495,8 +2609,8 @@ abstract class AppLocalizations {
   /// No description provided for @resultsFocusedItem.
   ///
   /// In en, this message translates to:
-  /// **'Ideas below are for this item'**
-  String get resultsFocusedItem;
+  /// **'Ideas below are for the {item}'**
+  String resultsFocusedItem(String item);
 
   /// No description provided for @resultsHazardLabel.
   ///
@@ -2575,6 +2689,18 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Kanz couldn\'t identify the materials'**
   String get resultsIdentifyErrorTitle;
+
+  /// No description provided for @resultsImagesPausedBody.
+  ///
+  /// In en, this message translates to:
+  /// **'This server can\'t draw pictures right now. The ideas and their step-by-step tutorials still work.'**
+  String get resultsImagesPausedBody;
+
+  /// No description provided for @resultsImagesPausedTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Makeover images paused'**
+  String get resultsImagesPausedTitle;
 
   /// No description provided for @resultsInCity.
   ///
@@ -2927,7 +3053,7 @@ abstract class AppLocalizations {
   /// No description provided for @resultsSummaryImagesPaused.
   ///
   /// In en, this message translates to:
-  /// **'images paused'**
+  /// **'Makeover images paused'**
   String get resultsSummaryImagesPaused;
 
   /// No description provided for @resultsSummaryPlaces.
@@ -3209,7 +3335,7 @@ abstract class AppLocalizations {
   /// No description provided for @scanGalleryErrorBody.
   ///
   /// In en, this message translates to:
-  /// **'Check that Kanz may read your photos, then try again.'**
+  /// **'Allow Kanz to see your photos, then try again.'**
   String get scanGalleryErrorBody;
 
   /// No description provided for @scanGalleryErrorTitle.
@@ -3272,6 +3398,12 @@ abstract class AppLocalizations {
   /// **'Flashlight'**
   String get scanTorch;
 
+  /// No description provided for @scanUseCamera.
+  ///
+  /// In en, this message translates to:
+  /// **'Use the camera'**
+  String get scanUseCamera;
+
   /// No description provided for @settingsAbout.
   ///
   /// In en, this message translates to:
@@ -3284,10 +3416,16 @@ abstract class AppLocalizations {
   /// **'Kanz identifies what your things are made of, suggests how to upcycle, recycle or donate them, and finds drop-off points in the UAE.'**
   String get settingsAboutBody;
 
+  /// Row under the fixed-city choice that opens the city picker; the city name follows in mono.
+  ///
+  /// In en, this message translates to:
+  /// **'City'**
+  String get settingsCity;
+
   /// No description provided for @settingsCo2eNote.
   ///
   /// In en, this message translates to:
-  /// **'CO2e figures in Kanz are estimates from average emission factors, not measurements.'**
+  /// **'CO₂e figures in Kanz are estimates from average emission factors, not measurements.'**
   String get settingsCo2eNote;
 
   /// No description provided for @settingsEstimates.
@@ -3560,6 +3698,12 @@ abstract class AppLocalizations {
   /// **'Tutorials'**
   String get settingsTutorials;
 
+  /// Settings > About row; the installed version (1.0.0 (1)) follows in mono.
+  ///
+  /// In en, this message translates to:
+  /// **'Version'**
+  String get settingsVersion;
+
   /// No description provided for @settingsWorkshop.
   ///
   /// In en, this message translates to:
@@ -3674,11 +3818,11 @@ abstract class AppLocalizations {
   /// **'Often in your bin'**
   String get swapsChipsLabel;
 
-  /// No description provided for @swapsCost.
+  /// What a swap costs, from Level ids low, medium, high.
   ///
   /// In en, this message translates to:
-  /// **'Cost: {level}'**
-  String swapsCost(String level);
+  /// **'{level, select, low{Low cost} medium{Medium cost} high{High cost} other{{level}}}'**
+  String swapsCostLevel(String level);
 
   /// No description provided for @swapsCount.
   ///
@@ -3686,11 +3830,11 @@ abstract class AppLocalizations {
   /// **'{count, plural, =1{1 swap} other{{count} swaps}}'**
   String swapsCount(int count);
 
-  /// No description provided for @swapsEffort.
+  /// Effort a swap takes, from Level ids low, medium, high.
   ///
   /// In en, this message translates to:
-  /// **'Effort: {level}'**
-  String swapsEffort(String level);
+  /// **'{level, select, low{Low effort} medium{Medium effort} high{High effort} other{{level}}}'**
+  String swapsEffortLevel(String level);
 
   /// No description provided for @swapsEmptyMessage.
   ///
@@ -3803,7 +3947,7 @@ abstract class AppLocalizations {
   /// No description provided for @swapsOfflineTitle.
   ///
   /// In en, this message translates to:
-  /// **'You\'re offline'**
+  /// **'Swaps need a connection'**
   String get swapsOfflineTitle;
 
   /// No description provided for @swapsResultsTitle.
@@ -3860,6 +4004,12 @@ abstract class AppLocalizations {
   /// **'Update swaps'**
   String get swapsUpdate;
 
+  /// No description provided for @tutorialAdaptAdd.
+  ///
+  /// In en, this message translates to:
+  /// **'Add a tool'**
+  String get tutorialAdaptAdd;
+
   /// No description provided for @tutorialAdaptBody.
   ///
   /// In en, this message translates to:
@@ -3871,6 +4021,12 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Couldn\'t rewrite the tutorial. {reason}'**
   String tutorialAdaptFailed(String reason);
+
+  /// No description provided for @tutorialAdaptHave.
+  ///
+  /// In en, this message translates to:
+  /// **'You have'**
+  String get tutorialAdaptHave;
 
   /// No description provided for @tutorialAdaptOffline.
   ///
@@ -3902,11 +4058,11 @@ abstract class AppLocalizations {
   /// **'Adapt this tutorial'**
   String get tutorialAdaptTitle;
 
-  /// No description provided for @tutorialAdaptTools.
+  /// No description provided for @tutorialAdaptToolsCount.
   ///
   /// In en, this message translates to:
-  /// **'Tools you have'**
-  String get tutorialAdaptTools;
+  /// **'{count, plural, =0{Tools · none selected} other{Tools · {count} selected}}'**
+  String tutorialAdaptToolsCount(int count);
 
   /// No description provided for @tutorialAdaptToolsHint.
   ///
@@ -3931,6 +4087,12 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Rewriting for {skill} with your tools. The current steps stay here until the new ones arrive.'**
   String tutorialAdapting(String skill);
+
+  /// No description provided for @tutorialAdaptingRow.
+  ///
+  /// In en, this message translates to:
+  /// **'Adapting to your tools'**
+  String get tutorialAdaptingRow;
 
   /// No description provided for @tutorialBefore.
   ///
@@ -4094,6 +4256,12 @@ abstract class AppLocalizations {
   /// **'Picture of step {number}: {title}'**
   String tutorialImageLabel(int number, String title);
 
+  /// No description provided for @tutorialImageOffline.
+  ///
+  /// In en, this message translates to:
+  /// **'Pictures need a connection'**
+  String get tutorialImageOffline;
+
   /// No description provided for @tutorialImagePaused.
   ///
   /// In en, this message translates to:
@@ -4145,7 +4313,7 @@ abstract class AppLocalizations {
   /// No description provided for @tutorialMissingAction.
   ///
   /// In en, this message translates to:
-  /// **'Back to the idea'**
+  /// **'Back to the ideas'**
   String get tutorialMissingAction;
 
   /// No description provided for @tutorialMissingBody.
@@ -4187,7 +4355,7 @@ abstract class AppLocalizations {
   /// Thin banner under the app bar while a stored tutorial is open offline.
   ///
   /// In en, this message translates to:
-  /// **'You\'re offline. This tutorial is saved; new images and adapting need a connection.'**
+  /// **'You\'re offline. This tutorial is saved; new pictures and adapting need a connection.'**
   String get tutorialOfflineBanner;
 
   /// No description provided for @tutorialOfflineBody.
@@ -4213,6 +4381,12 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Previous step'**
   String get tutorialPrevious;
+
+  /// No description provided for @tutorialRedraw.
+  ///
+  /// In en, this message translates to:
+  /// **'Redraw picture'**
+  String get tutorialRedraw;
 
   /// No description provided for @tutorialSafetyNotes.
   ///

@@ -30,9 +30,9 @@ Widget _fakeMap(BuildContext context, PlacesMapSpec spec) => ColoredBox(
     child: PlacesPlot(
       center: spec.center,
       places: spec.places,
-      pinMaterials: spec.pinMaterials,
+      pinMarks: spec.pinMarks,
       selectedId: spec.selectedId,
-      northLabel: 'N',
+      northLabel: context.l10n.dropoffPlotNorth,
       semanticsLabel: spec.semanticsLabel,
     ),
   ),

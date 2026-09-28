@@ -573,14 +573,16 @@ class ScanSession extends Notifier<ScanSessionState> {
 
     final images = <String, GeneratedImageState>{};
     final cache = ref.read(imageCacheRepositoryProvider);
+    // Images missing from the device failed for the makeovers stage's saved
+    // reason (e.g. no image quota) or were still rendering when the app closed.
+    final missingImage =
+        stages[PipelineStage.makeovers]!.error ??
+        const ApiException.interrupted();
     for (final idea
         in stored.recommendation?.upcycle ?? const <UpcycleIdea>[]) {
       final cached = await cache.afterImage(scanId, idea.id);
       images[idea.id] = cached == null
-          ? const GeneratedImageState(
-              status: ImageStatus.failed,
-              error: ApiException.interrupted(),
-            )
+          ? GeneratedImageState(status: ImageStatus.failed, error: missingImage)
           : GeneratedImageState(
               status: ImageStatus.ready,
               url: _api.resolveUrl(cached.remoteUrl),
@@ -652,7 +654,10 @@ class ScanSession extends Notifier<ScanSessionState> {
         status: StageStatus.failed,
         error: ApiException.interrupted(),
       ),
-      StageStatus.failed => const StageState(status: StageStatus.failed),
+      StageStatus.failed => StageState(
+        status: StageStatus.failed,
+        error: _savedError(stored, stage),
+      ),
       StageStatus.pending || null => const StageState(),
     };
   }
@@ -702,10 +707,33 @@ class ScanSession extends Notifier<ScanSessionState> {
 
   Future<void> _persistStages() async {
     if (!ref.mounted) return;
-    final stages = {
-      for (final e in state.stages.entries) e.key.name: e.value.status.name,
-    };
+    final stages = <String, String>{};
+    for (final e in state.stages.entries) {
+      stages[e.key.name] = e.value.status.name;
+      // A failure keeps its reason, so a scan reopened from History says what
+      // happened ("image generation is paused") instead of a generic error.
+      final error = e.value.error;
+      if (e.value.status == StageStatus.failed && error != null) {
+        stages['${e.key.name}$_errorKey'] = error.code.name;
+        stages['${e.key.name}$_retryableKey'] = '${error.retryable}';
+      }
+    }
     await _save(() => _scans.saveStages(scanId, stages));
+  }
+
+  static const _errorKey = '.error';
+  static const _retryableKey = '.retryable';
+
+  /// The saved reason [stage] failed, or null when none was saved.
+  static ApiException? _savedError(StoredScan stored, PipelineStage stage) {
+    final name = stored.stages['${stage.name}$_errorKey'];
+    final code = ApiErrorCode.values.where((c) => c.name == name).firstOrNull;
+    if (code == null) return null;
+    return ApiException(
+      code: code,
+      message: 'Restored from history.',
+      retryable: stored.stages['${stage.name}$_retryableKey'] != 'false',
+    );
   }
 
   Future<void> _mark(ImpactKind kind, Iterable<String> itemIds) async {

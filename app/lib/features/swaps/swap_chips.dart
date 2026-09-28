@@ -33,10 +33,20 @@ const List<SwapChipOption> swapChipOptions = [
   SwapChipOption('batteries', 'hazardous'),
 ];
 
-/// The readable label for a request entry: a chip's label, or the typed text.
-String swapEntryLabel(AppLocalizations l10n, String entry) {
+/// The readable label for a request entry: a chip's label, or the typed
+/// text. [inSentence] gives the chip's label as it reads mid-sentence
+/// ("plastic bags"; Arabic has no case).
+String swapEntryLabel(
+  AppLocalizations l10n,
+  String entry, {
+  bool inSentence = false,
+}) {
   for (final option in swapChipOptions) {
-    if (option.id == entry) return option.label(l10n);
+    if (option.id != entry) continue;
+    final label = option.label(l10n);
+    return inSentence && label.isNotEmpty
+        ? label[0].toLowerCase() + label.substring(1)
+        : label;
   }
   return entry;
 }

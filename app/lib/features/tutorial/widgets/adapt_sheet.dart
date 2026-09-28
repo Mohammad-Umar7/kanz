@@ -28,9 +28,11 @@ Future<AdaptRequest?> showAdaptSheet({
   );
 }
 
-/// Skill as three segments and the tools the user has as chips. The
-/// primary action stays disabled until something changed, and offline it
-/// explains why it cannot run.
+/// Skill as three segments, then the tools: the ones the user has first,
+/// then the rest to add. The groups are fixed when the sheet opens, so a chip
+/// never jumps away from under the finger. The primary action stays disabled
+/// until something changed, and offline it explains why it cannot run. A
+/// hairline marks where the list scrolls under the pinned action.
 class AdaptSheet extends StatefulWidget {
   const AdaptSheet({
     super.key,
@@ -60,6 +62,14 @@ class _AdaptSheetState extends State<AdaptSheet> {
       _tools.length != widget.tools.length ||
       !_tools.containsAll(widget.tools);
 
+  void _toggle(ToolId id, {required bool selected}) => setState(() {
+    if (selected) {
+      _tools.add(id);
+    } else {
+      _tools.remove(id);
+    }
+  });
+
   @override
   Widget build(BuildContext context) {
     final l10n = context.l10n;
@@ -67,6 +77,36 @@ class _AdaptSheetState extends State<AdaptSheet> {
     final t = context.textStyles;
     final locale = Localizations.localeOf(context);
     final canSubmit = _changed && !widget.offline;
+    final had = [
+      for (final entry in widget.choices)
+        if (widget.tools.contains(entry.id)) entry,
+    ];
+    final others = [
+      for (final entry in widget.choices)
+        if (!widget.tools.contains(entry.id)) entry,
+    ];
+
+    Widget group(String title, List<ToolEntry> entries) => Column(
+      crossAxisAlignment: CrossAxisAlignment.stretch,
+      children: [
+        Text(title, style: t.labelMedium?.copyWith(color: c.inkSecondary)),
+        const SizedBox(height: KanzSpace.s4),
+        Wrap(
+          spacing: KanzSpace.s8,
+          children: [
+            for (final entry in entries)
+              KanzChip(
+                key: ValueKey('adapt-tool-${entry.id.id}'),
+                label: entry.label.forLocale(locale),
+                selected: _tools.contains(entry.id),
+                icon: _tools.contains(entry.id) ? KanzIcons.check : null,
+                onSelected: (selected) => _toggle(entry.id, selected: selected),
+              ),
+          ],
+        ),
+      ],
+    );
+
     return KanzSheet(
       title: l10n.tutorialAdaptTitle,
       subtitle: l10n.tutorialAdaptBody,
@@ -104,48 +144,46 @@ class _AdaptSheetState extends State<AdaptSheet> {
               : null,
         ),
       ],
-      child: SingleChildScrollView(
-        padding: KanzSpace.page,
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.stretch,
-          children: [
-            MonoLabel(l10n.tutorialAdaptSkill),
-            const SizedBox(height: KanzSpace.s8),
-            SegmentedTabs(
-              selectedIndex: SkillLevel.values.indexOf(_skill),
-              onChanged: (i) => setState(() => _skill = SkillLevel.values[i]),
-              tabs: [
-                for (final level in SkillLevel.values)
-                  SegmentedTab(label: skillLabel(l10n, level)),
-              ],
-            ),
-            const SizedBox(height: KanzSpace.s24),
-            MonoLabel(l10n.tutorialAdaptTools),
-            const SizedBox(height: KanzSpace.s4),
-            Text(l10n.tutorialAdaptToolsHint, style: t.bodySmall),
-            const SizedBox(height: KanzSpace.s8),
-            Wrap(
-              spacing: KanzSpace.s8,
-              children: [
-                for (final entry in widget.choices)
-                  KanzChip(
-                    key: ValueKey('adapt-tool-${entry.id.id}'),
-                    label: entry.label.forLocale(locale),
-                    selected: _tools.contains(entry.id),
-                    icon: _tools.contains(entry.id) ? KanzIcons.check : null,
-                    onSelected: (selected) => setState(() {
-                      if (selected) {
-                        _tools.add(entry.id);
-                      } else {
-                        _tools.remove(entry.id);
-                      }
-                    }),
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: [
+          Flexible(
+            child: SingleChildScrollView(
+              padding: KanzSpace.page,
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.stretch,
+                children: [
+                  MonoLabel(l10n.tutorialAdaptSkill),
+                  const SizedBox(height: KanzSpace.s8),
+                  SegmentedTabs(
+                    selectedIndex: SkillLevel.values.indexOf(_skill),
+                    onChanged: (i) =>
+                        setState(() => _skill = SkillLevel.values[i]),
+                    tabs: [
+                      for (final level in SkillLevel.values)
+                        SegmentedTab(label: skillLabel(l10n, level)),
+                    ],
                   ),
-              ],
+                  const SizedBox(height: KanzSpace.s24),
+                  MonoLabel(l10n.tutorialAdaptToolsCount(_tools.length)),
+                  const SizedBox(height: KanzSpace.s4),
+                  Text(l10n.tutorialAdaptToolsHint, style: t.bodySmall),
+                  if (had.isNotEmpty) ...[
+                    const SizedBox(height: KanzSpace.s16),
+                    group(l10n.tutorialAdaptHave, had),
+                  ],
+                  if (others.isNotEmpty) ...[
+                    const SizedBox(height: KanzSpace.s16),
+                    group(l10n.tutorialAdaptAdd, others),
+                  ],
+                  const SizedBox(height: KanzSpace.s16),
+                ],
+              ),
             ),
-            const SizedBox(height: KanzSpace.s8),
-          ],
-        ),
+          ),
+          Divider(height: 1, thickness: 1, color: c.line),
+        ],
       ),
     );
   }

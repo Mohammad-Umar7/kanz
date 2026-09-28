@@ -8,6 +8,7 @@ import 'package:kanz/core/state/core_providers.dart';
 import 'package:kanz/core/state/dropoff_controller.dart';
 import 'package:kanz/features/dropoff/dropoff_screen.dart';
 import 'package:kanz/features/dropoff/external_links.dart';
+import 'package:kanz/features/dropoff/place_info.dart';
 import 'package:kanz/features/dropoff/places_map.dart';
 
 import '../../core/support/fakes.dart';
@@ -57,7 +58,9 @@ void main() {
     await pump(tester, resultsState(ar: false));
 
     expect(find.text('Near Abu Dhabi'), findsOneWidget);
-    expect(find.text('6 PLACES · WITHIN 15 KM'), findsOneWidget);
+    // One line when it fits, else one part per line; "15 km" never splits.
+    expect(find.textContaining('6 PLACES'), findsOneWidget);
+    expect(find.textContaining('WITHIN 15 KM'), findsOneWidget);
     await tester.scrollUntilVisible(
       find.text('Scrap metal yard'),
       200,
@@ -178,7 +181,7 @@ void main() {
     expect(controller.calls, contains('toggleType:scrap_metal'));
     await tester.tap(find.text('Done'));
     await settle(tester);
-    expect(find.text('1 PLACE · WITHIN 15 KM'), findsOneWidget);
+    expect(find.textContaining('1 PLACE'), findsOneWidget);
     expect(find.text('Scrap metal'), findsWidgets);
   });
 
@@ -254,9 +257,19 @@ void main() {
       ),
     );
     expect(spec!.places, hasLength(6));
-    expect(spec!.pinMaterials['osm:node/1'], 'glass');
-    // Places that take several materials get a neutral pin.
-    expect(spec!.pinMaterials['osm:node/3'], isNull);
+    // A place that lists one material is filled in its color, one that
+    // lists several is filled in ink, and one that lists nothing is a
+    // ring (in the material's color when it was found for one material).
+    expect(
+      spec!.pinMarks['osm:node/1'],
+      const PinMark(listed: true, materialId: 'glass'),
+    );
+    expect(spec!.pinMarks['osm:node/3'], const PinMark(listed: true));
+    expect(spec!.pinMarks['g:2'], const PinMark(listed: false));
+    expect(
+      spec!.pinMarks['g:6'],
+      const PinMark(listed: false, materialId: 'metal'),
+    );
     spec!.onPinTap(spec!.places[1]);
     await settle(tester);
     expect(controller.calls, contains('selectPlace:g:2'));

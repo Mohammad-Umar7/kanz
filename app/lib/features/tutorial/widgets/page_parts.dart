@@ -198,9 +198,12 @@ class InverseTag extends StatelessWidget {
 /// A numbered hairline list ("01  Hang it from a hook ..."), used for the
 /// finishing and care notes.
 class NumberedList extends StatelessWidget {
-  const NumberedList({super.key, required this.items});
+  const NumberedList({super.key, required this.items, this.textDirection});
 
   final List<String> items;
+
+  /// Direction of the language the items were written in.
+  final TextDirection? textDirection;
 
   @override
   Widget build(BuildContext context) {
@@ -225,7 +228,11 @@ class NumberedList extends StatelessWidget {
                   ),
                   const SizedBox(width: KanzSpace.s16),
                   Expanded(
-                    child: Text(items[i], style: context.textStyles.bodyLarge),
+                    child: Text(
+                      items[i],
+                      style: context.textStyles.bodyLarge,
+                      textDirection: textDirection,
+                    ),
                   ),
                 ],
               ),

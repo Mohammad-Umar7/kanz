@@ -122,6 +122,18 @@ final List<_Scenario> _scenarios = [
     ),
     page: 1,
   ),
+  // A tutorial written in English, opened with the app in Arabic (and the
+  // other way round): its text keeps its own direction.
+  _scenario(
+    'step_other_language',
+    scan: _jarScan,
+    tutorial: (lang, photos) => readyTutorial(
+      lang: lang == Lang.ar ? Lang.en : Lang.ar,
+      images: allStepImages(photos.after),
+      current: 2,
+      done: {1},
+    ),
+  ),
   _scenario(
     'step_drawing',
     scan: _jarScan,
