@@ -49,6 +49,7 @@ async def test_same_request_is_served_from_the_store(step_chain):
     assert second.tutorial == first.tutorial
     assert len(gateway.calls) == 1
     assert "cache" in second.timings_ms
+    assert len(step_chain) == 2  # handed off again, so a restarted server resumes the chain
 
 
 async def test_changing_skill_or_tools_gives_a_new_adapted_tutorial(step_chain):
@@ -131,7 +132,8 @@ async def test_step_images_never_break_a_tutorial(monkeypatch):
     assert len(res.tutorial.steps) == 5
 
 
-async def test_autostart_can_be_switched_off(step_chain, isolated):
+async def test_the_idea_is_handed_off_even_with_autostart_off(step_chain, isolated):
+    # The image service stores the idea and itself decides whether to start rendering.
     isolated.step_images_autostart = False
     await pipeline.tutorial(request(), gateway=FakeGateway({LlmTutorial: llm_tutorial()}))
-    assert step_chain == []
+    assert len(step_chain) == 1

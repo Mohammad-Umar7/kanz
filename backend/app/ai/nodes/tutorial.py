@@ -250,16 +250,21 @@ def build_tutorial(out: LlmTutorial, state: TutorialState) -> Tutorial:
 
 @timed("finalize")
 async def finalize(state: TutorialState, runtime: Runtime[PipelineContext]) -> dict:
-    """Persist the tutorial, then start the step-image chain in the background (never blocking or failing)."""
+    """Persist the tutorial, then hand it to the image pipeline (never blocking or failing)."""
     tutorial = state["tutorial"]
     store = runtime.context.tutorials or get_tutorial_store()
     store.save(tutorial)
-    if runtime.context.settings.step_images_autostart:
-        start_step_images(tutorial, state["request"].idea)
+    start_step_images(tutorial, state["request"].idea)
     return {}
 
 
 def start_step_images(tutorial: Tutorial, idea: UpcycleIdea) -> None:
+    """Hand the tutorial and its idea to the image pipeline.
+
+    The image service always stores the idea (later ``/images/step`` calls need it for the
+    final step) and starts rendering in the background only when ``STEP_IMAGES_AUTOSTART``
+    is on. It deduplicates chains, so calling it again for a cached tutorial is safe.
+    """
     try:
         # Lazy import: the image pipeline is a separate workstream and must never break tutorials.
         from app.images.service import start_step_chain  # noqa: PLC0415

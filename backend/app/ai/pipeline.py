@@ -17,6 +17,7 @@ import time
 from app.ai import safety
 from app.ai.gemini import GeminiGateway, get_gateway
 from app.ai.graph import analyze_graph, recommend_graph, tutorial_graph
+from app.ai.nodes.tutorial import start_step_images
 from app.ai.state import PipelineContext
 from app.config import get_settings
 from app.core.errors import BadRequest
@@ -98,6 +99,7 @@ async def tutorial(req: TutorialRequest, *, gateway: GeminiGateway | None = None
 
     cached = get_tutorial_store().get(tutorial_id)
     if cached is not None:
+        start_step_images(cached, req.idea)  # resumes the chain after a restart; deduplicated otherwise
         return TutorialResponse(tutorial=cached, timings_ms={"cache": _ms(start), "total": _ms(start)})
 
     state = await tutorial_graph().ainvoke({"request": req, "tutorial_id": tutorial_id}, context=_context(gateway))
