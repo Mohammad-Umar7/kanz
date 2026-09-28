@@ -1,0 +1,56 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Kanz curated drop-off points",
+  "description": "Drop-off points the Kanz team has verified in person or with the operator. The file is a JSON list of entries. The backend validates every entry at load (app/places/curated.py) and rejects invalid ones.",
+  "type": "array",
+  "items": {
+    "type": "object",
+    "additionalProperties": false,
+    "required": ["id", "name", "lat", "lng", "facility_types", "category_keys", "verified_by", "verified_on"],
+    "properties": {
+      "id": {
+        "type": "string",
+        "pattern": "^[a-z0-9][a-z0-9_-]{1,63}$",
+        "description": "Stable lowercase id, e.g. 'auh_corniche_clothes_bin'. Returned to the app as 'cur:<id>'."
+      },
+      "name": {"type": "string", "minLength": 2, "maxLength": 120, "description": "Name as shown on site, in English."},
+      "name_ar": {"type": ["string", "null"], "minLength": 2, "maxLength": 120, "description": "Arabic name, if the site shows one."},
+      "lat": {"type": "number", "minimum": -90, "maximum": 90},
+      "lng": {"type": "number", "minimum": -180, "maximum": 180},
+      "address": {"type": ["string", "null"], "description": "Street or building and area, as a visitor would look for it."},
+      "city": {
+        "type": ["string", "null"],
+        "enum": ["abu_dhabi", "al_ain", "dubai", "sharjah", "ajman", "umm_al_quwain", "ras_al_khaimah", "fujairah", null]
+      },
+      "facility_types": {
+        "type": "array",
+        "minItems": 1,
+        "items": {
+          "type": "string",
+          "enum": ["recycling_center", "collection_point", "donation", "e_waste", "hazardous_waste", "scrap_metal", "wood_collection"]
+        }
+      },
+      "category_keys": {
+        "type": "array",
+        "minItems": 1,
+        "description": "Keys from facility_categories.json that this point serves.",
+        "items": {
+          "type": "string",
+          "enum": ["glass", "plastic", "paper", "metal", "textile_donation", "textile_recycling", "wood", "e_waste", "battery", "hazardous", "donation", "general_recycling"]
+        }
+      },
+      "accepted_materials": {
+        "type": ["array", "null"],
+        "description": "Only what the site itself says it accepts.",
+        "items": {
+          "type": "string",
+          "enum": ["glass", "plastic", "paper", "metal", "textile", "wood", "electronics", "hazardous", "organic", "other"]
+        }
+      },
+      "phone": {"type": ["string", "null"], "pattern": "^[+]?[0-9 ()-]{6,20}$"},
+      "website": {"type": ["string", "null"], "pattern": "^https?://"},
+      "verified_by": {"type": "string", "minLength": 2, "maxLength": 80, "description": "Who checked it (a team member's name or initials)."},
+      "verified_on": {"type": "string", "format": "date", "description": "When it was checked, YYYY-MM-DD. Not in the future."}
+    }
+  }
+}
