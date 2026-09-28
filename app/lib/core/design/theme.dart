@@ -158,6 +158,14 @@ abstract final class KanzTheme {
       primaryTextTheme: text,
       scaffoldBackgroundColor: c.background,
       canvasColor: c.background,
+      // Legacy color slots still read by some widgets; set them so no
+      // Material default (blue swatch, purple seed) can leak through.
+      primaryColor: c.ink,
+      primaryColorLight: c.surfaceSunken,
+      primaryColorDark: c.ink,
+      secondaryHeaderColor: c.surfaceSunken,
+      unselectedWidgetColor: c.lineStrong,
+      shadowColor: c.shadow,
       cardColor: c.surface,
       dividerColor: c.line,
       disabledColor: c.inkDisabled,

@@ -56,6 +56,13 @@ class _BeforeAfterSliderState extends State<BeforeAfterSlider> {
   late double _value = widget.initialValue.clamp(0.0, 1.0);
   bool _dragging = false;
   bool _focused = false;
+  final FocusNode _focusNode = FocusNode(debugLabel: 'BeforeAfterSlider');
+
+  @override
+  void dispose() {
+    _focusNode.dispose();
+    super.dispose();
+  }
 
   void _set(double v) {
     final next = v.clamp(0.0, 1.0);
@@ -107,6 +114,7 @@ class _BeforeAfterSliderState extends State<BeforeAfterSlider> {
       onIncrease: () => _set(_value + BeforeAfterSlider.step),
       onDecrease: () => _set(_value - BeforeAfterSlider.step),
       child: Focus(
+        focusNode: _focusNode,
         onKeyEvent: _onKey,
         onFocusChange: (f) => setState(() => _focused = f),
         child: AspectRatio(
@@ -117,7 +125,11 @@ class _BeforeAfterSliderState extends State<BeforeAfterSlider> {
               final splitX = rtl ? w * (1 - _value) : w * _value;
               return GestureDetector(
                 behavior: HitTestBehavior.opaque,
+                // The slider semantics above describe this control; raw
+                // tap and drag actions would only confuse screen readers.
+                excludeFromSemantics: true,
                 onHorizontalDragStart: (d) {
+                  _focusNode.requestFocus();
                   setState(() => _dragging = true);
                   _set(_valueAt(d.localPosition.dx, w, rtl));
                 },
@@ -125,7 +137,10 @@ class _BeforeAfterSliderState extends State<BeforeAfterSlider> {
                     _set(_valueAt(d.localPosition.dx, w, rtl)),
                 onHorizontalDragEnd: (_) => setState(() => _dragging = false),
                 onHorizontalDragCancel: () => setState(() => _dragging = false),
-                onTapUp: (d) => _set(_valueAt(d.localPosition.dx, w, rtl)),
+                onTapUp: (d) {
+                  _focusNode.requestFocus();
+                  _set(_valueAt(d.localPosition.dx, w, rtl));
+                },
                 child: ClipRRect(
                   borderRadius: widget.borderRadius,
                   child: Stack(
