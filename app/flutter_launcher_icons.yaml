@@ -1,0 +1,14 @@
+# Launcher icons, generated from the brand PNGs rendered by
+# tool/brand/make_brand.py. Regenerate with: dart run flutter_launcher_icons
+flutter_launcher_icons:
+  image_path: "assets/brand/icon.png"
+  android: true
+  min_sdk_android: 21
+  # Adaptive icon: paper background, the gem inside the safe zone.
+  adaptive_icon_background: "#F4F1EA"
+  adaptive_icon_foreground: "assets/brand/icon_foreground.png"
+  # Android 13 themed icons tint this single-color version.
+  adaptive_icon_monochrome: "assets/brand/icon_monochrome.png"
+  ios: true
+  remove_alpha_ios: true
+  background_color_ios: "#F4F1EA"
