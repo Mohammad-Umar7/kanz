@@ -21,8 +21,9 @@ How it works
 * **After image**, keyed ``(image_id, idea.id)``: ``generated/<image_id>/after_<idea_id>.jpg``.
   The idea is saved next to it as ``idea_<idea_id>.json`` so a later step request can
   rebuild the after image from the tutorial alone.
-* **Step chain**, keyed ``(image_id, idea_id, skill, step)``:
-  ``step_<idea_id>_<skill>_<n>.jpg``. Step 1 edits the original photo; step N edits
+* **Step chain**, keyed ``(image_id, idea_id, skill, chain, step)``:
+  ``step_<idea_id>_<skill>_<chain>_<n>.jpg``, where ``chain`` fingerprints what the
+  tutorial's steps describe (``chain_id``). Step 1 edits the original photo; step N edits
   step N-1 with the original photo as a second reference (it pulls back drift in color
   and shape); the last step also sees the after image, so the ending matches the reveal
   the user already saw. Missing earlier steps are rendered first, in order.
@@ -47,6 +48,8 @@ How it works
 from __future__ import annotations
 
 import asyncio
+import hashlib
+import json
 import logging
 import re
 import time
@@ -64,7 +67,7 @@ from app.core.errors import AiInvalidOutput, AiQuotaExhausted, BadRequest, KanzE
 from app.core.storage import ImageStore, StoredImage, get_store
 from app.core.timing import stage_timer
 from app.core.tutorials import TutorialStore, get_tutorial_store
-from app.images.director import ImageDirector, ImagePrompt
+from app.images.director import ImageDirector, ImagePrompt, clean, step_visual
 from app.images.flights import SingleFlight
 from app.images.framing import closest_aspect_ratio, crop_to_box, image_size
 from app.schemas.images import AfterImageRequest, BinImageRequest, ImageResponse, StepImageRequest
@@ -114,8 +117,22 @@ def after_key(image_id: str, idea_id: str) -> str:
     return f"{image_id}:after:{idea_id}"
 
 
-def step_key(image_id: str, idea_id: str, skill: str, step: int) -> str:
-    return f"{image_id}:step:{idea_id}:{skill}:{step}"
+def chain_id(tutorial: Tutorial) -> str:
+    """Fingerprint (8 hex) of the pictures a tutorial's steps describe.
+
+    Two tutorials for the same photo, idea and skill can still differ: another tool set or
+    language makes the Tutorial Writer adapt the steps, sometimes into a different number
+    of them. A picture drawn for one step list must never be served for another, so step
+    pictures are keyed by this fingerprint too. Tutorials whose steps describe the same
+    pictures (the same English ``image_prompt`` list) still share them.
+    """
+    visuals = [clean(step_visual(step)) for step in tutorial.steps]
+    raw = json.dumps([tutorial.image_id, tutorial.idea_id, tutorial.skill, visuals], separators=(",", ":"))
+    return hashlib.sha256(raw.encode("utf-8")).hexdigest()[:8]
+
+
+def step_key(tutorial: Tutorial, step: int) -> str:
+    return f"{tutorial.image_id}:step:{tutorial.idea_id}:{tutorial.skill}:{chain_id(tutorial)}:{step}"
 
 
 def bin_key(image_id: str, item_id: str) -> str:
@@ -126,8 +143,8 @@ def reference_key(image_id: str) -> str:
     return f"{image_id}:reference"
 
 
-def step_name(idea_id: str, skill: str, step: int) -> str:
-    return f"step_{idea_id}_{skill}_{step}"
+def step_name(tutorial: Tutorial, step: int) -> str:
+    return f"step_{tutorial.idea_id}_{tutorial.skill}_{chain_id(tutorial)}_{step}"
 
 
 def _safe_id(value: str, field: str) -> str:
@@ -173,7 +190,7 @@ class ImageService:
         return self._response(result, kind="after", key=after_key(image_id, idea.id), timings=timings)
 
     async def step_image(self, req: StepImageRequest) -> ImageResponse:
-        """One tutorial step. Cached per (image_id, idea_id, skill, step); missing earlier steps render first."""
+        """One tutorial step, cached per (image_id, idea_id, skill, chain, step). Missing earlier steps render first."""
         tutorial = self.tutorials.get(req.tutorial_id)
         if tutorial is None:
             raise NotFound(detail=f"tutorial {req.tutorial_id} unknown")
@@ -190,7 +207,7 @@ class ImageService:
         timings: Timings = {}
         with stage_timer(timings, "image_step"):
             result = await self._step(tutorial, req.step, idea, regenerate=req.regenerate, timings=timings)
-        key = step_key(tutorial.image_id, tutorial.idea_id, tutorial.skill, req.step)
+        key = step_key(tutorial, req.step)
         return self._response(result, kind="step", key=key, timings=timings, step=req.step, skill=tutorial.skill)
 
     async def bin_image(self, req: BinImageRequest) -> ImageResponse:
@@ -356,8 +373,8 @@ class ImageService:
         timings: Timings | None = None,
     ) -> Rendered:
         """Step ``number``, rendering any missing earlier steps first (in order)."""
-        image_id, idea_id, skill = tutorial.image_id, tutorial.idea_id, tutorial.skill
-        name = step_name(idea_id, skill, number)
+        image_id = tutorial.image_id
+        name = step_name(tutorial, number)
         final = number == len(tutorial.steps)
 
         async def build() -> StoredImage:
@@ -382,8 +399,7 @@ class ImageService:
                 timing_key=f"render_step_{number}",
             )
 
-        key = step_key(image_id, idea_id, skill, number)
-        return await self._obtain(key, image_id, name, build, regenerate=regenerate)
+        return await self._obtain(step_key(tutorial, number), image_id, name, build, regenerate=regenerate)
 
     # ==================================================== cache and render
     async def _obtain(

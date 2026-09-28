@@ -6,8 +6,8 @@ import pytest
 
 from app.core.errors import BadRequest, NotFound
 from app.core.storage import ImageStore
-from app.core.tutorials import TutorialStore
-from app.images.service import ImageService
+from app.core.tutorials import TutorialStore, tutorial_id_for
+from app.images.service import ImageService, chain_id, step_name
 from app.schemas.images import AfterImageRequest, StepImageRequest
 from app.schemas.recommend import UpcycleIdea
 from app.schemas.tutorial import Tutorial
@@ -21,7 +21,7 @@ def request(tutorial: Tutorial, step: int, *, regenerate: bool = False) -> StepI
 
 
 def step_file(store: ImageStore, tutorial: Tutorial, n: int) -> bytes:
-    return store.generated_path(tutorial.image_id, f"step_{tutorial.idea_id}_{tutorial.skill}_{n}").read_bytes()
+    return store.generated_path(tutorial.image_id, step_name(tutorial, n)).read_bytes()
 
 
 async def test_step_one_edits_the_original_photo(
@@ -32,8 +32,9 @@ async def test_step_one_edits_the_original_photo(
     assert gateway.labels == ["step1"]
     assert gateway.calls[0].references == [store.load_upload(tutorial.image_id)]
     assert resp.kind == "step" and resp.step == 1 and resp.skill == "beginner"
-    assert resp.key == f"{tutorial.image_id}:step:{tutorial.idea_id}:beginner:1"
-    assert resp.url.endswith(f"/{tutorial.image_id}/step_{tutorial.idea_id}_beginner_1.jpg")
+    chain = chain_id(tutorial)
+    assert resp.key == f"{tutorial.image_id}:step:{tutorial.idea_id}:beginner:{chain}:1"
+    assert resp.url.endswith(f"/{tutorial.image_id}/step_{tutorial.idea_id}_beginner_{chain}_1.jpg")
     assert resp.cached is False
     assert "image_step" in resp.timings_ms
 
@@ -130,7 +131,58 @@ async def test_skill_levels_have_separate_chains(
     await service.step_image(request(tutorial, 1))
     resp = await service.step_image(request(advanced, 1))
     assert gateway.labels == ["step1", "step1"]
-    assert resp.url.endswith("_advanced_1.jpg")
+    assert f"_advanced_{chain_id(advanced)}_1.jpg" in resp.url
+
+
+async def test_an_adapted_tutorial_never_reuses_pictures_drawn_for_other_steps(
+    service: ImageService,
+    gateway: FakeImageGateway,
+    tutorial_store: TutorialStore,
+    tutorial: Tutorial,
+    idea: UpcycleIdea,
+) -> None:
+    # Same photo, idea and skill, but the user removed a tool: the writer changed step 3
+    # and added a sixth step, so step 5 is no longer the finished project.
+    steps = list(tutorial.steps)
+    punched = steps[2].model_copy(update={"image_prompt": "the same jar with two holes punched under the rim"})
+    sixth = steps[4].model_copy(update={"number": 6})
+    adapted = tutorial.model_copy(
+        update={
+            "tutorial_id": tutorial_id_for(tutorial.image_id, tutorial.idea_id, tutorial.skill, [], "en"),
+            "steps": [*steps[:2], punched, *steps[3:], sixth],
+        }
+    )
+    tutorial_store.save(adapted)
+    first = await service.step_image(request(tutorial, 5))
+    rendered = len(gateway.calls)
+
+    resp = await service.step_image(request(adapted, 5))
+
+    assert resp.cached is False
+    assert resp.url != first.url and resp.key != first.key
+    assert gateway.labels[rendered:] == ["step1", "step2", "step3", "step4", "step5"]
+    assert "step 5 of 6" in gateway.calls[-1].prompt
+    assert punched.image_prompt in gateway.calls[rendered + 2].prompt
+
+
+async def test_a_translated_tutorial_with_the_same_pictures_shares_them(
+    service: ImageService,
+    gateway: FakeImageGateway,
+    tutorial_store: TutorialStore,
+    tutorial: Tutorial,
+    idea: UpcycleIdea,
+) -> None:
+    # The Arabic tutorial has its own id and text, but its English image prompts match.
+    arabic = make_tutorial(tutorial.image_id, idea, lang="ar")
+    tutorial_store.save(arabic)
+    assert arabic.tutorial_id != tutorial.tutorial_id
+
+    english = await service.step_image(request(tutorial, 3))
+    resp = await service.step_image(request(arabic, 3))
+
+    assert gateway.labels == ["step1", "step2", "step3"]
+    assert resp.cached is True
+    assert (resp.url, resp.key) == (english.url, english.key)
 
 
 async def test_unknown_tutorial_is_not_found(service: ImageService, photo_id: str) -> None:

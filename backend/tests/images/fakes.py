@@ -131,12 +131,14 @@ async def until(condition: Callable[[], object], timeout: float = 2.0) -> None:
     raise AssertionError(f"condition not met within {timeout} s")
 
 
-def make_tutorial(image_id: str, idea: UpcycleIdea, skill: str = "beginner") -> Tutorial:
-    base = Tutorial.model_validate(load_fixture("tutorial_jar_lantern")["tutorial"])
+def make_tutorial(image_id: str, idea: UpcycleIdea, skill: str = "beginner", lang: str = "en") -> Tutorial:
+    """The 5-step jar lantern tutorial fixture (English or Arabic) rebound to ``image_id`` and ``idea``."""
+    fixture = "tutorial_jar_lantern" if lang == "en" else "tutorial_jar_lantern_ar"
+    base = Tutorial.model_validate(load_fixture(fixture)["tutorial"])
     tools = [t.tool_id for t in base.tools if t.have]
     return base.model_copy(
         update={
-            "tutorial_id": tutorial_id_for(image_id, idea.id, skill, tools, "en"),
+            "tutorial_id": tutorial_id_for(image_id, idea.id, skill, tools, lang),
             "image_id": image_id,
             "idea_id": idea.id,
             "skill": skill,

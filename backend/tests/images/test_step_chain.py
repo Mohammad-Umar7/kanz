@@ -8,7 +8,7 @@ import pytest
 from app.core.errors import AiUnavailable
 from app.core.storage import ImageStore
 from app.images import service as image_service
-from app.images.service import ImageService
+from app.images.service import ImageService, step_name
 from app.schemas.images import StepImageRequest
 from app.schemas.recommend import UpcycleIdea
 from app.schemas.tutorial import Tutorial
@@ -16,7 +16,7 @@ from tests.images.fakes import FakeImageGateway, ImageCall, until
 
 
 def step_exists(store: ImageStore, tutorial: Tutorial, n: int) -> bool:
-    return store.generated_path(tutorial.image_id, f"step_{tutorial.idea_id}_{tutorial.skill}_{n}").exists()
+    return store.generated_path(tutorial.image_id, step_name(tutorial, n)).exists()
 
 
 async def test_chain_renders_every_step_in_order(
