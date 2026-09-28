@@ -1,3 +1,5 @@
+import 'package:flutter/foundation.dart';
+
 import '../data/models/common.dart';
 
 /// Every failure the app can show for a network call.
@@ -87,6 +89,19 @@ class ApiException implements Exception {
         message: 'This step did not finish.',
         retryable: true,
       );
+
+  /// Wraps any failure for the UI. Errors outside the network layer (storage
+  /// full, a corrupt local file) become a retryable `internal` error, so a
+  /// stage ends visibly instead of spinning forever.
+  factory ApiException.from(Object error) {
+    if (error is ApiException) return error;
+    debugPrint('Unexpected failure: $error');
+    return ApiException(
+      code: ApiErrorCode.internal,
+      message: '$error',
+      retryable: true,
+    );
+  }
 
   final ApiErrorCode code;
 

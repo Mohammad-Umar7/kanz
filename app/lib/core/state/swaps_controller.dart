@@ -122,7 +122,8 @@ class SwapsController extends Notifier<SwapsState> {
           );
       if (!ref.mounted || run != _run) return;
       state = state.copyWith(loading: false, results: response);
-    } on ApiException catch (e) {
+    } on Object catch (error) {
+      final e = ApiException.from(error);
       if (!ref.mounted || run != _run || e.isCancelled) return;
       state = state.copyWith(loading: false, error: e);
     }

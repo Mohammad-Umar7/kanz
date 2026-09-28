@@ -197,6 +197,22 @@ void main() {
     expect(h.api.calls.where((c) => c == 'recommend'), hasLength(1));
   });
 
+  test('an unexpected failure ends the stage instead of spinning', () async {
+    h = await TestHarness.create(prefs: _cityMode);
+    h.api.onRecommend = () async => throw StateError('disk full');
+    final id = newScanId();
+
+    await h.container
+        .read(scanSessionProvider(id).notifier)
+        .startFromPhoto(bytes: _photo);
+    await waitFor(() => settled(id));
+
+    final ideas = stateOf(id).stage(PipelineStage.ideas);
+    expect(ideas.status, StageStatus.failed);
+    expect(ideas.error?.code, ApiErrorCode.internal);
+    expect(ideas.error?.retryable, isTrue);
+  });
+
   test('drop-off waits for a location decision, then resumes', () async {
     h = await TestHarness.create();
     final id = newScanId();

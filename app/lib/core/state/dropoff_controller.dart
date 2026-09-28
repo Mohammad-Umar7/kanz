@@ -112,7 +112,8 @@ class DropoffController extends Notifier<DropoffState> {
         catalog: response.categories,
         catalogLoading: false,
       );
-    } on ApiException catch (e) {
+    } on Object catch (error) {
+      final e = ApiException.from(error);
       if (!ref.mounted) return;
       state = state.copyWith(catalogLoading: false, catalogError: e);
     }
@@ -191,7 +192,8 @@ class DropoffController extends Notifier<DropoffState> {
         results: results,
         selectedPlaceId: null,
       );
-    } on ApiException catch (e) {
+    } on Object catch (error) {
+      final e = ApiException.from(error);
       if (!current() || e.isCancelled) return;
       state = state.copyWith(searching: false, error: e);
     }

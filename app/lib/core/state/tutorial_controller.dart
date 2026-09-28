@@ -141,7 +141,8 @@ class TutorialController extends Notifier<TutorialState> {
         stepImages: const {},
       );
       unawaited(_loadStepImages());
-    } on ApiException catch (e) {
+    } on Object catch (error) {
+      final e = ApiException.from(error);
       if (!ref.mounted || e.isCancelled) return;
       state = state.copyWith(adapting: false, adaptError: e);
     }
@@ -261,7 +262,8 @@ class TutorialController extends Notifier<TutorialState> {
         completed: project.isCompleted,
       );
       unawaited(_loadStepImages());
-    } on ApiException catch (e) {
+    } on Object catch (error) {
+      final e = ApiException.from(error);
       if (!_current(generation) || e.isCancelled) return;
       state = state.copyWith(phase: TutorialPhase.failed, error: e);
     }
@@ -392,7 +394,8 @@ class TutorialController extends Notifier<TutorialState> {
         debugPrint('Step image not cached: $e');
       }
       return true;
-    } on ApiException catch (e) {
+    } on Object catch (error) {
+      final e = ApiException.from(error);
       if (!current() || e.isCancelled) return false;
       _setStepImage(
         number,

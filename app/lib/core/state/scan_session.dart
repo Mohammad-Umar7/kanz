@@ -104,11 +104,13 @@ class ScanSession extends Notifier<ScanSessionState> {
     _photo = image.bytes;
     if (!ref.mounted) return;
     state = state.copyWith(localImagePath: image.path);
-    await _scans.create(
-      id: scanId,
-      source: AnalysisSource.image,
-      lang: lang,
-      localImagePath: image.path,
+    await _save(
+      () => _scans.create(
+        id: scanId,
+        source: AnalysisSource.image,
+        lang: lang,
+        localImagePath: image.path,
+      ),
     );
     await _analyze();
   }
@@ -124,11 +126,13 @@ class ScanSession extends Notifier<ScanSessionState> {
       lang: lang,
       inputText: text.trim(),
     );
-    await _scans.create(
-      id: scanId,
-      source: AnalysisSource.text,
-      lang: lang,
-      inputText: text.trim(),
+    await _save(
+      () => _scans.create(
+        id: scanId,
+        source: AnalysisSource.text,
+        lang: lang,
+        inputText: text.trim(),
+      ),
     );
     await _analyze();
   }
@@ -164,7 +168,7 @@ class ScanSession extends Notifier<ScanSessionState> {
       ),
     );
     state = state.copyWith(analysis: corrected);
-    await _scans.saveAnalysis(scanId, corrected);
+    await _save(() => _scans.saveAnalysis(scanId, corrected));
     await _recommend(_newChain());
   }
 
@@ -172,7 +176,7 @@ class ScanSession extends Notifier<ScanSessionState> {
   Future<void> focusItem(String itemId) async {
     if (itemId == state.focusItemId) return;
     state = state.copyWith(focusItemId: itemId);
-    await _scans.saveFocus(scanId, itemId);
+    await _save(() => _scans.saveFocus(scanId, itemId));
     await _recommend(_newChain());
   }
 
@@ -239,7 +243,7 @@ class ScanSession extends Notifier<ScanSessionState> {
         );
       }
       if (!_current(chain)) return;
-      await _scans.saveAnalysis(scanId, response);
+      await _save(() => _scans.saveAnalysis(scanId, response));
       final photo = response.analysis.photo;
       if (!photo.usable || response.analysis.items.isEmpty) {
         // The model says it cannot see anything useful: ask for a retake
@@ -257,7 +261,8 @@ class ScanSession extends Notifier<ScanSessionState> {
       state = state.copyWith(analysis: response);
       _setStage(PipelineStage.identifying, StageStatus.done);
       await _recommend(chain);
-    } on ApiException catch (e) {
+    } on Object catch (error) {
+      final e = ApiException.from(error);
       if (!_current(chain) || e.isCancelled) return;
       _setStage(PipelineStage.identifying, StageStatus.failed, error: e);
       await _persistStages();
@@ -291,14 +296,15 @@ class ScanSession extends Notifier<ScanSessionState> {
         cancelToken: _chainToken,
       );
       if (!_current(chain)) return;
-      await _scans.saveRecommendation(scanId, response);
+      await _save(() => _scans.saveRecommendation(scanId, response));
       state = state.copyWith(recommendation: response);
       _setStage(PipelineStage.ideas, StageStatus.done);
       await _persistStages();
       // Drop-off points and makeovers are independent: run them side by side
       // so places appear without waiting for image generation.
       await Future.wait([_dropoff(), _makeovers(chain)]);
-    } on ApiException catch (e) {
+    } on Object catch (error) {
+      final e = ApiException.from(error);
       if (!_current(chain) || e.isCancelled) return;
       _setStage(PipelineStage.ideas, StageStatus.failed, error: e);
       await _persistStages();
@@ -338,10 +344,11 @@ class ScanSession extends Notifier<ScanSessionState> {
         cancelToken: token,
       );
       if (!current()) return;
-      await _scans.saveFacilities(scanId, response);
+      await _save(() => _scans.saveFacilities(scanId, response));
       state = state.copyWith(facilities: response);
       _setStage(PipelineStage.dropoff, StageStatus.done);
-    } on ApiException catch (e) {
+    } on Object catch (error) {
+      final e = ApiException.from(error);
       if (!current() || e.isCancelled) return;
       _setStage(PipelineStage.dropoff, StageStatus.failed, error: e);
     }
@@ -441,7 +448,8 @@ class ScanSession extends Notifier<ScanSessionState> {
         // The image still shows from the backend; only offline history misses it.
         debugPrint('After image not cached: $e');
       }
-    } on ApiException catch (e) {
+    } on Object catch (error) {
+      final e = ApiException.from(error);
       if (!current() || e.isCancelled) return;
       _setImage(
         idea.id,
@@ -607,15 +615,22 @@ class ScanSession extends Notifier<ScanSessionState> {
     state = state.copyWith(afterImages: {...state.afterImages, ideaId: image});
   }
 
+  /// History writes are best effort: a failed write (storage full) must not
+  /// fail a stage whose result the user can already see.
+  Future<void> _save(Future<void> Function() write) async {
+    try {
+      await write();
+    } on Object catch (e) {
+      debugPrint('Scan $scanId not saved to history: $e');
+    }
+  }
+
   Future<void> _persistStages() async {
     if (!ref.mounted) return;
-    try {
-      await _scans.saveStages(scanId, {
-        for (final e in state.stages.entries) e.key.name: e.value.status.name,
-      });
-    } on Object catch (e) {
-      debugPrint('Stages not saved: $e');
-    }
+    final stages = {
+      for (final e in state.stages.entries) e.key.name: e.value.status.name,
+    };
+    await _save(() => _scans.saveStages(scanId, stages));
   }
 
   Future<void> _mark(ImpactKind kind, Iterable<String> itemIds) async {
