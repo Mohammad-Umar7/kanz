@@ -1,0 +1,326 @@
+[
+  {
+    "id": "safety_batteries",
+    "kind": "safety",
+    "title": "Battery safety",
+    "title_ar": "السلامة مع البطاريات",
+    "materials": ["hazardous", "electronics"],
+    "applies_to": {"hazards": ["battery"], "materials": ["hazardous", "electronics"], "techniques": []},
+    "rules": [
+      "Tape both terminals of every used battery (or put each in its own small bag) so they cannot short-circuit.",
+      "Store used batteries in a dry glass jar or cardboard box, away from heat and metal objects.",
+      "Take them to a battery collection box; many supermarkets and electronics stores have one.",
+      "Treat swollen, leaking or hot lithium batteries as urgent: put them on sand or a ceramic plate outdoors and drop them off quickly."
+    ],
+    "never": [
+      "Never put batteries in the household bin or recycling bin: they cause fires in waste trucks.",
+      "Never burn, crush, puncture or open a battery.",
+      "Never try to recharge single-use alkaline batteries."
+    ],
+    "gear": ["gloves"]
+  },
+  {
+    "id": "safety_e_waste",
+    "kind": "safety",
+    "title": "Electronics and e-waste safety",
+    "title_ar": "السلامة مع الإلكترونيات والنفايات الإلكترونية",
+    "materials": ["electronics"],
+    "applies_to": {"hazards": ["e_waste", "battery"], "materials": ["electronics"], "techniques": []},
+    "rules": [
+      "Back up and erase personal data, then factory-reset phones, tablets and computers before handing them in.",
+      "Keep devices whole: the collection point removes batteries and parts safely.",
+      "Tape over cracked screens so glass fragments stay in place.",
+      "Hand devices to an e-waste collection point, a retailer take-back box or a certified refurbisher."
+    ],
+    "never": [
+      "Never open or dismantle devices with built-in lithium batteries at home.",
+      "Never put electronics, cables or chargers in household bins.",
+      "Never burn cables to recover copper."
+    ],
+    "gear": []
+  },
+  {
+    "id": "safety_chemicals",
+    "kind": "safety",
+    "title": "Chemical containers",
+    "title_ar": "عبوات المواد الكيميائية",
+    "materials": ["hazardous", "plastic", "metal"],
+    "applies_to": {"hazards": ["chemical"], "materials": ["hazardous"], "techniques": []},
+    "rules": [
+      "Keep chemicals in their original labelled containers with the lids tightly closed.",
+      "Take leftover paint, solvents, pesticides, strong cleaners and motor oil to a hazardous waste collection point.",
+      "Transport containers upright in a box, separated from each other."
+    ],
+    "never": [
+      "Never reuse a container that held chemicals, pesticides, solvents or motor oil for food, drink, edible plants or pets.",
+      "Never mix chemicals: bleach and ammonia or acids together release toxic gas.",
+      "Never pour chemicals down drains, into the sand or into the sea."
+    ],
+    "gear": ["gloves", "safety_glasses"]
+  },
+  {
+    "id": "safety_aerosols",
+    "kind": "safety",
+    "title": "Aerosol can safety",
+    "title_ar": "السلامة مع علب الرذاذ",
+    "materials": ["hazardous", "metal"],
+    "applies_to": {"hazards": ["aerosol"], "materials": ["hazardous", "metal"], "techniques": ["spray_painting"]},
+    "rules": [
+      "Use the can until it is completely empty and no longer hisses when pressed.",
+      "Keep the cap on and store it upright, out of the sun.",
+      "Take cans that are not empty, or held paint, solvent or insecticide, to hazardous waste collection."
+    ],
+    "never": [
+      "Never puncture, crush, cut or burn an aerosol can, even when it seems empty.",
+      "Never leave aerosols in a hot car or in direct UAE summer sun: they can burst.",
+      "Never reuse an aerosol can for crafts."
+    ],
+    "gear": []
+  },
+  {
+    "id": "safety_medicines",
+    "kind": "safety",
+    "title": "Medicine disposal",
+    "title_ar": "التخلص من الأدوية",
+    "materials": ["hazardous", "plastic"],
+    "applies_to": {"hazards": ["medicine"], "materials": ["hazardous"], "techniques": []},
+    "rules": [
+      "Take expired or unused medicines, including blister packs with tablets left, back to a pharmacy and ask how they collect them.",
+      "Keep medicines in their original packaging so they can be identified.",
+      "Cross out your name on labels before handing them in.",
+      "Empty blister packs with no tablets left can go to general waste."
+    ],
+    "never": [
+      "Never flush medicines down the toilet or sink.",
+      "Never give prescription medicines to someone else.",
+      "Never reuse medicine bottles or blister packs for crafts children could mistake for sweets."
+    ],
+    "gear": []
+  },
+  {
+    "id": "safety_light_bulbs",
+    "kind": "safety",
+    "title": "Light bulbs and fluorescent tubes",
+    "title_ar": "المصابيح وأنابيب الفلورسنت",
+    "materials": ["hazardous", "glass", "electronics"],
+    "applies_to": {"hazards": ["light_bulb"], "materials": ["hazardous", "glass"], "techniques": []},
+    "rules": [
+      "Energy-saving CFL bulbs and fluorescent tubes contain a small amount of mercury: take them to a hazardous waste or lamp collection point.",
+      "LED bulbs contain electronics and go to e-waste collection.",
+      "Old incandescent and halogen bulbs are not glass-bank glass: wrap them and follow local collection advice.",
+      "Keep bulbs in their original box or wrapped in paper until drop-off."
+    ],
+    "never": [
+      "Never put bulbs in the glass recycling bank.",
+      "Never break a bulb on purpose or use one for crafts.",
+      "If a CFL breaks, never vacuum it: air the room for 15 minutes, scoop the pieces with card and seal them in a jar."
+    ],
+    "gear": ["gloves"]
+  },
+  {
+    "id": "safety_broken_glass",
+    "kind": "safety",
+    "title": "Broken glass disposal",
+    "title_ar": "التخلص من الزجاج المكسور",
+    "materials": ["glass"],
+    "applies_to": {"hazards": ["broken_glass", "sharp_edges"], "materials": ["glass"], "techniques": []},
+    "rules": [
+      "Put on thick gloves and pick up large pieces first, then press sticky tape or a slice of bread on small splinters.",
+      "Wrap the pieces in several sheets of newspaper or put them in a rigid box or jar and tape it shut.",
+      "Label the package 'broken glass' so collection staff are warned.",
+      "Broken jars and bottles can go in the glass bank only if the bank accepts them loose; otherwise use general waste in a sealed box."
+    ],
+    "never": [
+      "Never pick up splinters with bare hands.",
+      "Never put loose broken glass in a plastic bag.",
+      "Never use broken glass for DIY projects."
+    ],
+    "gear": ["gloves"]
+  },
+  {
+    "id": "safety_glass_handling",
+    "kind": "safety",
+    "title": "Glass safety",
+    "title_ar": "السلامة عند العمل بالزجاج",
+    "materials": ["glass"],
+    "applies_to": {"hazards": ["sharp_edges"], "materials": ["glass"], "techniques": ["glass_work", "drilling", "candles"]},
+    "rules": [
+      "Check jars and bottles for chips and hairline cracks before using them; cracked glass can shatter when heated or pressed.",
+      "Wear work gloves and safety glasses if you drill, sand or cut glass, and keep the glass wet while drilling.",
+      "Put glass on a towel or non-slip mat while you work so it cannot roll.",
+      "Let glass cool fully after hot water or a candle before touching it."
+    ],
+    "never": [
+      "Never pour boiling water into a cold jar.",
+      "Never cut glass bottles with string and fire.",
+      "Never use chipped glass for food or drink."
+    ],
+    "gear": ["gloves", "safety_glasses"]
+  },
+  {
+    "id": "safety_cutting",
+    "kind": "safety",
+    "title": "Cutting safely",
+    "title_ar": "القص والقطع بأمان",
+    "materials": ["paper", "plastic", "textile", "metal"],
+    "applies_to": {"hazards": ["sharp_edges"], "materials": [], "techniques": ["cutting", "blade_cutting"]},
+    "rules": [
+      "Cut on a cutting mat or thick board, never on your lap or hand.",
+      "Always cut away from your body and keep your other hand behind the blade.",
+      "Wear work gloves when using a craft knife, and use several light passes instead of one hard cut.",
+      "Retract or cap the blade and put it away as soon as you finish."
+    ],
+    "never": [
+      "Never use a dull blade: it slips. Snap off or replace it.",
+      "Never leave blades where children can reach them."
+    ],
+    "gear": ["gloves"]
+  },
+  {
+    "id": "safety_sanding",
+    "kind": "safety",
+    "title": "Sanding safely",
+    "title_ar": "الصنفرة بأمان",
+    "materials": ["wood", "metal"],
+    "applies_to": {"hazards": [], "materials": ["wood"], "techniques": ["sanding"]},
+    "rules": [
+      "Wear a dust mask; add safety glasses when sanding overhead or with a power sander.",
+      "Sand outdoors or with a window open and wipe dust with a damp cloth instead of sweeping it into the air.",
+      "Work from coarse to fine sandpaper and sand along the grain."
+    ],
+    "never": [
+      "Never dry-sand old paint that may contain lead: seal it instead.",
+      "Never sand pressure-treated or MB-stamped wood."
+    ],
+    "gear": ["dust_mask", "safety_glasses"]
+  },
+  {
+    "id": "safety_drilling",
+    "kind": "safety",
+    "title": "Drilling safely",
+    "title_ar": "الثقب بالمثقاب بأمان",
+    "materials": ["wood", "metal", "glass"],
+    "applies_to": {"hazards": [], "materials": [], "techniques": ["drilling"]},
+    "rules": [
+      "Wear safety glasses and tie back long hair and loose sleeves.",
+      "Clamp the piece; never hold small parts in your hand while drilling.",
+      "Drill a small pilot hole first and let the drill do the work.",
+      "Check walls for pipes and cables before drilling into them."
+    ],
+    "never": [
+      "Never wear gloves near a spinning bit: they can catch and pull your hand in.",
+      "Never drill a sealed can or anything that held fuel or aerosol."
+    ],
+    "gear": ["safety_glasses"]
+  },
+  {
+    "id": "safety_painting",
+    "kind": "safety",
+    "title": "Painting, spraying and sealing",
+    "title_ar": "الطلاء والرش والتغليف بالورنيش",
+    "materials": ["glass", "metal", "wood", "paper", "plastic"],
+    "applies_to": {"hazards": [], "materials": [], "techniques": ["painting", "spray_painting", "varnishing"]},
+    "rules": [
+      "Wear gloves or old clothes and cover your work surface.",
+      "Spray paint and varnish outdoors or by an open window, and wear a dust mask for spray paint.",
+      "Keep painted surfaces away from food unless the finish is labelled food-safe; paint the outside of containers only.",
+      "Let each coat dry fully and close tins tightly."
+    ],
+    "never": [
+      "Never spray near a flame, stove or cigarette.",
+      "Never pour leftover paint or thinner down the drain."
+    ],
+    "gear": ["gloves", "dust_mask"]
+  },
+  {
+    "id": "safety_heat_candles",
+    "kind": "safety",
+    "title": "Candles and heat",
+    "title_ar": "الشموع والحرارة",
+    "materials": ["glass", "metal"],
+    "applies_to": {"hazards": [], "materials": [], "techniques": ["candles"]},
+    "rules": [
+      "Prefer LED tea lights indoors, near fabric or where children play.",
+      "Put real candles only in glass or metal holders on a heat-proof surface, 30 cm below anything that can burn.",
+      "Lift hot metal lanterns by the handle only."
+    ],
+    "never": [
+      "Never leave a burning candle unattended.",
+      "Never put a candle inside plastic, paper or fabric.",
+      "Never heat, melt or burn plastic: the fumes are toxic."
+    ],
+    "gear": []
+  },
+  {
+    "id": "safety_sharp_metal",
+    "kind": "safety",
+    "title": "Cans and sharp metal",
+    "title_ar": "العلب والمعادن الحادة",
+    "materials": ["metal"],
+    "applies_to": {"hazards": ["sharp_edges"], "materials": ["metal"], "techniques": ["sharp_metal", "hammering"]},
+    "rules": [
+      "Wear work gloves when cutting, punching or handling opened cans.",
+      "File or sand cut edges, or cover them with tape, before anyone uses the object.",
+      "Punch holes with the can on a wooden board; filling it with frozen water stops it from denting."
+    ],
+    "never": [
+      "Never cut or punch aerosol cans or anything that held fuel.",
+      "Never leave sharp strips of metal loose: fold the edges back."
+    ],
+    "gear": ["gloves", "safety_glasses"]
+  },
+  {
+    "id": "safety_mold",
+    "kind": "safety",
+    "title": "Mold",
+    "title_ar": "العفن",
+    "materials": ["textile", "wood", "paper", "organic"],
+    "applies_to": {"hazards": ["mold"], "materials": ["textile", "wood", "paper"], "techniques": []},
+    "rules": [
+      "Items with visible mold are not suitable for donation or crafts.",
+      "Bag moldy textiles, paper and wood outdoors and put them in general waste.",
+      "Wash your hands after handling them."
+    ],
+    "never": [
+      "Never shake moldy items indoors: spores spread.",
+      "Never put moldy textiles in clothing donation or recycling bins."
+    ],
+    "gear": ["gloves", "dust_mask"]
+  },
+  {
+    "id": "safety_plastic_heat",
+    "kind": "safety",
+    "title": "Never heat plastic",
+    "title_ar": "لا تسخّن البلاستيك أبدًا",
+    "materials": ["plastic"],
+    "applies_to": {"hazards": [], "materials": ["plastic"], "techniques": ["candles"]},
+    "rules": [
+      "Shape and join plastic cold: cut, fold, lace, weave, glue or screw it.",
+      "Use LED lights, never flames, inside plastic lamps and lanterns.",
+      "Keep plastic projects out of direct summer sun for long periods; heat warps them."
+    ],
+    "never": [
+      "Never melt, burn, iron or bake plastic, and never heat nails to pierce it: the fumes are toxic.",
+      "Never microwave plastic that is not labelled microwave-safe."
+    ],
+    "gear": []
+  },
+  {
+    "id": "safety_food_contact",
+    "kind": "safety",
+    "title": "Food contact after upcycling",
+    "title_ar": "ملامسة الطعام بعد إعادة التدوير",
+    "materials": ["glass", "plastic", "metal", "wood"],
+    "applies_to": {"hazards": ["chemical"], "materials": ["glass", "plastic", "metal", "wood"], "techniques": ["painting", "varnishing", "spray_painting"]},
+    "rules": [
+      "Only containers that originally held food should be reused for food, and only if they are intact and clean.",
+      "Painted or varnished surfaces must not touch food unless the product is labelled food-safe; paint the outside only.",
+      "Grow edible plants only in containers that held food or drink and in untreated wood."
+    ],
+    "never": [
+      "Never reuse chemical, pesticide, solvent or motor-oil containers for food, drink, edible plants or pets.",
+      "Never store food in cracked or chipped containers."
+    ],
+    "gear": []
+  }
+]
