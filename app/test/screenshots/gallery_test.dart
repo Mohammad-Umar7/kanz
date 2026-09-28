@@ -1,7 +1,9 @@
 // Renders every design gallery section at 360 and 412 dp, light and dark,
 // English and Arabic, plus 130 % text, into test/screenshots/_out/.
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:go_router/go_router.dart';
 import 'package:kanz/features/gallery/gallery_samples.dart';
 import 'package:kanz/features/gallery/gallery_screen.dart';
 import 'package:kanz/features/gallery/gallery_sections.dart';
@@ -63,5 +65,33 @@ void main() {
       child: DesignGalleryScreen(images: gallery),
     );
     expect(find.text(GallerySamples.en.title), findsOneWidget);
+  });
+
+  // The path screen tests use: a routed screen under a Riverpod scope.
+  testWidgets('gallery screen at its route under a provider scope', (
+    tester,
+  ) async {
+    final gallery = await images(tester);
+    final router = GoRouter(
+      initialLocation: '/gallery',
+      routes: [
+        GoRoute(
+          path: '/gallery',
+          builder: (context, state) => DesignGalleryScreen(images: gallery),
+        ),
+      ],
+    );
+    addTearDown(router.dispose);
+    final file = await takeShot(
+      tester,
+      name: 'gallery_screen_routed',
+      config: const ShotConfig(locale: Locale('ar')),
+      precache: [gallery.photo],
+      wrap: (app) => ProviderScope(child: app),
+      routerConfig: router,
+    );
+    // The gallery opens in the app's language.
+    expect(find.text(GallerySamples.ar.title), findsOneWidget);
+    expect(file.lengthSync(), greaterThan(0));
   });
 }
