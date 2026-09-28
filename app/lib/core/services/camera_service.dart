@@ -24,14 +24,24 @@ class CameraService {
   CameraController? _controller;
   bool _wanted = false;
 
+  /// The start in progress. On Android the resume that follows the camera
+  /// permission dialog arrives while the first `initialize()` is still
+  /// running; sharing this future stops a second controller from grabbing
+  /// the camera and leaking the first.
+  Future<CameraController>? _starting;
+
   CameraController? get controller => _controller;
 
   bool get isReady => _controller?.value.isInitialized ?? false;
 
   /// Opens the back camera. Throws [CameraUnavailable].
-  Future<CameraController> start() async {
+  Future<CameraController> start() {
     _wanted = true;
-    if (isReady) return _controller!;
+    if (isReady) return Future.value(_controller!);
+    return _starting ??= _open().whenComplete(() => _starting = null);
+  }
+
+  Future<CameraController> _open() async {
     final List<CameraDescription> cameras;
     try {
       cameras = await availableCameras();
@@ -62,6 +72,11 @@ class CameraService {
             : CameraFailure.failed,
         e.description,
       );
+    }
+    if (!_wanted) {
+      // stop() was called while the camera was opening.
+      await controller.dispose();
+      throw const CameraUnavailable(CameraFailure.failed, 'stopped');
     }
     _controller = controller;
     return controller;
