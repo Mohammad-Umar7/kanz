@@ -118,6 +118,9 @@ class GeminiGateway:
     def __init__(self, settings: Settings | None = None, client: genai.Client | None = None) -> None:
         self.settings = settings or get_settings()
         self._client = client
+        # Models that rejected the MINIMAL thinking level (e.g. an older model behind an alias):
+        # they are called with LOW from then on instead of being skipped as a fallback.
+        self._low_thinking_models: set[str] = set()
 
     # ------------------------------------------------------------------ client
     @property
@@ -237,7 +240,16 @@ class GeminiGateway:
 
         async def run(conversation: list[types.Content], tag: str) -> str:
             async def call(m: str) -> str:
-                resp = await self.client.aio.models.generate_content(model=m, contents=conversation, config=config)
+                low = config.model_copy(update={"thinking_config": types.ThinkingConfig(thinking_level="LOW")})
+                cfg = low if m in self._low_thinking_models and config.thinking_config else config
+                try:
+                    resp = await self.client.aio.models.generate_content(model=m, contents=conversation, config=cfg)
+                except genai_errors.APIError as exc:
+                    unsupported = getattr(exc, "code", None) == 400 and "thinking level" in str(exc).lower()
+                    if not unsupported or cfg is low:
+                        raise
+                    self._low_thinking_models.add(m)
+                    resp = await self.client.aio.models.generate_content(model=m, contents=conversation, config=low)
                 return resp.text or ""
 
             text, _ = await self._call_with_fallback(
