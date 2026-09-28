@@ -154,6 +154,105 @@ void main() {
     });
   });
 
+  group('BoundingBoxOverlay', () {
+    const jar = DetectionBox(
+      id: 'jar',
+      rect: Rect.fromLTRB(0.3, 0.2, 0.7, 0.9),
+      categoryId: 'glass',
+      label: 'Jar · 93%',
+    );
+    // The lid shares the jar's top edge, the common case for nested items.
+    const lid = DetectionBox(
+      id: 'lid',
+      rect: Rect.fromLTRB(0.3, 0.2, 0.7, 0.34),
+      categoryId: 'metal',
+      label: 'Lid · 81%',
+    );
+
+    Widget overlay(
+      List<DetectionBox> boxes, {
+      ValueChanged<String>? onSelect,
+      Size imageSize = const Size(1000, 1000),
+    }) {
+      return _app(
+        SizedBox.square(
+          dimension: 300,
+          child: BoundingBoxOverlay(
+            image: _photo,
+            imageSize: imageSize,
+            boxes: boxes,
+            semanticsLabel: 'Your photo',
+            onSelect: onSelect,
+          ),
+        ),
+      );
+    }
+
+    double tagOpacity(WidgetTester tester, String text) => tester
+        .widget<Opacity>(
+          find.ancestor(of: find.text(text), matching: find.byType(Opacity)),
+        )
+        .opacity;
+
+    testWidgets('the reveal waits for detections that arrive after the '
+        'photo', (tester) async {
+      // The results screen shows the photo while the analysis runs.
+      await tester.pumpWidget(overlay(const []));
+      await tester.pump(const Duration(seconds: 3));
+
+      await tester.pumpWidget(overlay(const [jar]));
+      await tester.pump();
+      expect(tagOpacity(tester, 'JAR · 93%'), 0);
+
+      await tester.pump(const Duration(seconds: 2));
+      expect(tagOpacity(tester, 'JAR · 93%'), closeTo(1, 1e-9));
+    });
+
+    testWidgets('tags of boxes that share an edge do not overlap', (
+      tester,
+    ) async {
+      await tester.pumpWidget(overlay(const [jar, lid]));
+      await tester.pump(const Duration(seconds: 2));
+      final a = tester.getRect(find.text('JAR · 93%'));
+      final b = tester.getRect(find.text('LID · 81%'));
+      expect(a.overlaps(b), isFalse, reason: '$a and $b');
+    });
+
+    testWidgets('a tap selects the smallest box under the finger', (
+      tester,
+    ) async {
+      final selected = <String>[];
+      await tester.pumpWidget(
+        overlay(const [jar, lid], onSelect: selected.add),
+      );
+      await tester.pump(const Duration(seconds: 2));
+      final photo = tester.getRect(find.byType(BoundingBoxOverlay));
+      // Inside both boxes: the lid wins. Lower down only the jar is hit.
+      await tester.tapAt(photo.topLeft + const Offset(150, 80));
+      await tester.tapAt(photo.topLeft + const Offset(150, 220));
+      // Outside every box: nothing is selected.
+      await tester.tapAt(photo.topLeft + const Offset(20, 280));
+      expect(selected, ['lid', 'jar']);
+    });
+
+    testWidgets('an unknown image size maps boxes onto the viewport', (
+      tester,
+    ) async {
+      expect(
+        BoundingBoxOverlay.mapBox(
+          const Rect.fromLTRB(0.5, 0.25, 1, 0.75),
+          imageSize: Size.zero,
+          viewport: const Size(400, 200),
+        ),
+        const Rect.fromLTRB(200, 50, 400, 150),
+      );
+      await tester.pumpWidget(overlay(const [jar], imageSize: Size.zero));
+      await tester.pump(const Duration(seconds: 2));
+      expect(tester.takeException(), isNull);
+      expect(find.text('JAR · 93%'), findsOneWidget);
+    });
+  });
+
   group('StepProgressBar', () {
     testWidgets('marks done, current and upcoming steps', (tester) async {
       await tester.pumpWidget(
