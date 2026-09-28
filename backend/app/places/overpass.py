@@ -44,6 +44,8 @@ MIRRORS = (
 )
 # Seconds to wait for a mirror before also asking the next one (typical answers take 1-3 s).
 HEDGE_AFTER_S = 4.0
+# Pause before asking a busy preferred instance again.
+PRIMARY_RETRY_DELAY_S = 1.5
 RECYCLING = {"amenity": "recycling"}
 # Tags that can carry a bin's name or its operator (many UAE nodes only have name:en).
 LABEL_TAGS = ("name", "name:en", "name:ar", "operator", "brand")
@@ -272,21 +274,24 @@ async def search(
 async def _hedged_fetch(query: str, mirrors: list[str], *, budget_s: float) -> tuple[str, dict]:
     """Ask the first mirror; if it fails or is still silent after ``HEDGE_AFTER_S``, ask the next too.
 
-    The first good answer wins and the other request is cancelled. A busy public instance
+    The first good answer wins and the other requests are cancelled. A busy public instance
     then costs a few seconds instead of a full timeout, and a healthy one costs nothing extra.
+    If the preferred instance answers "busy" (429/504), it is asked once more after a short
+    pause, as the last resort, because it is usually back within seconds.
     """
     loop = asyncio.get_running_loop()
     deadline = loop.time() + budget_s
     errors: list[str] = []
     running: dict[asyncio.Task, str] = {}
-    queue = list(mirrors)
+    queue: list[tuple[str, float]] = [(url, 0.0) for url in mirrors]
+    retried_primary = False
 
     async with httpx.AsyncClient(headers={"User-Agent": USER_AGENT}) as client:
 
         def launch() -> None:
-            url = queue.pop(0)
-            timeout = max(1.0, deadline - loop.time())
-            running[asyncio.create_task(_fetch(client, url, query, timeout))] = url
+            url, delay_s = queue.pop(0)
+            timeout = max(1.0, deadline - loop.time() - delay_s)
+            running[asyncio.create_task(_fetch(client, url, query, timeout, delay_s))] = url
 
         launch()
         try:
@@ -302,6 +307,9 @@ async def _hedged_fetch(query: str, mirrors: list[str], *, budget_s: float) -> t
                     if task.exception() is None:
                         return url, task.result()
                     errors.append(f"{url}: {task.exception()}")
+                    if url == mirrors[0] and not retried_primary and _is_busy(task.exception()):
+                        retried_primary = True
+                        queue.append((url, PRIMARY_RETRY_DELAY_S))
                 if queue:  # a mirror failed, or the running ones are slow: bring in the next
                     launch()
         finally:
@@ -312,7 +320,13 @@ async def _hedged_fetch(query: str, mirrors: list[str], *, budget_s: float) -> t
     raise ProviderError("; ".join(errors) or "no mirror answered")
 
 
-async def _fetch(client: httpx.AsyncClient, url: str, query: str, timeout: float) -> dict:
+def _is_busy(exc: BaseException | None) -> bool:
+    return isinstance(exc, ProviderError) and str(exc) in ("HTTP 429", "HTTP 504")
+
+
+async def _fetch(client: httpx.AsyncClient, url: str, query: str, timeout: float, delay_s: float = 0.0) -> dict:
+    if delay_s:
+        await asyncio.sleep(delay_s)
     try:
         resp = await client.post(url, data={"data": query}, timeout=timeout)
     except httpx.HTTPError as exc:

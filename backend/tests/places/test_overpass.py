@@ -147,3 +147,18 @@ async def test_slow_mirror_is_hedged_with_the_next(monkeypatch, overpass_sample,
     )
     assert len(cands) == 3
     assert time.perf_counter() - started < 2
+
+
+@respx.mock
+async def test_busy_primary_is_retried_once_after_a_pause(monkeypatch, overpass_sample, osm_only_settings):
+    monkeypatch.setattr(overpass, "HEDGE_AFTER_S", 0.05)
+    monkeypatch.setattr(overpass, "PRIMARY_RETRY_DELAY_S", 0.01)
+    primary = respx.post(overpass.MIRRORS[0]).mock(
+        side_effect=[httpx.Response(504), httpx.Response(200, json=overpass_sample)]
+    )
+    respx.post(overpass.MIRRORS[1]).mock(side_effect=httpx.ConnectError("unreachable"))
+    cands = await overpass.search(
+        keys=["glass"], lat=24.4539, lng=54.3773, radius_m=5000, lang="en", settings=osm_only_settings
+    )
+    assert primary.call_count == 2
+    assert len(cands) == 3
