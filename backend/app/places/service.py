@@ -23,7 +23,7 @@ from collections.abc import Awaitable, Callable
 from dataclasses import dataclass
 from functools import lru_cache
 
-from app.config import BACKEND_DIR, Settings, get_settings
+from app.config import Settings, get_settings
 from app.core.errors import BadRequest, PlacesUnavailable
 from app.core.timing import stage_timer
 from app.places import curated, google, overpass
@@ -37,7 +37,7 @@ from app.schemas.facilities import FacilitiesRequest, FacilitiesResponse, Place
 
 log = logging.getLogger("kanz.places")
 
-VOCAB_FILE = BACKEND_DIR.parent / "contracts" / "vocab.json"
+CITIES_FILE = "cities.json"  # copy of contracts/vocab.json cities; see backend/config/README.md
 PARTIAL_TTL_S = 60.0  # when a provider failed, retry it sooner
 SOURCE_ORDER = ("google", "osm", "curated")
 
@@ -107,7 +107,7 @@ def _known_keys(requested: list[str]) -> list[str]:
 
 
 def resolve_center(req: FacilitiesRequest) -> tuple[LatLng, str]:
-    """GPS position when given, else the chosen city's center (from contracts/vocab.json)."""
+    """GPS position when given, else the chosen city's center (the cities of contracts/vocab.json)."""
     if req.lat is not None and req.lng is not None:
         return LatLng(lat=req.lat, lng=req.lng), t("your_location", req.lang)
     city = _cities()[req.city]  # the request validator guarantees a city when there is no position
@@ -116,8 +116,8 @@ def resolve_center(req: FacilitiesRequest) -> tuple[LatLng, str]:
 
 @lru_cache
 def _cities() -> dict[str, dict]:
-    vocab = json.loads(VOCAB_FILE.read_text(encoding="utf-8"))
-    return {c["id"]: c for c in vocab["cities"]}
+    data = json.loads((get_settings().config_dir / CITIES_FILE).read_text(encoding="utf-8"))
+    return {c["id"]: c for c in data["cities"]}
 
 
 async def _gather(

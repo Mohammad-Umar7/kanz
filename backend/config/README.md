@@ -7,12 +7,14 @@ Data files that drive the drop-off finder. They are read by `app/places/` at fir
 | `facility_categories.json` | The one mapping from what Kanz recognizes (material, hazards, condition) to kinds of drop-off points, plus how each kind is searched on Google Places and OpenStreetMap |
 | `curated_facilities.json` | Drop-off points the team has verified. Ships as an empty list |
 | `curated_facilities.schema.json` | JSON Schema for the curated entries (editors such as VS Code validate against it) |
+| `cities.json` | Search centers for the city picker: an exact copy of the cities in `contracts/vocab.json`, because the container image is built from `backend/` alone. A test fails if the two differ |
 
 ## facility_categories.json
 
 `categories.<key>` defines one kind of drop-off point (the key is what the app sends to `POST /v1/facilities`):
 
 - `labels`: chip label in English and Arabic.
+- `empty_hint` (optional): one line added to the "nothing found" notice, for categories where the answer should not stop there (batteries, e-waste, hazardous waste).
 - `facility_types`, `material_categories`: ids from `contracts/vocab.json`. The first facility type is what a Google result found by this category is shown as.
 - `google_queries`: Text Search queries per language. Arabic searches also send the first English query, because many UAE listings are named in English.
 - `osm.filters`: OpenStreetMap tag filters. A value is matched exactly, `"*"` means "any value", and `"~pattern"` is a case-insensitive regular expression. Keep regular expressions to keys with few distinct values (such as `waste`): a regex on `name` makes Overpass scan every name it stores. `facility_type` sets what a matching place is shown as.
