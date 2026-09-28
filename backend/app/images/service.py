@@ -25,14 +25,17 @@ How it works
   ``step_<idea_id>_<skill>_<chain>_<n>.jpg``, where ``chain`` fingerprints what the
   tutorial's steps describe (``chain_id``). Step 1 edits the original photo; step N edits
   step N-1 with the original photo as a second reference (it pulls back drift in color
-  and shape); the last step also sees the after image, so the ending matches the reveal
-  the user already saw. Missing earlier steps are rendered first, in order.
+  and texture, while the changes of earlier steps stay); the last step also sees the
+  after image, so the ending matches the reveal the user already saw. Missing earlier
+  steps are rendered first, in order.
 * **Bin image**, keyed ``(image_id, item.id)``: ``bin_<item_id>.jpg``, the item shown
   prepared for its stream, edited from the photo cropped to the item's box.
 * **Caching and de-duplication.** Files on disk are the cache (``cached: true``).
   Concurrent requests for the same key share one in-flight render (``SingleFlight``),
   so the background chain and the tutorial screen never render the same step twice.
-  ``regenerate`` bypasses the cache for that one picture and overwrites it.
+  ``regenerate`` bypasses the cache for that one picture and overwrites it; pictures
+  already built from the old one (later steps, a final step that saw an older after
+  image) keep their cached version.
 * **Background chain.** ``start_step_chain`` renders steps 1..n in order as soon as a
   tutorial exists, kept in a registry so the task is not garbage-collected. One chain
   runs per photo and idea: a re-adapted tutorial (other skill, tools or language)
