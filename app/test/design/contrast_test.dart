@@ -70,10 +70,22 @@ void main() {
     });
   }
 
-  test('photo tags: warm white on the tag ink', () {
+  // Chrome on photos must hold up on any image, so the translucent tag and
+  // control fills are composited over the worst case: a white photo.
+  test('photo tags and controls: warm white text on the tag fill', () {
+    const white = Color(0xFFFFFFFF);
+    for (final fill in [KanzPhotoColors.tag, KanzPhotoColors.control]) {
+      expect(
+        KanzContrast.ratio(KanzPhotoColors.ink, Color.alphaBlend(fill, white)),
+        greaterThanOrEqualTo(KanzContrast.text),
+      );
+    }
     expect(
-      KanzContrast.ratio(const Color(0xFFF2EFE8), const Color(0xFF161616)),
-      greaterThanOrEqualTo(KanzContrast.text),
+      KanzContrast.ratio(
+        KanzPhotoColors.accent,
+        Color.alphaBlend(KanzPhotoColors.control, white),
+      ),
+      greaterThanOrEqualTo(KanzContrast.large),
     );
   });
 
