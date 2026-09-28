@@ -201,8 +201,10 @@ Uri? _packageRoot(String package) {
 File? _materialIconsFont() {
   const font = 'bin/cache/artifacts/material_fonts/MaterialIcons-Regular.otf';
   final root = Platform.environment['FLUTTER_ROOT'];
-  if (root != null && File('$root/$font').existsSync())
-    return File('$root/$font');
+  if (root != null) {
+    final file = File('$root/$font');
+    if (file.existsSync()) return file;
+  }
   var dir = File(Platform.resolvedExecutable).parent;
   while (dir.parent.path != dir.path) {
     final file = File('${dir.path}/$font');
