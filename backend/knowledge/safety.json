@@ -160,21 +160,22 @@
   {
     "id": "safety_cutting",
     "kind": "safety",
-    "title": "Cutting safely",
-    "title_ar": "القص والقطع بأمان",
-    "materials": ["paper", "plastic", "textile", "metal"],
-    "applies_to": {"hazards": ["sharp_edges"], "materials": [], "techniques": ["cutting", "blade_cutting"]},
+    "title": "Cutting and sawing safely",
+    "title_ar": "القص والنشر بأمان",
+    "materials": ["paper", "plastic", "textile", "metal", "wood"],
+    "applies_to": {"hazards": ["sharp_edges"], "materials": [], "techniques": ["cutting", "blade_cutting", "sawing"]},
     "rules": [
       "Cut on a cutting mat or thick board, never on your lap or hand.",
       "Always cut away from your body and keep your other hand behind the blade.",
       "Wear work gloves when using a craft knife, and use several light passes instead of one hard cut.",
-      "Retract or cap the blade and put it away as soon as you finish."
+      "Retract or cap the blade and put it away as soon as you finish.",
+      "Clamp wood before sawing, keep both hands behind the blade and wear safety glasses against flying chips."
     ],
     "never": [
       "Never use a dull blade: it slips. Snap off or replace it.",
       "Never leave blades where children can reach them."
     ],
-    "gear": ["gloves"]
+    "gear": ["gloves", "safety_glasses"]
   },
   {
     "id": "safety_sanding",

@@ -22,6 +22,7 @@
     ],
     "safety": [
       "Wear work gloves: can rims and punched holes are sharp",
+      "Wear a dust mask while sanding the rim and wipe the metal dust away with a damp cloth",
       "Paint the outside only and keep the soil side bare"
     ],
     "techniques": ["hammering", "sharp_metal", "sanding", "painting", "planting"],
@@ -151,7 +152,7 @@
       "Fix the board to the wall and fill the cans"
     ],
     "safety": [
-      "Wear safety glasses when drilling and work gloves when handling cans",
+      "Wear safety glasses when drilling, a dust mask when sanding the board and work gloves when handling cans",
       "Clamp or hold cans with a cloth while drilling: the bit can grab thin metal"
     ],
     "techniques": ["drilling", "sharp_metal", "sanding"],
