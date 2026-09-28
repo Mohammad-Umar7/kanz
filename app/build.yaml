@@ -1,0 +1,19 @@
+# Code generation for freezed models, json_serializable and drift.
+#
+# The wire format is the Pydantic contract in backend/app/schemas: snake_case keys,
+# explicit nulls for Optional fields and nested objects serialized as JSON maps.
+targets:
+  $default:
+    builders:
+      json_serializable:
+        options:
+          field_rename: snake
+          explicit_to_json: true
+          include_if_null: true
+          checked: true
+      drift_dev:
+        generate_for:
+          - lib/core/data/db/**.dart
+        options:
+          store_date_time_values_as_text: false
+          named_parameters: true
