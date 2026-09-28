@@ -46,6 +46,12 @@ class _SkeletonState extends State<Skeleton>
     vsync: this,
     duration: const Duration(milliseconds: 1400),
   );
+  late final Animation<double> _opacity = _controller.drive(
+    Tween<double>(
+      begin: 1,
+      end: 0.55,
+    ).chain(CurveTween(curve: KanzMotion.standard)),
+  );
 
   @override
   void didChangeDependencies() {
@@ -69,9 +75,7 @@ class _SkeletonState extends State<Skeleton>
     final c = context.kanzColors;
     return ExcludeSemantics(
       child: FadeTransition(
-        opacity: Tween<double>(begin: 1, end: 0.55).animate(
-          CurvedAnimation(parent: _controller, curve: KanzMotion.standard),
-        ),
+        opacity: _opacity,
         child: Container(
           width: widget.width,
           height: widget.height,
@@ -126,13 +130,14 @@ class _FadeUpState extends State<FadeUp> with SingleTickerProviderStateMixin {
     vsync: this,
     duration: widget.delay + widget.duration,
   );
-  late final Animation<double> _curve = CurvedAnimation(
-    parent: _controller,
-    curve: Interval(
-      widget.delay.inMicroseconds /
-          (widget.delay + widget.duration).inMicroseconds,
-      1,
-      curve: KanzMotion.enter,
+  late final Animation<double> _curve = _controller.drive(
+    CurveTween(
+      curve: Interval(
+        widget.delay.inMicroseconds /
+            (widget.delay + widget.duration).inMicroseconds,
+        1,
+        curve: KanzMotion.enter,
+      ),
     ),
   );
   bool _started = false;

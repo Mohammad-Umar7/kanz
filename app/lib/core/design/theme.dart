@@ -553,10 +553,22 @@ abstract final class KanzTheme {
 }
 
 /// A calm forward transition: the incoming page fades in while rising a few
-/// pixels, on the Material 3 emphasized decelerate curve. With reduced
-/// motion it becomes a plain cross-fade.
+/// pixels, on the Material 3 emphasized decelerate curve (played backwards
+/// on pop, so the page accelerates away). With reduced motion it becomes a
+/// plain cross-fade.
 class KanzPageTransitionsBuilder extends PageTransitionsBuilder {
   const KanzPageTransitionsBuilder();
+
+  // Animatables rather than CurvedAnimations: buildTransitions runs on
+  // every rebuild of the route, and each CurvedAnimation would register a
+  // listener on the route's animation that is never removed.
+  static final Animatable<double> _fade = CurveTween(
+    curve: const Interval(0, 0.7, curve: KanzMotion.standard),
+  );
+  static final Animatable<Offset> _rise = Tween<Offset>(
+    begin: const Offset(0, 0.03),
+    end: Offset.zero,
+  ).chain(CurveTween(curve: KanzMotion.enter));
 
   @override
   Duration get transitionDuration => KanzMotion.slow;
@@ -572,25 +584,13 @@ class KanzPageTransitionsBuilder extends PageTransitionsBuilder {
     Animation<double> secondaryAnimation,
     Widget child,
   ) {
-    final fade = CurvedAnimation(
-      parent: animation,
-      curve: const Interval(0, 0.7, curve: KanzMotion.standard),
-      reverseCurve: KanzMotion.exit,
-    );
+    final fade = animation.drive(_fade);
     if (KanzMotion.reduced(context)) {
       return FadeTransition(opacity: fade, child: child);
     }
-    final rise = Tween<Offset>(begin: const Offset(0, 0.03), end: Offset.zero)
-        .animate(
-          CurvedAnimation(
-            parent: animation,
-            curve: KanzMotion.enter,
-            reverseCurve: KanzMotion.exit,
-          ),
-        );
     return FadeTransition(
       opacity: fade,
-      child: SlideTransition(position: rise, child: child),
+      child: SlideTransition(position: animation.drive(_rise), child: child),
     );
   }
 }
