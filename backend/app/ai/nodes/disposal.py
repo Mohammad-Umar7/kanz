@@ -61,7 +61,7 @@ async def disposal_advisor(state: RecommendState, runtime: Runtime[PipelineConte
                 model=prompt.model(ctx.settings),
                 examples=prompt.examples,
                 validator=safety.TwoTierValidator(
-                    hard=lambda o: safety.check_text_rules(_texts(o), where="The disposal advice "),
+                    hard=lambda o: safety.check_text_rules(_texts(o), items=items, where="The disposal advice "),
                     soft=lambda o: language_problems(_texts(o), lang, what="headlines, steps and warnings"),
                 ),
                 temperature=prompt.temperature,

@@ -15,16 +15,21 @@ Three layers keep Kanz from ever suggesting something dangerous:
    cutting, sanding, drilling, painting, glass and sharp metal; no food contact with painted
    or varnished surfaces unless food-safe is stated.
 
-The checks are sentence-based and skip negated sentences ("Never melt plastic" is advice,
-not a violation). Arabic text is normalised (diacritics, alef/yaa/taa marbuta forms) and
-tokens are matched after stripping common clitic prefixes (و، ف، ب، ل، ال...).
+The checks look at each keyword where it occurs, not at the whole sentence. A keyword is
+"governed" (advice, not an instruction) only when a negation comes *before* it in the same
+clause: "Never heat, melt or burn plastic" is advice, while "Melt the caps in the oven, no
+glue needed" is a violation even though the sentence contains "no". Clauses that explain
+a risk ("plastic gives off toxic fumes when heated") are warnings, not instructions.
+Arabic text is normalised (diacritics, alef/yaa/taa marbuta forms) and tokens are matched
+after stripping common clitic prefixes (و، ف، ب، ل، ال...).
 """
 
 from __future__ import annotations
 
 import re
 from collections.abc import Callable, Iterable, Sequence
-from typing import Generic, TypeVar
+from dataclasses import dataclass
+from typing import Generic, NamedTuple, TypeVar
 
 from app.ai import labels
 from app.schemas.analysis import Item
@@ -35,6 +40,7 @@ from app.schemas.vocab import DISPOSAL_ONLY_HAZARDS
 _AR_MARKS = re.compile(r"[ً-ْٰـ]")
 _AR_FOLD = str.maketrans({"أ": "ا", "إ": "ا", "آ": "ا", "ى": "ي", "ة": "ه", "ؤ": "و", "ئ": "ي"})
 _AR_WORD = re.compile(r"[ء-ي]+")
+_AR_LAST_WORD = re.compile(r"([ء-ي]+)\W*$")
 _AR_PREFIXES = ("وبال", "وال", "بال", "كال", "فال", "لل", "ال", "و", "ف", "ب", "ل", "ك")
 _ARABIC_CHARS = re.compile(r"[؀-ۿ]")
 
@@ -71,6 +77,18 @@ class Sentence:
             self.ar_tokens |= _ar_variants(tok)
 
 
+class Span(NamedTuple):
+    """Where a keyword occurs: ``text`` is the lowered English or the folded Arabic sentence."""
+
+    text: str
+    start: int
+    end: int
+
+    @property
+    def word(self) -> str:
+        return self.text[self.start : self.end]
+
+
 class Terms:
     """A keyword set: English regex fragments (word-bounded) plus Arabic stems or phrases.
 
@@ -80,28 +98,166 @@ class Terms:
     """
 
     def __init__(self, en: Sequence[str] = (), ar: Sequence[str] = ()) -> None:
-        self._en = re.compile(r"\b(?:" + "|".join(en) + r")\b") if en else None
+        body = "|".join(en)
+        self._en = re.compile(r"\b(?:" + body + r")\b") if en else None
+        self._en_tail = re.compile(r"\b(?:" + body + r")\W*$") if en else None
         folded = [normalize_ar(a) for a in ar]
         self._ar_exact = frozenset(a[1:] for a in folded if a.startswith("="))
         self._ar_stems = tuple(a for a in folded if " " not in a and not a.startswith("="))
         self._ar_phrases = tuple(a for a in folded if " " in a)
+
+    def _ar_hit(self, variants: set[str]) -> bool:
+        return bool(self._ar_exact & variants) or any(v.startswith(s) for s in self._ar_stems for v in variants)
 
     def found(self, s: Sentence) -> bool:
         if self._en and self._en.search(s.en):
             return True
         if any(p in s.ar for p in self._ar_phrases):
             return True
-        if self._ar_exact & s.ar_tokens:
+        return self._ar_hit(s.ar_tokens)
+
+    def spans(self, s: Sentence) -> list[Span]:
+        """Every occurrence, so each one can be judged in its own clause."""
+        out: list[Span] = []
+        if self._en:
+            out += [Span(s.en, m.start(), m.end()) for m in self._en.finditer(s.en)]
+        for phrase in self._ar_phrases:
+            start = s.ar.find(phrase)
+            while start != -1:
+                out.append(Span(s.ar, start, start + len(phrase)))
+                start = s.ar.find(phrase, start + 1)
+        if self._ar_exact or self._ar_stems:
+            out += [Span(s.ar, m.start(), m.end()) for m in _AR_WORD.finditer(s.ar) if self._ar_hit(_ar_variants(m[0]))]
+        return out
+
+    def matches(self, word: str) -> bool:
+        """True when ``word`` (one matched span) is itself one of these terms."""
+        if self._en and self._en.fullmatch(word):
             return True
-        return any(tok.startswith(stem) for stem in self._ar_stems for tok in s.ar_tokens)
+        return word in self._ar_phrases or self._ar_hit(_ar_variants(word))
+
+    def ends_with(self, text: str) -> bool:
+        """True when ``text`` ends with one of the terms (a negation reaches along such a list)."""
+        text = normalize_ar(text.strip())
+        if self._en_tail and self._en_tail.search(text):
+            return True
+        if any(text.endswith(p) for p in self._ar_phrases):
+            return True
+        last = _AR_LAST_WORD.search(text)
+        return bool(last) and self._ar_hit(_ar_variants(last[1]))
 
 
 _SENTENCE_SPLIT = re.compile(r"(?<=[.!?؟؛;])\s+|\n+")
-_NEGATION_EN = re.compile(
-    r"\b(?:never|not|no|don'?t|do not|avoid|without|mustn'?t|shouldn'?t|can'?t|cannot|instead of)\b"
+
+# ------------------------------------------------------------------- negation scope
+# A negation governs the keywords after it, up to the end of its clause. Clauses end at
+# these marks and contrast words ("Don't glue it: melt it" starts a new instruction).
+_CLAUSE_END = re.compile(
+    r"[;:()؛]|\s[-–—]\s"
+    r"|\b(?:but|instead(?! of)|then|so|until|unless|while|because|although|whereas|لكن|ولكن|بل|ثم)\b"
 )
-_NEGATION_AR = {"لا", "ولا", "فلا", "لن", "ابدا", "اياك", "ممنوع", "بدون", "دون", "عدم", "بلا", "ليس", "بدلا"}
+_COMMA = re.compile(r"[,،]")
+_NEGATION_EN = re.compile(
+    r"\b(?:never|not|no|nor|don['’]?t|do not|doesn['’]?t|does not|avoid\w*|mustn['’]?t|must not"
+    r"|shouldn['’]?t|should not|can['’]?t|cannot|won['’]?t|without|instead of|rather than"
+    r"|away from|out of reach of|clear of)\b"
+)
+# "without X, ..." and "instead of X, ..." only cover X: a comma ends their scope.
+_SHORT_SCOPE_EN = frozenset({"without", "instead of", "rather than"})
+_NEGATION_AR = frozenset({"لا", "ولا", "فلا", "لن", "ابدا", "اياك", "ممنوع", "عدم", "ليس"})
 _NEGATION_AR_STEMS = ("تجنب", "يمنع", "احذر")
+_SHORT_SCOPE_AR = frozenset({"بدون", "دون", "بلا", "بدلا", "بدل"})
+_AWAY_AR = ("بعيدا عن", "بعيد عن", "بعيدا من")
+# Clauses that explain a risk are warnings, not instructions: "plastic gives off toxic
+# fumes when heated", "a real candle is a fire hazard in a paper lantern".
+_WARNING = Terms(
+    en=(
+        r"toxic",
+        r"poisonous",
+        r"fumes",
+        r"flammable",
+        r"fire",
+        r"harmful",
+        r"dangerous",
+        r"unsafe",
+        r"hazard\w*",
+        r"risk\w*",
+        r"carcinogen\w*",
+    ),
+    ar=("سام", "ابخره", "دخان", "اشتعال", "حريق", "خطر", "ضار", "مسرطن"),
+)
+_CONDITIONAL = re.compile(
+    r"\b(?:when|if|once|as)\s+(?:it\s+|they\s+)?(?:is\s+|are\s+|gets?\s+)?$|(?:^|\s)(?:عند|اذا|لو|حين)\s*$"
+)
+_IMPERATIVE_LEAD_EN = frozenset({"carefully", "gently", "slowly", "now", "first", "next", "finally", "and", "just"})
+_IMPERATIVE_OBJECT_EN = frozenset(
+    {"the", "a", "an", "it", "them", "your", "each", "all", "both", "this", "these", "those", "some", "down"}
+    | {"over", "with", "until", "for", "in", "on", "together", "into", "off", "up"}
+)
+_IMPERATIVE_LEAD_AR = frozenset({"قم", "ثم", "و"})
+
+
+def _last_negation(clause: str) -> tuple[int, bool] | None:
+    """(end offset, short scope?) of the last negation in ``clause``, or None."""
+    found: list[tuple[int, int, bool]] = [
+        (m.start(), m.end(), m[0] in _SHORT_SCOPE_EN) for m in _NEGATION_EN.finditer(clause)
+    ]
+    for phrase in _AWAY_AR:
+        at = clause.rfind(phrase)
+        if at != -1:
+            found.append((at, at + len(phrase), False))
+    for m in _AR_WORD.finditer(clause):
+        if m[0] in _SHORT_SCOPE_AR:
+            found.append((m.start(), m.end(), True))
+            continue
+        variants = _ar_variants(m[0])
+        if variants & _NEGATION_AR or any(v.startswith(s) for s in _NEGATION_AR_STEMS for v in variants):
+            found.append((m.start(), m.end(), False))
+    if not found:
+        return None
+    _, end, short = max(found)
+    return end, short
+
+
+def _negated(span: Span, terms: Terms | None) -> bool:
+    """A negation earlier in the clause governs ``span``.
+
+    Commas end a short-scope negation ("without X, ...") and end any negation unless every
+    comma-separated part before ``span`` also ends with one of ``terms``, which is how a
+    negation reaches along a list: "Never heat, melt or burn plastic".
+    """
+    clause = _CLAUSE_END.split(normalize_ar(span.text[: span.start]))[-1]
+    negation = _last_negation(clause)
+    if negation is None:
+        return False
+    end, short = negation
+    parts = _COMMA.split(clause[end:])
+    if len(parts) == 1:
+        return True
+    return not short and terms is not None and all(terms.ends_with(p) for p in parts[:-1])
+
+
+def _imperative(span: Span, lead: str) -> bool:
+    """The keyword opens its clause as a command ("Melt the caps", "سخّن القارورة")."""
+    words = lead.split()
+    if _ARABIC_CHARS.search(span.word):
+        return all(w in _IMPERATIVE_LEAD_AR for w in words)
+    following = span.text[span.end :].split()
+    return all(w in _IMPERATIVE_LEAD_EN for w in words) and bool(following) and following[0] in _IMPERATIVE_OBJECT_EN
+
+
+def _warning(span: Span) -> bool:
+    """``span`` sits in a clause that explains a risk and is not itself a command."""
+    before = _CLAUSE_END.split(_COMMA.split(normalize_ar(span.text[: span.start]))[-1])[-1]
+    if _CONDITIONAL.search(before):
+        return True  # "... when heated", "if it is burned"
+    after = _CLAUSE_END.split(_COMMA.split(span.text[span.end :])[0])[0]
+    return _WARNING.found(Sentence(f"{before} {after}")) and not _imperative(span, before)
+
+
+def live(terms: Terms, s: Sentence, *, warnings: bool = True) -> list[Span]:
+    """Occurrences of ``terms`` that are instructions: not negated and (optionally) not in a warning."""
+    return [sp for sp in terms.spans(s) if not _negated(sp, terms) and not (warnings and _warning(sp))]
 
 
 def sentences(texts: Iterable[str | None]) -> list[Sentence]:
@@ -113,9 +269,10 @@ def sentences(texts: Iterable[str | None]) -> list[Sentence]:
 
 
 def is_negated(s: Sentence) -> bool:
+    """Sentence-level test, used only where a whole sentence may be optional ("No drill? ...")."""
     if _NEGATION_EN.search(s.en):
         return True
-    if s.ar_tokens & _NEGATION_AR:
+    if s.ar_tokens & (_NEGATION_AR | _SHORT_SCOPE_AR):
         return True
     return any(tok.startswith(stem) for stem in _NEGATION_AR_STEMS for tok in s.ar_tokens)
 
@@ -187,6 +344,7 @@ _CHEMICAL = Terms(
         r"ammonia",
         r"detergents?",
         r"disinfectants?",
+        r"paint (?:tins?|cans?|buckets?|pots?|containers?)",
     ),
     ar=(
         "مبيض",
@@ -253,6 +411,7 @@ _CONTAINER = Terms(
         r"bottles?",
         r"containers?",
         r"cans?",
+        r"tins?",
         r"jugs?",
         r"tubs?",
         r"drums?",
@@ -336,7 +495,7 @@ _FOOD_OR_PETS = Terms(
 _PLASTIC = Terms(
     en=(
         r"plastics?",
-        r"pet",
+        r"pet(?= bottles?\b| plastic\b| ?#| 1\b)",  # PET the plastic, not a pet
         r"hdpe",
         r"ldpe",
         r"pvc",
@@ -368,9 +527,14 @@ _HEAT = Terms(
         r"iron(?:s|ed|ing)?",
         r"fus(?:e|ed|ing)",
         r"soldering",
+        r"hair ?dryers?",
+        r"blow ?dryers?",
+        r"hot air",
+        r"boil(?:s|ed|ing)?",
     ),
     ar=(
         "صهر",
+        "اصهر",
         "اذاب",
         "اذابه",
         "ذوب",
@@ -388,9 +552,34 @@ _HEAT = Terms(
         "شمع",
         "مكواه",
         "لحام",
+        "مجفف الشعر",
+        "سشوار",
+        "=غلي",
+        "غليان",
     ),
 )
 _SAFE_LIGHT = Terms(en=(r"led", r"battery[- ]powered", r"electric"), ar=("ليد", "كهربائي", "بالبطاريه"))
+# Light sources are fine next to an LED ("an LED tea light"); anything else still counts.
+_LIGHT_SOURCE = Terms(en=(r"candles?", r"tea ?lights?"), ar=("شمع",))
+_PAPER = Terms(
+    en=(r"paper", r"papers", r"cardboard", r"card", r"newspapers?", r"magazines?", r"cartons?", r"tissue"),
+    ar=("ورق", "اوراق", "كرتون", "جريد", "صحف", "مجلات"),
+)
+_FLAME = Terms(
+    en=(
+        r"candles?",
+        r"tea ?lights?",
+        r"flames?",
+        r"lighters?",
+        r"matches",
+        r"matchsticks?",
+        r"burn(?:s|ed|ing|t)?",
+        r"torch(?:es)?",
+        r"incense",
+        r"sparklers?",
+    ),
+    ar=("شمع", "لهب", "ولاعه", "كبريت", "حرق", "احرق", "بخور"),
+)
 _PAINT = Terms(
     en=(
         r"paint(?:s|ed|ing)?",
@@ -585,28 +774,98 @@ def route(items: Sequence[Item], lang: str) -> Routing:
 
 
 # ==================================================================== 3. validators
-def check_plastic_heat(texts: Iterable[str | None], *, where: str = "") -> list[str]:
-    """Never melt, burn or heat plastic (and never put a flame inside it)."""
+@dataclass(frozen=True)
+class MaterialScope:
+    """How advice can refer to a sensitive material (plastic, paper) among the scanned items.
+
+    A sentence is about the material when it names it ("plastic", "PET"), names a scanned
+    item made of it by its head noun ("caps", "bottle"), or when every scanned item is made
+    of it: for a scan of bottle caps, "melt them in the oven" can only mean the plastic.
+    """
+
+    terms: Terms
+    nouns: tuple[str, ...] = ()
+    only: bool = False
+
+    def mentioned(self, s: Sentence) -> bool:
+        return self.only or self.terms.found(s) or any(_mentions(s, noun) for noun in self.nouns)
+
+
+def _singular(word: str) -> str:
+    if len(word) > 4 and word.endswith("ies"):
+        return word[:-3] + "y"
+    if len(word) > 3 and word.endswith("es") and word[-3] in "sxz":
+        return word[:-2]
+    if len(word) > 3 and word.endswith("s") and not word.endswith("ss"):
+        return word[:-1]
+    return word
+
+
+def head_noun(name: str) -> str | None:
+    """The noun a sentence would use for an item: "caps" for "Plastic bottle caps", "قارورة" for "قارورة مياه"."""
+    english = re.findall(r"[a-z]+", name.lower())
+    if english:
+        noun = _singular(english[-1])
+        return noun if len(noun) >= 3 else None
+    arabic = _AR_WORD.findall(normalize_ar(name))
+    if arabic:
+        noun = arabic[0][2:] if arabic[0].startswith("ال") and len(arabic[0]) > 4 else arabic[0]
+        return noun if len(noun) >= 2 else None
+    return None
+
+
+def _mentions(s: Sentence, noun: str) -> bool:
+    if noun.isascii():
+        return bool(re.search(rf"\b{re.escape(noun)}(?:e?s)?\b", s.en))
+    return any(tok.startswith(noun) for tok in s.ar_tokens)
+
+
+def material_scope(items: Sequence[Item], category: str, terms: Terms) -> MaterialScope:
+    made_of = [it for it in items if it.category == category or terms.found(Sentence(f"{it.name}. {it.material}"))]
+    nouns = tuple(dict.fromkeys(n for n in (head_noun(it.name) for it in made_of) if n))
+    return MaterialScope(terms, nouns, only=bool(items) and all(it.category == category for it in items))
+
+
+def _flame_problems(texts: Iterable[str | None], heat: Terms, scope: MaterialScope, message: str) -> list[str]:
     problems = []
     for s in sentences(texts):
-        if is_negated(s) or not (_PLASTIC.found(s) and _HEAT.found(s)):
+        found = live(heat, s)
+        if not found or not scope.mentioned(s):
             continue
-        if _SAFE_LIGHT.found(s) and not re.search(r"\b(?:melt|burn|heat|iron|fus)", s.en):
+        if _SAFE_LIGHT.found(s) and all(_LIGHT_SOURCE.matches(sp.word) for sp in found):
             continue  # "an LED tea light inside the bottle" is fine
-        problems.append(
-            f"{where}heats, melts or burns plastic ('{_quote(s)}'). Heated plastic releases toxic fumes: "
-            "use a cold technique instead (cutting, gluing, weaving, lacing) and LED lights only."
-        )
+        problems.append(message.format(quote=_quote(s)))
     return problems
+
+
+def check_plastic_heat(texts: Iterable[str | None], *, items: Sequence[Item] = (), where: str = "") -> list[str]:
+    """Never melt, burn or heat plastic, and never put a flame inside it."""
+    return _flame_problems(
+        texts,
+        _HEAT,
+        material_scope(items, "plastic", _PLASTIC),
+        f"{where}heats, melts or burns plastic ('{{quote}}'). Hot plastic gives off toxic fumes: use a cold "
+        "technique instead (cutting, gluing, weaving, lacing) and LED lights only.",
+    )
+
+
+def check_open_flame(texts: Iterable[str | None], *, items: Sequence[Item] = (), where: str = "") -> list[str]:
+    """No candles or open flames in or on paper and cardboard."""
+    return _flame_problems(
+        texts,
+        _FLAME,
+        material_scope(items, "paper", _PAPER),
+        f"{where}puts a flame in or near paper or cardboard ('{{quote}}'). Paper catches fire easily: use an LED "
+        "light and no open flame.",
+    )
 
 
 def check_chemical_food(texts: Iterable[str | None], *, item_names: Iterable[str] = (), where: str = "") -> list[str]:
     """Never reuse a container that held chemicals for food, drink, edible plants or pets."""
-    sents = sentences(texts)
     chemical_items = any(_CHEMICAL.found(Sentence(n)) for n in item_names)
     problems = []
-    for s in sents:
-        if is_negated(s) or not _FOOD_OR_PETS.found(s):
+    for s in sentences(texts):
+        if not live(_FOOD_OR_PETS, s):
             continue
         if chemical_items or (_CHEMICAL.found(s) and _CONTAINER.found(s)):
             problems.append(
@@ -618,12 +877,12 @@ def check_chemical_food(texts: Iterable[str | None], *, item_names: Iterable[str
 
 def check_painted_food_contact(texts: Iterable[str | None], *, where: str = "") -> list[str]:
     """Painted or varnished surfaces must not touch food unless a food-safe finish is stated."""
-    sents = [s for s in sentences(texts)]
-    if any(_FOOD_SAFE.found(s) for s in sents):
+    sents = sentences(texts)
+    # "not food-safe" is not a food-safe finish, so only a live mention counts.
+    if any(live(_FOOD_SAFE, s, warnings=False) for s in sents):
         return []
-    live = [s for s in sents if not is_negated(s)]
-    painted = [s for s in live if _PAINT.found(s)]
-    food = [s for s in live if _FOOD_CONTACT.found(s)]
+    painted = [s for s in sents if live(_PAINT, s)]
+    food = [s for s in sents if live(_FOOD_CONTACT, s)]
     if painted and food:
         return [
             f"{where}uses a painted or varnished surface for food ('{_quote(food[0])}'). Either keep paint to the "
@@ -645,11 +904,16 @@ def check_english(value: str | None, *, field: str) -> list[str]:
     return []
 
 
-def check_text_rules(texts: Sequence[str | None], *, item_names: Iterable[str] = (), where: str = "") -> list[str]:
-    """All content rules that apply to any generated advice."""
+def check_fire_rules(texts: Sequence[str | None], *, items: Sequence[Item] = (), where: str = "") -> list[str]:
+    """Heat and flame rules: no heated plastic, no open flame near paper."""
+    return check_plastic_heat(texts, items=items, where=where) + check_open_flame(texts, items=items, where=where)
+
+
+def check_text_rules(texts: Sequence[str | None], *, items: Sequence[Item] = (), where: str = "") -> list[str]:
+    """All content rules that apply to any generated advice about ``items``."""
     return (
-        check_plastic_heat(texts, where=where)
-        + check_chemical_food(texts, item_names=item_names, where=where)
+        check_fire_rules(texts, items=items, where=where)
+        + check_chemical_food(texts, item_names=[it.name for it in items], where=where)
         + check_painted_food_contact(texts, where=where)
     )
 
@@ -805,19 +1069,22 @@ GEAR_LINES: dict[str, dict[str, str]] = {
 }
 
 
+def _live_pattern(pattern: re.Pattern[str], s: Sentence) -> bool:
+    return any(not _negated(Span(s.en, m.start(), m.end()), None) for m in pattern.finditer(s.en))
+
+
 def detect_techniques(
     texts: Iterable[str | None], tools: Iterable[str] = (), *, include_painting: bool = True
 ) -> set[str]:
-    """Which risky techniques the text (non-negated sentences) or the tool list implies."""
+    """Which risky techniques the text (where not negated) or the tool list implies."""
     found = {_TOOL_TECHNIQUES[t] for t in tools if t in _TOOL_TECHNIQUES}
     for s in sentences(texts):
-        if is_negated(s):
-            continue
-        found |= {name for name, terms in TECHNIQUES.items() if terms.found(s)}
+        found |= {name for name, terms in TECHNIQUES.items() if live(terms, s, warnings=False)}
         # Arabic "زجاجة" also means a plastic bottle, so plastic sentences are not glass work.
-        if _GLASS_WORK_EN.search(s.en) or (_GLASS_AR.found(s) and _GLASS_ACTION_AR.found(s) and not _PLASTIC.found(s)):
+        glass_ar = _GLASS_AR.found(s) and live(_GLASS_ACTION_AR, s, warnings=False) and not _PLASTIC.found(s)
+        if _live_pattern(_GLASS_WORK_EN, s) or glass_ar:
             found.add("glass_work")
-        if _METAL_WORK_EN.search(s.en) or (_METAL_AR.found(s) and _METAL_ACTION_AR.found(s)):
+        if _live_pattern(_METAL_WORK_EN, s) or (_METAL_AR.found(s) and live(_METAL_ACTION_AR, s, warnings=False)):
             found.add("sharp_metal")
     if not include_painting:
         found.discard("painting")

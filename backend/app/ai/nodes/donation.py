@@ -57,7 +57,7 @@ async def donation_advisor(state: RecommendState, runtime: Runtime[PipelineConte
                 model=prompt.model(ctx.settings),
                 examples=prompt.examples,
                 validator=safety.TwoTierValidator(
-                    hard=lambda o: safety.check_text_rules(_texts(o), where="The donation advice "),
+                    hard=lambda o: safety.check_text_rules(_texts(o), items=items, where="The donation advice "),
                     soft=lambda o: language_problems(_texts(o), lang, what="reasons, places and steps"),
                 ),
                 temperature=prompt.temperature,

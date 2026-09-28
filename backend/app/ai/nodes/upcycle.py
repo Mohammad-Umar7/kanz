@@ -36,7 +36,6 @@ def _where(n: int, idea: LlmIdea) -> str:
 
 def hard_rules(items: Sequence[Item], hazardous_ids: Sequence[str]):
     """Rules that must hold or the output is rejected: safety, distinctness, English after_visual."""
-    names = [it.name for it in items]
 
     def check(out: LlmIdeas) -> list[str]:
         problems: list[str] = []
@@ -47,7 +46,7 @@ def hard_rules(items: Sequence[Item], hazardous_ids: Sequence[str]):
             where = _where(n, idea)
             problems += safety.check_english(idea.after_visual, field=f"Idea {n} after_visual")
             texts = [idea.title, idea.pitch, idea.after_visual, idea.safety_note, *idea.extra_materials]
-            problems += safety.check_text_rules(texts, item_names=names, where=where)
+            problems += safety.check_text_rules(texts, items=items, where=where)
             problems += safety.check_no_hazardous_diy(idea.uses_item_ids, hazardous_ids, where=where)
         return problems
 

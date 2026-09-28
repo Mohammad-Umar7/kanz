@@ -66,13 +66,11 @@ def _all_texts(out: LlmTutorial) -> list[str | None]:
 
 
 def hard_rules(items: Sequence[Item]):
-    names = [it.name for it in items]
-
     def check(out: LlmTutorial) -> list[str]:
         problems: list[str] = []
         for n, step in enumerate(out.steps, 1):
             problems += safety.check_english(step.image_prompt, field=f"Step {n} image_prompt")
-        problems += safety.check_text_rules(_all_texts(out), item_names=names, where="The tutorial ")
+        problems += safety.check_text_rules(_all_texts(out), items=items, where="The tutorial ")
         return problems
 
     return check

@@ -59,7 +59,7 @@ async def recycling_advisor(state: RecommendState, runtime: Runtime[PipelineCont
                 model=prompt.model(ctx.settings),
                 examples=prompt.examples,
                 validator=safety.TwoTierValidator(
-                    hard=lambda o: safety.check_plastic_heat(_texts(o), where="The recycling advice "),
+                    hard=lambda o: safety.check_fire_rules(_texts(o), items=items, where="The recycling advice "),
                     soft=lambda o: language_problems(_texts(o), lang, what="streams, steps and tips"),
                 ),
                 temperature=prompt.temperature,

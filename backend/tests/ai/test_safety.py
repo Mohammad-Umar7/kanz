@@ -126,6 +126,7 @@ class TestPlasticHeat:
             "Put a tea light inside the plastic bottle.",
             "قم بصهر أغطية البلاستيك في الفرن.",
             "سخّن القارورة البلاستيكية بمسدس حراري.",
+            "Use a hair dryer to soften the PET bottle so it bends.",
         ],
     )
     def test_heating_plastic_is_rejected(self, text):
@@ -134,15 +135,66 @@ class TestPlasticHeat:
     @pytest.mark.parametrize(
         "text",
         [
-            "Never melt or burn plastic.",
-            "Put an LED tea light inside the plastic bottle.",
-            "Glue the plastic caps with a hot glue gun.",
-            "لا تقم أبدًا بصهر البلاستيك.",
-            "Put a candle in the glass jar.",
+            # A negation later in the sentence does not excuse the instruction before it.
+            "Melt the plastic caps in the oven, no glue needed.",
+            "Use a lighter to seal the edges of the plastic bag strips so they do not fray.",
+            "Seal the plastic bag edges with a lighter, no sewing needed.",
+            # A new clause starts a new instruction.
+            "Don't use glue: melt the plastic edges together with a heat gun.",
+            "Instead of gluing, fuse the plastic bags with an iron.",
+            "لا حاجة للغراء: قم بصهر أطراف البلاستيك بالولاعة.",
+            # Explaining the risk does not make an instruction safe.
+            "Melt the plastic in a ventilated room to avoid toxic fumes.",
         ],
     )
-    def test_safe_or_negated_text_passes(self, text):
+    def test_negation_only_covers_the_words_after_it(self, text):
+        assert safety.check_plastic_heat([text])
+
+    @pytest.mark.parametrize(
+        "text",
+        [
+            "Never melt or burn plastic.",
+            "Never heat, melt or burn plastic.",
+            "Do not use a lighter, candle or heat gun on the plastic.",
+            "Put an LED tea light inside the plastic bottle.",
+            "Use an LED tea light, never a real candle, inside the plastic bottle.",
+            "Glue the plastic caps with a hot glue gun.",
+            "Use glue instead of melting the plastic.",
+            "Keep the plastic lantern away from heat.",
+            "Plastic gives off toxic fumes when heated, so cut it instead.",
+            "Heated plastic releases toxic fumes.",
+            "لا تقم أبدًا بصهر البلاستيك.",
+            "لا تسخّن البلاستيك ولا تحرقه.",
+            "Put a candle in the glass jar.",
+            "Iron the fabric for the pet bed.",
+        ],
+    )
+    def test_safe_negated_or_warning_text_passes(self, text):
         assert safety.check_plastic_heat([text]) == []
+
+    def test_scanned_plastic_items_count_even_when_the_word_plastic_is_missing(self):
+        caps = item(name="Plastic bottle caps", category="plastic", material="HDPE")
+        assert safety.check_plastic_heat(["Melt the caps in the oven."], items=[caps])
+        assert safety.check_plastic_heat(["Heat them until they soften."], items=[caps])  # every item is plastic
+        assert safety.check_plastic_heat(["Melt the caps in the oven."], items=[item()]) == []  # a glass jar
+
+    def test_mixed_scans_only_flag_heat_on_the_plastic_item(self):
+        jar, lid = item(), item(name="Plastic lid", category="plastic", material="PP #5")
+        assert safety.check_plastic_heat(["Put a candle in the jar."], items=[jar, lid]) == []
+        assert safety.check_plastic_heat(["Soften the lid with a heat gun."], items=[jar, lid])
+
+
+class TestOpenFlame:
+    def test_candle_in_a_cardboard_lantern_is_rejected(self):
+        assert safety.check_open_flame(["Put a tea light inside the cardboard lantern."])
+
+    def test_led_light_or_negated_flame_passes(self):
+        assert safety.check_open_flame(["Put an LED tea light inside the cardboard lantern."]) == []
+        assert safety.check_open_flame(["Never use a real candle in a paper lantern."]) == []
+
+    def test_paper_scans_need_no_explicit_word(self):
+        box = item(name="Cardboard box", category="paper", material="Corrugated cardboard")
+        assert safety.check_open_flame(["Place a candle inside it."], items=[box])
 
 
 class TestChemicalFood:
@@ -161,21 +213,31 @@ class TestChemicalFood:
     def test_item_that_held_chemicals_blocks_any_food_use(self):
         assert safety.check_chemical_food(["Turn it into a planter for herbs."], item_names=["Empty bleach bottle"])
 
+    def test_paint_tins_count_as_chemical_containers(self):
+        assert safety.check_chemical_food(["Use the old paint tin as a planter for tomatoes."])
+
     @pytest.mark.parametrize(
         "text",
         [
             "Wash the jar with warm water, then plant basil.",
             "Never reuse a bleach bottle for food.",
             "Use the detergent bottle as a pen holder.",
+            "Keep the bleach bottle away from food and pets.",
+            "Store the pesticide container away from food, drink and pets until drop-off.",
+            "Store the chemical container out of reach of children and pets.",
         ],
     )
-    def test_ordinary_food_reuse_passes(self, text):
+    def test_ordinary_food_reuse_and_storage_advice_pass(self, text):
         assert safety.check_chemical_food([text]) == []
 
 
 class TestPaintedFoodContact:
     def test_painted_bowl_for_snacks_is_rejected(self):
         assert safety.check_painted_food_contact(["Paint the bowl in bright colors.", "Use it to serve snacks."])
+
+    def test_saying_paint_is_not_food_safe_is_not_a_food_safe_finish(self):
+        texts = ["Acrylic paint is not food-safe.", "Paint the bowl and use it to serve fruit."]
+        assert safety.check_painted_food_contact(texts)
 
     def test_arabic_painted_plate_is_rejected(self):
         assert safety.check_painted_food_contact(["ادهن الصحن بألوان زاهية.", "استخدمه لتقديم الحلويات."])
@@ -211,6 +273,9 @@ class TestProtectiveGear:
 
     def test_negated_technique_needs_no_gear(self):
         assert safety.detect_techniques(["No drill needed: use a hammer and a nail."]) == set()
+
+    def test_a_later_negation_does_not_hide_a_technique(self):
+        assert "blade_cutting" in safety.detect_techniques(["Cut the bottle with a craft knife, no glue needed."])
 
     def test_glass_and_metal_work_need_an_action_on_the_material(self):
         assert "glass_work" in safety.detect_techniques(["Score the glass bottle with a glass cutter."])
