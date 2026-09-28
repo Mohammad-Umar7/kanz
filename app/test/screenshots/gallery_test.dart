@@ -3,6 +3,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:kanz/features/gallery/gallery_samples.dart';
+import 'package:kanz/features/gallery/gallery_screen.dart';
 import 'package:kanz/features/gallery/gallery_sections.dart';
 
 import 'harness.dart';
@@ -50,4 +51,17 @@ void main() {
       });
     }
   }
+
+  // The screen itself in a fixed phone viewport with system insets: checks
+  // the harness path later agents use for whole screens.
+  testWidgets('gallery screen viewport', (tester) async {
+    final gallery = await images(tester);
+    await takeShot(
+      tester,
+      name: 'gallery_screen',
+      precache: [gallery.photo],
+      child: DesignGalleryScreen(images: gallery),
+    );
+    expect(find.text(GallerySamples.en.title), findsOneWidget);
+  });
 }
