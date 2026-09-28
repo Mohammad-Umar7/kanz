@@ -170,5 +170,1300 @@
       }
     }
   },
-  "commonYesterday": "Yesterday"
+  "commonYesterday": "Yesterday",
+  "completionAfter": "After",
+  "completionBefore": "Before",
+  "completionCardMadeFrom": "Made from {item}",
+  "@completionCardMadeFrom": {
+    "placeholders": {
+      "item": {
+        "type": "String"
+      }
+    }
+  },
+  "completionCompare": "Compare your item before and after",
+  "completionDescribedLabel": "You described",
+  "completionErrorTitle": "The project didn't load",
+  "completionEyebrow": "Project finished",
+  "completionEyebrowInProgress": "In progress",
+  "completionFinishedOn": "Finished {date}",
+  "@completionFinishedOn": {
+    "placeholders": {
+      "date": {
+        "type": "String"
+      }
+    }
+  },
+  "completionImpactTitle": "What changed",
+  "completionItems": "Items kept out of the bin",
+  "completionLoading": "Loading your project",
+  "completionMadeFrom": "Made from",
+  "completionMissingBody": "It may have been deleted with its scan. Your other projects are in History.",
+  "completionMissingTitle": "This project isn't on this phone",
+  "completionNoPhoto": "You described this item in words, so there's no photo to compare.",
+  "completionPhotoOnly": "The makeover image isn't available on this server, so this is your original photo.",
+  "completionProjects": "Projects finished",
+  "completionScanAgain": "Scan something else",
+  "completionSeeProjects": "See my projects",
+  "completionShare": "Share before and after",
+  "completionShareFallback": "Couldn't prepare the image, so only the text was shared.",
+  "completionShareProject": "Share this project",
+  "completionShareText": "{title}, made from something I nearly threw away. Planned with Kanz.",
+  "@completionShareText": {
+    "placeholders": {
+      "title": {
+        "type": "String"
+      }
+    }
+  },
+  "completionSharing": "Preparing the image",
+  "completionSkill": "Skill",
+  "completionSteps": "Steps",
+  "completionStepsValue": "{done} of {total}",
+  "@completionStepsValue": {
+    "placeholders": {
+      "done": {
+        "type": "int"
+      },
+      "total": {
+        "type": "int"
+      }
+    }
+  },
+  "completionStreak": "Days in a row",
+  "completionThisProject": "{count, plural, =0{This project is now in your finished projects.} =1{This project kept 1 item out of the bin.} other{This project kept {count} items out of the bin.}}",
+  "@completionThisProject": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "completionTime": "Time",
+  "dropoffAcceptedUnknown": "Accepted materials aren't listed. Check the bin labels before you go.",
+  "dropoffAcceptsList": "Accepts {materials}",
+  "@dropoffAcceptsList": {
+    "placeholders": {
+      "materials": {
+        "type": "String"
+      }
+    }
+  },
+  "dropoffApproximate": "Your location was approximate, so Kanz is searching around {city}.",
+  "@dropoffApproximate": {
+    "placeholders": {
+      "city": {
+        "type": "String"
+      }
+    }
+  },
+  "dropoffCall": "Call",
+  "dropoffCatalogError": "Filters didn't load.",
+  "dropoffCategoriesLabel": "Materials to drop off",
+  "dropoffChangeLocation": "Change",
+  "dropoffChangeLocationHint": "Change where to search",
+  "dropoffCities": "Cities",
+  "dropoffClosed": "Closed",
+  "dropoffDetailAccepts": "Accepts",
+  "dropoffDetailAddress": "Address",
+  "dropoffDetailDistance": "Distance",
+  "dropoffDetailHours": "Hours",
+  "dropoffDetailSource": "Source",
+  "dropoffDirectionOfPlace": "{direction, select, n{North of {place} centre} ne{North-east of {place} centre} e{East of {place} centre} se{South-east of {place} centre} s{South of {place} centre} sw{South-west of {place} centre} w{West of {place} centre} nw{North-west of {place} centre} other{Near {place} centre}}",
+  "@dropoffDirectionOfPlace": {
+    "placeholders": {
+      "direction": {
+        "type": "String"
+      },
+      "place": {
+        "type": "String"
+      }
+    }
+  },
+  "dropoffDirectionOfYou": "{direction, select, n{North of you} ne{North-east of you} e{East of you} se{South-east of you} s{South of you} sw{South-west of you} w{West of you} nw{North-west of you} other{Near you}}",
+  "@dropoffDirectionOfYou": {
+    "placeholders": {
+      "direction": {
+        "type": "String"
+      }
+    }
+  },
+  "dropoffDirections": "Directions",
+  "dropoffDirectionsTo": "Directions to {name}",
+  "@dropoffDirectionsTo": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "dropoffEmptyAction": "Choose another city",
+  "dropoffEmptyMessage": "No drop-off points for these materials near {place}. Try another city, or add a material above.",
+  "@dropoffEmptyMessage": {
+    "placeholders": {
+      "place": {
+        "type": "String"
+      }
+    }
+  },
+  "dropoffEmptyTitle": "Nothing within {km} km",
+  "@dropoffEmptyTitle": {
+    "placeholders": {
+      "km": {
+        "type": "int"
+      }
+    }
+  },
+  "dropoffErrorTitle": "Drop-off points didn't load",
+  "dropoffHoursUnknown": "Hours not listed",
+  "dropoffLocating": "Finding where to search",
+  "dropoffLocationAllow": "Use my location",
+  "dropoffLocationBlockedCity": "Or choose a city, and Kanz searches around its centre.",
+  "dropoffLocationBlockedReason": "Turn it on in your phone's settings to sort places by distance from you.",
+  "dropoffLocationBlockedSnack": "Location is off for Kanz. Turn it on in your phone's settings.",
+  "dropoffLocationBlockedTitle": "Location is off for Kanz",
+  "dropoffLocationDenied": "Location wasn't allowed. You can choose a city instead.",
+  "dropoffLocationFootnote": "You can change this at any time from the top of this tab.",
+  "dropoffLocationPickCity": "Choose a city",
+  "dropoffLocationReasonCity": "Prefer not to share? Choose your city instead.",
+  "dropoffLocationReasonDistance": "Places are sorted by how far they are from you.",
+  "dropoffLocationReasonHazard": "Batteries and electronics go to places that take them.",
+  "dropoffLocationSheetSubtitle": "Kanz lists drop-off points within {km} km.",
+  "@dropoffLocationSheetSubtitle": {
+    "placeholders": {
+      "km": {
+        "type": "int"
+      }
+    }
+  },
+  "dropoffLocationSheetTitle": "Search near",
+  "dropoffLocationTitle": "Find drop-off points near you",
+  "dropoffNearCity": "Near {city}",
+  "@dropoffNearCity": {
+    "placeholders": {
+      "city": {
+        "type": "String"
+      }
+    }
+  },
+  "dropoffNearYou": "Near you",
+  "dropoffNoCategoryMessage": "Choose at least one material above to see drop-off points near you.",
+  "dropoffNoCategoryTitle": "Pick a material",
+  "dropoffOfflineTitle": "You're offline",
+  "dropoffOpenFailed": "Couldn't open that. Try again.",
+  "dropoffOpenNow": "Open now",
+  "dropoffPlaceCount": "{count, plural, =1{1 place} other{{count} places}}",
+  "@dropoffPlaceCount": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "dropoffPlotCentreOf": "{city} centre",
+  "@dropoffPlotCentreOf": {
+    "placeholders": {
+      "city": {
+        "type": "String"
+      }
+    }
+  },
+  "dropoffPlotLabel": "{count, plural, =1{1 drop-off point around {place}, {distance} away.} other{{count} drop-off points around {place}. The nearest is {distance} away.}}",
+  "@dropoffPlotLabel": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      },
+      "place": {
+        "type": "String"
+      },
+      "distance": {
+        "type": "String"
+      }
+    }
+  },
+  "dropoffPlotNorth": "N",
+  "@dropoffPlotNorth": {
+    "description": "Compass letter for north on the drop-off plot."
+  },
+  "dropoffPlotRings": "Rings every {distance}",
+  "@dropoffPlotRings": {
+    "placeholders": {
+      "distance": {
+        "type": "String"
+      }
+    }
+  },
+  "dropoffPlotYou": "Your location",
+  "dropoffSearching": "Looking for drop-off points",
+  "dropoffSearchingNear": "Searching near {place}",
+  "@dropoffSearchingNear": {
+    "placeholders": {
+      "place": {
+        "type": "String"
+      }
+    }
+  },
+  "dropoffSearchingNearYou": "Searching near you",
+  "dropoffSourceCurated": "Kanz list, checked by the team",
+  "dropoffSourceGoogle": "Google Maps",
+  "@dropoffSourceGoogle": {
+    "description": "Attribution for places from Google. Keep the product name as is."
+  },
+  "dropoffSourceOsm": "© OpenStreetMap contributors",
+  "dropoffSourcesLabel": "Sources",
+  "dropoffTitle": "Drop-off",
+  "@dropoffTitle": {
+    "description": "Title of the Drop-off tab."
+  },
+  "dropoffTypeAll": "All types",
+  "dropoffTypeCount": "{count, plural, =1{1 type} other{{count} types}}",
+  "@dropoffTypeCount": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "dropoffTypeEmptyMessage": "Places were found nearby, but none match the type you picked.",
+  "dropoffTypeEmptyTitle": "No places of this type",
+  "dropoffTypeFilterHint": "Filter by type of place",
+  "dropoffTypeSheetSubtitle": "Show only the kinds of places you want to visit.",
+  "dropoffTypeSheetTitle": "Type of place",
+  "dropoffTypeShowAll": "Show all types",
+  "dropoffUseMyLocation": "Use my location",
+  "dropoffUseMyLocationDetail": "Sorts places by distance from where you are",
+  "dropoffViewList": "List",
+  "dropoffViewMap": "Map",
+  "dropoffWebsite": "Website",
+  "dropoffWithinKm": "within {km} km",
+  "@dropoffWithinKm": {
+    "placeholders": {
+      "km": {
+        "type": "int"
+      }
+    }
+  },
+  "historyDelete": "Delete scan",
+  "historyDeleteBody": "Its photo, ideas and projects are removed from this phone. Your impact numbers stay.",
+  "historyDeleteConfirm": "Delete",
+  "historyDeleteFailed": "The scan couldn't be deleted. Try again.",
+  "historyDeleteTitle": "Delete this scan?",
+  "historyDeleted": "Scan deleted",
+  "historyErrorBody": "Kanz couldn't read what's saved on this phone. Try again.",
+  "historyErrorTitle": "History didn't load",
+  "historyFinished": "Finished",
+  "historyFinishedOn": "Finished {date}",
+  "@historyFinishedOn": {
+    "placeholders": {
+      "date": {
+        "type": "String"
+      }
+    }
+  },
+  "historyInProgress": "In progress",
+  "historyLoading": "Loading your history",
+  "historyMore": "More options for {title}",
+  "@historyMore": {
+    "placeholders": {
+      "title": {
+        "type": "String"
+      }
+    }
+  },
+  "historyNotStarted": "Tutorial not opened yet",
+  "historyOpenScan": "Open scan",
+  "historyProjectsEmptyBody": "Pick an upcycling idea from a scan and start its tutorial. Your progress is kept here.",
+  "historyProjectsEmptyTitle": "No projects yet",
+  "historyResume": "Resume",
+  "historyScansEmptyBody": "Every item you scan is saved here and opens even without a connection.",
+  "historyScansEmptyTitle": "No scans yet",
+  "historySeeProject": "See project",
+  "historyStepsDone": "{done} of {total} steps done",
+  "@historyStepsDone": {
+    "placeholders": {
+      "done": {
+        "type": "int"
+      },
+      "total": {
+        "type": "int"
+      }
+    }
+  },
+  "historyTabProjects": "My projects",
+  "historyTabScans": "Scans",
+  "historyTitle": "History",
+  "historyToday": "Today",
+  "homeDescribe": "Describe it",
+  "homeDescription": "Description",
+  "@homeDescription": {
+    "description": "Mono label on the tile of a scan made from a typed description instead of a photo."
+  },
+  "homeErrorMessage": "Kanz couldn't read the scans saved on this phone. Try again.",
+  "homeErrorTitle": "Your scans didn't load",
+  "homeGallery": "From gallery",
+  "homeGuideEyebrow": "What to photograph",
+  "homeGuideGlass": "Jars and bottles",
+  "homeGuideHazardous": "Batteries and old phones. Kanz shows where to take them safely.",
+  "homeGuideMetal": "Tins and drink cans",
+  "homeGuidePaper": "Cardboard boxes and newspapers",
+  "homeGuideTextile": "T-shirts, jeans and fabric scraps",
+  "homeGuideTitle": "Start with something from your kitchen or wardrobe.",
+  "homeHeadline": "What are you about to throw away?",
+  "homeHistory": "History",
+  "homeImpactItems": "{count, plural, =1{item out of the bin} other{items out of the bin}}",
+  "@homeImpactItems": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "homeImpactOpen": "See your impact",
+  "homeImpactProjects": "{count, plural, =1{project finished} other{projects finished}}",
+  "@homeImpactProjects": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "homeImpactStreak": "{count, plural, =1{day in a row} other{days in a row}}",
+  "@homeImpactStreak": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "homeImpactTitle": "Your impact",
+  "homeItemCount": "{count, plural, =1{1 item} other{{count} items}}",
+  "@homeItemCount": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "homeLead": "Photograph it and Kanz shows what it's made of and what it could become.",
+  "homeLoadingRecent": "Loading your recent scans",
+  "homeRecentTitle": "Recent scans",
+  "homeResume": "Resume",
+  "homeResumeEyebrow": "Continue your project",
+  "homeResumeNotStarted": "Tutorial not opened yet",
+  "homeResumeProgress": "Step {current} of {total}",
+  "@homeResumeProgress": {
+    "placeholders": {
+      "current": {
+        "type": "int"
+      },
+      "total": {
+        "type": "int"
+      }
+    }
+  },
+  "homeScan": "Scan an item",
+  "homeSeeAll": "See all",
+  "homeSettings": "Settings",
+  "homeTip1": "One item at a time, filling most of the frame.",
+  "homeTip2": "A plain background and even light.",
+  "homeTip3": "Show labels or recycling marks if it has any.",
+  "homeTipsTitle": "For a clear photo",
+  "homeUnfinishedScan": "Unfinished scan",
+  "ideaAfter": "After",
+  "ideaBackToResults": "Back to results",
+  "ideaBasedOn": "Based on",
+  "ideaBefore": "Before",
+  "ideaCompare": "Compare before and after",
+  "ideaDifficulty": "Difficulty",
+  "ideaDragHint": "Drag to compare",
+  "ideaEyebrow": "Idea {index} of {total}",
+  "@ideaEyebrow": {
+    "placeholders": {
+      "index": {
+        "type": "int"
+      },
+      "total": {
+        "type": "int"
+      }
+    }
+  },
+  "ideaFromDescription": "From your description",
+  "ideaImageFailed": "The preview didn't render.",
+  "ideaImagePaused": "Image generation is paused on this server, so there's no preview yet.",
+  "ideaMaterialsTitle": "Also needed",
+  "ideaMissingBody": "The ideas for this scan changed. Go back to see the current ones.",
+  "ideaMissingTitle": "This idea isn't available anymore",
+  "ideaNoTools": "No tools needed, just your hands.",
+  "ideaRendering": "Rendering the makeover",
+  "ideaSafety": "Safety",
+  "ideaSeeTutorial": "See the tutorial",
+  "ideaTime": "Time",
+  "ideaToolHave": "You have it",
+  "ideaToolMissing": "You'll need it",
+  "ideaTools": "Tools",
+  "ideaToolsTitle": "Tools needed",
+  "impactActiveToday": "Active today",
+  "impactByMaterial": "By material",
+  "impactByPath": "Where they went",
+  "impactCo2Label": "Emissions avoided",
+  "impactEmptyMessage": "Scan something you're about to throw away, then upcycle, recycle or donate it. Each item you mark shows up here.",
+  "impactEmptyTitle": "Your impact starts with one scan",
+  "impactErrorTitle": "Your impact didn't load",
+  "impactEstimateLabel": "Estimate",
+  "impactHowItems": "Items you mark as recycled, donated or disposed of safely from a scan's results.",
+  "impactHowProjects": "Upcycling projects you finish, step by step.",
+  "impactHowStreak": "Days in a row with a scan, a marked item or a finished project.",
+  "impactHowTitle": "What counts here",
+  "impactIntro": "Counted from what you scanned and marked on this phone.",
+  "impactItemCount": "{count, plural, =1{1 item} other{{count} items}}",
+  "@impactItemCount": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "impactItemsLabel": "Items kept out of the bin",
+  "impactKeepStreak": "Scan or mark one thing today so your streak keeps going.",
+  "impactKindDisposed": "Disposed of safely",
+  "impactKindDonated": "Donated",
+  "impactKindRecycled": "Recycled",
+  "impactKindUpcycled": "Upcycled",
+  "impactLoading": "Adding up your impact",
+  "impactMassLabel": "Material kept from landfill",
+  "impactNoItemsYet": "Nothing marked yet. Open a scan's results and mark an item as recycled, donated or upcycled to count it here.",
+  "impactProjectsLabel": "Projects finished",
+  "impactScanAction": "Scan an item",
+  "impactStartStreak": "Scan something today to start a new streak.",
+  "impactStreakLabel": "Day streak",
+  "impactTitle": "Your impact",
+  "@impactTitle": {
+    "description": "Title of the Impact tab."
+  },
+  "onboardingChangeLater": "You can change this later in Settings.",
+  "onboardingFinish": "Start using Kanz",
+  "onboardingGetStarted": "Get started",
+  "onboardingLanguageArabicSample": "الأفكار والدروس والصوت بالعربية.",
+  "@onboardingLanguageArabicSample": {
+    "description": "Always written in Arabic, in both languages: it describes the Arabic option."
+  },
+  "onboardingLanguageBody": "Menus, ideas, tutorials and spoken steps all follow it.",
+  "onboardingLanguageEnglishSample": "Ideas, tutorials and voice in English.",
+  "@onboardingLanguageEnglishSample": {
+    "description": "Always written in English, in both languages: it describes the English option."
+  },
+  "onboardingLanguageTitle": "Choose your language",
+  "onboardingSkillAdvancedLine": "You measure, saw, sew and finish with care.",
+  "onboardingSkillBeginnerLine": "Cutting, gluing and painting. No power tools.",
+  "onboardingSkillBody": "Tutorials match your level. Beginners get simpler steps and more detail.",
+  "onboardingSkillIntermediateLine": "Comfortable with a drill, sandpaper and a needle.",
+  "onboardingSkillLevel": "Level {level} of 3",
+  "@onboardingSkillLevel": {
+    "placeholders": {
+      "level": {
+        "type": "int"
+      }
+    }
+  },
+  "onboardingSkillTitle": "How much have you made before?",
+  "onboardingToolGroupBuilding": "Drilling and fixing",
+  "onboardingToolGroupCount": "{selected} of {total} selected",
+  "@onboardingToolGroupCount": {
+    "placeholders": {
+      "selected": {
+        "type": "int"
+      },
+      "total": {
+        "type": "int"
+      }
+    }
+  },
+  "onboardingToolGroupCutting": "Cutting",
+  "onboardingToolGroupFinishing": "Sanding and painting",
+  "onboardingToolGroupJoining": "Gluing and fastening",
+  "onboardingToolGroupMeasuring": "Measuring",
+  "onboardingToolGroupOther": "Other tools",
+  "onboardingToolGroupSewing": "Sewing",
+  "onboardingToolsBody": "Ideas and tutorials use only these. Safety gear is always listed.",
+  "onboardingToolsCount": "{count, plural, =0{No tools selected} =1{1 tool selected} other{{count} tools selected}}",
+  "@onboardingToolsCount": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "onboardingToolsNone": "No tools is fine: Kanz puts ideas that need none first.",
+  "onboardingToolsTitle": "Which tools do you have?",
+  "onboardingWelcomeBody": "Photograph something you're about to throw away and Kanz tells you what it's made of and what to do with it.",
+  "onboardingWelcomeStep1Body": "Materials, condition and quantity from one photo.",
+  "onboardingWelcomeStep1Title": "Photograph an item",
+  "onboardingWelcomeStep2Body": "Upcycle it with a step-by-step tutorial, recycle it or donate it.",
+  "onboardingWelcomeStep2Title": "Choose a path",
+  "onboardingWelcomeStep3Body": "Recycling and donation points near you.",
+  "onboardingWelcomeStep3Title": "Drop it off",
+  "onboardingWelcomeTitle": "Find the treasure in what you throw away.",
+  "@onboardingWelcomeTitle": {
+    "description": "Welcome headline. Kanz means treasure in Arabic."
+  },
+  "permissionsAsking": "Waiting for your answer",
+  "permissionsCameraAllow": "Allow camera",
+  "permissionsCameraBlocked": "The camera is turned off for Kanz in your phone's settings. Turn it on there, or pick a photo from your gallery.",
+  "permissionsCameraDenied": "The camera wasn't allowed. Ask again, or pick a photo from your gallery.",
+  "permissionsCameraGallery": "Pick from gallery instead",
+  "permissionsCameraReason1": "Point the camera at an item and Kanz names its materials and condition.",
+  "permissionsCameraReason2": "Only the photo you take is sent for analysis, with its location data removed.",
+  "permissionsCameraReason3": "Rather not? Pick a photo from your gallery instead.",
+  "permissionsCameraRestricted": "The camera can't be turned on for Kanz on this phone. Pick a photo from your gallery instead.",
+  "permissionsCameraTitle": "Show Kanz what you're about to throw away",
+  "permissionsCityBody": "Kanz looks for drop-off points around the city centre. You can change it any time in Settings.",
+  "permissionsCityEyebrow": "Emirates",
+  "permissionsCitySelected": "Selected",
+  "permissionsCityTitle": "Choose your city",
+  "permissionsCityUseLocation": "Use my location instead",
+  "permissionsCityUseLocationDetail": "More precise: points sorted by distance from you",
+  "permissionsFootnote": "You can change this any time in Settings.",
+  "permissionsLocationAllow": "Use my location",
+  "permissionsLocationBlocked": "Location is turned off for Kanz in your phone's settings. Turn it on there, or choose a city.",
+  "permissionsLocationCity": "Choose a city instead",
+  "permissionsLocationDenied": "Location wasn't allowed. Ask again, or choose a city.",
+  "permissionsLocationReason1": "Recycling and donation points are sorted by distance from you.",
+  "permissionsLocationReason2": "Kanz reads your position only when it searches for drop-off points.",
+  "permissionsLocationReason3": "Rather not? Choose your city and Kanz searches around its centre.",
+  "permissionsLocationRestricted": "Location can't be turned on for Kanz on this phone. Choose a city instead.",
+  "permissionsLocationTitle": "Find drop-off points near you",
+  "permissionsNotAllowed": "Not allowed",
+  "permissionsTurnedOff": "Turned off in Settings",
+  "permissionsUnavailable": "Not available on this phone",
+  "resultsAccepts": "Accepts {materials}",
+  "@resultsAccepts": {
+    "placeholders": {
+      "materials": {
+        "type": "String"
+      }
+    }
+  },
+  "resultsAroundCity": "Around {city}, since your location was approximate",
+  "@resultsAroundCity": {
+    "placeholders": {
+      "city": {
+        "type": "String"
+      }
+    }
+  },
+  "resultsAttribution": "Places from {sources}",
+  "@resultsAttribution": {
+    "placeholders": {
+      "sources": {
+        "type": "String"
+      }
+    }
+  },
+  "resultsBasedOn": "Based on",
+  "resultsBeforeYouGo": "Before you go",
+  "resultsBoxSemantics": "{name}, {category}, {confidence} confidence",
+  "@resultsBoxSemantics": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      },
+      "category": {
+        "type": "String"
+      },
+      "confidence": {
+        "type": "String"
+      }
+    }
+  },
+  "resultsChooseCity": "Choose a city",
+  "resultsChooseFromGallery": "Choose from gallery",
+  "resultsClosedNow": "Closed now",
+  "resultsCorrectedNote": "Corrected by you.",
+  "resultsDescribeAgain": "Describe it again",
+  "resultsDirections": "Directions to {name}",
+  "@resultsDirections": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "resultsDirectionsFailed": "Maps didn't open. Try again in a moment.",
+  "resultsDisposalNever": "Never",
+  "resultsDisposalSteps": "What to do",
+  "resultsDo": "Do",
+  "resultsDonateNotSuitable": "Not suitable to donate",
+  "resultsDonateSuitable": "Good to donate",
+  "resultsDonateUnavailableTitle": "Not one to donate",
+  "resultsDonateWhere": "Where",
+  "resultsDoneIn": "Done in {seconds} s",
+  "@resultsDoneIn": {
+    "placeholders": {
+      "seconds": {
+        "type": "String"
+      }
+    }
+  },
+  "resultsDont": "Don't",
+  "resultsDropoffErrorTitle": "Drop-off points didn't load",
+  "resultsDropoffTitle": "Drop-off near you",
+  "resultsDropoffWaiting": "Drop-off points appear once Kanz knows what this is.",
+  "resultsEditCategory": "Material",
+  "resultsEditHazards": "Hazards",
+  "resultsEditItem": "Correct this item",
+  "resultsEditMaterial": "Specific material",
+  "resultsEditMaterialHint": "For example: clear glass, PET #1",
+  "resultsEditName": "Name",
+  "resultsEditQuality": "Quality",
+  "resultsEditQuantity": "Quantity",
+  "resultsEditQuantityInvalid": "Enter a number, like 2 or 0.5",
+  "resultsEditSave": "Save and update ideas",
+  "resultsEditState": "State",
+  "resultsEditSubtitle": "Kanz will update the ideas with your changes.",
+  "resultsEditUnit": "Unit",
+  "resultsFindingIdeas": "Finding ideas that suit your tools",
+  "resultsFocusItem": "Focus ideas on this item",
+  "resultsFocusedItem": "Ideas below are for this item",
+  "resultsHazardLabel": "{hazards}: safe disposal only, no DIY",
+  "@resultsHazardLabel": {
+    "placeholders": {
+      "hazards": {
+        "type": "String"
+      }
+    }
+  },
+  "resultsHeldBackBody": "{items} can't be used for DIY.",
+  "@resultsHeldBackBody": {
+    "placeholders": {
+      "items": {
+        "type": "String"
+      }
+    }
+  },
+  "resultsHeldBackPointer": "How to get rid of it safely follows the ideas.",
+  "resultsHeldBackTitle": "Held back from DIY",
+  "resultsHideSteps": "Hide steps",
+  "resultsHoursUnknown": "Hours not listed",
+  "resultsIdeaBefore": "Before",
+  "resultsIdeaImageFailed": "Preview unavailable",
+  "resultsIdeaImagePaused": "Image generation paused",
+  "resultsIdeaImageRetry": "Try the image again",
+  "resultsIdeaRendering": "Rendering the makeover",
+  "resultsIdeasErrorTitle": "Ideas didn't load",
+  "resultsIdentifyErrorTitle": "Kanz couldn't identify the materials",
+  "resultsInCity": "In {city}",
+  "@resultsInCity": {
+    "placeholders": {
+      "city": {
+        "type": "String"
+      }
+    }
+  },
+  "resultsItemsFound": "{count, plural, =1{1 item found} other{{count} items found}}",
+  "@resultsItemsFound": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "resultsLabelConfidence": "Confidence",
+  "resultsLabelMaterial": "Material",
+  "resultsLabelQuality": "Quality",
+  "resultsLabelQuantity": "Qty",
+  "resultsLabelRecyclable": "Recyclable",
+  "resultsLabelState": "State",
+  "resultsLabelType": "Type",
+  "resultsListAnd": "{first} and {last}",
+  "@resultsListAnd": {
+    "placeholders": {
+      "first": {
+        "type": "String"
+      },
+      "last": {
+        "type": "String"
+      }
+    }
+  },
+  "resultsLocationOff": "Location is off for Kanz, so pick a city instead.",
+  "resultsMarkDisposed": "Mark as disposed",
+  "resultsMarkDonated": "Mark as donated",
+  "resultsMarkRecycled": "Mark as recycled",
+  "resultsMarkedDisposed": "Disposed · added to your impact",
+  "resultsMarkedDonated": "Donated · added to your impact",
+  "resultsMarkedRecycled": "Recycled · added to your impact",
+  "resultsMaterialsSubtitle": "Tap an item to see its details.",
+  "resultsMaterialsTitle": "What it's made of",
+  "resultsMissingBody": "It may have been deleted from History. Start a new scan to see ideas.",
+  "resultsMissingTitle": "This scan isn't on this phone",
+  "resultsNearYou": "Near your location",
+  "resultsNeedsLocationBody": "Use your location or pick a city to see the nearest drop-off points.",
+  "resultsNeedsLocationTitle": "Where should Kanz look?",
+  "resultsNewScan": "New scan",
+  "resultsNoDiyTitle": "No DIY for this item",
+  "resultsNoIdeasBody": "Recycling or donating may suit it better. If Kanz misread the item, correct it above.",
+  "resultsNoIdeasTitle": "No DIY ideas for this one",
+  "resultsNoPlacesBody": "The Drop-off tab can search a wider set of places or another city.",
+  "resultsNoPlacesTitle": "No drop-off points found nearby",
+  "resultsOffline": "You're offline. Saved results still open; new steps wait for a connection.",
+  "resultsOpenDropoff": "Open Drop-off",
+  "resultsOpenNow": "Open now",
+  "resultsPathsTitle": "What it can become",
+  "resultsPathsTitleDisposal": "How to get rid of it safely",
+  "resultsPhotoSemantics": "{count, plural, =0{Your photo} =1{Your photo, 1 item found} other{Your photo, {count} items found}}",
+  "@resultsPhotoSemantics": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "resultsPrep": "Prep",
+  "resultsQualitySemantics": "Quality {score} of 5, {label}",
+  "@resultsQualitySemantics": {
+    "placeholders": {
+      "score": {
+        "type": "int"
+      },
+      "label": {
+        "type": "String"
+      }
+    }
+  },
+  "resultsReadAs": "Kanz read this as",
+  "resultsReadingItems": "Reading material, quantity and condition",
+  "resultsRecyclableValue": "{status} · {stream}",
+  "@resultsRecyclableValue": {
+    "placeholders": {
+      "status": {
+        "type": "String"
+      },
+      "stream": {
+        "type": "String"
+      }
+    }
+  },
+  "resultsRecycleEmpty": "No recycling steps came back for this scan.",
+  "resultsRetake": "Retake photo",
+  "resultsRetakeFallbackTitle": "Kanz couldn't make out an item",
+  "resultsSafeDisposalTitle": "Safe disposal",
+  "resultsSeconds": "{seconds} s",
+  "@resultsSeconds": {
+    "placeholders": {
+      "seconds": {
+        "type": "String"
+      }
+    }
+  },
+  "resultsSeeAll": "See all",
+  "resultsShowSteps": "Show steps",
+  "resultsSourceCurated": "Kanz's own list",
+  "resultsSourceGoogle": "Google",
+  "resultsSourceOsm": "OpenStreetMap contributors",
+  "resultsStageImagesPaused": "Image generation is paused on this server. Ideas and tutorials still work.",
+  "resultsStageNeedsLocation": "Choose where to look, below.",
+  "resultsStageNoDropoff": "Nothing here needs a drop-off point.",
+  "resultsStageNoMakeovers": "No ideas to render.",
+  "resultsStageNoMakeoversDisposal": "Nothing to render: this item needs safe disposal.",
+  "resultsSummaryDisposal": "safe disposal",
+  "resultsSummaryIdeas": "{count, plural, =0{no ideas} =1{1 idea} other{{count} ideas}}",
+  "@resultsSummaryIdeas": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "resultsSummaryImagesPaused": "images paused",
+  "resultsSummaryPlaces": "{count, plural, =0{no places nearby} =1{1 place} other{{count} places}}",
+  "@resultsSummaryPlaces": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "resultsTabDispose": "Dispose",
+  "resultsTabDonate": "Donate",
+  "resultsTabRecycle": "Recycle",
+  "resultsTabUpcycle": "Upcycle",
+  "resultsTextRejectedBody": "Name the item and what it's made of, for example: two empty plastic water bottles.",
+  "resultsTextRejectedTitle": "Kanz couldn't tell what that is",
+  "resultsTextScan": "Text scan",
+  "resultsTip": "What to try",
+  "resultsTitle": "Scan results",
+  "resultsToolsAll": "You have every tool",
+  "resultsToolsNeeded": "{count, plural, =1{Needs 1 tool you don't have} other{Needs {count} tools you don't have}}",
+  "@resultsToolsNeeded": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "resultsToolsNone": "No tools needed",
+  "resultsToolsSome": "{total, plural, =1{You have {have} of 1 tool} other{You have {have} of {total} tools}}",
+  "@resultsToolsSome": {
+    "placeholders": {
+      "have": {
+        "type": "int"
+      },
+      "total": {
+        "type": "int"
+      }
+    }
+  },
+  "resultsUnitBag": "bags",
+  "resultsUnitG": "g",
+  "resultsUnitHandful": "handfuls",
+  "resultsUnitKg": "kg",
+  "resultsUnitL": "litres",
+  "resultsUnitM": "m",
+  "resultsUnitM2": "m²",
+  "resultsUnitPcs": "pieces",
+  "resultsUseMyLocation": "Use my location",
+  "scanBackToCamera": "Back to camera",
+  "scanCameraAllow": "Allow camera",
+  "scanCameraBlockedBody": "Camera access is off for Kanz. Turn it on in Settings, or use a photo from your gallery.",
+  "scanCameraDeniedBody": "You can still pick a photo you already took, or describe the item in a sentence.",
+  "scanCameraDeniedTitle": "Kanz can't use the camera",
+  "scanCameraUnavailableBody": "Another app may be using it. Try again, or pick a photo from your gallery.",
+  "scanCameraUnavailableTitle": "The camera isn't available",
+  "scanChooseFromGallery": "Choose from gallery",
+  "scanDescribe": "Describe",
+  "scanDescribeBody": "Say what it is, what it's made of, how many there are and what shape they're in.",
+  "scanDescribeHint": "For example: three empty glass jars with metal lids",
+  "scanDescribeInstead": "Describe it instead",
+  "scanDescribeLabel": "Description",
+  "scanDescribeSemantics": "Describe the item in words",
+  "scanDescribeStart": "Identify materials",
+  "scanDescribeTitle": "Describe what you have",
+  "scanExampleBatteries": "Four used AA batteries",
+  "scanExampleBox": "A big cardboard box from a delivery",
+  "scanExampleJars": "Empty glass jam jars with metal lids",
+  "scanExampleJeans": "A pile of old denim jeans",
+  "scanExampleSemantics": "Use the example: {example}",
+  "@scanExampleSemantics": {
+    "placeholders": {
+      "example": {
+        "type": "String"
+      }
+    }
+  },
+  "scanExamplesTitle": "Or start from an example",
+  "scanGallery": "Gallery",
+  "scanGalleryErrorBody": "Check that Kanz may read your photos, then try again.",
+  "scanGalleryErrorTitle": "Your photos didn't open",
+  "scanGallerySemantics": "Choose a photo from your gallery",
+  "scanGuidance": "Fill the frame with one item, in good light",
+  "@scanGuidance": {
+    "description": "The single line of guidance on the viewfinder."
+  },
+  "scanNoCameraBody": "This phone has no camera Kanz can use. Pick a photo or describe the item instead.",
+  "scanOffline": "You're offline. Kanz needs a connection to identify materials.",
+  "scanOpeningGallery": "Opening your photos",
+  "scanShutter": "Take photo",
+  "scanStartingCamera": "Starting the camera",
+  "scanTextScan": "Text scan",
+  "scanTorch": "Flashlight",
+  "@scanTorch": {
+    "description": "Toggle for the camera light; announced as on or off."
+  },
+  "settingsAbout": "About",
+  "settingsAboutBody": "Kanz identifies what your things are made of, suggests how to upcycle, recycle or donate them, and finds drop-off points in the UAE.",
+  "settingsCo2eNote": "CO2e figures in Kanz are estimates from average emission factors, not measurements.",
+  "settingsEstimates": "Estimates",
+  "settingsHandsFree": "Hands-free by default",
+  "settingsHandsFreeDetail": "Reads each step aloud and listens for \"next\", \"back\" and \"repeat\".",
+  "settingsKnowledge": "Knowledge base",
+  "settingsKnowledgeDocs": "{count, plural, =1{1 document} other{{count} documents}}",
+  "@settingsKnowledgeDocs": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "settingsKnowledgeKeyword": "{count, plural, =1{1 document, keyword search} other{{count} documents, keyword search}}",
+  "@settingsKnowledgeKeyword": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "settingsLanguage": "Language",
+  "settingsLanguageNote": "Ideas, tutorials and spoken steps use this language too.",
+  "settingsLanguageSystemDetail": "Now {language}",
+  "@settingsLanguageSystemDetail": {
+    "placeholders": {
+      "language": {
+        "type": "String"
+      }
+    }
+  },
+  "settingsLicenses": "Open-source licenses",
+  "settingsLocation": "Location for drop-off points",
+  "settingsLocationCity": "A fixed city",
+  "settingsLocationCityDetail": "Search around {city}",
+  "@settingsLocationCityDetail": {
+    "placeholders": {
+      "city": {
+        "type": "String"
+      }
+    }
+  },
+  "settingsLocationCityNone": "Choose a city",
+  "settingsLocationGps": "Use my location",
+  "settingsLocationGpsDetail": "Points sorted by distance from you",
+  "settingsLocationGpsOff": "Location access is off. Kanz uses your city until you allow it.",
+  "settingsLocationGpsOffNoCity": "Location access is off. Allow it, or choose a city.",
+  "settingsLocationUndecided": "Kanz asks the first time you look for drop-off points.",
+  "settingsModelEmbed": "Embeddings",
+  "settingsModelImage": "Image model",
+  "settingsModelText": "Text model",
+  "settingsModelVision": "Vision model",
+  "settingsPlaces": "Places sources",
+  "settingsPlacesNone": "None configured",
+  "settingsServer": "Server",
+  "settingsServerHelper": "Default: {url}",
+  "@settingsServerHelper": {
+    "placeholders": {
+      "url": {
+        "type": "String"
+      }
+    }
+  },
+  "settingsServerInvalid": "Enter a full address that starts with http:// or https://",
+  "settingsServerNoAi": "No AI key is set on this server, so scans can't be analysed.",
+  "settingsServerOfflineDetail": "This phone has no network connection.",
+  "settingsServerReset": "Use default",
+  "settingsServerSave": "Save and test",
+  "settingsServerTest": "Test connection",
+  "settingsServerTesting": "Testing the connection",
+  "settingsServerUnreachableDetail": "Check the address, and that the server is running and on the same network.",
+  "settingsServerUrl": "Server address",
+  "settingsServerVersion": "Server version",
+  "settingsSkill": "Skill level",
+  "settingsTheme": "Appearance",
+  "settingsTitle": "Settings",
+  "settingsTools": "My tools",
+  "settingsToolsListSeparator": ", ",
+  "@settingsToolsListSeparator": {
+    "description": "Separator between tool names in a list."
+  },
+  "settingsToolsMore": "{names} and {count} more",
+  "@settingsToolsMore": {
+    "placeholders": {
+      "names": {
+        "type": "String"
+      },
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "settingsToolsNone": "None yet. Ideas that need no tools come first.",
+  "settingsTutorials": "Tutorials",
+  "settingsWorkshop": "Your workshop",
+  "shellChecking": "Checking the connection",
+  "shellOffline": "You're offline. Saved scans still open.",
+  "@shellOffline": {
+    "description": "Banner when the phone has no network at all."
+  },
+  "shellRetry": "Retry",
+  "@shellRetry": {
+    "description": "Short action in the offline banner that checks the server again."
+  },
+  "shellScan": "Scan an item",
+  "@shellScan": {
+    "description": "Accessible name of the clay scan action in the middle of the navigation bar."
+  },
+  "shellTabDropoff": "Drop-off",
+  "shellTabHome": "Home",
+  "shellTabImpact": "Impact",
+  "shellTabSwaps": "Swaps",
+  "shellUnreachable": "Can't reach the Kanz server. Saved scans still open.",
+  "@shellUnreachable": {
+    "description": "Banner when the network is up but the backend does not answer."
+  },
+  "swapsChipBatteries": "Batteries",
+  "swapsChipClingFilm": "Cling film",
+  "swapsChipCoffeeCapsules": "Coffee capsules",
+  "swapsChipPaperTowels": "Paper towels",
+  "swapsChipPlasticBags": "Plastic bags",
+  "swapsChipPlasticBottles": "Plastic bottles",
+  "swapsChipTakeawayContainers": "Takeaway containers",
+  "swapsChipWetWipes": "Wet wipes",
+  "swapsChipsLabel": "Often in your bin",
+  "swapsCost": "Cost: {level}",
+  "@swapsCost": {
+    "placeholders": {
+      "level": {
+        "type": "String"
+      }
+    }
+  },
+  "swapsCount": "{count, plural, =1{1 swap} other{{count} swaps}}",
+  "@swapsCount": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "swapsEffort": "Effort: {level}",
+  "@swapsEffort": {
+    "placeholders": {
+      "level": {
+        "type": "String"
+      }
+    }
+  },
+  "swapsEmptyMessage": "Kanz couldn't match those items. Try a common one, like plastic bottles or cling film.",
+  "swapsEmptyTitle": "No swaps for that yet",
+  "swapsErrorTitle": "Swaps didn't load",
+  "swapsFreeTextHelper": "Separate items with commas",
+  "swapsFreeTextHint": "Straws, foil trays, razors",
+  "swapsFreeTextLabel": "Add something else",
+  "swapsFromScans": "From your scans",
+  "swapsHistorySubtitle": "{days, plural, =1{Also covers what you scanned today} other{Also covers what you scanned in the last {days} days}}",
+  "@swapsHistorySubtitle": {
+    "placeholders": {
+      "days": {
+        "type": "int"
+      }
+    }
+  },
+  "swapsHistoryTitle": "Use my scan history",
+  "swapsHowCost": "Effort and cost at a glance, with the sources behind it.",
+  "swapsHowSwap": "One lasting alternative for each item you pick.",
+  "swapsHowTip": "Why it helps, and one tip to make the switch stick.",
+  "swapsHowTitle": "What you get",
+  "swapsInsightLabel": "From your scans",
+  "swapsInsteadOf": "Instead of",
+  "swapsIntro": "Pick what you throw away most. Kanz suggests a lasting alternative for each, with one tip to make it stick.",
+  "swapsLoading": "Finding swaps for {items}",
+  "@swapsLoading": {
+    "placeholders": {
+      "items": {
+        "type": "String"
+      }
+    }
+  },
+  "swapsLoadingHistory": "Finding swaps from your scan history",
+  "swapsOfflineTitle": "You're offline",
+  "swapsResultsTitle": "Swaps for you",
+  "swapsSources": "Sources",
+  "swapsStartOver": "Start over",
+  "swapsSubmit": "Find swaps",
+  "swapsSubmitHint": "Pick at least one item, or type your own.",
+  "swapsTip": "Tip",
+  "swapsTitle": "Swaps",
+  "@swapsTitle": {
+    "description": "Title of the Swaps tab (eco-friendly alternatives)."
+  },
+  "swapsTry": "Try",
+  "swapsUpdate": "Update swaps",
+  "tutorialAdaptBody": "Kanz rewrites the steps for your skill and the tools you have.",
+  "tutorialAdaptFailed": "Couldn't rewrite the tutorial. {reason}",
+  "@tutorialAdaptFailed": {
+    "placeholders": {
+      "reason": {
+        "type": "String"
+      }
+    }
+  },
+  "tutorialAdaptOffline": "Adapting needs a connection.",
+  "tutorialAdaptProgressNote": "Your progress starts over, because the steps change.",
+  "tutorialAdaptSkill": "Your skill",
+  "tutorialAdaptSubmit": "Rewrite the steps",
+  "tutorialAdaptTitle": "Adapt this tutorial",
+  "tutorialAdaptTools": "Tools you have",
+  "tutorialAdaptToolsHint": "Leave a tool off and Kanz works around it.",
+  "tutorialAdaptTooltip": "Adapt to your skill and tools",
+  "tutorialAdaptedLabel": "Your version",
+  "@tutorialAdaptedLabel": {
+    "description": "Mono label above the backend's adapted_note line."
+  },
+  "tutorialAdapting": "Rewriting for {skill} with your tools. The current steps stay here until the new ones arrive.",
+  "@tutorialAdapting": {
+    "placeholders": {
+      "skill": {
+        "type": "String"
+      }
+    }
+  },
+  "tutorialBefore": "Before",
+  "tutorialCareLabel": "Care",
+  "tutorialCareful": "Careful",
+  "tutorialChangeSetup": "Change skill or tools",
+  "tutorialCommandBack": "back",
+  "tutorialCommandNext": "next",
+  "tutorialCommandRepeat": "repeat",
+  "tutorialContinue": "Continue at step {number}",
+  "@tutorialContinue": {
+    "placeholders": {
+      "number": {
+        "type": "int"
+      }
+    }
+  },
+  "tutorialDismiss": "Dismiss",
+  "tutorialErrorTitle": "The tutorial didn't load",
+  "tutorialEyebrow": "Tutorial",
+  "tutorialFinish": "Finish project",
+  "tutorialFinishEyebrow": "Almost done",
+  "tutorialFinishFailed": "Couldn't save the project. Try again.",
+  "tutorialFinishSaving": "Saving your project",
+  "tutorialFinishTitle": "Finishing and care",
+  "tutorialFinishingLabel": "Finishing",
+  "tutorialFromScan": "From your scan",
+  "tutorialGearLabel": "Protective gear",
+  "tutorialHandsFree": "Hands-free mode",
+  "tutorialHandsFreeOn": "Hands-free is on",
+  "tutorialHandsFreeStarting": "Starting hands-free",
+  "tutorialHeard": "Heard “{command}”",
+  "@tutorialHeard": {
+    "placeholders": {
+      "command": {
+        "type": "String"
+      }
+    }
+  },
+  "tutorialImageBlocked": "Waiting for the image of step {number}",
+  "@tutorialImageBlocked": {
+    "placeholders": {
+      "number": {
+        "type": "int"
+      }
+    }
+  },
+  "tutorialImageDrawing": "Drawing step {number}",
+  "@tutorialImageDrawing": {
+    "placeholders": {
+      "number": {
+        "type": "int"
+      }
+    }
+  },
+  "tutorialImageFailed": "This step's image didn't load",
+  "tutorialImageLabel": "Picture of step {number}: {title}",
+  "@tutorialImageLabel": {
+    "placeholders": {
+      "number": {
+        "type": "int"
+      },
+      "title": {
+        "type": "String"
+      }
+    }
+  },
+  "tutorialImagePaused": "Image generation is paused on this server",
+  "tutorialImageQueued": "In line after step {number}",
+  "@tutorialImageQueued": {
+    "placeholders": {
+      "number": {
+        "type": "int"
+      }
+    }
+  },
+  "tutorialImageTag": "Step {number}",
+  "@tutorialImageTag": {
+    "placeholders": {
+      "number": {
+        "type": "String"
+      }
+    }
+  },
+  "tutorialListening": "Listening",
+  "tutorialLoadingBody": "Kanz is writing steps for your skill and the tools you have. This takes about ten seconds.",
+  "tutorialLoadingTitle": "Writing your tutorial",
+  "tutorialMarkDone": "Mark step done",
+  "tutorialMaterialsTitle": "Materials",
+  "tutorialMissingAction": "Back to the idea",
+  "tutorialMissingBody": "Its scan may have been deleted. Go back and pick another idea.",
+  "tutorialMissingTitle": "This idea isn't available",
+  "tutorialNext": "Next step",
+  "tutorialNoHandsFree": "Hands-free isn't available on this phone. The buttons still work.",
+  "tutorialNoSpeech": "This phone has no voice to read steps aloud. Voice commands still work.",
+  "tutorialNoVoice": "Voice commands aren't available on this phone. Steps are read aloud; use the buttons to move.",
+  "tutorialOfflineBanner": "You're offline. This tutorial is saved; new images and adapting need a connection.",
+  "@tutorialOfflineBanner": {
+    "description": "Thin banner under the app bar while a stored tutorial is open offline."
+  },
+  "tutorialOfflineBody": "This tutorial isn't saved on your phone yet. Connect to the internet and try again.",
+  "tutorialOfflineTitle": "You're offline",
+  "tutorialOverview": "Back to the overview",
+  "tutorialPrevious": "Previous step",
+  "tutorialSafetyNotes": "Before you start",
+  "tutorialSafetyTitle": "Safety",
+  "tutorialSourcesLabel": "Based on",
+  "tutorialSpeaking": "Reading step {number} aloud",
+  "@tutorialSpeaking": {
+    "placeholders": {
+      "number": {
+        "type": "int"
+      }
+    }
+  },
+  "tutorialSpecSkill": "Skill",
+  "tutorialSpecSteps": "Steps",
+  "tutorialSpecTime": "Time",
+  "tutorialSpecTools": "Tools",
+  "tutorialStart": "Start step 1",
+  "tutorialStepDone": "Step done",
+  "tutorialStepDoneHint": "Tap to mark it not done",
+  "tutorialStepDoneTag": "Done",
+  "tutorialStepsCount": "{count, plural, =1{1 step} other{{count} steps}}",
+  "@tutorialStepsCount": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "tutorialStepsDone": "{done} of {total} steps done",
+  "@tutorialStepsDone": {
+    "placeholders": {
+      "done": {
+        "type": "int"
+      },
+      "total": {
+        "type": "int"
+      }
+    }
+  },
+  "tutorialStepsOpen": "{count, plural, =1{1 step isn't marked done. You can still finish.} other{{count} steps aren't marked done. You can still finish.}}",
+  "@tutorialStepsOpen": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "tutorialTip": "Tip",
+  "tutorialToFinish": "Go to finishing",
+  "tutorialToGather": "To gather",
+  "tutorialToolHave": "You have it",
+  "tutorialToolInstead": "Use instead",
+  "tutorialToolMissing": "Missing",
+  "tutorialToolsReady": "{have} of {total} ready",
+  "@tutorialToolsReady": {
+    "placeholders": {
+      "have": {
+        "type": "int"
+      },
+      "total": {
+        "type": "int"
+      }
+    }
+  },
+  "tutorialToolsTitle": "Tools",
+  "tutorialUpdated": "Updated",
+  "@tutorialUpdated": {
+    "description": "Tag on the adapted note right after the tutorial was rewritten."
+  },
+  "tutorialVoiceHint": "Say “next”, “back” or “repeat”"
 }
