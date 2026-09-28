@@ -290,7 +290,12 @@ class _Inset extends StatelessWidget {
           child: Stack(
             fit: StackFit.expand,
             children: [
-              Image(image: image, fit: BoxFit.cover),
+              Image(
+                image: image,
+                fit: BoxFit.cover,
+                errorBuilder: (context, error, stack) =>
+                    ColoredBox(color: c.photoBackdrop),
+              ),
               Align(
                 alignment: Alignment.bottomCenter,
                 child: Container(

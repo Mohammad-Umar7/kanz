@@ -200,6 +200,8 @@ class _BeforeAfterSliderState extends State<BeforeAfterSlider> {
       fit: BoxFit.cover,
       excludeFromSemantics: true,
       gaplessPlayback: true,
+      // A missing image leaves the dark photo backdrop, never an error box.
+      errorBuilder: (context, error, stack) => const SizedBox.expand(),
     );
     return heroTag == null ? img : Hero(tag: heroTag, child: img);
   }
