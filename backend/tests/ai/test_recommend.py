@@ -81,6 +81,13 @@ async def test_prompts_carry_the_items_profile_and_retrieved_projects():
     assert "spray painting: a dust mask" in designer["system"]
 
 
+async def test_invented_citations_are_sent_back_once_then_dropped():
+    gateway = diy_gateway()
+    res = await pipeline.recommend(jar_request(), gateway=gateway)
+    assert any("proj_invented_by_model" in problem for problem in gateway.problems[0])
+    assert all(s.id != "proj_invented_by_model" for idea in res.upcycle for s in idea.sources)
+
+
 async def test_idea_ids_are_stable_across_requests():
     first = await pipeline.recommend(jar_request(), gateway=diy_gateway())
     second = await pipeline.recommend(jar_request(), gateway=diy_gateway())

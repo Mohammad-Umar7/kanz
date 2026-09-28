@@ -53,12 +53,19 @@ def hard_rules(items: Sequence[Item], hazardous_ids: Sequence[str]):
     return check
 
 
-def soft_rules(profile: Profile):
+def soft_rules(profile: Profile, known_ids: Sequence[str] = ()):
     """Rules the model gets one chance to fix; the node repairs whatever is left deterministically."""
+    known = set(known_ids)
 
     def check(out: LlmIdeas) -> list[str]:
         problems: list[str] = []
         for n, idea in enumerate(out.ideas, 1):
+            # Grounding: every idea should point at the project documents it adapts. Unknown ids
+            # are dropped by ``cite`` anyway; asking once gives the idea a real source chip.
+            invented = [i for i in idea.source_ids if i not in known]
+            if known and (invented or not idea.source_ids):
+                detail = f"cites unknown ids {', '.join(invented)}" if invented else "cites no knowledge document"
+                problems.append(f"{_where(n, idea)}{detail}; cite the ids of the projects it adapts, from the list.")
             problems += safety.check_protective_gear(
                 [idea.title, idea.pitch],
                 idea.tools_needed,
@@ -153,7 +160,8 @@ async def upcycle_designer(state: RecommendState, runtime: Runtime[PipelineConte
                 model=prompt.model(ctx.settings),
                 examples=prompt.examples,
                 validator=safety.TwoTierValidator(
-                    hard=hard_rules(items, state["routing"].hazardous_item_ids), soft=soft_rules(profile)
+                    hard=hard_rules(items, state["routing"].hazardous_item_ids),
+                    soft=soft_rules(profile, [h.id for h in projects]),
                 ),
                 temperature=prompt.temperature,
                 thinking_level=prompt.thinking_level,
