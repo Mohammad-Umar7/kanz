@@ -49,7 +49,7 @@ SOURCE_LANGUAGE_NOTE = (
     "or any other text, into the image."
 )
 
-_ARABIC = re.compile(r"[؀-ۿݐ-ݿﭐ-﷿ﹰ-﻿]")
+_ARABIC = re.compile(r"[\u0600-\u06ff\u0750-\u077f\ufb50-\ufdff\ufe70-\ufefc]")  # Arabic script, any letter form
 _SPACES = re.compile(r"\s+")
 
 MAX_FIELD_CHARS = 600  # model-written fields are short; this bounds anything unexpected
