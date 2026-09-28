@@ -1,6 +1,7 @@
 """The eval script's scoring and report rendering (no live calls)."""
 
 import importlib.util
+import logging
 import sys
 
 from app.config import BACKEND_DIR
@@ -63,3 +64,15 @@ def test_percentiles():
     assert run_eval.percentile([], 50) is None
     assert run_eval.percentile([100, 200, 300, 400, 500], 50) == 300
     assert run_eval.percentile([100, 200, 300, 400, 500], 90) == 500
+
+
+def test_model_log_records_only_the_model_that_answered():
+    handler = run_eval.ModelLog()
+    fmt = "gemini stage=%s model=%s attempt=%d ms=%d ok=%s"
+    for args in [
+        ("material_analyst@v2", "gemini-3.6-flash", 1, 300, False),
+        ("material_analyst@v2", "gemini-3.5-flash", 1, 4100, True),
+    ]:
+        handler.emit(logging.LogRecord("kanz.gemini", logging.INFO, "", 0, fmt, args, None))
+    assert handler.take() == ["material_analyst@v2: gemini-3.5-flash"]
+    assert handler.take() == []

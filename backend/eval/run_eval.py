@@ -45,6 +45,24 @@ EVAL_PROFILE_TOOLS = ["scissors", "twine", "pliers", "strong_glue", "acrylic_pai
 log = logging.getLogger("kanz.eval")
 
 
+class ModelLog(logging.Handler):
+    """Collects which model actually answered each stage (the gateway may have fallen back)."""
+
+    def __init__(self) -> None:
+        super().__init__(logging.INFO)
+        self.answers: list[str] = []
+
+    def emit(self, record: logging.LogRecord) -> None:
+        msg = record.getMessage()
+        if msg.startswith("gemini stage=") and "ok=True" in msg:
+            fields = dict(part.split("=", 1) for part in msg.split()[1:] if "=" in part)
+            self.answers.append(f"{fields.get('stage', '?')}: {fields.get('model', '?')}")
+
+    def take(self) -> list[str]:
+        out, self.answers = self.answers, []
+        return out
+
+
 @dataclass
 class Row:
     file: str
@@ -64,6 +82,7 @@ class Row:
     hazard_ok: bool = False
     items_ok: bool = False
     timings_ms: dict[str, int] = field(default_factory=dict)
+    models: list[str] = field(default_factory=list)
     error: str | None = None
     recommend: dict[str, Any] | None = None
 
@@ -180,12 +199,12 @@ def markdown(rows: list[Row], summary: dict[str, Any], meta: dict[str, Any]) -> 
         "",
         "## Per photo",
         "",
-        "| Photo | Expected | Predicted | Items | Hazards flagged | Category | Hazard | Top conf. | Usable | Analysis ms | Total ms |",
-        "| --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |",
+        "| Photo | Expected | Predicted | Items | Hazards flagged | Category | Hazard | Top conf. | Usable | Analysis ms | Total ms | Model |",
+        "| --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |",
     ]
     for r in rows:
         if r.error:
-            lines.append(f"| {r.file} | {r.expected_category} | error: {r.error} | | | | | | | | |")
+            lines.append(f"| {r.file} | {r.expected_category} | error: {r.error} | | | | | | | | | |")
             continue
         exp = (
             r.expected_category
@@ -196,7 +215,8 @@ def markdown(rows: list[Row], summary: dict[str, Any], meta: dict[str, Any]) -> 
             f"| {r.file} | {exp} | {r.predicted_category or '-'} | {'; '.join(r.items) or '-'} | "
             f"{', '.join(r.hazards) or '-'} | {yes(r.category_ok) if not r.expected_unclear else '-'} | "
             f"{yes(r.hazard_ok) if not r.expected_unclear else '-'} | {r.top_confidence if r.top_confidence is not None else '-'} | "
-            f"{'yes' if r.usable else 'no'} | {r.timings_ms.get('analysis', '-')} | {r.timings_ms.get('total', '-')} |"
+            f"{'yes' if r.usable else 'no'} | {r.timings_ms.get('analysis', '-')} | {r.timings_ms.get('total', '-')} | "
+            f"{', '.join(m.split(': ', 1)[-1] for m in r.models) or '-'} |"
         )
     recs = [r for r in rows if r.recommend]
     if recs:
@@ -215,6 +235,7 @@ def markdown(rows: list[Row], summary: dict[str, Any], meta: dict[str, Any]) -> 
                     f"- Disposal: {'; '.join(rec['disposal']) or 'none'}",
                     f"- Facility categories: {', '.join(rec['facility_categories']) or 'none'}",
                     f"- Timings (ms): {json.dumps(rec['timings_ms'])}",
+                    f"- Models: {'; '.join(rec.get('models', [])) or '-'}",
                 ]
             lines.append("")
     return "\n".join(lines).rstrip() + "\n"
@@ -228,6 +249,8 @@ async def evaluate(entries: list[dict[str, Any]], args: argparse.Namespace) -> t
     knowledge = f"{docs} documents, {'vector (Chroma)' if ready else 'keyword fallback'}"
     log.info("seeded %d documents, vector=%s", count, ready)
 
+    models = ModelLog()
+    logging.getLogger("kanz.gemini").addHandler(models)
     rows: list[Row] = []
     for n, entry in enumerate(entries):
         row = Row(
@@ -245,13 +268,16 @@ async def evaluate(entries: list[dict[str, Any]], args: argparse.Namespace) -> t
             res = await pipeline.analyze(image=data, text=None, lang=args.lang)
         except (KanzError, OSError) as exc:
             row.error = f"{getattr(exc, 'code', type(exc).__name__)}: {getattr(exc, 'detail', None) or exc}"
+            models.take()
             log.warning("%s failed: %s", entry["file"], row.error)
             continue
         score(row, res)
+        row.models = models.take()
         log.info("%s -> %s %s ok=%s %s", row.file, row.predicted_category, row.hazards, row.passed, row.timings_ms)
         if "all" in wanted_rec or Path(entry["file"]).stem in wanted_rec:
             await asyncio.sleep(args.pause)
             row.recommend = await run_recommend(res, args.lang)
+            row.recommend["models"] = models.take()
             log.info("%s recommend -> %s", row.file, row.recommend.get("mode", row.recommend.get("error")))
     return rows, knowledge
 
