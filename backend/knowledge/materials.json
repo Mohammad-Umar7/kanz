@@ -1,0 +1,295 @@
+[
+  {
+    "id": "mat_glass",
+    "kind": "material_guide",
+    "title": "Glass: identification and prep",
+    "title_ar": "الزجاج: التعرّف والتحضير",
+    "materials": ["glass"],
+    "identification": [
+      "Container glass (jars, bottles) is hard, cold to the touch, rings when tapped and is heavier than plastic of the same size.",
+      "Look for a seam line on the side and embossed letters or numbers on the base.",
+      "Drinking glasses, window glass, mirrors, ovenware and ceramics look similar but melt at different temperatures and are not container glass."
+    ],
+    "cleaning_prep": [
+      "Empty and rinse out food; a quick rinse is enough, spotless is not required.",
+      "Remove metal lids and plastic caps and recycle them separately.",
+      "Labels can usually stay on; soak them off only if you plan to reuse the jar."
+    ],
+    "recycling": {
+      "stream": "Glass bottle bank or the glass section of a recycling point",
+      "accepted": ["food jars", "drink bottles", "sauce and oil bottles", "cosmetic glass jars"],
+      "not_accepted": ["drinking glasses", "window or mirror glass", "ovenware and ceramics", "light bulbs", "broken glass loose in bags"]
+    },
+    "notes": [
+      "Glass can be recycled again and again without losing quality.",
+      "In the UAE, glass collection varies by emirate and community: many malls, supermarkets and residential areas have separate glass or mixed recycling bins, so check the label on the bin.",
+      "Never bag glass inside plastic bags at a bottle bank."
+    ],
+    "donation": [
+      "Clean jars with working lids are often welcome at refill and zero-waste shops, home cooks and community kitchens.",
+      "Chipped or cracked jars should not be donated for food use."
+    ]
+  },
+  {
+    "id": "mat_plastic",
+    "kind": "material_guide",
+    "title": "Plastic: identification and prep",
+    "title_ar": "البلاستيك: التعرّف والتحضير",
+    "materials": ["plastic"],
+    "identification": [
+      "Look for the resin code: a number from 1 to 7 inside a triangle of arrows, usually on the base.",
+      "PET (1) is clear and crinkly; HDPE (2) is opaque and waxy; PP (5) is stiff and often used for tubs and caps.",
+      "Soft films and bags stretch when pulled; rigid plastics snap or crack."
+    ],
+    "cleaning_prep": [
+      "Empty and rinse bottles and tubs; food residue contaminates whole bales of plastic.",
+      "Squash bottles flat to save space and put the cap back on unless local instructions say otherwise.",
+      "Keep films and bags separate from rigid plastics."
+    ],
+    "recycling": {
+      "stream": "Plastics or mixed recycling bin",
+      "accepted": ["PET drink bottles", "HDPE milk and detergent bottles", "PP tubs and caps", "clean rigid food containers"],
+      "not_accepted": ["greasy or food-filled containers", "plastic bags and films in most kerbside bins", "polystyrene foam", "containers that held chemicals, oil or pesticides"]
+    },
+    "notes": [
+      "Codes 1, 2 and 5 are the most widely recycled; 3, 6 and 7 rarely are.",
+      "Never burn plastic at home or in a yard: the smoke is toxic.",
+      "Many UAE supermarkets collect clean plastic bags and some offer collection points for bottles; check the store."
+    ],
+    "donation": [
+      "Clean food tubs and sturdy containers are often wanted by schools, nurseries and art groups for craft and storage.",
+      "Clear clamshell boxes are useful to community gardens as seed trays."
+    ]
+  },
+  {
+    "id": "mat_paper",
+    "kind": "material_guide",
+    "title": "Paper and cardboard: identification and prep",
+    "title_ar": "الورق والكرتون: التعرّف والتحضير",
+    "materials": ["paper"],
+    "identification": [
+      "Corrugated cardboard has a wavy middle layer; paperboard (cereal boxes) is thin and flat.",
+      "Newsprint is soft and grey-toned; magazines and flyers are glossy but still recyclable.",
+      "Paper cups, receipts and wax or foil-lined wrappers look like paper but contain plastic, wax or chemicals."
+    ],
+    "cleaning_prep": [
+      "Keep paper dry and clean; wet or greasy paper spoils a whole batch.",
+      "Flatten boxes and remove plastic tape, windows and bubble wrap where you can.",
+      "Tear off greasy parts of pizza boxes and compost or bin them."
+    ],
+    "recycling": {
+      "stream": "Paper and cardboard recycling bin",
+      "accepted": ["cardboard boxes", "newspapers and magazines", "office paper", "paper bags", "egg cartons"],
+      "not_accepted": ["greasy or wet paper", "paper cups", "thermal receipts", "tissues and paper towels", "foil-lined or waxed paper"]
+    },
+    "notes": [
+      "Paper fibres can be recycled about five to seven times before they become too short.",
+      "Cardboard is often collected separately at malls, supermarkets and residential buildings in the UAE."
+    ],
+    "donation": [
+      "Clean boxes are useful to people moving house and to small online sellers.",
+      "Schools and nurseries often take cardboard tubes, egg cartons and magazines for art projects."
+    ]
+  },
+  {
+    "id": "mat_metal",
+    "kind": "material_guide",
+    "title": "Metal: identification and prep",
+    "title_ar": "المعادن: التعرّف والتحضير",
+    "materials": ["metal"],
+    "identification": [
+      "A magnet sticks to steel (tin cans, jar lids) but not to aluminium (drink cans, foil trays).",
+      "Aluminium is very light and crushes easily; steel cans are heavier and stiffer.",
+      "Pressurised aerosol cans have a nozzle and warning labels and need separate handling."
+    ],
+    "cleaning_prep": [
+      "Rinse cans and trays so no food is left.",
+      "Push the lid of an opened can inside it, or tape the edge, to avoid cuts.",
+      "Scrunch clean foil into a ball at least the size of a fist so it can be sorted."
+    ],
+    "recycling": {
+      "stream": "Metal or mixed recycling bin (cans)",
+      "accepted": ["aluminium drink cans", "steel food cans", "clean foil and foil trays", "metal jar lids and bottle tops"],
+      "not_accepted": ["aerosol cans that are not empty", "paint and chemical tins", "gas cylinders", "batteries", "electronics"]
+    },
+    "notes": [
+      "Aluminium and steel can be recycled indefinitely, and recycling aluminium saves most of the energy needed to make it new.",
+      "Larger scrap metal such as old pans, rods and brackets can go to scrap metal dealers, which are common in UAE industrial areas."
+    ],
+    "donation": [
+      "Clean cans and lids are useful for school craft sessions; tape or file the rims first.",
+      "Pots, pans and tools in working order can be donated through charity shops and community groups."
+    ]
+  },
+  {
+    "id": "mat_textile",
+    "kind": "material_guide",
+    "title": "Textiles: identification and prep",
+    "title_ar": "المنسوجات: التعرّف والتحضير",
+    "materials": ["textile"],
+    "identification": [
+      "Check the care label for fibre content: cotton, polyester, wool or a blend.",
+      "Denim is a thick twill cotton; jersey (T-shirts) stretches and curls when cut.",
+      "Shoes, bags and belts can usually go with textiles if they are paired and dry."
+    ],
+    "cleaning_prep": [
+      "Wash and dry items before donating or recycling them.",
+      "Tie shoes together in pairs and put clothes in a closed bag so they stay clean.",
+      "Separate wet, oily or moldy textiles: they cannot be reused or recycled."
+    ],
+    "recycling": {
+      "stream": "Textile recycling or clothing collection bin",
+      "accepted": ["clothes in any condition if clean and dry", "bed linen and towels", "paired shoes", "bags and belts"],
+      "not_accepted": ["wet or moldy textiles", "items soaked in oil or chemicals", "carpets and mattresses in most bins"]
+    },
+    "notes": [
+      "Worn-out textiles are shredded into insulation, stuffing and industrial rags, so torn items still have value.",
+      "Clothing collection bins run by charities and recyclers are common in UAE residential areas and malls."
+    ],
+    "donation": [
+      "Wearable clothes with no holes, heavy stains or strong smells can go to clothing donation bins, charity shops and community drives.",
+      "Worn but clean fabric suits textile recycling bins or animal shelters (as bedding), rather than donation for wearing."
+    ]
+  },
+  {
+    "id": "mat_wood",
+    "kind": "material_guide",
+    "title": "Wood: identification and prep",
+    "title_ar": "الخشب: التعرّف والتحضير",
+    "materials": ["wood"],
+    "identification": [
+      "Solid wood shows continuous grain on the edges; particle board and MDF show compressed chips or fibres.",
+      "Pallets carry an IPPC stamp: HT means heat treated, MB means methyl bromide fumigation.",
+      "Painted, varnished or pressure-treated wood (greenish tint) is handled differently from clean wood."
+    ],
+    "cleaning_prep": [
+      "Remove nails, screws and metal fittings where possible.",
+      "Keep clean untreated wood separate from painted or treated wood.",
+      "Brush off soil and let wet wood dry before storing it indoors."
+    ],
+    "recycling": {
+      "stream": "Wood collection at a recycling centre or bulky-waste collection",
+      "accepted": ["pallets", "crates", "untreated offcuts", "solid wood furniture parts"],
+      "not_accepted": ["wood with mold", "wood soaked in oil or chemicals in general bins", "treated timber in garden compost"]
+    },
+    "notes": [
+      "Never burn painted, varnished or treated wood: the smoke is toxic.",
+      "Many UAE municipalities offer bulky-waste pickup for furniture; check your emirate's municipality service."
+    ],
+    "donation": [
+      "Pallets and crates are often wanted by gardeners, makers and small shops.",
+      "Solid wood furniture in good condition can go to charity shops and community groups."
+    ]
+  },
+  {
+    "id": "mat_electronics",
+    "kind": "material_guide",
+    "title": "Electronics (e-waste): identification and prep",
+    "title_ar": "الإلكترونيات (النفايات الإلكترونية): التعرّف والتحضير",
+    "materials": ["electronics"],
+    "identification": [
+      "Anything with a plug, a battery, a circuit board or a screen is e-waste: phones, chargers, cables, toys with lights, small appliances.",
+      "Phones, laptops, tablets, vapes and power banks contain lithium batteries that can catch fire if damaged."
+    ],
+    "cleaning_prep": [
+      "Back up and wipe personal data, then factory-reset phones and computers.",
+      "Remove removable batteries and tape their terminals.",
+      "Keep cables and chargers together in a bag."
+    ],
+    "recycling": {
+      "stream": "E-waste collection point",
+      "accepted": ["phones and tablets", "laptops and computers", "chargers and cables", "small household appliances", "electronic toys"],
+      "not_accepted": ["household bins of any kind", "loose damaged lithium batteries without taped terminals"]
+    },
+    "notes": [
+      "E-waste contains valuable metals and toxic substances such as lead and mercury, so it must never go to landfill.",
+      "In the UAE, many electronics retailers and malls host e-waste collection boxes, and some brands run take-back programmes."
+    ],
+    "donation": [
+      "Working devices can be donated or passed on after a factory reset; some retailers accept trade-ins.",
+      "Swollen, cracked or leaking devices must go to e-waste collection, never to donation."
+    ]
+  },
+  {
+    "id": "mat_hazardous",
+    "kind": "material_guide",
+    "title": "Household hazardous waste: identification and prep",
+    "title_ar": "النفايات المنزلية الخطرة: التعرّف والتحضير",
+    "materials": ["hazardous"],
+    "identification": [
+      "Hazard symbols (flame, skull, corrosion, exclamation mark) or words such as flammable, toxic, corrosive or keep out of reach of children.",
+      "Common examples: batteries, aerosol cans, paint and solvents, pesticides, bleach and strong cleaners, motor oil, medicines, fluorescent bulbs."
+    ],
+    "cleaning_prep": [
+      "Keep products in their original containers with the labels on.",
+      "Never mix different chemicals, even in the same bag.",
+      "Close lids tightly and stand containers upright in a box for transport."
+    ],
+    "recycling": {
+      "stream": "Hazardous waste collection point",
+      "accepted": ["batteries", "paint and solvents", "pesticides", "cleaning chemicals", "fluorescent bulbs", "motor oil"],
+      "not_accepted": ["household bins", "drains, sinks or toilets", "open ground or sand"]
+    },
+    "notes": [
+      "Heat raises the risk: never leave aerosols, batteries or chemicals in a parked car during UAE summers.",
+      "Ask your municipality or a large supermarket about hazardous waste drop-off days and points."
+    ],
+    "donation": [
+      "Unopened, in-date cleaning products or paint can sometimes be given to community groups; never donate opened chemicals or medicines."
+    ]
+  },
+  {
+    "id": "mat_organic",
+    "kind": "material_guide",
+    "title": "Organic waste: identification and prep",
+    "title_ar": "النفايات العضوية: التعرّف والتحضير",
+    "materials": ["organic"],
+    "identification": [
+      "Food scraps, fruit and vegetable peels, coffee grounds, tea leaves, eggshells, garden trimmings and dry leaves.",
+      "Cooked food, meat, dairy and oil are organic but attract pests in home compost."
+    ],
+    "cleaning_prep": [
+      "Keep organic waste free of plastic stickers, bags and packaging.",
+      "Drain liquids and chop large pieces so they break down faster."
+    ],
+    "recycling": {
+      "stream": "Compost or organic waste collection where available",
+      "accepted": ["fruit and vegetable scraps", "coffee grounds and tea", "eggshells", "garden trimmings"],
+      "not_accepted": ["plastic-lined packaging", "pet waste in food compost", "cooking oil in large amounts"]
+    },
+    "notes": [
+      "Food waste in landfill produces methane; composting turns it into soil.",
+      "Balcony composting works in the UAE if the bin is shaded and kept moist."
+    ],
+    "donation": [
+      "Surplus unopened food that is still in date can go to community fridges and food-sharing groups."
+    ]
+  },
+  {
+    "id": "mat_other",
+    "kind": "material_guide",
+    "title": "Mixed and other materials: identification and prep",
+    "title_ar": "المواد المختلطة والأخرى: التعرّف والتحضير",
+    "materials": ["other"],
+    "identification": [
+      "Items made of several bonded materials (juice cartons, blister packs, crisp packets, padded envelopes) or materials such as ceramics, rubber and cork.",
+      "If parts can be separated by hand (a lid, a handle, a label), separate them first."
+    ],
+    "cleaning_prep": [
+      "Separate what you can into single materials.",
+      "Rinse food packaging and keep it dry."
+    ],
+    "recycling": {
+      "stream": "Check locally: specialist collection or general waste",
+      "accepted": ["drink cartons where carton collection exists", "separated single-material parts"],
+      "not_accepted": ["bonded mixed materials in single-material bins", "ceramics in glass banks"]
+    },
+    "notes": [
+      "When in doubt, keep it out: one wrong item can contaminate a whole recycling load.",
+      "Reuse is often the best route for mixed items that are hard to recycle."
+    ],
+    "donation": [
+      "Items in good working order (ceramic dishes, rubber mats, cork boards) can go to charity shops or community swaps."
+    ]
+  }
+]
