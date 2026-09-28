@@ -88,7 +88,7 @@ class SpecimenCard extends StatelessWidget {
   /// Formatted confidence, for example "93%".
   final String confidence;
 
-  /// Item position, for example "01 / 02".
+  /// Item position, for example "01 / 02". Always laid out left to right.
   final String? index;
 
   /// Shown as a warning row when the item is hazardous.
@@ -115,18 +115,23 @@ class SpecimenCard extends StatelessWidget {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Row(
+              // Category and position wrap as two units, so a long category
+              // ("Electronics", "Paper & cardboard") beside the edit button
+              // moves the index to the next line instead of cutting it.
+              Wrap(
+                spacing: KanzSpace.s12,
+                crossAxisAlignment: WrapCrossAlignment.center,
                 children: [
-                  MaterialDot(categoryId),
-                  const SizedBox(width: KanzSpace.s8),
-                  Flexible(
-                    child: MonoLabel(
-                      index == null
-                          ? categoryLabel
-                          : '$categoryLabel  ·  $index',
-                      maxLines: 1,
-                    ),
+                  Row(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      MaterialDot(categoryId),
+                      const SizedBox(width: KanzSpace.s8),
+                      Flexible(child: MonoLabel(categoryLabel)),
+                    ],
                   ),
+                  if (index != null)
+                    MonoLabel(index!, textDirection: TextDirection.ltr),
                 ],
               ),
               const SizedBox(height: KanzSpace.s4),
@@ -262,10 +267,13 @@ class SpecimenCard extends StatelessWidget {
           _header(context, large: false),
           if (hazardLabel != null) _hazard(context),
           const SizedBox(height: KanzSpace.s8),
+          // Two lines: carousel cards share the tallest card's height, so a
+          // long material ("Tin-plated steel with plastic liner") at large
+          // text grows the row instead of being cut.
           Text(
             material,
             style: context.textStyles.bodySmall,
-            maxLines: 1,
+            maxLines: 2,
             overflow: TextOverflow.ellipsis,
           ),
           const SizedBox(height: KanzSpace.s8),
