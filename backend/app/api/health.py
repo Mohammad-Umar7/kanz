@@ -6,6 +6,7 @@ import time
 from fastapi import APIRouter, Request
 
 from app.api.deps import SettingsDep
+from app.api.responses import error_responses
 from app.schemas.health import HealthResponse
 
 router = APIRouter(tags=["system"])
@@ -28,7 +29,12 @@ def knowledge_status() -> tuple[int, bool]:
         return 0, False
 
 
-@router.get("/health", response_model=HealthResponse, summary="Warm-up and configuration status")
+@router.get(
+    "/health",
+    response_model=HealthResponse,
+    summary="Warm-up and configuration status",
+    responses=error_responses(500),
+)
 async def health(request: Request, settings: SettingsDep) -> HealthResponse:
     """Cheap and always available: the app calls it on launch to wake the server up."""
     docs, ready = knowledge_status()
