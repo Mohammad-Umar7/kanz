@@ -1,5 +1,7 @@
 """The recommend graph: routing modes, parallel fan-out, grounding and branch-failure fallbacks."""
 
+import asyncio
+
 import pytest
 
 from app.ai import pipeline
@@ -210,3 +212,19 @@ async def test_arabic_sources_use_arabic_titles():
     res = await pipeline.recommend(jar_request(profile), gateway=gateway)
     assert res.lang == "ar"
     assert res.upcycle[0].sources[0].title == "فانوس برطمان معلّق"
+
+
+async def test_slow_branch_is_cut_off_by_its_time_budget(monkeypatch):
+    class SlowRecycling(FakeGateway):
+        async def structured(self, *, schema, **kwargs):
+            if schema is LlmRecycle:
+                await asyncio.sleep(5)
+            return await super().structured(schema=schema, **kwargs)
+
+    monkeypatch.setattr("app.ai.nodes.recycling.ADVISOR_BUDGET_S", 0.05)
+    gateway = SlowRecycling(
+        {LlmIdeas: llm_ideas(), LlmRecycle: llm_recycle("item_1", "item_2"), LlmDonate: llm_donate("item_1", "item_2")}
+    )
+    res = await pipeline.recommend(jar_request(), gateway=gateway)
+    assert res.timings_ms["recycle"] < 1000
+    assert res.recycle.instructions[0].note  # the deterministic fallback, not the slow model

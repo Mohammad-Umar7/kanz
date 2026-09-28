@@ -23,6 +23,13 @@ from app.schemas.vocab import SAFETY_GEAR
 
 log = logging.getLogger("kanz.pipeline")
 
+# Total time a parallel branch may spend on Gemini (retries and fallback models included)
+# before the node switches to its deterministic fallback. The gateway's own timeouts are
+# per attempt; these budgets cap the whole branch so one slow model cannot hold the
+# recommendation hostage. The designer gets longer because its fallback is plainer.
+DESIGNER_BUDGET_S = 20.0
+ADVISOR_BUDGET_S = 12.0
+
 Node = Callable[..., Awaitable[dict[str, Any]]]
 
 

@@ -2,12 +2,23 @@
 
 from __future__ import annotations
 
+import asyncio
+
 from langgraph.runtime import Runtime
 
 from app.ai import fallbacks, safety
 from app.ai.labels import lang_name
 from app.ai.llm_schemas import LlmRecycle
-from app.ai.nodes.common import cite, item_line, knowledge_block, language_problems, log, recyclability_line, timed
+from app.ai.nodes.common import (
+    ADVISOR_BUDGET_S,
+    cite,
+    item_line,
+    knowledge_block,
+    language_problems,
+    log,
+    recyclability_line,
+    timed,
+)
 from app.ai.prompts import load_prompt
 from app.ai.state import PipelineContext, RecommendState
 from app.schemas.recommend import RecycleInstruction, RecyclePath
@@ -38,19 +49,22 @@ async def recycling_advisor(state: RecommendState, runtime: Runtime[PipelineCont
         ]
     )
     try:
-        out = await ctx.gateway.structured(
-            stage=prompt.tag,
-            system=prompt.render(lang_name=lang_name(lang)),
-            contents=[user],
-            schema=LlmRecycle,
-            model=prompt.model(ctx.settings),
-            examples=prompt.examples,
-            validator=safety.TwoTierValidator(
-                hard=lambda o: safety.check_plastic_heat(_texts(o), where="The recycling advice "),
-                soft=lambda o: language_problems(_texts(o), lang, what="streams, steps and tips"),
+        out = await asyncio.wait_for(
+            ctx.gateway.structured(
+                stage=prompt.tag,
+                system=prompt.render(lang_name=lang_name(lang)),
+                contents=[user],
+                schema=LlmRecycle,
+                model=prompt.model(ctx.settings),
+                examples=prompt.examples,
+                validator=safety.TwoTierValidator(
+                    hard=lambda o: safety.check_plastic_heat(_texts(o), where="The recycling advice "),
+                    soft=lambda o: language_problems(_texts(o), lang, what="streams, steps and tips"),
+                ),
+                temperature=prompt.temperature,
+                thinking_level=prompt.thinking_level,
             ),
-            temperature=prompt.temperature,
-            thinking_level=prompt.thinking_level,
+            timeout=ADVISOR_BUDGET_S,
         )
     except Exception as exc:
         log.warning("recycling_advisor failed, using the analyst's recyclability: %r", exc)

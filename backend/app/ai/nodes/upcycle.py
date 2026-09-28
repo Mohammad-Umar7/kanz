@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+import asyncio
 from collections.abc import Sequence
 
 from langgraph.runtime import Runtime
@@ -11,6 +12,7 @@ from app.ai.convert import idea_id, split_tools
 from app.ai.labels import lang_name
 from app.ai.llm_schemas import LlmIdea, LlmIdeas
 from app.ai.nodes.common import (
+    DESIGNER_BUDGET_S,
     cite,
     items_block,
     knowledge_block,
@@ -142,18 +144,21 @@ async def upcycle_designer(state: RecommendState, runtime: Runtime[PipelineConte
         ]
     )
     try:
-        out = await ctx.gateway.structured(
-            stage=prompt.tag,
-            system=system,
-            contents=[user],
-            schema=LlmIdeas,
-            model=prompt.model(ctx.settings),
-            examples=prompt.examples,
-            validator=safety.TwoTierValidator(
-                hard=hard_rules(items, state["routing"].hazardous_item_ids), soft=soft_rules(profile)
+        out = await asyncio.wait_for(
+            ctx.gateway.structured(
+                stage=prompt.tag,
+                system=system,
+                contents=[user],
+                schema=LlmIdeas,
+                model=prompt.model(ctx.settings),
+                examples=prompt.examples,
+                validator=safety.TwoTierValidator(
+                    hard=hard_rules(items, state["routing"].hazardous_item_ids), soft=soft_rules(profile)
+                ),
+                temperature=prompt.temperature,
+                thinking_level=prompt.thinking_level,
             ),
-            temperature=prompt.temperature,
-            thinking_level=prompt.thinking_level,
+            timeout=DESIGNER_BUDGET_S,
         )
         ideas = to_ideas(out, image_id=req.image_id, profile=profile, items=items, focus_id=focus_id, projects=projects)
         return {"upcycle": ideas}

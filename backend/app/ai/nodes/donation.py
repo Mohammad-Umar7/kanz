@@ -2,12 +2,14 @@
 
 from __future__ import annotations
 
+import asyncio
+
 from langgraph.runtime import Runtime
 
 from app.ai import fallbacks, safety
 from app.ai.labels import lang_name
 from app.ai.llm_schemas import LlmDonate
-from app.ai.nodes.common import items_block, knowledge_block, language_problems, log, timed
+from app.ai.nodes.common import ADVISOR_BUDGET_S, items_block, knowledge_block, language_problems, log, timed
 from app.ai.prompts import load_prompt
 from app.ai.state import PipelineContext, RecommendState
 from app.schemas.recommend import DonateOption, DonatePath
@@ -38,19 +40,22 @@ async def donation_advisor(state: RecommendState, runtime: Runtime[PipelineConte
         ]
     )
     try:
-        out = await ctx.gateway.structured(
-            stage=prompt.tag,
-            system=prompt.render(lang_name=lang_name(lang)),
-            contents=[user],
-            schema=LlmDonate,
-            model=prompt.model(ctx.settings),
-            examples=prompt.examples,
-            validator=safety.TwoTierValidator(
-                hard=lambda o: safety.check_text_rules(_texts(o), where="The donation advice "),
-                soft=lambda o: language_problems(_texts(o), lang, what="reasons, places and steps"),
+        out = await asyncio.wait_for(
+            ctx.gateway.structured(
+                stage=prompt.tag,
+                system=prompt.render(lang_name=lang_name(lang)),
+                contents=[user],
+                schema=LlmDonate,
+                model=prompt.model(ctx.settings),
+                examples=prompt.examples,
+                validator=safety.TwoTierValidator(
+                    hard=lambda o: safety.check_text_rules(_texts(o), where="The donation advice "),
+                    soft=lambda o: language_problems(_texts(o), lang, what="reasons, places and steps"),
+                ),
+                temperature=prompt.temperature,
+                thinking_level=prompt.thinking_level,
             ),
-            temperature=prompt.temperature,
-            thinking_level=prompt.thinking_level,
+            timeout=ADVISOR_BUDGET_S,
         )
     except Exception as exc:
         log.warning("donation_advisor failed, using condition rules: %r", exc)
