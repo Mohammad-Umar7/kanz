@@ -70,21 +70,30 @@ class DropoffController extends Notifier<DropoffState> {
   int _search = 0;
   CancelToken? _token;
 
+  /// True once the starting categories were chosen (only on the first load).
+  bool _seeded = false;
+
   @override
   DropoffState build() {
     ref.onDispose(() => _token?.cancel());
-    scheduleMicrotask(_init);
+    // Chip labels, the centre label and notices come back in the content
+    // language, so a language switch reloads them.
+    ref.listen(contentLangProvider, (previous, next) {
+      if (previous != next) unawaited(_reload());
+    });
+    scheduleMicrotask(loadCatalog);
     return const DropoffState(catalogLoading: true);
   }
 
-  Future<void> _init() async {
+  Future<void> _reload() async {
+    final hadResults = state.results != null;
     await loadCatalog();
-    if (!ref.mounted || state.selectedCategories.isNotEmpty) return;
-    state = state.copyWith(selectedCategories: await _initialCategories());
-    await search();
+    if (ref.mounted && hadResults) await search();
   }
 
-  /// Starts from the latest scan's categories, else general recycling.
+  /// Starts from the latest scan's categories, else general recycling. The
+  /// default keys exist in the backend catalog, so they work even when the
+  /// catalog itself could not be loaded.
   Future<Set<String>> _initialCategories() async {
     final latest = await ref
         .read(scanRepositoryProvider)
@@ -97,10 +106,14 @@ class DropoffController extends Notifier<DropoffState> {
     };
     if (fromScan.isNotEmpty) return fromScan;
     final available = {for (final c in state.catalog) c.key};
+    if (available.isEmpty) return defaultCategories.toSet();
     final general = defaultCategories.where(available.contains).toSet();
     return general.isNotEmpty ? general : available.take(3).toSet();
   }
 
+  /// Loads the filter chips. The first time, it then picks the starting
+  /// categories and searches, even when the catalog failed (offline start),
+  /// so the tab shows results or an error with a retry, never an empty page.
   Future<void> loadCatalog() async {
     state = state.copyWith(catalogLoading: true, catalogError: null);
     try {
@@ -117,6 +130,13 @@ class DropoffController extends Notifier<DropoffState> {
       if (!ref.mounted) return;
       state = state.copyWith(catalogLoading: false, catalogError: e);
     }
+    if (_seeded || !ref.mounted) return;
+    _seeded = true;
+    if (state.selectedCategories.isNotEmpty) return;
+    final initial = await _initialCategories();
+    if (!ref.mounted || state.selectedCategories.isNotEmpty) return;
+    state = state.copyWith(selectedCategories: initial);
+    await search();
   }
 
   Future<void> toggleCategory(String key) {
@@ -170,16 +190,18 @@ class DropoffController extends Notifier<DropoffState> {
       return;
     }
     state = state.copyWith(searching: true, error: null, needsLocation: false);
-    final location = await ref
-        .read(locationResolverProvider)
-        .resolve(ref.read(settingsProvider));
-    if (!current()) return;
-    if (location == null) {
-      state = state.copyWith(searching: false, needsLocation: true);
-      return;
-    }
-    state = state.copyWith(location: location);
     try {
+      // Inside the try: a permission or GPS plugin error must end the search
+      // with an error, not leave the spinner running.
+      final location = await ref
+          .read(locationResolverProvider)
+          .resolve(ref.read(settingsProvider));
+      if (!current()) return;
+      if (location == null) {
+        state = state.copyWith(searching: false, needsLocation: true);
+        return;
+      }
+      state = state.copyWith(location: location);
       final results = await ref
           .read(apiClientProvider)
           .facilities(

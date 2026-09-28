@@ -29,6 +29,7 @@ class FakeApi implements ApiClient {
   final List<FacilitiesRequest> facilitiesRequests = [];
   final List<AfterImageRequest> afterRequests = [];
   final List<StepImageRequest> stepRequests = [];
+  final List<Lang> categoryLangs = [];
 
   Future<AnalyzeResponse> Function() onAnalyze = () async =>
       AnalyzeResponse.fromJson(fixture('analyze_glass_jar.json'));
@@ -36,6 +37,8 @@ class FakeApi implements ApiClient {
       RecommendResponse.fromJson(fixture('recommend_glass_jar.json'));
   Future<FacilitiesResponse> Function() onFacilities = () async =>
       FacilitiesResponse.fromJson(fixture('facilities_glass.json'));
+  Future<FacilityCategoriesResponse> Function() onCategories = () async =>
+      FacilityCategoriesResponse.fromJson(fixture('facility_categories.json'));
   Future<TutorialResponse> Function(TutorialRequest) onTutorial = (req) async =>
       TutorialResponse.fromJson(fixture('tutorial_jar_lantern.json'));
   Future<ImageResponse> Function(AfterImageRequest) onAfter = (req) async =>
@@ -148,11 +151,10 @@ class FakeApi implements ApiClient {
   Future<FacilityCategoriesResponse> facilityCategories({
     required Lang lang,
     CancelToken? cancelToken,
-  }) async {
+  }) {
     calls.add('categories');
-    return FacilityCategoriesResponse.fromJson(
-      fixture('facility_categories.json'),
-    );
+    categoryLangs.add(lang);
+    return onCategories();
   }
 
   @override
