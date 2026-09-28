@@ -1,0 +1,35 @@
+[project]
+name = "kanz-backend"
+version = "1.0.0"
+description = "Kanz backend: FastAPI + LangGraph agents over Google Gemini, ChromaDB RAG, Places search."
+requires-python = ">=3.11"
+license = { text = "MIT" }
+
+[tool.ruff]
+line-length = 120
+target-version = "py311"
+extend-exclude = [".venv", "data"]
+
+[tool.ruff.lint]
+select = ["E", "F", "W", "I", "B", "UP", "SIM", "RUF", "ASYNC", "PL"]
+ignore = [
+  "E501",     # line length is enforced by `ruff format`; long string literals are fine
+  "ASYNC109", # timeouts are applied with asyncio.wait_for inside the gateway on purpose
+  "PLW0603",  # module-level lazy singletons
+  "PLR0911",  # classifier functions return early by design
+  "PLR0913",  # agent nodes legitimately take many keyword arguments
+  "PLR2004",  # small literal thresholds read better inline
+  "RUF001", "RUF002", "RUF003",  # Arabic text in strings, docstrings and comments
+]
+
+[tool.ruff.lint.per-file-ignores]
+"tests/**" = ["PLR2004", "S101"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+asyncio_mode = "auto"
+asyncio_default_fixture_loop_scope = "function"
+markers = [
+  "live: calls real external APIs (Gemini, Places, Overpass); run with -m live",
+]
+addopts = "-m 'not live' -q"

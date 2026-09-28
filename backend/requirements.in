@@ -1,0 +1,11 @@
+# Direct dependencies (all OSI-licensed). `requirements.txt` holds the exact pins.
+fastapi
+uvicorn[standard]
+python-multipart
+pydantic
+pydantic-settings
+google-genai
+langgraph
+chromadb
+httpx
+pillow
