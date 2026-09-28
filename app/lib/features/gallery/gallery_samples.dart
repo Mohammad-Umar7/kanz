@@ -1,8 +1,8 @@
 /// Sample content for the component gallery, in English and Arabic.
 ///
 /// Recognition, idea, tutorial and swap text comes from the contract
-/// fixtures (contracts/fixtures/*glass_jar*, tutorial_jar_lantern*,
-/// swaps_plastic.json) so components are shown with the shapes and lengths
+/// fixtures (contracts/fixtures/*glass_jar*, analyze_battery.json,
+/// tutorial_jar_lantern*, swaps_plastic.json) so components are shown with the shapes and lengths
 /// real responses have. Place rows use descriptive names because the
 /// facility fixtures use placeholder names.
 library;
@@ -147,6 +147,8 @@ class GallerySamples {
     required this.photoSemantics,
     required this.jar,
     required this.lid,
+    required this.battery,
+    required this.batteryHazard,
     required this.stages,
     required this.stageTimes,
     required this.pipelineSummary,
@@ -243,6 +245,10 @@ class GallerySamples {
   final String photoSemantics;
   final GallerySpecimen jar;
   final GallerySpecimen lid;
+
+  /// A hazardous item: disposal only, no DIY.
+  final GallerySpecimen battery;
+  final String batteryHazard;
 
   final List<String> stages;
   final List<String> stageTimes;
@@ -384,6 +390,19 @@ class GallerySamples {
       states: ['Clean', 'Intact'],
       boxLabel: 'Lid · 81%',
     ),
+    battery: GallerySpecimen(
+      name: 'AA alkaline batteries',
+      material: 'Alkaline cell (zinc / manganese dioxide)',
+      quantity: '4 pcs',
+      quality: 'Worn',
+      qualitySemantics: 'Quality 2 of 5, worn',
+      recyclable: 'Only at a battery collection point',
+      confidence: '96%',
+      note: 'Used; one shows light corrosion at the terminal.',
+      states: ['Worn', 'Dirty'],
+      boxLabel: 'Batteries · 96%',
+    ),
+    batteryHazard: 'Battery. Take it to a collection point; no DIY.',
     stages: [
       'Identifying materials',
       'Checking safety and finding ideas',
@@ -633,6 +652,19 @@ class GallerySamples {
       states: ['نظيف', 'سليم'],
       boxLabel: 'غطاء · 81%',
     ),
+    battery: GallerySpecimen(
+      name: 'بطاريات قلوية AA',
+      material: 'خلية قلوية (زنك / ثاني أكسيد المنغنيز)',
+      quantity: '4 قطع',
+      quality: 'مستهلك',
+      qualitySemantics: 'الجودة 2 من 5، مستهلك',
+      recyclable: 'فقط في نقطة جمع البطاريات',
+      confidence: '96%',
+      note: 'مستعملة، وعلى طرف إحداها آثار تآكل خفيفة.',
+      states: ['مهترئ', 'متّسخ'],
+      boxLabel: 'بطاريات · 96%',
+    ),
+    batteryHazard: 'بطارية. سلّمها إلى نقطة جمع، ولا مشاريع يدوية.',
     stages: [
       'التعرّف على المواد',
       'فحص السلامة وإيجاد الأفكار',

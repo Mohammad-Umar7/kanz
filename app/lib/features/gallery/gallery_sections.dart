@@ -181,11 +181,13 @@ class FoundationsSection extends StatelessWidget {
                             child: Column(
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
-                                Text(
-                                  name,
-                                  style: t.labelMedium,
-                                  textDirection: TextDirection.ltr,
-                                  overflow: TextOverflow.ellipsis,
+                                FittedBox(
+                                  fit: BoxFit.scaleDown,
+                                  child: Text(
+                                    name,
+                                    style: t.labelMedium,
+                                    textDirection: TextDirection.ltr,
+                                  ),
                                 ),
                                 Text(
                                   _hex(color),
@@ -533,6 +535,9 @@ class _RecognitionSectionState extends State<RecognitionSection> {
     String category, {
     required bool compact,
     required String index,
+    int quality = 4,
+    SpecimenRecyclable recyclable = SpecimenRecyclable.yes,
+    String? hazard,
   }) {
     return SpecimenCard(
       labels: _labels,
@@ -541,13 +546,14 @@ class _RecognitionSectionState extends State<RecognitionSection> {
       name: x.name,
       material: x.material,
       quantity: x.quantity,
-      qualityScore: 4,
+      qualityScore: quality,
       qualityLabel: x.quality,
       qualitySemantics: x.qualitySemantics,
       stateLabels: x.states,
-      recyclable: SpecimenRecyclable.yes,
+      recyclable: recyclable,
       recyclableLabel: x.recyclable,
       confidence: x.confidence,
+      hazardLabel: hazard,
       note: compact ? null : x.note,
       index: index,
       compact: compact,
@@ -609,6 +615,19 @@ class _RecognitionSectionState extends State<RecognitionSection> {
             'glass',
             compact: false,
             index: '01 / 02',
+          ),
+        ),
+        _Demo(
+          'SPECIMENCARD · HAZARDOUS',
+          child: _card(
+            s.battery,
+            'item_3',
+            'hazardous',
+            compact: false,
+            index: '01 / 01',
+            quality: 2,
+            recyclable: SpecimenRecyclable.conditional,
+            hazard: s.batteryHazard,
           ),
         ),
         _Demo(
