@@ -681,6 +681,32 @@ class _RecognitionSectionState extends State<RecognitionSection> {
           ),
         ),
         _Demo(
+          'PIPELINETIMELINE · HAZARDOUS ITEM',
+          child: PipelineTimeline(
+            summary: s.pipelineSummary,
+            expandLabel: s.showSteps,
+            collapseLabel: s.hideSteps,
+            stages: [
+              PipelineStage(
+                label: s.stages[0],
+                status: PipelineStatus.done,
+                detail: s.stageTimes[0],
+              ),
+              PipelineStage(
+                label: s.stages[1],
+                status: PipelineStatus.skipped,
+                message: s.noDiyIdeas,
+              ),
+              PipelineStage(label: s.stages[2], status: PipelineStatus.active),
+              PipelineStage(
+                label: s.stages[3],
+                status: PipelineStatus.skipped,
+                message: s.noMakeovers,
+              ),
+            ],
+          ),
+        ),
+        _Demo(
           'PIPELINETIMELINE · COMPLETE',
           child: PipelineTimeline(
             summary: s.pipelineSummary,

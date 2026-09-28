@@ -155,6 +155,8 @@ class GallerySamples {
     required this.showSteps,
     required this.hideSteps,
     required this.imagesPaused,
+    required this.noDiyIdeas,
+    required this.noMakeovers,
     required this.ideas,
     required this.rendering,
     required this.previewUnavailable,
@@ -256,6 +258,10 @@ class GallerySamples {
   final String showSteps;
   final String hideSteps;
   final String imagesPaused;
+
+  /// Skipped-stage notes for a hazardous item.
+  final String noDiyIdeas;
+  final String noMakeovers;
 
   final List<GalleryIdea> ideas;
   final String rendering;
@@ -416,6 +422,9 @@ class GallerySamples {
     imagesPaused:
         'Image generation is paused on this server. Ideas and tutorials '
         'still work.',
+    noDiyIdeas:
+        'Batteries go to a collection point, so there are no DIY ideas.',
+    noMakeovers: 'Nothing to render without an idea.',
     ideas: [
       GalleryIdea(
         title: 'Hanging jar lantern',
@@ -677,6 +686,8 @@ class GallerySamples {
     hideSteps: 'أخفِ المراحل',
     imagesPaused:
         'توليد الصور متوقف على هذا الخادم. الأفكار والدروس تعمل كالمعتاد.',
+    noDiyIdeas: 'البطاريات تُسلَّم إلى نقطة جمع، لذا لا توجد أفكار يدوية.',
+    noMakeovers: 'لا صور تحويل دون فكرة.',
     ideas: [
       GalleryIdea(
         title: 'فانوس برطمان معلّق',
