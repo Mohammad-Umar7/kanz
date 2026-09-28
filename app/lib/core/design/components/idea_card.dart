@@ -270,37 +270,52 @@ class _Inset extends StatelessWidget {
   final ImageProvider image;
   final String label;
 
+  static const Color _paper = Color(0xFFF2EFE8);
+
   @override
   Widget build(BuildContext context) {
     final c = context.kanzColors;
+    // Sits on imagery in both themes, so the frame is always warm white.
     return ExcludeSemantics(
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          Container(
-            width: 64,
-            height: 64,
-            decoration: BoxDecoration(
-              borderRadius: const BorderRadius.all(Radius.circular(10)),
-              border: Border.all(color: c.surface, width: 2),
-              boxShadow: KanzElevation.floating(c),
-            ),
-            child: ClipRRect(
-              borderRadius: const BorderRadius.all(Radius.circular(8)),
-              child: Image(image: image, fit: BoxFit.cover),
-            ),
+      child: Container(
+        width: 72,
+        height: 72,
+        decoration: BoxDecoration(
+          borderRadius: const BorderRadius.all(Radius.circular(10)),
+          border: Border.all(color: _paper, width: 2),
+          boxShadow: KanzElevation.floating(c),
+        ),
+        child: ClipRRect(
+          borderRadius: const BorderRadius.all(Radius.circular(8)),
+          child: Stack(
+            fit: StackFit.expand,
+            children: [
+              Image(image: image, fit: BoxFit.cover),
+              Align(
+                alignment: Alignment.bottomCenter,
+                child: Container(
+                  width: double.infinity,
+                  padding: const EdgeInsets.symmetric(vertical: 2),
+                  color: const Color(0xE6161616),
+                  child: Text(
+                    context.kanzType.uppercaseData
+                        ? label.toUpperCase()
+                        : label,
+                    textAlign: TextAlign.center,
+                    maxLines: 1,
+                    overflow: TextOverflow.clip,
+                    textScaler: TextScaler.noScaling,
+                    style: context.kanzType.data.copyWith(
+                      color: _paper,
+                      fontSize: 9,
+                      height: 1.3,
+                    ),
+                  ),
+                ),
+              ),
+            ],
           ),
-          const SizedBox(height: KanzSpace.s4),
-          Container(
-            padding: const EdgeInsets.symmetric(horizontal: 5, vertical: 1),
-            decoration: const BoxDecoration(
-              color: Color(0xE6161616),
-              borderRadius: BorderRadius.all(Radius.circular(3)),
-            ),
-            child: MonoLabel(label, color: const Color(0xFFF2EFE8)),
-          ),
-        ],
+        ),
       ),
     );
   }

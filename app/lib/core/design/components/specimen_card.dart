@@ -139,7 +139,7 @@ class SpecimenCard extends StatelessWidget {
             ],
           ),
         ),
-        if (onEdit != null)
+        if (onEdit != null && large)
           Padding(
             padding: const EdgeInsetsDirectional.only(start: KanzSpace.s4),
             child: Transform.translate(
@@ -284,6 +284,38 @@ class SpecimenCard extends StatelessWidget {
             ],
           ),
         ],
+      ),
+    );
+  }
+}
+
+/// A horizontal row of compact [SpecimenCard]s under the photo. Cards share
+/// the height of the tallest one, so the row grows with text size and
+/// language instead of clipping.
+class SpecimenCarousel extends StatelessWidget {
+  const SpecimenCarousel({
+    super.key,
+    required this.children,
+    this.itemWidth = 232,
+  });
+
+  final List<Widget> children;
+  final double itemWidth;
+
+  @override
+  Widget build(BuildContext context) {
+    return SingleChildScrollView(
+      scrollDirection: Axis.horizontal,
+      padding: KanzSpace.page,
+      child: IntrinsicHeight(
+        child: Row(
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          spacing: KanzSpace.s12,
+          children: [
+            for (final child in children)
+              SizedBox(width: itemWidth, child: child),
+          ],
+        ),
       ),
     );
   }
