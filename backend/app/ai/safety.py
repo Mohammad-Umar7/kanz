@@ -157,6 +157,7 @@ _CLAUSE_END = re.compile(
     r"|\b(?:but|instead(?! of)|then|so|until|unless|while|because|although|whereas|لكن|ولكن|بل|ثم)\b"
 )
 _COMMA = re.compile(r"[,،]")
+_LIST_JOIN = re.compile(r"\b(?:or|and|nor)\b|(?:^|\s)(?:او|ولا)(?:\s|$)")
 _NEGATION_EN = re.compile(
     r"\b(?:never|not|no|nor|don['’]?t|do not|doesn['’]?t|does not|avoid\w*|mustn['’]?t|must not"
     r"|shouldn['’]?t|should not|can['’]?t|cannot|won['’]?t|without|instead of|rather than"
@@ -220,13 +221,20 @@ def _last_negation(clause: str) -> tuple[int, bool] | None:
 
 
 def _negated(span: Span, terms: Terms | None) -> bool:
-    """A negation earlier in the clause governs ``span``.
+    """A negation earlier in the clause governs ``span``."""
+    return _governed(normalize_ar(span.text[: span.start]), terms)
 
-    Commas end a short-scope negation ("without X, ...") and end any negation unless every
-    comma-separated part before ``span`` also ends with one of ``terms``, which is how a
-    negation reaches along a list: "Never heat, melt or burn plastic".
+
+def _governed(prefix: str, terms: Terms | None) -> bool:
+    """Does a negation in the clause ending ``prefix`` still apply where ``prefix`` ends?
+
+    A comma ends a short-scope negation ("without glue, melt ...") and, in general, starts a
+    new instruction ("Do not throw it away, melt it"). A negation carries on through a list:
+    a term right after "<term>," inherits that term's negation ("Never heat, melt or burn"),
+    and so does anything inside an enumeration such as "chemicals, pesticides, solvents or
+    motor oil for food".
     """
-    clause = _CLAUSE_END.split(normalize_ar(span.text[: span.start]))[-1]
+    clause = _CLAUSE_END.split(prefix)[-1]
     negation = _last_negation(clause)
     if negation is None:
         return False
@@ -234,7 +242,13 @@ def _negated(span: Span, terms: Terms | None) -> bool:
     parts = _COMMA.split(clause[end:])
     if len(parts) == 1:
         return True
-    return not short and terms is not None and all(terms.ends_with(p) for p in parts[:-1])
+    if short:
+        return False
+    if len(parts) >= 3 and all(len(p.split()) <= 3 for p in parts[1:-1]) and _LIST_JOIN.search(parts[-1]):
+        return True
+    if terms is not None and terms.ends_with(parts[-2]):
+        return _governed(prefix[: len(prefix) - len(parts[-1]) - 1], terms)
+    return False
 
 
 def _imperative(span: Span, lead: str) -> bool:
@@ -928,7 +942,8 @@ def check_chemical_food(texts: Iterable[str | None], *, item_names: Iterable[str
     for s in sentences(texts):
         if not live(_FOOD_OR_PETS, s):
             continue
-        if chemical_items or (_CHEMICAL.found(s) and _CONTAINER.found(s)):
+        # "a jar that held food, never one that held chemicals" names chemicals only to rule them out.
+        if chemical_items or (live(_CHEMICAL, s, warnings=False) and _CONTAINER.found(s)):
             problems.append(
                 f"{where}puts food, drink, edible plants or pets in contact with a container that held chemicals "
                 f"('{_quote(s)}'). Residue cannot be washed out safely: choose a non-food use."

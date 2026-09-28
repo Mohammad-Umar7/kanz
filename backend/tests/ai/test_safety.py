@@ -168,6 +168,9 @@ class TestPlasticHeat:
             "لا حاجة للغراء: قم بصهر أطراف البلاستيك بالولاعة.",
             # Explaining the risk does not make an instruction safe.
             "Melt the plastic in a ventilated room to avoid toxic fumes.",
+            # A comma after a negated phrase starts a new instruction.
+            "No sewing needed, fold the plastic bag and iron it flat.",
+            "Do not throw the plastic away, melt it instead.",
         ],
     )
     def test_negation_only_covers_the_words_after_it(self, text):
@@ -248,6 +251,7 @@ class TestChemicalFood:
             "Keep the bleach bottle away from food and pets.",
             "Store the pesticide container away from food, drink and pets until drop-off.",
             "Store the chemical container out of reach of children and pets.",
+            "Only use a jar that held food, never one that held chemicals.",
         ],
     )
     def test_ordinary_food_reuse_and_storage_advice_pass(self, text):
@@ -257,6 +261,13 @@ class TestChemicalFood:
 class TestPaintedFoodContact:
     def test_painted_bowl_for_snacks_is_rejected(self):
         assert safety.check_painted_food_contact(["Paint the bowl in bright colors.", "Use it to serve snacks."])
+
+    def test_a_negation_carries_through_a_comma_list(self):
+        never = (
+            "Never reuse a container that held chemicals, pesticides, solvents or motor oil "
+            "for food, drink, edible plants or pets."
+        )
+        assert safety.check_painted_food_contact(["Take leftover paint to hazardous waste collection.", never]) == []
 
     def test_saying_paint_is_not_food_safe_is_not_a_food_safe_finish(self):
         texts = ["Acrylic paint is not food-safe.", "Paint the bowl and use it to serve fruit."]
