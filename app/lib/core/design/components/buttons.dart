@@ -135,14 +135,19 @@ class KanzButton extends StatelessWidget {
       ),
     };
 
+    final Widget sized = expand
+        ? SizedBox(width: double.infinity, child: button)
+        : button;
+    if (!loading) return sized;
+    // While loading, one disabled node announces the progress ("Saving")
+    // in place of the label, and taps are absorbed.
     return Semantics(
-      label: loading ? loadingLabel : null,
-      child: AbsorbPointer(
-        absorbing: loading,
-        child: expand
-            ? SizedBox(width: double.infinity, child: button)
-            : button,
-      ),
+      button: true,
+      enabled: false,
+      liveRegion: true,
+      label: loadingLabel ?? label,
+      excludeSemantics: true,
+      child: AbsorbPointer(child: sized),
     );
   }
 }
@@ -168,7 +173,7 @@ class KanzIconButton extends StatelessWidget {
     required this.semanticsLabel,
     required this.onPressed,
     this.style = KanzIconButtonStyle.plain,
-    this.selected = false,
+    this.selected,
   });
 
   final IconData icon;
@@ -176,12 +181,15 @@ class KanzIconButton extends StatelessWidget {
   final VoidCallback? onPressed;
   final KanzIconButtonStyle style;
 
-  /// Toggle state (flash on, speaker on). Shown with the clay accent.
-  final bool selected;
+  /// Toggle state (flash on, speaker on), shown with the clay accent and
+  /// announced as selected or not. Leave null for plain actions (share,
+  /// close) so they are not announced as toggles.
+  final bool? selected;
 
   @override
   Widget build(BuildContext context) {
     final c = context.kanzColors;
+    final selected = this.selected ?? false;
     final (Color fg, Color? bg, BorderSide? side) = switch (style) {
       KanzIconButtonStyle.plain => (selected ? c.accent : c.ink, null, null),
       KanzIconButtonStyle.outlined => (
@@ -195,16 +203,22 @@ class KanzIconButton extends StatelessWidget {
         null,
       ),
     };
-    return IconButton(
-      onPressed: onPressed,
-      tooltip: semanticsLabel,
-      isSelected: selected,
-      icon: Icon(icon, semanticLabel: semanticsLabel),
-      style: IconButton.styleFrom(
-        foregroundColor: fg,
-        backgroundColor: bg,
-        side: side,
-        fixedSize: const Size.square(KanzSpace.touchTarget),
+    // The icon's label is the button's accessible name. IconButton.tooltip
+    // would add the same text again as a semantic tooltip, which Android
+    // and iOS read after the label, so the tooltip here is visual only.
+    return Tooltip(
+      message: semanticsLabel,
+      excludeFromSemantics: true,
+      child: IconButton(
+        onPressed: onPressed,
+        isSelected: this.selected,
+        icon: Icon(icon, semanticLabel: semanticsLabel),
+        style: IconButton.styleFrom(
+          foregroundColor: fg,
+          backgroundColor: bg,
+          side: side,
+          fixedSize: const Size.square(KanzSpace.touchTarget),
+        ),
       ),
     );
   }
@@ -276,9 +290,13 @@ class _ScanActionButtonState extends State<ScanActionButton> {
           )
         : Icon(widget.icon, color: c.onAccent, size: 26);
 
+    // excludeSemantics drops the InkWell's own tap action, so the node
+    // declares it itself; without it a screen reader cannot activate scan.
     return Semantics(
       button: true,
+      enabled: widget.onPressed != null,
       label: widget.semanticsLabel,
+      onTap: widget.onPressed,
       excludeSemantics: true,
       child: AnimatedScale(
         scale: _pressed ? 0.96 : 1,
@@ -361,12 +379,13 @@ class _ShutterButtonState extends State<ShutterButton> {
       button: true,
       enabled: enabled,
       label: widget.semanticsLabel,
+      onTap: enabled ? _handleTap : null,
       excludeSemantics: true,
       child: GestureDetector(
-        onTapDown: (_) => setState(() => _pressed = true),
+        onTapDown: enabled ? (_) => setState(() => _pressed = true) : null,
         onTapUp: (_) => setState(() => _pressed = false),
         onTapCancel: () => setState(() => _pressed = false),
-        onTap: _handleTap,
+        onTap: enabled ? _handleTap : null,
         child: SizedBox.square(
           dimension: size,
           child: Stack(
