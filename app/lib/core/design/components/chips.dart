@@ -74,22 +74,30 @@ class KanzChip extends StatelessWidget {
                       Icon(icon, size: 16, color: fg),
                       const SizedBox(width: KanzSpace.s8),
                     ],
+                    // One paragraph so the mono count shares the label's
+                    // baseline.
                     Flexible(
-                      child: Text(
-                        label,
+                      child: Text.rich(
+                        TextSpan(
+                          text: label,
+                          children: [
+                            if (count != null)
+                              TextSpan(
+                                text: '  $count',
+                                style: context.kanzType.data.copyWith(
+                                  color: selected
+                                      ? c.onInverse
+                                      : c.inkSecondary,
+                                ),
+                              ),
+                          ],
+                        ),
                         style: context.textStyles.labelMedium?.copyWith(
                           color: enabled ? fg : c.inkDisabled,
                         ),
                         overflow: TextOverflow.ellipsis,
                       ),
                     ),
-                    if (count != null) ...[
-                      const SizedBox(width: KanzSpace.s8),
-                      MonoLabel(
-                        count!,
-                        color: selected ? c.onInverse : c.inkSecondary,
-                      ),
-                    ],
                   ],
                 ),
               ),

@@ -19,6 +19,8 @@ class KanzColors extends ThemeExtension<KanzColors> {
     required this.background,
     required this.surface,
     required this.surfaceSunken,
+    required this.raised,
+    required this.track,
     required this.ink,
     required this.inkSecondary,
     required this.inkDisabled,
@@ -43,8 +45,15 @@ class KanzColors extends ThemeExtension<KanzColors> {
   /// Cards, sheets, dialogs and the navigation bar.
   final Color surface;
 
-  /// Recessed fills: chip backgrounds, tracks, skeletons, callouts.
+  /// Recessed fills: segmented tracks, skeletons, callouts, tags.
   final Color surfaceSunken;
+
+  /// A control raised above a sunken track (the segmented-tab thumb).
+  final Color raised;
+
+  /// Empty segments of quality, step and material bars: quiet, but visible
+  /// on both background and surface.
+  final Color track;
 
   /// Primary text and icons, and the fill of primary buttons.
   final Color ink;
@@ -99,6 +108,8 @@ class KanzColors extends ThemeExtension<KanzColors> {
     background: Color(0xFFF4F1EA),
     surface: Color(0xFFFFFFFF),
     surfaceSunken: Color(0xFFECE8DF),
+    raised: Color(0xFFFFFFFF),
+    track: Color(0xFFD8D2C6),
     ink: Color(0xFF161616),
     inkSecondary: Color(0xFF5C5A55),
     inkDisabled: Color(0xFFA9A59C),
@@ -121,6 +132,8 @@ class KanzColors extends ThemeExtension<KanzColors> {
     background: Color(0xFF111210),
     surface: Color(0xFF1A1B19),
     surfaceSunken: Color(0xFF242522),
+    raised: Color(0xFF33342F),
+    track: Color(0xFF3A3B36),
     ink: Color(0xFFF2EFE8),
     inkSecondary: Color(0xFFA8A59C),
     inkDisabled: Color(0xFF5E5C56),
@@ -144,6 +157,8 @@ class KanzColors extends ThemeExtension<KanzColors> {
     Color? background,
     Color? surface,
     Color? surfaceSunken,
+    Color? raised,
+    Color? track,
     Color? ink,
     Color? inkSecondary,
     Color? inkDisabled,
@@ -165,6 +180,8 @@ class KanzColors extends ThemeExtension<KanzColors> {
       background: background ?? this.background,
       surface: surface ?? this.surface,
       surfaceSunken: surfaceSunken ?? this.surfaceSunken,
+      raised: raised ?? this.raised,
+      track: track ?? this.track,
       ink: ink ?? this.ink,
       inkSecondary: inkSecondary ?? this.inkSecondary,
       inkDisabled: inkDisabled ?? this.inkDisabled,
@@ -192,6 +209,8 @@ class KanzColors extends ThemeExtension<KanzColors> {
       background: l(background, other.background),
       surface: l(surface, other.surface),
       surfaceSunken: l(surfaceSunken, other.surfaceSunken),
+      raised: l(raised, other.raised),
+      track: l(track, other.track),
       ink: l(ink, other.ink),
       inkSecondary: l(inkSecondary, other.inkSecondary),
       inkDisabled: l(inkDisabled, other.inkDisabled),

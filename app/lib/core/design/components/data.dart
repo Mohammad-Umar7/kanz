@@ -14,10 +14,14 @@ class MonoLabel extends StatelessWidget {
     this.strong = false,
     this.maxLines,
     this.textAlign,
+    this.uppercase = true,
   });
 
   final String text;
   final Color? color;
+
+  /// Set false for case-sensitive values such as request ids.
+  final bool uppercase;
 
   /// Larger size in full ink, for values such as counts and codes.
   final bool strong;
@@ -29,7 +33,7 @@ class MonoLabel extends StatelessWidget {
     final type = context.kanzType;
     final style = strong ? type.dataStrong : type.data;
     return Text(
-      type.uppercaseData ? text.toUpperCase() : text,
+      type.uppercaseData && uppercase ? text.toUpperCase() : text,
       style: color == null ? style : style.copyWith(color: color),
       maxLines: maxLines,
       overflow: maxLines == null ? null : TextOverflow.ellipsis,
@@ -200,7 +204,7 @@ class QualityBar extends StatelessWidget {
               width: segmentWidth,
               height: 6,
               decoration: BoxDecoration(
-                color: i < score ? c.ink : c.surfaceSunken,
+                color: i < score ? c.ink : c.track,
                 borderRadius: const BorderRadius.all(Radius.circular(1.5)),
               ),
             ),
@@ -369,7 +373,7 @@ class MaterialBars extends StatelessWidget {
                       child: Stack(
                         fit: StackFit.expand,
                         children: [
-                          ColoredBox(color: c.surfaceSunken),
+                          ColoredBox(color: c.track),
                           FractionallySizedBox(
                             alignment: AlignmentDirectional.centerStart,
                             widthFactor: max <= 0

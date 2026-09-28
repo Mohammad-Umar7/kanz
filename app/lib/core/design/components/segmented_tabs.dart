@@ -62,9 +62,11 @@ class SegmentedTabs extends StatelessWidget {
                 heightFactor: 1,
                 child: Container(
                   decoration: BoxDecoration(
-                    color: c.surface,
+                    color: c.raised,
                     borderRadius: const BorderRadius.all(Radius.circular(10)),
-                    border: Border.all(color: c.line),
+                    border: Theme.of(context).brightness == Brightness.light
+                        ? Border.all(color: c.line)
+                        : null,
                   ),
                 ),
               ),
@@ -129,16 +131,22 @@ class _Segment extends StatelessWidget {
                       Icon(tab.icon, size: 18, color: color),
                       const SizedBox(width: 6),
                     ],
-                    Text(tab.label, style: style, maxLines: 1),
-                    if (tab.count != null) ...[
-                      const SizedBox(width: 6),
-                      Text(
-                        tab.count!,
-                        style: context.kanzType.data.copyWith(
-                          color: selected ? c.ink : c.inkSecondary,
-                        ),
+                    Text.rich(
+                      TextSpan(
+                        text: tab.label,
+                        children: [
+                          if (tab.count != null)
+                            TextSpan(
+                              text: '  ${tab.count}',
+                              style: context.kanzType.data.copyWith(
+                                color: selected ? c.ink : c.inkSecondary,
+                              ),
+                            ),
+                        ],
                       ),
-                    ],
+                      style: style,
+                      maxLines: 1,
+                    ),
                   ],
                 ),
               ),

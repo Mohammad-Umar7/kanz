@@ -140,6 +140,8 @@ class KanzType extends ThemeExtension<KanzType> {
 
   static KanzType build(KanzColors c, {bool arabic = false}) {
     const tabular = [FontFeature.tabularFigures()];
+    // Fraunces defaults to old-style figures; numerals must line up.
+    const lining = [FontFeature.liningFigures(), FontFeature.tabularFigures()];
     final fallback = arabic ? [KanzFonts.sans] : [KanzFonts.arabic];
     TextStyle numeralStyle(double size, double lh, FontWeight w, double ls) =>
         TextStyle(
@@ -150,7 +152,7 @@ class KanzType extends ThemeExtension<KanzType> {
           fontWeight: w,
           letterSpacing: ls,
           color: c.ink,
-          fontFeatures: tabular,
+          fontFeatures: lining,
           leadingDistribution: TextLeadingDistribution.even,
         );
     return KanzType(

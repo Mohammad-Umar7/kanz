@@ -110,7 +110,7 @@ class ErrorState extends StatelessWidget {
             ),
             if (code != null) ...[
               const SizedBox(height: KanzSpace.s16),
-              MonoLabel(code!),
+              MonoLabel(code!, uppercase: false),
             ],
           ],
         ),

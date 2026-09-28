@@ -86,7 +86,7 @@ class StepProgressBar extends StatelessWidget {
                 decoration: BoxDecoration(
                   color: i == current
                       ? c.accent
-                      : (isDone(i) ? c.ink : c.surfaceSunken),
+                      : (isDone(i) ? c.ink : c.track),
                   borderRadius: const BorderRadius.all(Radius.circular(2)),
                 ),
               ),

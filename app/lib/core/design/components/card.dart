@@ -43,21 +43,19 @@ class KanzCard extends StatelessWidget {
     if (onTap != null) {
       content = InkWell(onTap: onTap, customBorder: shape, child: content);
     }
+    // One Material paints the fill, the border and the ink clip, so the
+    // border is drawn exactly once; it animates shape changes itself.
     return Semantics(
       container: true,
       button: onTap != null,
       selected: onTap != null ? selected : null,
       label: semanticsLabel,
-      child: AnimatedContainer(
-        duration: KanzMotion.of(context, KanzMotion.fast),
-        curve: KanzMotion.standard,
-        decoration: ShapeDecoration(color: color ?? c.surface, shape: shape),
-        child: Material(
-          type: MaterialType.transparency,
-          shape: shape,
-          clipBehavior: Clip.antiAlias,
-          child: content,
-        ),
+      child: Material(
+        color: color ?? c.surface,
+        shape: shape,
+        clipBehavior: Clip.antiAlias,
+        animationDuration: KanzMotion.of(context, KanzMotion.fast),
+        child: content,
       ),
     );
   }
