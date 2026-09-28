@@ -19,7 +19,7 @@
   "@onboardingLanguageArabicSample": {"description": "Always written in Arabic, in both languages: it describes the Arabic option."},
   "onboardingChangeLater": "You can change this later in Settings.",
 
-  "onboardingSkillTitle": "How much have you made before?",
+  "onboardingSkillTitle": "How handy are you?",
   "onboardingSkillBody": "Tutorials match your level. Beginners get simpler steps and more detail.",
   "onboardingSkillBeginnerLine": "Cutting, gluing and painting. No power tools.",
   "onboardingSkillIntermediateLine": "Comfortable with a drill, sandpaper and a needle.",
@@ -31,7 +31,7 @@
   "onboardingToolsBody": "Ideas and tutorials use only these. Safety gear is always listed.",
   "onboardingToolsCount": "{count, plural, =0{No tools selected} =1{1 tool selected} other{{count} tools selected}}",
   "@onboardingToolsCount": {"placeholders": {"count": {"type": "int"}}},
-  "onboardingToolsNone": "No tools is fine: Kanz puts ideas that need none first.",
+  "onboardingToolsNone": "No tools? That's fine. Ideas that need none come first.",
   "onboardingToolGroupCount": "{selected} of {total} selected",
   "@onboardingToolGroupCount": {"placeholders": {"selected": {"type": "int"}, "total": {"type": "int"}}},
   "onboardingToolGroupCutting": "Cutting",

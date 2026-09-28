@@ -57,7 +57,11 @@ class _HistoryScreenState extends ConsumerState<HistoryScreen> {
       context: context,
       builder: (sheetContext) => KanzSheet(
         title: scanTitle(l10n, scan),
-        subtitle: formatRelative(l10n, scan.createdAt),
+        // The same day and time the row and its day heading show.
+        subtitle: [
+          historyDayLabel(l10n, scan.createdAt, DateTime.now()),
+          formatClock(scan.createdAt),
+        ].join(' · '),
         child: Padding(
           padding: const EdgeInsets.only(bottom: KanzSpace.s8),
           child: Column(
@@ -140,6 +144,13 @@ class _HistoryScreenState extends ConsumerState<HistoryScreen> {
                 duration: KanzMotion.of(context, KanzMotion.medium),
                 switchInCurve: KanzMotion.enter,
                 switchOutCurve: KanzMotion.exit,
+                // Each tab fills the body from the top: the default layout
+                // centers a short state block and floats it off the gutter.
+                layoutBuilder: (current, previous) => Stack(
+                  fit: StackFit.expand,
+                  alignment: AlignmentDirectional.topStart,
+                  children: [...previous, ?current],
+                ),
                 child: _tab == 0
                     ? _ScansTab(
                         key: const ValueKey('scans'),
@@ -399,7 +410,7 @@ class _ScanRow extends StatelessWidget {
     final count = scan.itemCount > 1
         ? l10n.homeItemCount(scan.itemCount)
         : null;
-    final label = [title, ?material, ?count, time].join(', ');
+    final label = formatList(l10n, [title, ?material, ?count, time]);
 
     final row = Semantics(
       button: true,
@@ -428,7 +439,7 @@ class _ScanRow extends StatelessWidget {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Text(
+                    OwnDirectionText(
                       title,
                       style: t.titleMedium,
                       maxLines: 2,
@@ -645,7 +656,7 @@ class ProjectRow extends StatelessWidget {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Text(p.title, style: t.titleMedium),
+                    OwnDirectionText(p.title, style: t.titleMedium),
                     const SizedBox(height: KanzSpace.s8),
                     if (!p.isCompleted && p.totalSteps > 0) ...[
                       StepProgressBar(

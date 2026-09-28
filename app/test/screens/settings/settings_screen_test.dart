@@ -193,6 +193,14 @@ void main() {
 
     expect(settings().locationMode, LocationMode.city);
     expect(settings().city, CityId.sharjah);
-    expect(find.text('Search around Sharjah'), findsOneWidget);
+    // The mode is a radio; the city itself is its own row (mono value).
+    expect(find.text('City'), findsOneWidget);
+    expect(find.text('SHARJAH'), findsOneWidget);
+    expect(find.text('Search around Sharjah'), findsNothing);
+
+    // That row changes the city.
+    await tester.tap(find.text('City'));
+    await settle(tester);
+    expect(find.text('Pick Sharjah'), findsOneWidget);
   });
 }

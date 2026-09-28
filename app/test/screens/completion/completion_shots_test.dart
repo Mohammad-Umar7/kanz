@@ -7,6 +7,7 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:kanz/core/data/models/models.dart';
 import 'package:kanz/core/state/scan_session.dart';
 import 'package:kanz/features/completion/completion_screen.dart';
+import 'package:kanz/features/completion/made_photo_capture.dart';
 import 'package:kanz/features/completion/share_card.dart';
 import 'package:kanz/l10n/l10n.dart';
 
@@ -19,6 +20,7 @@ typedef _Scenario = ({
   ProjectLoad load,
   bool largeText,
   bool tall,
+  bool ownPhoto,
 });
 
 _Scenario _scenario(
@@ -27,7 +29,15 @@ _Scenario _scenario(
   ProjectLoad load = ProjectLoad.ready,
   bool largeText = false,
   bool tall = false,
-}) => (name: name, scan: scan, load: load, largeText: largeText, tall: tall);
+  bool ownPhoto = false,
+}) => (
+  name: name,
+  scan: scan,
+  load: load,
+  largeText: largeText,
+  tall: tall,
+  ownPhoto: ownPhoto,
+);
 
 ScanSessionState _withMakeover(Lang lang, ShotPhotos photos) => scanState(
   lang: lang,
@@ -41,6 +51,13 @@ final List<_Scenario> _scenarios = [
   _scenario(
     'completion_photo_only',
     scan: (lang, photos) => scanState(lang: lang, photoPath: photos.photo),
+  ),
+  // No makeover on this server, and the user photographed their lantern
+  // (the warm stand-in plays their photo).
+  _scenario(
+    'completion_own_photo',
+    scan: (lang, photos) => scanState(lang: lang, photoPath: photos.photo),
+    ownPhoto: true,
   ),
   _scenario(
     'completion_text_scan',
@@ -88,6 +105,9 @@ void main() {
           project: projectRecord(lang),
           scan: scenario.scan(lang, photos),
           load: scenario.load,
+          photos: FakeMadePhotoStore(
+            photo: scenario.ownPhoto ? photos.after : null,
+          ),
         );
         await takeShot(
           tester,
@@ -97,6 +117,56 @@ void main() {
           localizationsDelegates: const [AppLocalizations.delegate],
           wrap: (app) => ProviderScope(overrides: overrides, child: app),
           child: const CompletionScreen(projectId: projectId),
+        );
+      });
+    }
+  }
+
+  // The camera for the photo of the finished project, with the jar photo in
+  // place of the live preview, and the page shown when the camera is off.
+  for (final config in ShotConfig.matrix(sizes: const [ShotConfig.compact])) {
+    testWidgets('made photo camera ${config.id}', (tester) async {
+      final photos = await preparePhotos(tester);
+      final ar = config.locale.languageCode == 'ar';
+      await takeShot(
+        tester,
+        name: 'completion_camera',
+        config: config,
+        precache: [photos.photoImage],
+        localizationsDelegates: const [AppLocalizations.delegate],
+        child: MadePhotoViewfinder(
+          preview: Image(image: photos.afterImage, fit: BoxFit.cover),
+          guidance: ar ? 'صوّر ما صنعته' : 'Photograph what you made',
+          closeLabel: ar ? 'إغلاق' : 'Close',
+          shutterLabel: ar ? 'التقط الصورة' : 'Take the photo',
+          galleryLabel: ar ? 'اختر من المعرض' : 'Choose from gallery',
+          onShutter: () {},
+          onGallery: () {},
+          onClose: () {},
+        ),
+      );
+    });
+  }
+  for (final phase in const [
+    MadePhotoCameraPhase.denied,
+    MadePhotoCameraPhase.blocked,
+  ]) {
+    for (final config in ShotConfig.matrix(sizes: const [ShotConfig.compact])) {
+      testWidgets('made photo camera ${phase.name} ${config.id}', (
+        tester,
+      ) async {
+        await takeShot(
+          tester,
+          name: 'completion_camera_${phase.name}',
+          config: config,
+          localizationsDelegates: const [AppLocalizations.delegate],
+          child: MadePhotoCameraProblem(
+            phase: phase,
+            onGallery: () {},
+            onAllow: () {},
+            onOpenSettings: () {},
+            onClose: () {},
+          ),
         );
       });
     }

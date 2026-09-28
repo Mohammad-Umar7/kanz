@@ -919,6 +919,9 @@ class DropOffSection extends StatelessWidget {
                   materialIds: s.places[i].materials,
                   directionsLabel: s.directions,
                   selected: i == 1,
+                  // Unknown hours are left out, as the Drop-off list does
+                  // for places OpenStreetMap lists without them.
+                  hideUnknownHours: true,
                   divider: i < s.places.length - 1,
                   onTap: () {},
                   onDirections: () {},
@@ -942,6 +945,10 @@ class DropOffSection extends StatelessWidget {
                   meta: swap.meta,
                   categoryId: 'plastic',
                   badge: swap.badge ?? s.materials['plastic'],
+                  footer: SourceChips(
+                    title: s.sourcesTitle,
+                    sources: s.sources.take(1).toList(),
+                  ),
                 ),
             ],
           ),
@@ -1007,6 +1014,7 @@ class StatesSection extends StatelessWidget {
             retryLabel: s.tryAgain,
             onRetry: () {},
             code: s.errorCode,
+            codeLabel: s.supportCode,
           ),
         ),
         _Demo(

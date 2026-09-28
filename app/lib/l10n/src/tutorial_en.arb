@@ -19,6 +19,7 @@
   "@tutorialUpdated": {"description": "Tag on the adapted note right after the tutorial was rewritten."},
   "tutorialChangeSetup": "Change skill or tools",
   "tutorialAdaptingRow": "Adapting to your tools",
+  "tutorialAdaptOfflineRow": "Adapting needs a connection",
   "tutorialAdaptTooltip": "Adapt to your skill and tools",
   "tutorialSpecSkill": "Skill",
   "tutorialSpecTime": "Time",

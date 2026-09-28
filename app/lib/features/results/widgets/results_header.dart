@@ -36,6 +36,11 @@ class ResultsPhoto extends StatefulWidget {
   static const double minAspect = 4 / 5;
   static const double maxAspect = 4 / 3;
 
+  /// The frame's shape before the photo is known (a scan restoring from
+  /// History): the landscape limit, like the idea and completion
+  /// placeholders, so the page moves as little as it can when it lands.
+  static const double placeholderAspect = maxAspect;
+
   @override
   State<ResultsPhoto> createState() => _ResultsPhotoState();
 }

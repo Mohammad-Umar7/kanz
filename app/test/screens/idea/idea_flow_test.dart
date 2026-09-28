@@ -3,6 +3,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:go_router/go_router.dart';
+import 'package:kanz/core/design/design.dart';
 import 'package:kanz/core/state/scan_session.dart';
 import 'package:kanz/l10n/l10n.dart';
 
@@ -87,6 +88,46 @@ void main() {
     );
     expect(find.text(l10n.ideaImagePaused), findsOneWidget);
     expect(find.text(l10n.commonRegenerate), findsNothing);
+  });
+
+  testWidgets('a makeover that lands while open sweeps in once', (
+    tester,
+  ) async {
+    // Earlier tests left the photo half-loaded in the image cache (files
+    // never finish reading inside the test clock): load it again for real.
+    imageCache
+      ..clear()
+      ..clearLiveImages();
+    await precacheFiles(tester, [photoPath('glass_jar')]);
+    final (log, _) = await open(
+      tester,
+      withImage(const GeneratedImageState(status: ImageStatus.loading)),
+    );
+    final slider = find.byType(BeforeAfterSlider);
+    // While it renders: the whole photo with the stage named on it.
+    expect(slider, findsNothing);
+    expect(find.text(l10n.ideaRendering), findsOneWidget);
+
+    log['scan_jar'].emit(ScanFixtures.jar());
+    await tester.pump();
+    await tester.runAsync(() => Future<void>.delayed(Duration.zero));
+    await tester.pump();
+    // The slider fades in with its handle at the end edge: the frame still
+    // shows only the photo.
+    expect(slider, findsOneWidget);
+    expect(tester.widget<BeforeAfterSlider>(slider).initialValue, 1);
+
+    // Halfway through the sweep the handle is on its way to the middle.
+    await tester.pump(KanzMotion.slow + KanzMotion.slow ~/ 2);
+    final moving = tester.widget<BeforeAfterSlider>(slider).initialValue;
+    expect(moving, lessThan(1));
+    expect(moving, greaterThan(0.5));
+
+    // Then it settles in the middle and stays there for the user to drag.
+    await pumpFrames(tester, 6);
+    expect(find.text(l10n.ideaRendering), findsNothing);
+    expect(tester.widget<BeforeAfterSlider>(slider).initialValue, 0.5);
+    expect(find.text(l10n.ideaDragHint.toUpperCase()), findsOneWidget);
   });
 
   testWidgets('an idea that is gone leads back to the results', (tester) async {

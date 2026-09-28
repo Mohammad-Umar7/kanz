@@ -83,6 +83,11 @@ Future<_Rig> _pump(
         builder: (context, state) =>
             Text('done ${state.pathParameters['projectId']}'),
       ),
+      GoRoute(
+        path: '/results/:scanId',
+        builder: (context, state) =>
+            Text('results ${state.pathParameters['scanId']}'),
+      ),
     ],
   );
   addTearDown(router.dispose);
@@ -382,6 +387,80 @@ void main() {
       findsOneWidget,
     );
     expect(find.text('Try again'), findsNothing);
-    expect(find.bySemanticsLabel('Try another image'), findsNothing);
+    expect(find.bySemanticsLabel('Redraw picture'), findsNothing);
+  });
+
+  testWidgets('a finished picture is redrawn from the link under it', (
+    tester,
+  ) async {
+    final rig = await _pump(
+      tester,
+      state: readyTutorial(
+        lang: Lang.en,
+        images: {1: readyImage('/missing/step_1.png')},
+        current: 1,
+      ),
+      initialPage: 1,
+      reduceMotion: true,
+    );
+    // Nothing sits on the picture itself.
+    expect(find.byTooltip('Try another image'), findsNothing);
+    await tester.tap(find.text('Redraw picture'));
+    await tester.pump();
+    expect(rig.tutorial!.calls, contains('regenerateStep:1'));
+  });
+
+  testWidgets('a rewrite that failed can always be tried again', (
+    tester,
+  ) async {
+    // Reopened after the failure: the request itself is gone, so trying
+    // again opens the sheet to choose once more.
+    await _pump(
+      tester,
+      state: readyTutorial(
+        lang: Lang.en,
+        images: {1: quotaFailed},
+        adaptError: busyError,
+      ),
+    );
+    expect(
+      find.textContaining("Couldn't rewrite the tutorial"),
+      findsOneWidget,
+    );
+    await tester.tap(find.text('Try again'));
+    await tester.pumpAndSettle();
+    expect(find.text('Adapt this tutorial'), findsOneWidget);
+  });
+
+  testWidgets('while rewriting, the adapt row stays and says so', (
+    tester,
+  ) async {
+    await _pump(
+      tester,
+      state: readyTutorial(
+        lang: Lang.en,
+        images: {1: quotaFailed},
+        adapting: true,
+      ),
+    );
+    expect(find.text('Adapting to your tools'), findsOneWidget);
+    expect(find.text('Change skill or tools'), findsNothing);
+  });
+
+  testWidgets('an idea that is gone leads back to the ideas', (tester) async {
+    await _pump(
+      tester,
+      state: const TutorialState(
+        phase: TutorialPhase.failed,
+        error: ApiException(
+          code: ApiErrorCode.notFound,
+          message: 'gone',
+          retryable: false,
+        ),
+      ),
+    );
+    await tester.tap(find.text('Back to the ideas'));
+    await tester.pumpAndSettle();
+    expect(find.text('results $scanId'), findsOneWidget);
   });
 }

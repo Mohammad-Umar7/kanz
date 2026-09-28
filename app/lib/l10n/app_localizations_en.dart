@@ -1447,6 +1447,12 @@ class AppLocalizationsEn extends AppLocalizations {
   }
 
   @override
+  String get resultsCheckAgain => 'Retry';
+
+  @override
+  String get resultsChecking => 'Checking the connection';
+
+  @override
   String get resultsChooseCity => 'Choose a city';
 
   @override
@@ -1925,6 +1931,10 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get resultsUnitPcs => 'pieces';
+
+  @override
+  String get resultsUnreachable =>
+      'Can\'t reach the Kanz server. Saved results still open; new steps wait for it.';
 
   @override
   String get resultsUseMyLocation => 'Use my location';
@@ -2436,6 +2446,9 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get tutorialAdaptOffline => 'Adapting needs a connection.';
+
+  @override
+  String get tutorialAdaptOfflineRow => 'Adapting needs a connection';
 
   @override
   String get tutorialAdaptProgressNote =>

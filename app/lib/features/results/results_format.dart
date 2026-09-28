@@ -1,8 +1,10 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/widgets.dart';
 
 import '../../core/data/models/models.dart';
 import '../../core/data/vocab/vocab.dart';
 import '../../core/design/design.dart';
+import '../../core/network/api_exception.dart';
 import '../../l10n/l10n.dart';
 
 /// Turns analysis and recommendation data into the words the results and
@@ -10,14 +12,54 @@ import '../../l10n/l10n.dart';
 /// durations, lists and tool matches. Numbers keep Western digits in both
 /// languages (see lib/l10n/l10n.dart).
 class ResultsFormat {
-  ResultsFormat(this.l10n, this.vocab, this.locale);
+  ResultsFormat(this.l10n, this.vocab, this.locale, {this.contentLang});
 
-  factory ResultsFormat.of(BuildContext context, Vocab vocab) =>
-      ResultsFormat(context.l10n, vocab, Localizations.localeOf(context));
+  /// [content] is the language the AI wrote the scan's text in.
+  factory ResultsFormat.of(
+    BuildContext context,
+    Vocab vocab, {
+    Lang? content,
+  }) => ResultsFormat(
+    context.l10n,
+    vocab,
+    Localizations.localeOf(context),
+    contentLang: content,
+  );
 
   final AppLocalizations l10n;
   final Vocab vocab;
   final Locale locale;
+
+  /// The language of the scan's AI text (item names, pitches, advice). It
+  /// differs from the UI's when a scan made in one language is reopened
+  /// after switching to the other.
+  final Lang? contentLang;
+
+  /// The direction of the AI's text when it differs from the UI's, else
+  /// null.
+  TextDirection? get contentDirection {
+    final lang = contentLang;
+    if (lang == null) return null;
+    final contentArabic = lang == Lang.ar;
+    if (contentArabic == (locale.languageCode == 'ar')) return null;
+    return contentArabic ? TextDirection.rtl : TextDirection.ltr;
+  }
+
+  /// [text] written by the AI, isolated in its own direction when that
+  /// differs from the UI's. The label around it keeps the UI's alignment,
+  /// while its punctuation and numbers stay where its language puts them:
+  /// "Four used AA batteries." in an Arabic layout, never
+  /// ".Four used AA batteries". Each line is isolated on its own, since an
+  /// isolate ends at a line break.
+  String ai(String text) {
+    final direction = contentDirection;
+    if (direction == null) return text;
+    final open = direction == TextDirection.ltr ? '\u2066' : '\u2067';
+    return text.split('\n').map((line) => '$open$line\u2069').join('\n');
+  }
+
+  /// [lines] from the AI, each isolated like [ai].
+  List<String> aiLines(List<String> lines) => [for (final l in lines) ai(l)];
 
   String category(MaterialCategory id) =>
       vocab.material(id).label.forLocale(locale);
@@ -106,7 +148,7 @@ class ResultsFormat {
     final seen = <String>{};
     return [
       for (final s in sources)
-        if (seen.add(s.id)) s.title,
+        if (seen.add(s.id)) ai(s.title),
     ];
   }
 
@@ -126,7 +168,7 @@ class ResultsFormat {
     final notes = [
       if (item.userCorrected) l10n.resultsCorrectedNote,
       if (item.quality.notes case final note? when note.trim().isNotEmpty)
-        note.trim(),
+        ai(note.trim()),
     ];
     return SpecimenCard(
       labels: SpecimenLabels(
@@ -141,11 +183,11 @@ class ResultsFormat {
       ),
       categoryId: item.category.id,
       categoryLabel: category(item.category),
-      name: item.name,
-      material: item.material,
-      quantity: item.quantity.display,
+      name: ai(item.name),
+      material: ai(item.material),
+      quantity: ai(item.quantity.display),
       qualityScore: item.quality.score.clamp(0, 5),
-      qualityLabel: item.quality.label,
+      qualityLabel: ai(item.quality.label),
       qualitySemantics: l10n.resultsQualitySemantics(
         item.quality.score,
         item.quality.label,
@@ -160,7 +202,7 @@ class ResultsFormat {
           ? recyclabilityLabel(l10n, item.recyclability.status)
           : l10n.resultsRecyclableValue(
               recyclabilityLabel(l10n, item.recyclability.status),
-              item.recyclability.stream,
+              ai(item.recyclability.stream),
             ),
       confidence: confidence(item.confidence),
       hazardLabel: disposal.isEmpty
@@ -192,4 +234,14 @@ class ToolMatch {
 
   ToolMatchBadge badge() =>
       ToolMatchBadge(label: label, have: have.length, total: total);
+}
+
+/// What support needs to find a failure: the request id, with the error
+/// code as the backend spells it ("ai_unavailable") in debug builds. Null
+/// when there is nothing to look up (an offline failure never reached the
+/// server).
+String? supportCode(ApiException? error) {
+  final id = error?.requestId;
+  if (error == null || id == null) return null;
+  return [if (kDebugMode) error.code.wireId, id].join(' · ');
 }

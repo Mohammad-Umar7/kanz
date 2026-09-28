@@ -94,18 +94,24 @@ class SystemLocales extends Notifier<List<Locale>> {
   void update(List<Locale> locales) => state = locales;
 }
 
-/// Language for AI content (`lang` in every request). With the system setting
-/// it resolves the phone's languages the way MaterialApp picks the UI locale:
-/// the first one that is Arabic or English wins, otherwise English. So the UI
-/// and the AI answers are always in the same language.
-final contentLangProvider = Provider<Lang>((ref) {
-  final locale = ref.watch(appLocaleProvider);
-  if (locale != null) return locale.languageCode == 'ar' ? Lang.ar : Lang.en;
+/// The language the phone's own settings resolve to, whatever language the
+/// app is set to: the first of the phone's languages that is Arabic or
+/// English, otherwise English (the way MaterialApp picks the UI locale).
+final systemLangProvider = Provider<Lang>((ref) {
   for (final preferred in ref.watch(systemLocalesProvider)) {
     if (preferred.languageCode == 'ar') return Lang.ar;
     if (preferred.languageCode == 'en') return Lang.en;
   }
   return Lang.en;
+});
+
+/// Language for AI content (`lang` in every request): the app's language, or
+/// with the system setting [systemLangProvider]. So the UI and the AI answers
+/// are always in the same language.
+final contentLangProvider = Provider<Lang>((ref) {
+  final locale = ref.watch(appLocaleProvider);
+  if (locale != null) return locale.languageCode == 'ar' ? Lang.ar : Lang.en;
+  return ref.watch(systemLangProvider);
 });
 
 /// The profile sent with recommend and tutorial requests.

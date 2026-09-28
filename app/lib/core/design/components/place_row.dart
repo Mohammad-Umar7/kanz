@@ -9,8 +9,13 @@ import 'data.dart';
 /// Whether a place is open right now, when known.
 enum OpenState { open, closed, unknown }
 
-/// A drop-off point in a list: name, address, distance in mono, opening
-/// state and dots for the materials it accepts, with a directions button.
+/// A drop-off point in a list: name and distance in mono, then the type and
+/// address with dots for the materials it accepts at the end of that line,
+/// the opening state, and a directions button.
+///
+/// Most OpenStreetMap places list no hours; with [hideUnknownHours] the
+/// hours line is left out for them instead of repeating "Hours not listed"
+/// on every row.
 class PlaceRow extends StatelessWidget {
   const PlaceRow({
     super.key,
@@ -27,6 +32,7 @@ class PlaceRow extends StatelessWidget {
     this.onDirections,
     this.divider = true,
     this.selected = false,
+    this.hideUnknownHours = false,
   });
 
   final String name;
@@ -55,6 +61,9 @@ class PlaceRow extends StatelessWidget {
   /// Highlighted (for example the pin selected on the map).
   final bool selected;
 
+  /// Leave the hours line out when [openState] is [OpenState.unknown].
+  final bool hideUnknownHours;
+
   @override
   Widget build(BuildContext context) {
     final c = context.kanzColors;
@@ -64,6 +73,18 @@ class PlaceRow extends StatelessWidget {
       OpenState.closed => c.danger,
       OpenState.unknown => c.inkSecondary,
     };
+    final hasDetail = address != null || typeLabel != null;
+    final showHours = !(hideUnknownHours && openState == OpenState.unknown);
+    final Widget? dots = materialIds.isEmpty
+        ? null
+        : Semantics(
+            label: materialsLabel,
+            child: Row(
+              mainAxisSize: MainAxisSize.min,
+              spacing: KanzSpace.s4,
+              children: [for (final id in materialIds.take(6)) MaterialDot(id)],
+            ),
+          );
     // The row's text and its tap action form one node, so a screen reader
     // reads the place and can open it in one step; the directions button
     // stays a separate action.
@@ -104,46 +125,51 @@ class PlaceRow extends StatelessWidget {
                           ),
                         ],
                       ),
-                      if (address != null || typeLabel != null) ...[
+                      if (hasDetail) ...[
                         const SizedBox(height: 2),
-                        Text(
-                          [?typeLabel, ?address].join(' · '),
+                        // The dots follow the last word of the line, so
+                        // they read as part of the place, not a status.
+                        Text.rich(
+                          TextSpan(
+                            text: [?typeLabel, ?address].join(' · '),
+                            children: [
+                              if (dots != null) ...[
+                                const TextSpan(text: '  '),
+                                WidgetSpan(
+                                  alignment: PlaceholderAlignment.middle,
+                                  child: dots,
+                                ),
+                              ],
+                            ],
+                          ),
                           style: t.bodySmall,
-                          maxLines: 2,
+                          maxLines: 3,
                           overflow: TextOverflow.ellipsis,
                         ),
                       ],
-                      const SizedBox(height: KanzSpace.s8),
-                      Wrap(
-                        spacing: KanzSpace.s12,
-                        runSpacing: KanzSpace.s4,
-                        crossAxisAlignment: WrapCrossAlignment.center,
-                        children: [
-                          Row(
-                            mainAxisSize: MainAxisSize.min,
-                            children: [
-                              Icon(KanzIcons.clock, size: 14, color: openColor),
-                              const SizedBox(width: KanzSpace.s4),
-                              Text(
+                      if (showHours) ...[
+                        const SizedBox(height: KanzSpace.s8),
+                        Row(
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            Icon(KanzIcons.clock, size: 14, color: openColor),
+                            const SizedBox(width: KanzSpace.s4),
+                            Flexible(
+                              child: Text(
                                 openLabel,
                                 style: t.labelSmall?.copyWith(color: openColor),
                               ),
-                            ],
-                          ),
-                          if (materialIds.isNotEmpty)
-                            Semantics(
-                              label: materialsLabel,
-                              child: Row(
-                                mainAxisSize: MainAxisSize.min,
-                                spacing: KanzSpace.s4,
-                                children: [
-                                  for (final id in materialIds.take(6))
-                                    MaterialDot(id),
-                                ],
-                              ),
                             ),
-                        ],
-                      ),
+                            if (!hasDetail && dots != null) ...[
+                              const SizedBox(width: KanzSpace.s12),
+                              dots,
+                            ],
+                          ],
+                        ),
+                      ] else if (!hasDetail && dots != null) ...[
+                        const SizedBox(height: KanzSpace.s8),
+                        dots,
+                      ],
                     ],
                   ),
                 ),

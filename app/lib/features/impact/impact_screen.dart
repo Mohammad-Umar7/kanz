@@ -108,6 +108,7 @@ class ImpactScreen extends ConsumerWidget {
           title: l10n.impactEmptyTitle,
           message: l10n.impactEmptyMessage,
           actionLabel: l10n.impactScanAction,
+          actionIcon: KanzIcons.scan,
           onAction: () => _scan(context),
         ),
         ImpactWhatCounts(

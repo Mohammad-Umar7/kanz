@@ -1473,6 +1473,12 @@ class AppLocalizationsAr extends AppLocalizations {
   }
 
   @override
+  String get resultsCheckAgain => 'أعد المحاولة';
+
+  @override
+  String get resultsChecking => 'جارٍ التحقق من الاتصال';
+
+  @override
   String get resultsChooseCity => 'اختر مدينة';
 
   @override
@@ -1965,6 +1971,10 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get resultsUnitPcs => 'قطع';
+
+  @override
+  String get resultsUnreachable =>
+      'تعذّر الوصول إلى خادم كنز. النتائج المحفوظة تُفتح كالمعتاد، والخطوات الجديدة تنتظره.';
 
   @override
   String get resultsUseMyLocation => 'استخدم موقعي';
@@ -2498,6 +2508,9 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get tutorialAdaptOffline => 'تعديل الدليل يحتاج إلى اتصال بالإنترنت.';
+
+  @override
+  String get tutorialAdaptOfflineRow => 'تعديل الدليل يحتاج إلى اتصال';
 
   @override
   String get tutorialAdaptProgressNote =>

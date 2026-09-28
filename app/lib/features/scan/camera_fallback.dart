@@ -44,8 +44,6 @@ class CameraFallback extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final l10n = context.l10n;
-    final c = context.kanzColors;
-    final t = context.textStyles;
     final (title, body) = switch (kind) {
       CameraFallbackKind.denied => (
         l10n.scanCameraDeniedTitle,
@@ -73,49 +71,85 @@ class CameraFallback extends StatelessWidget {
       onPressed: onGallery,
       expand: true,
     );
-    final actions = <Widget>[
-      if (kind == CameraFallbackKind.denied) ...[
-        KanzButton(
-          label: l10n.scanCameraAllow,
-          icon: KanzIcons.camera,
-          onPressed: onAllow,
-          expand: true,
-        ),
+    return ScanFallbackPage(
+      icon: KanzIcons.camera,
+      title: title,
+      body: body,
+      closeLabel: l10n.commonClose,
+      onClose: onClose,
+      actions: [
+        if (kind == CameraFallbackKind.denied) ...[
+          KanzButton(
+            label: l10n.scanCameraAllow,
+            icon: KanzIcons.camera,
+            onPressed: onAllow,
+            expand: true,
+          ),
+          KanzButton.secondary(
+            label: l10n.scanChooseFromGallery,
+            icon: KanzIcons.gallery,
+            onPressed: onGallery,
+            expand: true,
+          ),
+        ] else
+          gallery,
         KanzButton.secondary(
-          label: l10n.scanChooseFromGallery,
-          icon: KanzIcons.gallery,
-          onPressed: onGallery,
+          label: l10n.scanDescribeInstead,
+          icon: KanzIcons.describe,
+          onPressed: onDescribe,
           expand: true,
         ),
-      ] else
-        gallery,
-      KanzButton.secondary(
-        label: l10n.scanDescribeInstead,
-        icon: KanzIcons.describe,
-        onPressed: onDescribe,
-        expand: true,
-      ),
-      if (kind == CameraFallbackKind.blocked)
-        KanzButton.tertiary(
-          label: l10n.commonOpenSettings,
-          onPressed: onOpenSettings,
-          expand: true,
-        ),
-      if (kind == CameraFallbackKind.unavailable)
-        KanzButton.tertiary(
-          label: l10n.commonRetry,
-          icon: KanzIcons.retry,
-          onPressed: onRetry,
-          expand: true,
-        ),
-    ];
+        if (kind == CameraFallbackKind.blocked)
+          KanzButton.tertiary(
+            label: l10n.commonOpenSettings,
+            onPressed: onOpenSettings,
+            expand: true,
+          ),
+        if (kind == CameraFallbackKind.unavailable)
+          KanzButton.tertiary(
+            label: l10n.commonRetry,
+            icon: KanzIcons.retry,
+            onPressed: onRetry,
+            expand: true,
+          ),
+      ],
+    );
+  }
+}
 
+/// The one layout for every way a scan path can stop short (no camera, the
+/// gallery would not open): a glyph in a hairline circle, a Fraunces title,
+/// what happened in a sentence, and full-width ways forward, primary first.
+class ScanFallbackPage extends StatelessWidget {
+  const ScanFallbackPage({
+    super.key,
+    required this.icon,
+    required this.title,
+    required this.body,
+    required this.actions,
+    required this.closeLabel,
+    required this.onClose,
+  });
+
+  final IconData icon;
+  final String title;
+  final String body;
+
+  /// Primary first, then the alternatives.
+  final List<Widget> actions;
+  final String closeLabel;
+  final VoidCallback onClose;
+
+  @override
+  Widget build(BuildContext context) {
+    final c = context.kanzColors;
+    final t = context.textStyles;
     return Scaffold(
       appBar: AppBar(
         automaticallyImplyLeading: false,
         leading: KanzIconButton(
           icon: KanzIcons.close,
-          semanticsLabel: l10n.commonClose,
+          semanticsLabel: closeLabel,
           onPressed: onClose,
         ),
       ),
@@ -138,7 +172,7 @@ class CameraFallback extends StatelessWidget {
                   shape: BoxShape.circle,
                   border: Border.all(color: c.lineStrong),
                 ),
-                child: Icon(KanzIcons.camera, size: 24, color: c.ink),
+                child: Icon(icon, size: 24, color: c.ink),
               ),
             ),
             const SizedBox(height: KanzSpace.s24),

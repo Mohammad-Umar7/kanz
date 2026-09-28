@@ -287,6 +287,13 @@ final List<_Scenario> _scenarios = [
     tutorial: (lang, photos) =>
         readyTutorial(lang: lang, images: {1: quotaFailed}, current: 2),
   ),
+  // Offline on the overview: the adapt row stays, disabled, and says why.
+  _scenario(
+    'overview_offline',
+    scan: _jarScanNoImages,
+    backend: BackendStatus.offline,
+    tutorial: (lang, photos) => readyTutorial(lang: lang),
+  ),
   _scenario(
     'loading',
     scan: _jarScan,

@@ -85,7 +85,7 @@ void main() {
     await settle(tester);
     await tester.tap(find.text('Continue'));
     await settle(tester);
-    expect(find.text('How much have you made before?'), findsOneWidget);
+    expect(find.text('How handy are you?'), findsOneWidget);
 
     await tester.tap(find.bySemanticsLabel('Back'));
     await settle(tester);

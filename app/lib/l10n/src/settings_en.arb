@@ -46,6 +46,10 @@
     }
   },
   "settingsLocationCityNone": "Choose a city",
+  "settingsCity": "City",
+  "@settingsCity": {
+    "description": "Row under the fixed-city choice that opens the city picker; the city name follows in mono."
+  },
   "settingsLocationUndecided": "Kanz asks the first time you look for drop-off points.",
   "settingsTutorials": "Tutorials",
   "settingsHandsFree": "Hands-free by default",
@@ -95,6 +99,10 @@
   "settingsAbout": "About",
   "settingsAboutBody": "Kanz identifies what your things are made of, suggests how to upcycle, recycle or donate them, and finds drop-off points in the UAE.",
   "settingsLicenses": "Open-source licenses",
-  "settingsCo2eNote": "CO2e figures in Kanz are estimates from average emission factors, not measurements.",
+  "settingsVersion": "Version",
+  "@settingsVersion": {
+    "description": "Settings > About row; the installed version (1.0.0 (1)) follows in mono."
+  },
+  "settingsCo2eNote": "CO₂e figures in Kanz are estimates from average emission factors, not measurements.",
   "settingsEstimates": "Estimates"
 }

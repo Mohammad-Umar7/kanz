@@ -23,6 +23,10 @@ class RationaleReason {
 /// geometry, no clip art), a title, two or three concrete reasons and two
 /// choices. The secondary action always leads somewhere useful (the city
 /// picker, the gallery), never a dead end.
+///
+/// After a refusal, [notice] (usually a warning [Callout]) says what
+/// happened right under the title, where it is read first; pass no
+/// [reasons] when they no longer apply (access is restricted by policy).
 class PermissionRationale extends StatelessWidget {
   const PermissionRationale({
     super.key,
@@ -34,6 +38,7 @@ class PermissionRationale extends StatelessWidget {
     required this.secondaryLabel,
     required this.onSecondary,
     this.footnote,
+    this.notice,
   });
 
   final PermissionArt art;
@@ -46,6 +51,9 @@ class PermissionRationale extends StatelessWidget {
 
   /// Small print, for example "You can change this in Settings".
   final String? footnote;
+
+  /// What happened after the last answer, shown under the title.
+  final Widget? notice;
 
   @override
   Widget build(BuildContext context) {
@@ -89,6 +97,10 @@ class PermissionRationale extends StatelessWidget {
           ),
           const SizedBox(height: KanzSpace.s32),
           Semantics(header: true, child: Text(title, style: t.headlineMedium)),
+          if (notice != null) ...[
+            const SizedBox(height: KanzSpace.s16),
+            Semantics(liveRegion: true, child: notice),
+          ],
           const SizedBox(height: KanzSpace.s20),
           for (final r in reasons)
             Padding(
@@ -102,7 +114,7 @@ class PermissionRationale extends StatelessWidget {
                 ],
               ),
             ),
-          const SizedBox(height: KanzSpace.s16),
+          SizedBox(height: reasons.isEmpty ? KanzSpace.s4 : KanzSpace.s16),
           KanzButton(label: primaryLabel, onPressed: onPrimary, expand: true),
           const SizedBox(height: KanzSpace.s8),
           KanzButton.tertiary(

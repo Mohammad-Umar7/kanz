@@ -6,6 +6,7 @@ import '../../../core/state/generated_image.dart';
 import '../../../l10n/l10n.dart';
 import 'content_direction.dart';
 import 'image_sources.dart';
+import 'page_parts.dart';
 import 'step_image.dart';
 
 /// One tutorial step: the Fraunces numeral ("03 / 07", always left to
@@ -101,8 +102,20 @@ class TutorialStepPage extends StatelessWidget {
           fallbackPhoto: fallbackPhoto,
           offline: offline,
         ),
+        // A quiet redraw under a finished picture, never on top of it.
         if (canRedraw)
-          _RedrawLink(label: l10n.tutorialRedraw, onPressed: onRegenerate!)
+          Padding(
+            padding: const EdgeInsetsDirectional.only(
+              top: KanzSpace.s4,
+              bottom: KanzSpace.s12,
+            ),
+            child: InlineAction(
+              key: const ValueKey('redraw-step'),
+              icon: KanzIcons.retry,
+              label: l10n.tutorialRedraw,
+              onPressed: onRegenerate!,
+            ),
+          )
         else
           const SizedBox(height: KanzSpace.s24),
         Semantics(
@@ -157,58 +170,6 @@ class _Meta extends StatelessWidget {
           const SizedBox(width: KanzSpace.s4),
           MonoLabel(label, color: color),
         ],
-      ),
-    );
-  }
-}
-
-/// "Redraw picture": a quiet text action under a finished step picture,
-/// starting on the gutter like the title below it. 48 dp tall.
-class _RedrawLink extends StatelessWidget {
-  const _RedrawLink({required this.label, required this.onPressed});
-
-  final String label;
-  final VoidCallback onPressed;
-
-  @override
-  Widget build(BuildContext context) {
-    final c = context.kanzColors;
-    return Padding(
-      padding: const EdgeInsetsDirectional.only(
-        top: KanzSpace.s4,
-        bottom: KanzSpace.s12,
-      ),
-      child: Align(
-        alignment: AlignmentDirectional.centerStart,
-        child: Semantics(
-          button: true,
-          label: label,
-          onTap: onPressed,
-          excludeSemantics: true,
-          child: InkWell(
-            key: const ValueKey('redraw-step'),
-            onTap: onPressed,
-            borderRadius: KanzRadii.tagAll,
-            child: ConstrainedBox(
-              constraints: const BoxConstraints(
-                minHeight: KanzSpace.touchTarget,
-              ),
-              child: Padding(
-                padding: const EdgeInsetsDirectional.only(end: KanzSpace.s8),
-                child: Row(
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    Icon(KanzIcons.retry, size: 18, color: c.ink),
-                    const SizedBox(width: KanzSpace.s8),
-                    Flexible(
-                      child: Text(label, style: context.textStyles.labelLarge),
-                    ),
-                  ],
-                ),
-              ),
-            ),
-          ),
-        ),
       ),
     );
   }

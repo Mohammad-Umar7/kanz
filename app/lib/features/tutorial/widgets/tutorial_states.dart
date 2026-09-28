@@ -164,6 +164,7 @@ class TutorialFailedView extends StatelessWidget {
             : apiErrorMessage(l10n, error),
         actionLabel: l10n.tutorialMissingAction,
         onAction: onBackToIdeas,
+        primaryAction: true,
       );
     } else {
       content = ErrorState(
@@ -175,6 +176,8 @@ class TutorialFailedView extends StatelessWidget {
         retryLabel: l10n.commonRetry,
         onRetry: onRetry,
         code: supportCode(error),
+        codeLabel: l10n.commonSupportCode,
+        primaryAction: true,
       );
     }
     return SingleChildScrollView(

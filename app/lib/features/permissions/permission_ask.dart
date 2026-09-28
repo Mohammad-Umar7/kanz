@@ -118,20 +118,11 @@ abstract class PermissionAskState<T extends ConsumerStatefulWidget>
   }
 }
 
-/// The scaffold both rationales share: close button, the rationale itself
-/// and, when the permission is refused or blocked, a notice under the
-/// buttons that says what happened.
+/// The scaffold both rationales share: close button and the rationale.
 class RationalePage extends StatelessWidget {
-  const RationalePage({
-    super.key,
-    required this.rationale,
-    this.notice,
-    this.noticeTitle,
-  });
+  const RationalePage({super.key, required this.rationale});
 
   final Widget rationale;
-  final String? notice;
-  final String? noticeTitle;
 
   @override
   Widget build(BuildContext context) {
@@ -148,23 +139,6 @@ class RationalePage extends StatelessWidget {
                   children: [
                     const SizedBox(height: KanzSpace.s8),
                     rationale,
-                    if (notice != null)
-                      Padding(
-                        padding: const EdgeInsetsDirectional.fromSTEB(
-                          KanzSpace.gutter,
-                          KanzSpace.s16,
-                          KanzSpace.gutter,
-                          0,
-                        ),
-                        child: Semantics(
-                          liveRegion: true,
-                          child: Callout(
-                            variant: CalloutVariant.warning,
-                            title: noticeTitle ?? '',
-                            message: notice!,
-                          ),
-                        ),
-                      ),
                   ],
                 ),
               ),
@@ -174,6 +148,22 @@ class RationalePage extends StatelessWidget {
       ),
     );
   }
+}
+
+/// What happened after the last answer, as a warning callout for the
+/// rationale's notice slot (under the title), or null before any answer.
+Widget? rationaleNotice(
+  AppLocalizations l10n,
+  AskOutcome outcome,
+  String? message,
+) {
+  final title = rationaleNoticeTitle(l10n, outcome);
+  if (title == null || message == null) return null;
+  return Callout(
+    variant: CalloutVariant.warning,
+    title: title,
+    message: message,
+  );
 }
 
 /// The small-print footnote, or null when a notice replaces it.

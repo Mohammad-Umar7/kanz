@@ -122,8 +122,14 @@ class CityPickerScreen extends ConsumerWidget {
 
 final NumberFormat _coordinate = NumberFormat('0.00', 'en');
 
-/// "25.20° N · 55.27° E": the point Kanz searches around.
-String cityCoordinates(CityEntry city) {
+/// The point Kanz searches around: "25.20° N · 55.27° E" in English. Latin
+/// compass letters have no place in an Arabic line, so Arabic shows the
+/// signed degrees alone ("25.20°, 55.27°"), laid out left to right.
+String cityCoordinates(CityEntry city, {bool arabic = false}) {
+  if (arabic) {
+    return '${_coordinate.format(city.lat)}°, '
+        '${_coordinate.format(city.lng)}°';
+  }
   final lat =
       '${_coordinate.format(city.lat.abs())}° ${city.lat >= 0 ? 'N' : 'S'}';
   final lng =
@@ -166,14 +172,9 @@ class _CityRow extends StatelessWidget {
         onTap: onTap,
         child: Container(
           constraints: const BoxConstraints(minHeight: 64),
-          margin: const EdgeInsetsDirectional.only(start: KanzSpace.gutter),
-          padding: const EdgeInsetsDirectional.fromSTEB(
-            0,
-            KanzSpace.s12,
-            KanzSpace.gutter,
-            KanzSpace.s12,
-          ),
-          // The hairline starts at the gutter so the rows read as one list.
+          margin: KanzSpace.page,
+          padding: const EdgeInsets.symmetric(vertical: KanzSpace.s12),
+          // The hairline sits inside both gutters, like every list in Kanz.
           decoration: BoxDecoration(
             border: divider ? Border(bottom: BorderSide(color: c.line)) : null,
           ),
@@ -196,7 +197,7 @@ class _CityRow extends StatelessWidget {
                     ),
                     const SizedBox(height: KanzSpace.s4),
                     MonoLabel(
-                      cityCoordinates(city),
+                      cityCoordinates(city, arabic: arabic),
                       uppercase: false,
                       textDirection: TextDirection.ltr,
                     ),

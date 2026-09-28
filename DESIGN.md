@@ -34,10 +34,10 @@ Tokens live in `KanzColors` (a `ThemeExtension`, `context.kanzColors`). Contrast
 | `inkSecondary` | `#5C5A55` | Secondary text, data labels | 6.11 bg · 6.89 surface · 5.63 sunken |
 | `inkDisabled` | `#A9A59C` | Disabled text (exempt) | |
 | `line` | `#E2DDD3` | Hairline dividers and card borders (decorative) | |
-| `lineStrong` | `#8A857B` | Input, outlined-button and checkbox borders | 3.25 bg · 3.67 surface |
+| `lineStrong` | `#8A857B` | Control boundaries: inputs, outlined buttons and icon buttons, unselected chips, checkboxes, the state-block circle | 3.25 bg · 3.67 surface |
 | `accent` (clay) | `#C65026` | Scan action, active states, slider handle | 4.07 bg · 4.59 surface |
 | `onAccent` | `#FFFFFF` | Text and glyphs on clay | 4.59 |
-| `inverse` / `onInverse` | `#161616` / `#F4F1EA` | Selected chips, snackbars, offline banner | 16.04 |
+| `inverse` / `onInverse` | `#161616` / `#F4F1EA` | Selected chips, snackbars | 16.04 |
 | `danger` / `onDanger` | `#B3261E` / `#FFFFFF` | Errors, hazards, destructive button | 5.79 bg · 6.54 surface · 6.54 on fill |
 | `caution` | `#8A5D00` | Warning callout glyph and title | 5.11 bg · 5.76 surface · 4.71 sunken |
 | `positive` | `#2F6B3A` | "Open now" | 5.67 bg · 6.39 surface · 5.23 sunken |
@@ -109,7 +109,7 @@ Fraunces for large headings, step numbers and big numerals, sparingly. IBM Plex 
 | headlineLarge | Fraunces 400, 28/34 | Plex Arabic 600, 25/38 | Screen titles |
 | headlineMedium | Fraunces 400, 24/30 | Plex Arabic 600, 22/33 | Section titles, step titles, rationale titles |
 | headlineSmall | Fraunces 400, 20/26 | Plex Arabic 600, 19/29 | Card titles (ideas, specimens, swaps), sheet titles |
-| titleLarge | Plex Sans 600, 18/24 | Plex Arabic 600, 18/28 | App bar, error titles |
+| titleLarge | Plex Sans 600, 18/24 | Plex Arabic 600, 18/28 | App bar, sub-sections inside a detail page |
 | titleMedium | Plex Sans 600, 16/22 | Plex Arabic 600, 16/25 | Place names, compact cards |
 | titleSmall | Plex Sans 600, 14/20 | Plex Arabic 600, 14/22 | Tabs |
 | bodyLarge | Plex Sans 400, 16/24 | Plex Arabic 400, 16/27 | Instructions, reasons |
@@ -158,29 +158,29 @@ All components are pure widgets: no Riverpod, no localization lookups (every str
 | Component | Use it for | Rules |
 |---|---|---|
 | `KanzButton` (primary, `.secondary`, `.tertiary`, `.destructive`) | Actions | One primary per screen. Primary is ink. `icon` leads the label; `trailingIcon` follows it for forward actions ("See the tutorial" with `KanzIcons.forward`). `loading` keeps size and color, shows a spinner, ignores taps and is announced by its `loadingLabel`. |
-| `KanzIconButton` (plain, outlined, onPhoto) | Toolbar and photo controls | Always 48 dp with a semantics label, which also shows as a visual tooltip. `selected` (clay) makes it a toggle; leave it null for plain actions so they are not announced as toggles. |
+| `KanzIconButton` (plain, outlined, onPhoto) | Toolbar and photo controls | Always 48 dp with a semantics label, which also shows as a visual tooltip. The outlined circle is `lineStrong` (3:1). `selected` (clay) makes it a toggle; leave it null for plain actions so they are not announced as toggles. |
 | `ScanActionButton` | The scan action | Round in the nav bar, wide with a label on Home. The only clay button. Flat in the bar, `elevated` over content. |
 | `ShutterButton` | Camera capture | Clay disc in a thin ring; sinks on press, fires the capture haptic; `busy` turns the ring into a spinner. |
 | `CornerBrackets` | Viewfinder frame | Warm white; clay when an item is framed. |
-| `KanzChip` | Filters and choices | Outlined; selected is ink. Optional `MaterialDot` or glyph, optional count. 48 dp target. |
+| `KanzChip` | Filters and choices | Outlined in `lineStrong` (3:1 against paper and cards); selected is ink. Optional `MaterialDot` or glyph, optional count. 48 dp target. |
 | `MaterialDot`, `MonoLabel`, `DataGrid`, `QualityBar`, `StateTags` | Recognition data | Mono label above plain value; quality always as five segments with a word, which wraps under the bar rather than being cut. `MonoLabel` shows uppercase but reads the original text to screen readers ("950 m", not "950 M"); pass `textDirection: TextDirection.ltr` for numeric sequences. |
-| `SpecimenCard` (+ `compact`, `SpecimenCarousel`) | A recognized item | Dot + name, then MATERIAL, TYPE, QTY, QUALITY, RECYCLABLE, CONFIDENCE, STATE. `hazardLabel` adds a danger row for disposal-only items. Edit affordance on the full card. Selected = 1.5 px ink border. Carousel cards share the tallest height. The index ("01 / 02") always reads left to right. |
+| `SpecimenCard` (+ `compact`, `SpecimenCarousel`) | A recognized item | Dot + name, then MATERIAL, TYPE, QTY, QUALITY, RECYCLABLE, CONFIDENCE, STATE. `hazardLabel` adds a danger row for disposal-only items. Edit affordance on the full card. Selected = 1.5 px ink border. Carousel cards share the tallest height; `initialIndex` opens the row on a given card and `controller` scrolls it (`SpecimenCarousel.offsetFor(i, itemWidth)`). Choose `itemWidth` so the next card peeks by no more than its inner padding (or by a whole word). The index ("01 / 02") always reads left to right. |
 | `BoundingBoxOverlay` | Photo with detections | Boxes in 0..1 image space mapped with the image's `BoxFit` (onto the whole photo when the size is unknown); tags placed so they never overlap; selected box heavier, others recede. Show the photo before the analysis returns with no boxes: the reveal waits for the first detections and replays for a new set of items. |
-| `PipelineTimeline` | The live analysis | One row per real backend stage with honest labels; failed stages explain and offer retry; collapses to one summary line when done. |
+| `PipelineTimeline` | The live analysis | One row per real backend stage with honest labels; failed stages explain and offer retry unless the stage says `retryable: false` (a used-up image quota); collapses to one summary line when done. |
 | `SegmentedTabs` | Upcycle / Recycle / Donate | Equal segments, sliding raised thumb, optional glyph and count. |
-| `IdeaCard` + `ToolMatchBadge` | Upcycling ideas | 4:3 after image with the original photo inset; skeleton while rendering, desaturated original with a note if the image fails; Fraunces title; mono meta. |
+| `IdeaCard` + `ToolMatchBadge` | Upcycling ideas | 4:3 after image with the original photo inset; skeleton while rendering (`after: null`), desaturated original with `errorLabel` when the image fails to load or `failed: true` says it could not be generated (no `after` needed). `original` is nullable: a text scan has no photo, so the card shows no inset and a quiet sunken panel in place of the failure photo. Fraunces title; mono meta joined with " · ". |
 | `BeforeAfterSlider` | Comparing photo and makeover | Clay handle; semantic slider with 10 % steps; arrow keys; before sits on the reading-start side. |
 | `SourceChips` | RAG grounding | Quiet tags naming the knowledge documents an answer used. |
 | `StepNumeral`, `StepProgressBar` | Tutorial | "02 / 05" in Fraunces (always left to right); done ink, current clay, upcoming track. |
 | `Callout` (tip, warning, safety) | Notes in tutorials and results | Sunken fill, glyph, mono title. Never a colored slab. |
-| `SectionHeader`, `KanzSheet`, `KanzListTile` | Structure | Start-aligned headers; sheets radius 20 with a handle and pinned actions. |
-| `PlaceRow` | Drop-off points | Name, type and address, mono distance, open state, material dots, directions button. |
-| `SwapCard` | Eco swaps | "Instead of" → "Try" with a mirrored arrow, why, one tip, mono effort and cost. |
+| `SectionHeader`, `KanzSheet`, `KanzListTile` | Structure | Start-aligned headers: `large: true` (Fraunces `headlineMedium`) for a page's top-level sections, the sans default for sub-sections inside a detail page. Sheets radius 20 with a handle and pinned actions. List-tile and switch-tile hairlines sit inside both gutters; only `PlaceRow` lists run full bleed. |
+| `PlaceRow` | Drop-off points | Name and mono distance, then type and address with the accepted-material dots at the end of that line, the open state, a directions button. `hideUnknownHours` leaves the hours line out for places that list none (most OpenStreetMap places), so "Hours not listed" does not repeat on every row. |
+| `SwapCard` | Eco swaps | One quiet line "Instead of single-use plastic bags", then → "Try" (the only mono cue, with a mirrored arrow) over the Fraunces swap, why, one tip, and under a hairline the meta ("Low effort · Low cost", no colons) and an optional `footer` (impact note, `SourceChips`) inside the card. |
 | `StatNumeral`, `MaterialBars` | Impact | Big Fraunces numbers; bars in material colors, longest first. |
 | `Skeleton`, `FadeUp`, `StaggeredColumn` | Loading and entrances | Low contrast, slow pulse, static with reduced motion. |
-| `EmptyState`, `ErrorState`, `OfflineBanner` | States | Start-aligned; errors name what failed, offer retry and show the code for support. |
-| `PermissionRationale` | Camera and location asks | Drawn geometric art, concrete reasons, primary + an alternative that still works (gallery, city picker). |
-| `KanzTextField`, `KanzSwitchTile` | Forms and settings | Label above the field; whole switch row toggles. |
+| `EmptyState`, `ErrorState`, `OfflineBanner` | States | One anatomy for both, always full width and on the start gutter: 56 dp circle (`lineStrong`; `danger` stroke and glyph for errors), Fraunces `headlineSmall` title, `bodyMedium` message in `inkSecondary` that gives the cause and what still works, then a full-width action (secondary; `primaryAction: true` when it is the only way forward). Errors end with the support code: mono `codeLabel` ("Support code") over the id (`errorSupportCode(error)`: the request id, with the wire code in debug builds). A null `onRetry` hides the retry. `OfflineBanner` is a quiet sunken strip with a hairline under it and a caution glyph (a 14 dp spinner while `checking`), never an inverse slab. |
+| `PermissionRationale` | Camera and location asks | Drawn geometric art, concrete reasons, primary + an alternative that still works (gallery, city picker). After a refusal, `notice` (a warning `Callout`) says what happened right under the title; with no `reasons` (restricted by policy) the alternative becomes the primary action. |
+| `KanzTextField`, `KanzSwitchTile` | Forms and settings | Label above the field; the helper or error and the character count sit under it on the same gutter as the label. URLs, numbers and codes pass `textDirection: TextDirection.ltr` (and `textAlign` if needed) so they read left to right in Arabic. Whole switch row toggles. |
 | `KanzNavBar` | Shell navigation | Home, Drop-off, [scan], Swaps, Impact. Selected tab is ink with a short clay bar. |
 | `BrandMark`, `BrandLockup` | Identity | The faceted gem; lockup pairs "Kanz" (Fraunces) with "كنز". |
 

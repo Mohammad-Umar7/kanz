@@ -82,6 +82,8 @@ class DropoffSection extends StatelessWidget {
         message: apiErrorMessage(l10n, stage.error),
         retryLabel: l10n.commonRetry,
         onRetry: (stage.error?.retryable ?? true) ? onRetry : null,
+        code: supportCode(stage.error),
+        codeLabel: l10n.commonSupportCode,
       ),
       StageStatus.done when places.isEmpty => EmptyState(
         icon: KanzIcons.dropOff,
@@ -105,6 +107,7 @@ class DropoffSection extends StatelessWidget {
         SectionHeader(
           title: l10n.resultsDropoffTitle,
           subtitle: stage.isDone ? _where(l10n) : null,
+          large: true,
           action: showSeeAll
               ? KanzButton.tertiary(
                   label: l10n.resultsSeeAll,
@@ -164,7 +167,7 @@ class _PlaceList extends StatelessWidget {
             child: Callout(
               variant: CalloutVariant.tip,
               title: l10n.resultsBeforeYouGo,
-              message: notice,
+              message: format.ai(notice),
             ),
           ),
         Divider(height: 1, color: c.line),
@@ -210,6 +213,9 @@ class _PlaceList extends StatelessWidget {
           ? null
           : format.facilityType(place.facilityTypes.first),
       directionsLabel: l10n.resultsDirections(place.name),
+      // Most OpenStreetMap places list no hours: say nothing rather than
+      // "Hours not listed" on every row.
+      hideUnknownHours: true,
       onDirections: place.mapsUrl == null ? null : () => onDirections(place),
     );
   }

@@ -31,5 +31,5 @@
 
   "historyLoading": "Loading your history",
   "historyErrorTitle": "History didn't load",
-  "historyErrorBody": "Kanz couldn't read what's saved on this phone. Try again."
+  "historyErrorBody": "Your saved scans and projects couldn't be read from this phone."
 }

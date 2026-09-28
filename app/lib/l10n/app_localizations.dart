@@ -2402,6 +2402,18 @@ abstract class AppLocalizations {
   /// **'{name}, {category}, {confidence} confidence'**
   String resultsBoxSemantics(String name, String category, String confidence);
 
+  /// Short action in the offline banner that checks the server again.
+  ///
+  /// In en, this message translates to:
+  /// **'Retry'**
+  String get resultsCheckAgain;
+
+  /// No description provided for @resultsChecking.
+  ///
+  /// In en, this message translates to:
+  /// **'Checking the connection'**
+  String get resultsChecking;
+
   /// No description provided for @resultsChooseCity.
   ///
   /// In en, this message translates to:
@@ -3187,6 +3199,12 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'pieces'**
   String get resultsUnitPcs;
+
+  /// No description provided for @resultsUnreachable.
+  ///
+  /// In en, this message translates to:
+  /// **'Can\'t reach the Kanz server. Saved results still open; new steps wait for it.'**
+  String get resultsUnreachable;
 
   /// No description provided for @resultsUseMyLocation.
   ///
@@ -4033,6 +4051,12 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Adapting needs a connection.'**
   String get tutorialAdaptOffline;
+
+  /// No description provided for @tutorialAdaptOfflineRow.
+  ///
+  /// In en, this message translates to:
+  /// **'Adapting needs a connection'**
+  String get tutorialAdaptOfflineRow;
 
   /// No description provided for @tutorialAdaptProgressNote.
   ///

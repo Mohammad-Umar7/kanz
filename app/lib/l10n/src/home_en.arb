@@ -38,7 +38,7 @@
   },
   "homeLoadingRecent": "Loading your recent scans",
   "homeErrorTitle": "Your scans didn't load",
-  "homeErrorMessage": "Kanz couldn't read the scans saved on this phone. Try again.",
+  "homeErrorMessage": "Your saved scans couldn't be read from this phone.",
   "homeImpactTitle": "Your impact",
   "homeImpactItems": "{count, plural, =1{item out of the bin} other{items out of the bin}}",
   "@homeImpactItems": {

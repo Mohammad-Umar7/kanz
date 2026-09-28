@@ -210,6 +210,19 @@ class _Actions extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final l10n = context.l10n;
+    final gallery = KanzButton.secondary(
+      label: l10n.homeGallery,
+      icon: KanzIcons.gallery,
+      onPressed: onGallery,
+    );
+    final describe = KanzButton.secondary(
+      label: l10n.homeDescribe,
+      icon: KanzIcons.describe,
+      onPressed: onDescribe,
+    );
+    // Large text: the two labels no longer fit side by side, so they stack
+    // at full width instead of squeezing into two-line buttons.
+    final largeText = MediaQuery.textScalerOf(context).scale(1) > 1.15;
     return Padding(
       padding: KanzSpace.page,
       child: Column(
@@ -223,24 +236,22 @@ class _Actions extends StatelessWidget {
             onPressed: onScan,
           ),
           const SizedBox(height: KanzSpace.s8),
-          // The two other ways in stay quiet under the scan action, and
-          // wrap onto two lines rather than cut their labels.
-          Wrap(
-            alignment: WrapAlignment.center,
-            spacing: KanzSpace.s8,
-            children: [
-              KanzButton.tertiary(
-                label: l10n.homeGallery,
-                icon: KanzIcons.gallery,
-                onPressed: onGallery,
-              ),
-              KanzButton.tertiary(
-                label: l10n.homeDescribe,
-                icon: KanzIcons.describe,
-                onPressed: onDescribe,
-              ),
-            ],
-          ),
+          // The two other ways in: outlined, half width each, under the
+          // scan action, on the same edges as everything else on the page.
+          if (largeText)
+            Column(
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              spacing: KanzSpace.s8,
+              children: [gallery, describe],
+            )
+          else
+            Row(
+              spacing: KanzSpace.s8,
+              children: [
+                Expanded(child: gallery),
+                Expanded(child: describe),
+              ],
+            ),
         ],
       ),
     );

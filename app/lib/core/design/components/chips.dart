@@ -66,7 +66,13 @@ class KanzChip extends StatelessWidget {
                 decoration: BoxDecoration(
                   color: selected ? c.inverse : c.surface,
                   borderRadius: KanzRadii.chipAll,
-                  border: Border.all(color: selected ? c.inverse : c.line),
+                  // A strong hairline: the chip's boundary must reach 3:1 against
+                  // the paper and the white fill, which alone is only 1.1:1.
+                  border: Border.all(
+                    color: selected
+                        ? c.inverse
+                        : (enabled ? c.lineStrong : c.line),
+                  ),
                 ),
                 child: Row(
                   mainAxisSize: MainAxisSize.min,

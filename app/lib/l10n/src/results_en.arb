@@ -34,6 +34,10 @@
   "resultsTextScan": "Text scan",
   "resultsReadAs": "Kanz read this as",
   "resultsOffline": "You're offline. Saved results still open; new steps wait for a connection.",
+  "resultsUnreachable": "Can't reach the Kanz server. Saved results still open; new steps wait for it.",
+  "resultsChecking": "Checking the connection",
+  "resultsCheckAgain": "Retry",
+  "@resultsCheckAgain": {"description": "Short action in the offline banner that checks the server again."},
   "resultsShowSteps": "Show steps",
   "resultsHideSteps": "Hide steps",
   "resultsSeconds": "{seconds} s",
@@ -69,7 +73,9 @@
     }
   },
   "resultsSummaryDisposal": "safe disposal",
-  "resultsSummaryImagesPaused": "images paused",
+  "resultsSummaryImagesPaused": "Makeover images paused",
+  "resultsImagesPausedTitle": "Makeover images paused",
+  "resultsImagesPausedBody": "This server can't draw pictures right now. The ideas and their step-by-step tutorials still work.",
   "resultsStageImagesPaused": "Image generation is paused on this server. Ideas and tutorials still work.",
   "resultsStageNoMakeoversDisposal": "Nothing to render: this item needs safe disposal.",
   "resultsStageNoMakeovers": "No ideas to render.",
@@ -128,7 +134,14 @@
   },
   "resultsCorrectedNote": "Corrected by you.",
   "resultsFocusItem": "Focus ideas on this item",
-  "resultsFocusedItem": "Ideas below are for this item",
+  "resultsFocusedItem": "Ideas below are for the {item}",
+  "@resultsFocusedItem": {
+    "placeholders": {
+      "item": {
+        "type": "String"
+      }
+    }
+  },
   "resultsEditSubtitle": "Kanz will update the ideas with your changes.",
   "resultsEditName": "Name",
   "resultsEditCategory": "Material",

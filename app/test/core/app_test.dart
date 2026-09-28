@@ -89,6 +89,8 @@ void main() {
     expect(context.l10n.commonAppName, 'كنز');
     expect(GoRouter.of(context).state.matchedLocation, AppRoutes.home);
     expect(h.container.read(contentLangProvider).id, 'ar');
+    // "Phone language" in Settings still names the phone's own language.
+    expect(h.container.read(systemLangProvider), Lang.en);
     expect(h.container.read(apiBaseUrlProvider), isNotEmpty);
   });
 

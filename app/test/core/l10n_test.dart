@@ -51,8 +51,8 @@ void main() {
     );
   });
 
-  test('CO2e is formatted with one decimal below 10 kg', () {
-    expect(formatCo2e(en, 1.234), '1.2 kg CO2e');
-    expect(en.commonCo2eDisclaimer, contains('Estimate'));
+  test('CO₂e is formatted with one decimal below 10 kg', () {
+    expect(formatCo2e(en, 1.234), '1.2 kg CO₂e');
+    expect(en.commonCo2eDisclaimer, contains('estimate'));
   });
 }

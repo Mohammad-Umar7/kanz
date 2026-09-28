@@ -4,7 +4,8 @@ import '../../core/design/design.dart';
 
 /// The viewfinder chrome around a camera preview: close and flashlight at the
 /// top, corner brackets framing the item, one line of guidance, and the clay
-/// shutter between the gallery and "Describe".
+/// shutter between the gallery and "Describe". It looks the same in the
+/// light and dark themes.
 ///
 /// Pure layout: the camera, the permission flow and the capture live in
 /// `CameraScanView`, so this also renders in screenshot tests with a photo
@@ -60,6 +61,16 @@ class Viewfinder extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    // Camera chrome sits on the camera's picture, which has no theme: it is
+    // drawn with the dark palette in both themes, so the shutter and the
+    // framing brackets are the same clay over the same scene.
+    return Theme(
+      data: KanzTheme.dark(locale: Localizations.localeOf(context)),
+      child: Builder(builder: _chrome),
+    );
+  }
+
+  Widget _chrome(BuildContext context) {
     final c = context.kanzColors;
     return Scaffold(
       backgroundColor: c.photoBackdrop,

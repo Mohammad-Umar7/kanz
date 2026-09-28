@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -15,6 +16,8 @@ import '../../l10n/l10n.dart';
 import '../tutorial/widgets/content_direction.dart';
 import '../tutorial/widgets/image_sources.dart';
 import '../tutorial/widgets/page_parts.dart';
+import 'made_photo.dart';
+import 'made_photo_capture.dart';
 import 'share_card.dart';
 
 /// Completion (`/projects/:projectId/done`): the finished project.
@@ -34,6 +37,30 @@ class CompletionScreen extends ConsumerStatefulWidget {
 
 class _CompletionScreenState extends ConsumerState<CompletionScreen> {
   bool _sharing = false;
+  bool _savingPhoto = false;
+
+  /// Photographs what the user made (or takes it from the gallery) and keeps
+  /// it as the project's "after" picture.
+  Future<void> _addPhoto(String projectId) async {
+    if (_savingPhoto) return;
+    final l10n = context.l10n;
+    final messenger = ScaffoldMessenger.of(context);
+    final store = ref.read(madePhotoStoreProvider);
+    final source = await captureMadePhoto(context);
+    if (source == null || !mounted) return;
+    setState(() => _savingPhoto = true);
+    try {
+      await store.save(projectId, source);
+      ref.invalidate(madePhotoProvider(projectId));
+    } on Object catch (e) {
+      debugPrint('Project photo not saved: $e');
+      messenger.showSnackBar(
+        SnackBar(content: Text(l10n.completionPhotoFailed)),
+      );
+    } finally {
+      if (mounted) setState(() => _savingPhoto = false);
+    }
+  }
 
   void _goHome() => context.go(AppRoutes.home);
 
@@ -107,6 +134,7 @@ class _CompletionScreenState extends ConsumerState<CompletionScreen> {
           message: l10n.completionMissingBody,
           actionLabel: l10n.completionSeeProjects,
           onAction: () => _goHomeThen(AppRoutes.history),
+          primaryAction: true,
         ),
       ),
       AsyncError() => Align(
@@ -116,6 +144,7 @@ class _CompletionScreenState extends ConsumerState<CompletionScreen> {
           message: l10n.completionErrorBody,
           retryLabel: l10n.commonRetry,
           onRetry: () => ref.invalidate(projectProvider(widget.projectId)),
+          primaryAction: true,
         ),
       ),
       _ => const _CompletionSkeleton(),
@@ -159,6 +188,8 @@ class _CompletionScreenState extends ConsumerState<CompletionScreen> {
         : null;
     final impact = ref.watch(impactProvider);
     final events = ref.watch(impactEventsProvider).value ?? const [];
+    final madePhoto = ref.watch(madePhotoProvider(project.id));
+    final madePath = madePhoto.value;
     final tutorial = project.tutorial;
     final idea = project.idea;
     // The project's own words (its title, the scanned items) keep the
@@ -174,7 +205,9 @@ class _CompletionScreenState extends ConsumerState<CompletionScreen> {
       before:
           localPhotoProvider(scan.localImagePath) ??
           generatedImageProvider(scan.referenceImage),
+      // The user's own photo of the result wins over a drawn makeover.
       after:
+          (madePath == null ? null : FileImage(File(madePath))) ??
           generatedImageProvider(scan.afterImage(project.ideaId)) ??
           (lastStep == null ? null : generatedImageProvider(lastStep)),
       madeFrom: madeFrom.isEmpty
@@ -220,6 +253,30 @@ class _CompletionScreenState extends ConsumerState<CompletionScreen> {
           delay: KanzMotion.stagger,
           child: _Comparison(visuals: visuals, description: scan.inputText),
         ),
+        // No result picture yet: the user can add their own. Once there is
+        // one, it can be retaken.
+        if (!madePhoto.isLoading && (visuals.after == null || madePath != null))
+          Padding(
+            padding: const EdgeInsetsDirectional.only(top: KanzSpace.s12),
+            child: madePath == null
+                ? KanzButton.secondary(
+                    key: const ValueKey('add-made-photo'),
+                    label: l10n.completionAddPhoto,
+                    icon: KanzIcons.camera,
+                    expand: true,
+                    loading: _savingPhoto,
+                    loadingLabel: l10n.completionSavingPhoto,
+                    onPressed: () => unawaited(_addPhoto(project.id)),
+                  )
+                : InlineAction(
+                    key: const ValueKey('replace-made-photo'),
+                    icon: KanzIcons.camera,
+                    label: l10n.completionReplacePhoto,
+                    busy: _savingPhoto,
+                    busyLabel: l10n.completionSavingPhoto,
+                    onPressed: () => unawaited(_addPhoto(project.id)),
+                  ),
+          ),
         const SizedBox(height: KanzSpace.s16),
         KanzButton.secondary(
           key: const ValueKey('share-project'),
@@ -312,7 +369,8 @@ class _CompletionScreenState extends ConsumerState<CompletionScreen> {
 }
 
 /// The pictures of a project: the user's photo (or a text scan's reference
-/// picture) and the makeover (or the last step picture).
+/// picture), and the result: the user's own photo of it, else the makeover,
+/// else the last step picture.
 class _Visuals {
   const _Visuals({this.before, this.after, this.madeFrom});
 

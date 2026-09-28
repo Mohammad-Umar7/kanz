@@ -17,10 +17,15 @@ class PipelineStage {
     required this.status,
     this.detail,
     this.message,
+    this.retryable = true,
   });
 
   final String label;
   final PipelineStatus status;
+
+  /// Whether a failed stage offers the timeline's retry. False for a
+  /// failure that trying again cannot fix (an image quota that is used up).
+  final bool retryable;
 
   /// Short mono detail at the row end: a duration or a count.
   final String? detail;
@@ -234,6 +239,7 @@ class _StageRow extends StatelessWidget {
                     Text(stage.message!, style: t.bodySmall),
                   ],
                   if (status == PipelineStatus.failed &&
+                      stage.retryable &&
                       onRetry != null &&
                       retryLabel != null)
                     Padding(

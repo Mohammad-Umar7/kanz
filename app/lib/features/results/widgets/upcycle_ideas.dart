@@ -51,6 +51,14 @@ class UpcycleIdeas extends StatelessWidget {
     final sources = format.sourceTitles([
       for (final idea in ideas) ...idea.sources,
     ]);
+    // The server has no image quota: every makeover failed on it and none
+    // can be made from the phone. The ideas then read as a numbered list
+    // under one note, instead of three copies of the same photo.
+    final paused =
+        ideas.isNotEmpty &&
+        ideas.every(
+          (i) => session.afterImage(i.id).error?.isQuotaExhausted ?? false,
+        );
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -69,8 +77,10 @@ class UpcycleIdeas extends StatelessWidget {
               // The backend's reason when it gave one, and where the safe
               // disposal is when there is some.
               message: [
-                recommendation.routing.reason ??
-                    l10n.resultsHeldBackBody(format.list(heldBack)),
+                if (recommendation.routing.reason case final reason?)
+                  format.ai(reason)
+                else
+                  l10n.resultsHeldBackBody(format.list(heldBack)),
                 if (recommendation.disposal.isNotEmpty)
                   l10n.resultsHeldBackPointer,
               ].join(' '),
@@ -88,8 +98,18 @@ class UpcycleIdeas extends StatelessWidget {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
+              if (paused) ...[
+                Callout(
+                  variant: CalloutVariant.tip,
+                  icon: KanzIcons.pause,
+                  title: l10n.resultsImagesPausedTitle,
+                  message: l10n.resultsImagesPausedBody,
+                ),
+                const SizedBox(height: KanzSpace.s16),
+              ],
               for (var i = 0; i < ideas.length; i++) ...[
-                if (i > 0) const SizedBox(height: KanzSpace.s16),
+                if (i > 0)
+                  SizedBox(height: paused ? KanzSpace.s12 : KanzSpace.s16),
                 FadeUp.staggered(
                   index: i,
                   child: _Idea(
@@ -98,6 +118,7 @@ class UpcycleIdeas extends StatelessWidget {
                     idea: ideas[i],
                     image: session.afterImage(ideas[i].id),
                     before: before,
+                    pictureless: paused,
                     images: images,
                     format: format,
                     ownedTools: ownedTools,
@@ -146,6 +167,7 @@ class _Idea extends StatelessWidget {
     required this.idea,
     required this.image,
     required this.before,
+    required this.pictureless,
     required this.images,
     required this.format,
     required this.ownedTools,
@@ -160,6 +182,10 @@ class _Idea extends StatelessWidget {
   final UpcycleIdea idea;
   final GeneratedImageState image;
   final ImageProvider? before;
+
+  /// No makeover can be drawn for any idea (the image quota is spent): the
+  /// idea reads as a numbered entry.
+  final bool pictureless;
   final StableImages images;
   final ResultsFormat format;
   final List<ToolId> ownedTools;
@@ -187,17 +213,17 @@ class _Idea extends StatelessWidget {
           )
         : null;
 
-    // Nothing to picture: a text scan whose makeover could not be made has
-    // neither a photo nor an after image, so the idea reads as a numbered
-    // entry instead of an empty frame.
-    if (failed && before == null) {
+    // Nothing to picture: images are paused on this server, or a text scan
+    // whose makeover could not be made has neither a photo nor an after
+    // image. The idea then reads as a numbered entry, not an empty frame.
+    if (pictureless || (failed && before == null)) {
       return Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
           _IdeaEntry(
             number: format.index(index),
-            title: idea.title,
-            pitch: idea.pitch,
+            title: format.ai(idea.title),
+            pitch: format.ai(idea.pitch),
             meta: meta,
             toolMatch: toolMatch,
             onTap: onOpen,
@@ -211,8 +237,8 @@ class _Idea extends StatelessWidget {
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
         IdeaCard(
-          title: idea.title,
-          pitch: idea.pitch,
+          title: format.ai(idea.title),
+          pitch: format.ai(idea.pitch),
           original: before,
           after: images.resolve(idea.id, image),
           failed: failed,
@@ -251,6 +277,9 @@ class _IdeaEntry extends StatelessWidget {
   final Widget toolMatch;
   final VoidCallback onTap;
 
+  /// Room for a two-digit Fraunces numeral and the gap after it.
+  static const double numeralColumn = 36;
+
   @override
   Widget build(BuildContext context) {
     final c = context.kanzColors;
@@ -263,18 +292,25 @@ class _IdeaEntry extends StatelessWidget {
         KanzSpace.s16,
         KanzSpace.s20,
       ),
+      // The numeral hugs the start edge in either direction and sits on the
+      // title's baseline; its column has one width, so every title starts on
+      // the same line whatever the digits.
       child: Row(
-        crossAxisAlignment: CrossAxisAlignment.start,
+        crossAxisAlignment: CrossAxisAlignment.baseline,
+        textBaseline: TextBaseline.alphabetic,
         children: [
           ExcludeSemantics(
             child: SizedBox(
-              width: KanzSpace.s40,
-              child: Text(
-                number,
-                style: context.kanzType.numeralSmall.copyWith(
-                  color: c.inkSecondary,
+              width: _IdeaEntry.numeralColumn,
+              child: Align(
+                alignment: AlignmentDirectional.centerStart,
+                child: Text(
+                  number,
+                  style: context.kanzType.numeralSmall.copyWith(
+                    color: c.inkSecondary,
+                  ),
+                  textDirection: TextDirection.ltr,
                 ),
-                textDirection: TextDirection.ltr,
               ),
             ),
           ),
@@ -294,7 +330,7 @@ class _IdeaEntry extends StatelessWidget {
                   runSpacing: KanzSpace.s8,
                   crossAxisAlignment: WrapCrossAlignment.center,
                   children: [
-                    MonoLabel(meta.join('  ·  '), color: c.ink),
+                    MonoLabel(meta.join(' · '), color: c.ink),
                     toolMatch,
                   ],
                 ),

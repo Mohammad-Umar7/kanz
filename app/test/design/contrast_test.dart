@@ -1,8 +1,7 @@
 // WCAG AA contrast for every text/background pairing the design system
 // uses, in both themes. Body text needs 4.5:1; interface glyphs, control
 // boundaries and data dots need 3:1.
-import 'dart:ui';
-
+import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:kanz/core/design/design.dart';
 
@@ -66,6 +65,57 @@ void main() {
             greaterThanOrEqualTo(KanzContrast.large),
           );
         });
+      }
+    });
+  }
+
+  // Control boundaries as the components actually draw them: an unselected
+  // chip and an outlined icon button must stand out 3:1 from the paper and
+  // from a card, in both themes.
+  for (final brightness in Brightness.values) {
+    testWidgets('chip and outlined icon button borders, ${brightness.name}', (
+      tester,
+    ) async {
+      final c = brightness == Brightness.dark
+          ? KanzColors.dark
+          : KanzColors.light;
+      await tester.pumpWidget(
+        MaterialApp(
+          theme: brightness == Brightness.dark
+              ? KanzTheme.dark()
+              : KanzTheme.light(),
+          home: Scaffold(
+            body: Column(
+              children: [
+                KanzChip(label: 'Glass', selected: false, onSelected: (_) {}),
+                KanzIconButton(
+                  icon: KanzIcons.forward,
+                  semanticsLabel: 'Next',
+                  style: KanzIconButtonStyle.outlined,
+                  onPressed: () {},
+                ),
+              ],
+            ),
+          ),
+        ),
+      );
+      final chip = tester.widget<AnimatedContainer>(
+        find.descendant(
+          of: find.byType(KanzChip),
+          matching: find.byType(AnimatedContainer),
+        ),
+      );
+      final chipBorder =
+          ((chip.decoration! as BoxDecoration).border! as Border).top.color;
+      final button = tester.widget<IconButton>(find.byType(IconButton));
+      final buttonBorder = button.style!.side!.resolve({})!.color;
+      for (final border in [chipBorder, buttonBorder]) {
+        for (final ground in [c.background, c.surface]) {
+          expect(
+            KanzContrast.ratio(border, ground),
+            greaterThanOrEqualTo(KanzContrast.large),
+          );
+        }
       }
     });
   }

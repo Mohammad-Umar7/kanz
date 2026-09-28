@@ -79,7 +79,7 @@ class ResumeCard extends StatelessWidget {
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          Text(p.title, style: t.headlineSmall),
+                          OwnDirectionText(p.title, style: t.headlineSmall),
                           const SizedBox(height: KanzSpace.s8),
                           if (started) ...[
                             StepProgressBar(
@@ -208,7 +208,7 @@ class _RecentTile extends StatelessWidget {
     final when = formatRelative(l10n, scan.createdAt);
     return Semantics(
       button: true,
-      label: [title, ?material, when].join(', '),
+      label: formatList(l10n, [title, ?material, when]),
       excludeSemantics: true,
       onTap: onTap,
       child: SizedBox(
@@ -224,7 +224,7 @@ class _RecentTile extends StatelessWidget {
                 child: ScanThumbnail(scan: scan, large: true),
               ),
               const SizedBox(height: KanzSpace.s12),
-              Text(title, style: t.titleSmall),
+              OwnDirectionText(title, style: t.titleSmall),
               const SizedBox(height: KanzSpace.s4),
               if (scan.primaryCategory case final category?) ...[
                 MaterialTag(categoryId: category.id, label: material!),
@@ -433,10 +433,10 @@ class ImpactGlance extends StatelessWidget {
           const SizedBox(height: KanzSpace.s12),
           Semantics(
             button: true,
-            label: [
+            label: formatList(l10n, [
               l10n.homeImpactOpen,
               for (final (n, label) in stats) '$n $label',
-            ].join(', '),
+            ]),
             excludeSemantics: true,
             onTap: onTap,
             child: KanzCard(

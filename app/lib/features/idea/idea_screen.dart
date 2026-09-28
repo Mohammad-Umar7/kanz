@@ -46,7 +46,11 @@ class _IdeaScreenState extends ConsumerState<IdeaScreen> {
   Widget build(BuildContext context) {
     final l10n = context.l10n;
     final session = ref.watch(scanSessionProvider(widget.scanId));
-    final format = ResultsFormat.of(context, ref.watch(vocabProvider));
+    final format = ResultsFormat.of(
+      context,
+      ref.watch(vocabProvider),
+      content: session.recommendation?.lang ?? session.lang,
+    );
     final owned = ref.watch(settingsProvider.select((s) => s.tools));
     final ideas = session.ideas;
     final index = ideas.indexWhere((i) => i.id == widget.ideaId);
@@ -149,6 +153,7 @@ class _IdeaBody extends StatelessWidget {
     final paused = image.error?.isQuotaExhausted ?? false;
     final state = switch (image.status) {
       ImageStatus.ready => MakeoverState.ready,
+      ImageStatus.failed when paused => MakeoverState.paused,
       ImageStatus.failed => MakeoverState.failed,
       ImageStatus.idle || ImageStatus.loading => MakeoverState.rendering,
     };
@@ -168,8 +173,12 @@ class _IdeaBody extends StatelessWidget {
           beforeLabel: l10n.ideaBefore,
           afterLabel: l10n.ideaAfter,
           compareLabel: l10n.ideaCompare,
-          pendingLabel: l10n.ideaRendering,
-          note: paused ? l10n.ideaImagePaused : l10n.ideaImageFailed,
+          statusLabel: switch (state) {
+            MakeoverState.paused => l10n.ideaImagePaused,
+            MakeoverState.failed => l10n.ideaImageFailed,
+            MakeoverState.rendering ||
+            MakeoverState.ready => l10n.ideaRendering,
+          },
           description: session.inputText,
           descriptionLabel: l10n.ideaFromDescription,
           afterHeroTag: afterHeroTag(scanId, idea.id),
@@ -185,21 +194,21 @@ class _IdeaBody extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
               // A caption under the figure: how to use it, and another take.
-              // Without either (image generation paused) the title moves up.
+              // Without either (rendering, or images paused) the title moves
+              // up. It wraps at large text rather than squeezing the hint.
               if (state == MakeoverState.ready || canRegenerate) ...[
                 ConstrainedBox(
                   constraints: const BoxConstraints(
                     minHeight: KanzSpace.touchTarget,
                   ),
-                  child: Row(
+                  child: Wrap(
+                    alignment: WrapAlignment.spaceBetween,
+                    crossAxisAlignment: WrapCrossAlignment.center,
+                    spacing: KanzSpace.s16,
+                    runSpacing: KanzSpace.s4,
                     children: [
-                      Expanded(
-                        child: state == MakeoverState.ready
-                            ? ExcludeSemantics(
-                                child: MonoLabel(l10n.ideaDragHint),
-                              )
-                            : const SizedBox.shrink(),
-                      ),
+                      if (state == MakeoverState.ready)
+                        ExcludeSemantics(child: MonoLabel(l10n.ideaDragHint)),
                       if (canRegenerate)
                         KanzButton.tertiary(
                           label: l10n.commonRegenerate,
@@ -216,14 +225,16 @@ class _IdeaBody extends StatelessWidget {
               const SizedBox(height: KanzSpace.s8),
               Semantics(
                 header: true,
-                child: Text(idea.title, style: t.headlineLarge),
+                child: Text(format.ai(idea.title), style: t.headlineLarge),
               ),
               const SizedBox(height: KanzSpace.s8),
               Text(
-                idea.pitch,
+                format.ai(idea.pitch),
                 style: t.bodyLarge?.copyWith(color: c.inkSecondary),
               ),
               const SizedBox(height: KanzSpace.s24),
+              // What the tools line would add is in "Tools needed" below,
+              // tool by tool, so the grid keeps to effort and time.
               DataGrid(
                 entries: [
                   DataGridEntry(
@@ -234,11 +245,6 @@ class _IdeaBody extends StatelessWidget {
                     l10n.ideaTime,
                     value: l10n.commonMinutes(idea.timeMinutes),
                   ),
-                  DataGridEntry(
-                    l10n.ideaTools,
-                    span: true,
-                    child: match.badge(),
-                  ),
                 ],
               ),
               Divider(height: 1, color: c.line),
@@ -248,7 +254,7 @@ class _IdeaBody extends StatelessWidget {
                 const SizedBox(height: KanzSpace.s32),
                 GuideList(
                   title: l10n.ideaMaterialsTitle,
-                  lines: idea.extraMaterials,
+                  lines: [for (final m in idea.extraMaterials) format.ai(m)],
                 ),
               ],
               if (idea.safetyNote case final note?
@@ -257,7 +263,7 @@ class _IdeaBody extends StatelessWidget {
                 Callout(
                   variant: CalloutVariant.safety,
                   title: l10n.ideaSafety,
-                  message: note,
+                  message: format.ai(note),
                 ),
               ],
               if (sources.isNotEmpty) ...[
@@ -317,6 +323,13 @@ class _ToolList extends StatelessWidget {
           child: Text(l10n.ideaToolsTitle, style: t.titleLarge),
         ),
         const SizedBox(height: KanzSpace.s8),
+        if (match.total > 0) ...[
+          Align(
+            alignment: AlignmentDirectional.centerStart,
+            child: match.badge(),
+          ),
+          const SizedBox(height: KanzSpace.s12),
+        ],
         if (match.total == 0)
           Text(
             l10n.ideaNoTools,

@@ -813,6 +813,11 @@
       }
     }
   },
+  "resultsCheckAgain": "Retry",
+  "@resultsCheckAgain": {
+    "description": "Short action in the offline banner that checks the server again."
+  },
+  "resultsChecking": "Checking the connection",
   "resultsChooseCity": "Choose a city",
   "resultsChooseFromGallery": "Choose from gallery",
   "resultsClosedNow": "Closed now",
@@ -1068,6 +1073,7 @@
   "resultsUnitM": "m",
   "resultsUnitM2": "m²",
   "resultsUnitPcs": "pieces",
+  "resultsUnreachable": "Can't reach the Kanz server. Saved results still open; new steps wait for it.",
   "resultsUseMyLocation": "Use my location",
   "scanBackToCamera": "Back to camera",
   "scanCameraAllow": "Allow camera",
@@ -1335,6 +1341,7 @@
   },
   "tutorialAdaptHave": "You have",
   "tutorialAdaptOffline": "Adapting needs a connection.",
+  "tutorialAdaptOfflineRow": "Adapting needs a connection",
   "tutorialAdaptProgressNote": "Your progress starts over, because the steps change.",
   "tutorialAdaptSkill": "Your skill",
   "tutorialAdaptSubmit": "Rewrite the steps",

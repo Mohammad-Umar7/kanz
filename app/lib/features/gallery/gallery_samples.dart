@@ -187,6 +187,7 @@ class GallerySamples {
     required this.errorMessage,
     required this.tryAgain,
     required this.errorCode,
+    required this.supportCode,
     required this.offline,
     required this.camera,
     required this.location,
@@ -297,6 +298,7 @@ class GallerySamples {
   final String errorMessage;
   final String tryAgain;
   final String errorCode;
+  final String supportCode;
   final String offline;
   final GalleryRationale camera;
   final GalleryRationale location;
@@ -511,7 +513,7 @@ class GallerySamples {
     tipLabel: 'Tip',
     swaps: [
       GallerySwap(
-        from: 'Single-use plastic bags',
+        from: 'single-use plastic bags',
         to: 'A folding cotton or canvas tote',
         why:
             'One tote replaces hundreds of thin bags that tear quickly and '
@@ -519,16 +521,16 @@ class GallerySamples {
         tip:
             'Keep one folded in your car and one clipped to your keys so it '
             'is there when you shop.',
-        meta: ['Effort: low', 'Cost: low'],
+        meta: ['Low effort', 'Low cost'],
       ),
       GallerySwap(
-        from: 'Bottled water',
+        from: 'bottled water',
         to: 'A filter jug and a steel bottle',
         why:
             'You scanned mostly plastic bottles; refilling one bottle '
             'removes that stream.',
         tip: 'Fill the bottle the night before and keep it by your keys.',
-        meta: ['Effort: low', 'Cost: medium'],
+        meta: ['Low effort', 'Medium cost'],
         badge: 'From your scans',
       ),
     ],
@@ -541,6 +543,7 @@ class GallerySamples {
         'The AI service is busy right now. Please try again in a moment.',
     tryAgain: 'Try again',
     errorCode: 'ai_unavailable · req_5f3c2a1b',
+    supportCode: 'Support code',
     offline: 'You are offline. Saved scans still open.',
     camera: GalleryRationale(
       title: 'Show Kanz the thing you want to part with',
@@ -778,7 +781,7 @@ class GallerySamples {
             'حقيبة واحدة تغني عن مئات الأكياس الرقيقة التي تتمزق بسرعة '
             'وينتهي بها الأمر في الشوارع.',
         tip: 'احتفظ بواحدة مطوية في السيارة وأخرى مع مفاتيحك.',
-        meta: ['الجهد: قليل', 'التكلفة: منخفضة'],
+        meta: ['جهد قليل', 'تكلفة منخفضة'],
       ),
       GallerySwap(
         from: 'المياه المعبأة',
@@ -787,11 +790,11 @@ class GallerySamples {
             'معظم ما صوّرته قوارير بلاستيكية؛ إعادة تعبئة قارورة واحدة '
             'توقف هذا المصدر.',
         tip: 'املأ القارورة في الليلة السابقة وضعها قرب مفاتيحك.',
-        meta: ['الجهد: قليل', 'التكلفة: متوسطة'],
-        badge: 'من صورك السابقة',
+        meta: ['جهد قليل', 'تكلفة متوسطة'],
+        badge: 'من فحوصك',
       ),
     ],
-    emptyTitle: 'لا صور بعد',
+    emptyTitle: 'لا فحوص بعد',
     emptyMessage:
         'صوّر شيئًا كنت ستتخلص منه، وسيخبرك كنز ممّ صُنع وما الذي يمكن '
         'أن يصبح.',
@@ -799,7 +802,8 @@ class GallerySamples {
     errorMessage: 'خدمة الذكاء الاصطناعي مشغولة الآن. حاول مرة أخرى بعد لحظات.',
     tryAgain: 'حاول مجددًا',
     errorCode: 'ai_unavailable · req_5f3c2a1b',
-    offline: 'أنت غير متصل. الصور المحفوظة ما زالت متاحة.',
+    supportCode: 'رمز الدعم',
+    offline: 'أنت غير متصل. الفحوص المحفوظة ما زالت تُفتح.',
     camera: GalleryRationale(
       title: 'أرِ كنز الشيء الذي تريد التخلص منه',
       reasons: [

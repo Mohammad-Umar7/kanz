@@ -207,7 +207,8 @@ class KanzIconButton extends StatelessWidget {
       KanzIconButtonStyle.outlined => (
         selected ? c.accent : c.ink,
         null,
-        BorderSide(color: selected ? c.accent : c.line),
+        // 3:1 against paper and surface, like the secondary button.
+        BorderSide(color: selected ? c.accent : c.lineStrong),
       ),
       KanzIconButtonStyle.onPhoto => (
         selected ? KanzPhotoColors.accent : KanzPhotoColors.ink,

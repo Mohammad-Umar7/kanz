@@ -7,20 +7,25 @@ import 'package:image_picker/image_picker.dart';
 import '../../core/design/design.dart';
 import '../../core/state/core_providers.dart';
 import '../../l10n/l10n.dart';
+import 'camera_fallback.dart';
 
 /// The gallery path of the scan screen: opens the system photo picker at
 /// once. A pick starts the scan, a cancel goes back. On the first build it
-/// also collects a photo picked just before Android stopped the app.
+/// also collects a photo picked just before Android stopped the app. If the
+/// picker fails it says so, like the camera does when it cannot open, and
+/// offers another try, the camera and a description.
 class GalleryPickView extends ConsumerStatefulWidget {
   const GalleryPickView({
     super.key,
     required this.onPhoto,
     required this.onCancel,
+    required this.onCamera,
     required this.onDescribe,
   });
 
   final ValueChanged<String> onPhoto;
   final VoidCallback onCancel;
+  final VoidCallback onCamera;
   final VoidCallback onDescribe;
 
   @override
@@ -70,6 +75,35 @@ class _GalleryPickViewState extends ConsumerState<GalleryPickView> {
     final l10n = context.l10n;
     final c = context.kanzColors;
     ref.watch(galleryPickerProvider);
+    if (_failed) {
+      return ScanFallbackPage(
+        icon: KanzIcons.gallery,
+        title: l10n.scanGalleryErrorTitle,
+        body: l10n.scanGalleryErrorBody,
+        closeLabel: l10n.commonClose,
+        onClose: widget.onCancel,
+        actions: [
+          KanzButton(
+            label: l10n.commonRetry,
+            icon: KanzIcons.retry,
+            onPressed: () => unawaited(_pick()),
+            expand: true,
+          ),
+          KanzButton.secondary(
+            label: l10n.scanUseCamera,
+            icon: KanzIcons.camera,
+            onPressed: widget.onCamera,
+            expand: true,
+          ),
+          KanzButton.tertiary(
+            label: l10n.scanDescribeInstead,
+            icon: KanzIcons.describe,
+            onPressed: widget.onDescribe,
+            expand: true,
+          ),
+        ],
+      );
+    }
     return Scaffold(
       appBar: AppBar(
         automaticallyImplyLeading: false,
@@ -81,70 +115,47 @@ class _GalleryPickViewState extends ConsumerState<GalleryPickView> {
       ),
       body: SafeArea(
         top: false,
-        child: _failed
-            ? ListView(
-                children: [
-                  ErrorState(
-                    icon: KanzIcons.gallery,
-                    title: l10n.scanGalleryErrorTitle,
-                    message: l10n.scanGalleryErrorBody,
-                    retryLabel: l10n.commonRetry,
-                    onRetry: () => unawaited(_pick()),
-                  ),
-                  Padding(
-                    padding: KanzSpace.page,
-                    child: Align(
-                      alignment: AlignmentDirectional.centerStart,
-                      child: KanzButton.secondary(
-                        label: l10n.scanDescribeInstead,
-                        icon: KanzIcons.describe,
-                        onPressed: widget.onDescribe,
-                      ),
-                    ),
-                  ),
-                ],
-              )
-            : Padding(
-                padding: const EdgeInsetsDirectional.fromSTEB(
-                  KanzSpace.gutter,
-                  KanzSpace.s24,
-                  KanzSpace.gutter,
-                  0,
-                ),
-                child: Semantics(
-                  liveRegion: true,
-                  child: Row(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Padding(
-                        padding: const EdgeInsets.only(top: 2),
-                        child: SizedBox.square(
-                          dimension: 16,
-                          child: context.reduceMotion
-                              ? Icon(
-                                  KanzIcons.gallery,
-                                  size: 16,
-                                  color: c.inkSecondary,
-                                )
-                              : CircularProgressIndicator(
-                                  strokeWidth: 1.75,
-                                  color: c.inkSecondary,
-                                ),
-                        ),
-                      ),
-                      const SizedBox(width: KanzSpace.s12),
-                      Expanded(
-                        child: Text(
-                          l10n.scanOpeningGallery,
-                          style: context.textStyles.bodyLarge?.copyWith(
+        child: Padding(
+          padding: const EdgeInsetsDirectional.fromSTEB(
+            KanzSpace.gutter,
+            KanzSpace.s24,
+            KanzSpace.gutter,
+            0,
+          ),
+          child: Semantics(
+            liveRegion: true,
+            child: Row(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Padding(
+                  padding: const EdgeInsets.only(top: 2),
+                  child: SizedBox.square(
+                    dimension: 16,
+                    child: context.reduceMotion
+                        ? Icon(
+                            KanzIcons.gallery,
+                            size: 16,
+                            color: c.inkSecondary,
+                          )
+                        : CircularProgressIndicator(
+                            strokeWidth: 1.75,
                             color: c.inkSecondary,
                           ),
-                        ),
-                      ),
-                    ],
                   ),
                 ),
-              ),
+                const SizedBox(width: KanzSpace.s12),
+                Expanded(
+                  child: Text(
+                    l10n.scanOpeningGallery,
+                    style: context.textStyles.bodyLarge?.copyWith(
+                      color: c.inkSecondary,
+                    ),
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ),
       ),
     );
   }

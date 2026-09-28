@@ -1,16 +1,21 @@
 // Fixture data, fakes and provider overrides for the completion screen.
 import 'dart:async';
+import 'dart:io';
 
+import 'package:camera/camera.dart' show XFile;
 import 'package:flutter/widgets.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_riverpod/misc.dart' show Override;
 import 'package:kanz/core/data/db/database.dart';
 import 'package:kanz/core/data/models/models.dart';
+import 'package:kanz/core/services/gallery_picker.dart';
+import 'package:kanz/core/services/permission_service.dart';
 import 'package:kanz/core/services/share_service.dart';
 import 'package:kanz/core/state/core_providers.dart';
 import 'package:kanz/core/state/history_providers.dart';
 import 'package:kanz/core/state/impact_providers.dart';
 import 'package:kanz/core/state/scan_session.dart';
+import 'package:kanz/features/completion/made_photo.dart';
 import 'package:kanz/features/completion/share_card.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -96,6 +101,55 @@ class FakeRenderer extends ShareCardRenderer {
   }
 }
 
+/// Photos of finished projects kept in memory; records what was saved.
+class FakeMadePhotoStore extends MadePhotoStore {
+  FakeMadePhotoStore({this.photo})
+    : super(directory: Directory.systemTemp.createTempSync('kanz_made'));
+
+  /// The saved photo of the project, if any.
+  String? photo;
+  final List<(String, String)> saved = [];
+
+  @override
+  Future<String?> find(String projectId) async => photo;
+
+  @override
+  Future<String> save(String projectId, String sourcePath) async {
+    saved.add((projectId, sourcePath));
+    return photo = sourcePath;
+  }
+}
+
+/// Camera permission fixed at [camera]; asking changes nothing.
+class FakeCameraPermission implements PermissionService {
+  FakeCameraPermission(this.camera);
+
+  PermissionState camera;
+  int settingsOpened = 0;
+
+  @override
+  Future<PermissionState> status(AppPermission permission) async => camera;
+
+  @override
+  Future<PermissionState> request(AppPermission permission) async => camera;
+
+  @override
+  Future<bool> openSettings() async {
+    settingsOpened++;
+    return true;
+  }
+}
+
+/// Hands back [path] as the picked photo (null: the user cancelled).
+class FakeGalleryPicker extends GalleryPicker {
+  FakeGalleryPicker(this.path);
+
+  final String? path;
+
+  @override
+  Future<XFile?> pick() async => path == null ? null : XFile(path!);
+}
+
 /// How the project stream behaves.
 enum ProjectLoad { ready, loading, missing, error }
 
@@ -105,6 +159,9 @@ Future<List<Override>> completionOverrides({
   ProjectLoad load = ProjectLoad.ready,
   FakeShare? share,
   ShareCardRenderer? renderer,
+  MadePhotoStore? photos,
+  PermissionService? permissions,
+  GalleryPicker? gallery,
 }) async {
   SharedPreferences.setMockInitialValues(const {});
   final preferences = await SharedPreferences.getInstance();
@@ -127,5 +184,10 @@ Future<List<Override>> completionOverrides({
     scanSessionProvider.overrideWith2((id) => FakeScanSession(id, scan)),
     shareServiceProvider.overrideWithValue(share ?? FakeShare()),
     shareCardRendererProvider.overrideWithValue(renderer ?? FakeRenderer()),
+    madePhotoStoreProvider.overrideWithValue(photos ?? FakeMadePhotoStore()),
+    permissionServiceProvider.overrideWithValue(
+      permissions ?? FakeCameraPermission(PermissionState.permanentlyDenied),
+    ),
+    galleryPickerProvider.overrideWithValue(gallery ?? FakeGalleryPicker(null)),
   ];
 }

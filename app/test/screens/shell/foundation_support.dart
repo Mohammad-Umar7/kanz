@@ -170,6 +170,8 @@ Future<List<Override>> foundationOverrides(
     permissionServiceProvider.overrideWithValue(
       permissions ?? ScreenPermissions(),
     ),
+    // PackageInfo has no platform channel in tests.
+    appVersionProvider.overrideWith((ref) async => '1.0.0 (1)'),
     ...extra,
   ];
 }

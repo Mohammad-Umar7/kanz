@@ -35,6 +35,17 @@ class _OnboardingScreenState extends ConsumerState<OnboardingScreen> {
   late int _step = widget.initialStep;
   bool _finishing = false;
 
+  /// The step's content runs on under the pinned button: draw a hairline
+  /// over the button so the edge reads as intended.
+  bool _contentBelow = false;
+
+  bool _onScrollMetrics(ScrollMetrics metrics) {
+    if (metrics.axis != Axis.vertical) return false;
+    final below = metrics.extentAfter > 0.5;
+    if (below != _contentBelow) setState(() => _contentBelow = below);
+    return false;
+  }
+
   bool get _isLast => _step == OnboardingScreen.stepCount - 1;
 
   @override
@@ -95,28 +106,46 @@ class _OnboardingScreenState extends ConsumerState<OnboardingScreen> {
                 onSkip: _isLast || _finishing ? null : _finish,
               ),
               Expanded(
-                child: PageView(
-                  controller: _pages,
-                  onPageChanged: (i) => setState(() => _step = i),
-                  children: [
-                    const _WelcomeStep(),
-                    _LanguageStep(
-                      selected: Localizations.localeOf(context).languageCode,
-                      onSelect: (pref) => controller.setLocale(pref),
+                child: NotificationListener<ScrollMetricsNotification>(
+                  onNotification: (n) => _onScrollMetrics(n.metrics),
+                  child: NotificationListener<ScrollUpdateNotification>(
+                    onNotification: (n) => _onScrollMetrics(n.metrics),
+                    child: PageView(
+                      controller: _pages,
+                      onPageChanged: (i) => setState(() => _step = i),
+                      children: [
+                        const _WelcomeStep(),
+                        _LanguageStep(
+                          selected: Localizations.localeOf(
+                            context,
+                          ).languageCode,
+                          onSelect: (pref) => controller.setLocale(pref),
+                        ),
+                        _SkillStep(
+                          selected: settings.skill,
+                          onSelect: controller.setSkill,
+                        ),
+                        _ToolsStep(
+                          tools: vocab.realTools,
+                          selected: settings.tools.toSet(),
+                          onToggle: controller.toggleTool,
+                        ),
+                      ],
                     ),
-                    _SkillStep(
-                      selected: settings.skill,
-                      onSelect: controller.setSkill,
-                    ),
-                    _ToolsStep(
-                      tools: vocab.realTools,
-                      selected: settings.tools.toSet(),
-                      onToggle: controller.toggleTool,
-                    ),
-                  ],
+                  ),
                 ),
               ),
-              Padding(
+              AnimatedContainer(
+                duration: KanzMotion.of(context, KanzMotion.fast),
+                decoration: BoxDecoration(
+                  border: Border(
+                    top: BorderSide(
+                      color: _contentBelow
+                          ? context.kanzColors.line
+                          : Colors.transparent,
+                    ),
+                  ),
+                ),
                 padding: const EdgeInsetsDirectional.fromSTEB(
                   KanzSpace.gutter,
                   KanzSpace.s12,
@@ -158,19 +187,26 @@ class _TopBar extends StatelessWidget {
         ),
         child: Row(
           children: [
-            // The back button keeps its space on the first step so the
-            // progress bar does not jump.
-            SizedBox.square(
-              dimension: KanzSpace.touchTarget,
+            // On the first step there is nothing to go back to, so the bar
+            // starts on the page gutter like everything under it; from the
+            // second step the back button slides in before it.
+            AnimatedSize(
+              duration: KanzMotion.of(context, KanzMotion.medium),
+              curve: KanzMotion.emphasized,
+              alignment: AlignmentDirectional.centerStart,
               child: onBack == null
-                  ? null
-                  : KanzIconButton(
-                      icon: KanzIcons.back,
-                      semanticsLabel: l10n.commonBack,
-                      onPressed: onBack,
+                  ? const SizedBox(width: KanzSpace.gutter - KanzSpace.s8)
+                  : Padding(
+                      padding: const EdgeInsetsDirectional.only(
+                        end: KanzSpace.s8,
+                      ),
+                      child: KanzIconButton(
+                        icon: KanzIcons.back,
+                        semanticsLabel: l10n.commonBack,
+                        onPressed: onBack,
+                      ),
                     ),
             ),
-            const SizedBox(width: KanzSpace.s8),
             Expanded(
               child: Semantics(
                 liveRegion: true,

@@ -11,6 +11,7 @@ import 'package:go_router/go_router.dart';
 import 'package:kanz/app/routes.dart';
 import 'package:kanz/core/data/models/models.dart';
 import 'package:kanz/core/design/design.dart';
+import 'package:kanz/core/services/permission_service.dart';
 import 'package:kanz/core/state/scan_session.dart';
 import 'package:kanz/features/completion/completion_screen.dart';
 import 'package:kanz/features/completion/share_card.dart';
@@ -25,6 +26,9 @@ Future<GoRouter> _pump(
   ProjectLoad load = ProjectLoad.ready,
   FakeShare? share,
   ShareCardRenderer? renderer,
+  FakeMadePhotoStore? photos,
+  FakeCameraPermission? permissions,
+  FakeGalleryPicker? gallery,
 }) async {
   tester.view
     ..physicalSize = const Size(1080, 2400)
@@ -36,6 +40,9 @@ Future<GoRouter> _pump(
     load: load,
     share: share,
     renderer: renderer,
+    photos: photos,
+    permissions: permissions,
+    gallery: gallery,
   );
   final router = GoRouter(
     initialLocation: AppRoutes.completion(projectId),
@@ -182,6 +189,56 @@ void main() {
     expect(find.text('An empty glass jam jar'), findsOneWidget);
     expect(find.text('Share this project'), findsOneWidget);
     expect(find.byType(BeforeAfterSlider), findsNothing);
+  });
+
+  testWidgets('without a makeover the user can add a photo of the result', (
+    tester,
+  ) async {
+    final photos = FakeMadePhotoStore();
+    final share = FakeShare();
+    final renderer = FakeRenderer();
+    await _pump(
+      tester,
+      scan: _noPictures(),
+      photos: photos,
+      share: share,
+      renderer: renderer,
+      // The camera is off in Settings: the gallery is the way forward.
+      permissions: FakeCameraPermission(PermissionState.permanentlyDenied),
+      gallery: FakeGalleryPicker('/photos/lantern.jpg'),
+    );
+    expect(find.byKey(const ValueKey('replace-made-photo')), findsNothing);
+    await tester.tap(find.byKey(const ValueKey('add-made-photo')));
+    await tester.pumpAndSettle();
+
+    expect(find.text("The camera isn't available"), findsOneWidget);
+    expect(find.text('Open settings'), findsOneWidget);
+    await tester.tap(find.byKey(const ValueKey('made-photo-gallery')));
+    await tester.pumpAndSettle();
+
+    // Back on the project, the photo is saved and becomes the result.
+    expect(photos.saved, [(projectId, '/photos/lantern.jpg')]);
+    expect(find.byKey(const ValueKey('add-made-photo')), findsNothing);
+    expect(find.byKey(const ValueKey('replace-made-photo')), findsOneWidget);
+    await tester.tap(find.byKey(const ValueKey('share-project')));
+    await tester.pumpAndSettle();
+    expect(renderer.rendered.single.after, isA<FileImage>());
+  });
+
+  testWidgets('closing the camera keeps the project as it was', (tester) async {
+    final photos = FakeMadePhotoStore();
+    await _pump(
+      tester,
+      scan: _noPictures(),
+      photos: photos,
+      permissions: FakeCameraPermission(PermissionState.restricted),
+    );
+    await tester.tap(find.byKey(const ValueKey('add-made-photo')));
+    await tester.pumpAndSettle();
+    await tester.tap(find.byTooltip('Close'));
+    await tester.pumpAndSettle();
+    expect(photos.saved, isEmpty);
+    expect(find.byKey(const ValueKey('add-made-photo')), findsOneWidget);
   });
 
   testWidgets('a missing project points to History', (tester) async {

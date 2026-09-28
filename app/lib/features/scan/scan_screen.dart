@@ -54,6 +54,7 @@ class _ScanScreenState extends ConsumerState<ScanScreen> {
         onCancel: widget.mode == ScanMode.camera
             ? () => _setMode(ScanMode.camera)
             : () => closeScan(context),
+        onCamera: () => _setMode(ScanMode.camera),
         onDescribe: () => _setMode(ScanMode.text),
       ),
       ScanMode.text => DescribeView(

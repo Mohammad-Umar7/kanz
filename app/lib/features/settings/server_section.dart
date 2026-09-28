@@ -98,11 +98,20 @@ class _ServerSectionState extends ConsumerState<ServerSection> {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
-          _AddressField(
+          // A URL reads left to right in Arabic too.
+          KanzTextField(
             label: l10n.settingsServerUrl,
             controller: _url,
+            hint: Env.apiBase,
             helper: l10n.settingsServerHelper(Env.apiBase),
             error: _error,
+            prefixIcon: KanzIcons.website,
+            keyboardType: TextInputType.url,
+            textInputAction: TextInputAction.done,
+            textDirection: TextDirection.ltr,
+            textAlign: TextAlign.left,
+            autocorrect: false,
+            enableSuggestions: false,
             onChanged: (_) => setState(() => _error = null),
             onSubmitted: (_) => _save(),
           ),
@@ -117,7 +126,8 @@ class _ServerSectionState extends ConsumerState<ServerSection> {
                 label: _edited
                     ? l10n.settingsServerSave
                     : l10n.settingsServerTest,
-                icon: _edited ? KanzIcons.save : KanzIcons.retry,
+                // Saving tests the new address, so no storage glyph.
+                icon: _edited ? null : KanzIcons.retry,
                 loading: testing,
                 loadingLabel: l10n.settingsServerTesting,
                 onPressed: _edited ? _save : _test,
@@ -221,20 +231,27 @@ class _HealthDetails extends StatelessWidget {
       if (health.placesGoogle) 'Google Places',
       if (health.placesOsm) 'OpenStreetMap',
     ];
-    Widget code(String value) => Text(
-      value,
-      style: context.kanzType.dataStrong,
-      textDirection: TextDirection.ltr,
-    );
+    final type = context.kanzType;
+    Widget code(String value) =>
+        Text(value, style: type.dataStrong, textDirection: TextDirection.ltr);
+    // Model ids run one per row, so a long id ("gemini-3.1-flash-image")
+    // stays on one line at 360 dp instead of breaking at a hyphen.
     return DataGrid(
       entries: [
         for (final entry in health.models.entries)
-          DataGridEntry(modelLabel(entry.key), child: code(entry.value)),
+          DataGridEntry(
+            modelLabel(entry.key),
+            span: true,
+            child: code(entry.value),
+          ),
         DataGridEntry(
           l10n.settingsKnowledge,
-          value: health.ragReady
-              ? l10n.settingsKnowledgeDocs(health.knowledgeDocs)
-              : l10n.settingsKnowledgeKeyword(health.knowledgeDocs),
+          child: Text(
+            health.ragReady
+                ? l10n.settingsKnowledgeDocs(health.knowledgeDocs)
+                : l10n.settingsKnowledgeKeyword(health.knowledgeDocs),
+            style: type.dataStrong,
+          ),
         ),
         DataGridEntry(l10n.settingsServerVersion, child: code(health.version)),
         DataGridEntry(
@@ -245,62 +262,6 @@ class _HealthDetails extends StatelessWidget {
               : places.join(l10n.settingsToolsListSeparator),
         ),
       ],
-    );
-  }
-}
-
-/// The server address field: a [KanzTextField] layout whose text always
-/// runs left to right, since a URL reads that way in Arabic too.
-class _AddressField extends StatelessWidget {
-  const _AddressField({
-    required this.label,
-    required this.controller,
-    required this.helper,
-    required this.error,
-    required this.onChanged,
-    required this.onSubmitted,
-  });
-
-  final String label;
-  final TextEditingController controller;
-  final String helper;
-  final String? error;
-  final ValueChanged<String> onChanged;
-  final ValueChanged<String> onSubmitted;
-
-  @override
-  Widget build(BuildContext context) {
-    final t = context.textStyles;
-    return MergeSemantics(
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.stretch,
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          Text(label, style: t.labelMedium),
-          const SizedBox(height: KanzSpace.s8),
-          TextField(
-            controller: controller,
-            keyboardType: TextInputType.url,
-            textInputAction: TextInputAction.done,
-            autocorrect: false,
-            enableSuggestions: false,
-            textDirection: TextDirection.ltr,
-            textAlign: TextAlign.left,
-            style: t.bodyLarge,
-            onChanged: onChanged,
-            onSubmitted: onSubmitted,
-            decoration: InputDecoration(
-              hintText: Env.apiBase,
-              hintTextDirection: TextDirection.ltr,
-              helperText: helper,
-              errorText: error,
-              helperMaxLines: 3,
-              errorMaxLines: 3,
-              prefixIcon: const Icon(KanzIcons.website, size: 20),
-            ),
-          ),
-        ],
-      ),
     );
   }
 }

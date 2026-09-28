@@ -18,7 +18,7 @@
   "homeItemCount": "{count, plural, =1{غرض واحد} =2{غرضان} few{{count} أغراض} many{{count} غرضًا} other{{count} غرض}}",
   "homeLoadingRecent": "جارٍ تحميل آخر الفحوص",
   "homeErrorTitle": "لم تُحمَّل فحوصك",
-  "homeErrorMessage": "تعذّر على كنز قراءة الفحوص المحفوظة على هذا الهاتف. حاول مرة أخرى.",
+  "homeErrorMessage": "تعذّرت قراءة فحوصك المحفوظة على هذا الهاتف.",
   "homeImpactTitle": "أثرك",
   "homeImpactItems": "{count, plural, =1{غرض أُبعد عن سلة المهملات} =2{غرضان أُبعدا عن سلة المهملات} few{أغراض أُبعدت عن سلة المهملات} many{غرضًا أُبعد عن سلة المهملات} other{غرض أُبعد عن سلة المهملات}}",
   "homeImpactStreak": "{count, plural, =1{يوم على التوالي} =2{يومان على التوالي} few{أيام على التوالي} many{يومًا على التوالي} other{يوم على التوالي}}",

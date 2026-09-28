@@ -99,6 +99,7 @@ void main() {
         'error',
         scansState: AsyncError(StateError('db'), StackTrace.empty),
       );
+      expectStatesOnGutter(tester);
     });
   }
 }

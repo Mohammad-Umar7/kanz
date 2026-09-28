@@ -52,6 +52,8 @@ void main() {
       localizationsDelegates: l10nDelegates,
     );
     await capture();
+    // Empty and error blocks start on the gutter in both directions.
+    if (empty || state is AsyncError) expectStatesOnGutter(tester);
     if (interact != null) {
       await interact();
       await capture();

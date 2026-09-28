@@ -242,3 +242,76 @@ class NumberedList extends StatelessWidget {
     );
   }
 }
+
+/// A quiet text action that starts on the gutter, like the text around it
+/// ("Redraw picture" under a step picture): a glyph and a label, 48 dp tall,
+/// with no button padding pushing it off the edge. While [busy] a small
+/// spinner replaces the glyph and taps are ignored.
+class InlineAction extends StatelessWidget {
+  const InlineAction({
+    super.key,
+    required this.icon,
+    required this.label,
+    required this.onPressed,
+    this.busy = false,
+    this.busyLabel,
+  });
+
+  final IconData icon;
+  final String label;
+  final VoidCallback onPressed;
+  final bool busy;
+
+  /// Announced while [busy], for example "Saving your photo".
+  final String? busyLabel;
+
+  @override
+  Widget build(BuildContext context) {
+    final c = context.kanzColors;
+    return Align(
+      alignment: AlignmentDirectional.centerStart,
+      child: Semantics(
+        button: true,
+        enabled: !busy,
+        liveRegion: busy,
+        label: busy ? (busyLabel ?? label) : label,
+        onTap: busy ? null : onPressed,
+        excludeSemantics: true,
+        child: InkWell(
+          onTap: busy ? null : onPressed,
+          borderRadius: KanzRadii.tagAll,
+          child: ConstrainedBox(
+            constraints: const BoxConstraints(minHeight: KanzSpace.touchTarget),
+            child: Padding(
+              padding: const EdgeInsetsDirectional.only(end: KanzSpace.s8),
+              child: Row(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  SizedBox.square(
+                    dimension: 18,
+                    child: busy
+                        ? Padding(
+                            padding: const EdgeInsets.all(2),
+                            child: CircularProgressIndicator(
+                              strokeWidth: 1.5,
+                              color: c.inkSecondary,
+                            ),
+                          )
+                        : Icon(icon, size: 18, color: c.ink),
+                  ),
+                  const SizedBox(width: KanzSpace.s8),
+                  Flexible(
+                    child: Text(
+                      busy ? (busyLabel ?? label) : label,
+                      style: context.textStyles.labelLarge,
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+}

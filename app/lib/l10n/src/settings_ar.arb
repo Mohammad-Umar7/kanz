@@ -9,7 +9,7 @@
   "settingsSkill": "مستوى المهارة",
   "settingsTools": "أدواتي",
   "settingsToolsNone": "لا شيء بعد. تأتي أولًا الأفكار التي لا تحتاج إلى أدوات.",
-  "settingsToolsMore": "{names} و{count} أخرى",
+  "settingsToolsMore": "{names} {count, plural, =1{وأداة أخرى} =2{وأداتان أخريان} few{و{count} أدوات أخرى} many{و{count} أداة أخرى} other{و{count} أداة أخرى}}",
   "settingsToolsListSeparator": "، ",
   "settingsLocation": "الموقع لنقاط التسليم",
   "settingsLocationGps": "استخدم موقعي",
@@ -19,6 +19,7 @@
   "settingsLocationCity": "مدينة محددة",
   "settingsLocationCityDetail": "البحث حول {city}",
   "settingsLocationCityNone": "اختر مدينة",
+  "settingsCity": "المدينة",
   "settingsLocationUndecided": "سيسألك كنز أول مرة تبحث فيها عن نقاط التسليم.",
   "settingsTutorials": "الدروس",
   "settingsHandsFree": "بلا لمس افتراضيًا",
@@ -47,6 +48,7 @@
   "settingsAbout": "حول كنز",
   "settingsAboutBody": "يتعرّف كنز على المواد التي صُنعت منها أغراضك، ويقترح إعادة ابتكارها أو تدويرها أو التبرع بها، ويدلّك على نقاط التسليم في الإمارات.",
   "settingsLicenses": "تراخيص البرمجيات مفتوحة المصدر",
+  "settingsVersion": "الإصدار",
   "settingsCo2eNote": "أرقام مكافئ ثاني أكسيد الكربون في كنز تقديرات مبنية على معاملات انبعاث متوسطة، وليست قياسات.",
   "settingsEstimates": "تقديرات"
 }

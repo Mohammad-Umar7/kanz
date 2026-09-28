@@ -3,13 +3,27 @@ import 'package:flutter/material.dart';
 import '../../../core/design/design.dart';
 
 /// Where the idea's makeover image stands.
-enum MakeoverState { rendering, ready, failed }
+enum MakeoverState {
+  /// Being drawn right now.
+  rendering,
 
-/// The top of the idea screen, full width: the before/after slider once the
-/// makeover exists; until then the user's photo with the stage named on it;
-/// and if the makeover cannot be made, the photo alone with a quiet note.
-/// A text scan with no photo at all shows the user's words instead.
-class IdeaVisual extends StatelessWidget {
+  /// Drawn: the before/after slider.
+  ready,
+
+  /// This server has no image quota: nothing on the phone can fix it.
+  paused,
+
+  /// The drawing failed for a reason another try may fix.
+  failed,
+}
+
+/// The top of the idea screen, full width. Until the makeover exists it is
+/// the user's whole photo with what is happening named on it, in the corner
+/// where the "After" tag will be; once the makeover lands the photo turns
+/// into the before/after slider, and if the makeover arrived while the
+/// screen was open, the handle sweeps in from the end to the middle once.
+/// A text scan with no picture at all shows the user's words instead.
+class IdeaVisual extends StatefulWidget {
   const IdeaVisual({
     super.key,
     required this.state,
@@ -19,8 +33,7 @@ class IdeaVisual extends StatelessWidget {
     required this.beforeLabel,
     required this.afterLabel,
     required this.compareLabel,
-    required this.pendingLabel,
-    required this.note,
+    required this.statusLabel,
     this.description,
     this.descriptionLabel,
     this.afterHeroTag,
@@ -35,10 +48,11 @@ class IdeaVisual extends StatelessWidget {
   final String beforeLabel;
   final String afterLabel;
   final String compareLabel;
-  final String pendingLabel;
 
-  /// Why there is no makeover, shown on the failed state.
-  final String note;
+  /// What is happening to the makeover: "Rendering the makeover", "Makeover
+  /// images paused" or "Makeover didn't render". Unused when [state] is
+  /// [MakeoverState.ready].
+  final String statusLabel;
 
   /// A text scan's description, shown when there is no picture at all.
   final String? description;
@@ -46,176 +60,275 @@ class IdeaVisual extends StatelessWidget {
   final Object? afterHeroTag;
 
   @override
+  State<IdeaVisual> createState() => _IdeaVisualState();
+}
+
+enum _Reveal {
+  /// Nothing to play: the makeover was there when the screen opened.
+  none,
+
+  /// The makeover landed; its image is still being decoded.
+  decoding,
+
+  /// The reveal is on screen.
+  playing,
+}
+
+class _IdeaVisualState extends State<IdeaVisual> {
+  _Reveal _reveal = _Reveal.none;
+
+  @override
+  void didUpdateWidget(IdeaVisual old) {
+    super.didUpdateWidget(old);
+    final after = widget.after;
+    final landed =
+        old.state == MakeoverState.rendering &&
+        widget.state == MakeoverState.ready &&
+        after != null &&
+        widget.before != null;
+    if (!landed) {
+      if (widget.state != MakeoverState.ready) _reveal = _Reveal.none;
+      return;
+    }
+    // Keep the photo up until the makeover is decoded, so the reveal never
+    // uncovers an empty frame.
+    _reveal = _Reveal.decoding;
+    precacheImage(after, context, onError: (_, _) {}).whenComplete(() {
+      if (mounted && _reveal == _Reveal.decoding) {
+        setState(() => _reveal = _Reveal.playing);
+      }
+    });
+  }
+
+  Widget _slider(double beforeShare, {Key? key}) => BeforeAfterSlider(
+    key: key,
+    before: widget.before!,
+    after: widget.after!,
+    beforeLabel: widget.beforeLabel,
+    afterLabel: widget.afterLabel,
+    semanticsLabel: widget.compareLabel,
+    initialValue: beforeShare,
+    aspectRatio: widget.aspectRatio,
+    borderRadius: BorderRadius.zero,
+    afterHeroTag: widget.afterHeroTag,
+  );
+
+  Widget _photo(ImageProvider before, MakeoverState state) => _PhotoFrame(
+    aspectRatio: widget.aspectRatio,
+    image: before,
+    beforeLabel: widget.beforeLabel,
+    status: _StatusTag(label: widget.statusLabel, kind: state),
+    working: state == MakeoverState.rendering,
+  );
+
+  @override
   Widget build(BuildContext context) {
-    final before = this.before;
-    final after = this.after;
+    final before = widget.before;
+    final after = widget.after;
+    final state = widget.state;
     if (state == MakeoverState.ready && after != null) {
-      if (before != null) {
-        return BeforeAfterSlider(
-          before: before,
-          after: after,
-          beforeLabel: beforeLabel,
-          afterLabel: afterLabel,
-          semanticsLabel: compareLabel,
-          aspectRatio: aspectRatio,
-          borderRadius: BorderRadius.zero,
-          afterHeroTag: afterHeroTag,
+      if (before == null) {
+        return _AfterOnly(
+          aspectRatio: widget.aspectRatio,
+          image: after,
+          label: widget.afterLabel,
+          heroTag: widget.afterHeroTag,
         );
       }
-      return _Frame(
-        aspectRatio: aspectRatio,
-        image: after,
-        heroTag: afterHeroTag,
-        tagTop: afterLabel,
-      );
+      switch (_reveal) {
+        case _Reveal.decoding:
+          return _photo(before, MakeoverState.rendering);
+        case _Reveal.playing when !context.reduceMotion:
+          return _MakeoverReveal(
+            underlay: _photo(before, MakeoverState.rendering),
+            slider: _slider,
+            onDone: () => setState(() => _reveal = _Reveal.none),
+          );
+        case _Reveal.playing || _Reveal.none:
+          return _slider(0.5);
+      }
     }
     if (before == null) {
       return _DescriptionFrame(
-        aspectRatio: aspectRatio,
-        label: descriptionLabel,
-        description: description ?? '',
-        note: state == MakeoverState.failed ? note : null,
-        pendingLabel: state == MakeoverState.rendering ? pendingLabel : null,
+        aspectRatio: widget.aspectRatio,
+        label: widget.descriptionLabel,
+        description: widget.description ?? '',
+        status: _StatusTag(
+          label: widget.statusLabel,
+          kind: state == MakeoverState.ready ? MakeoverState.rendering : state,
+          onPhoto: false,
+        ),
       );
     }
-    if (state == MakeoverState.rendering) {
-      return _Pending(
-        aspectRatio: aspectRatio,
-        before: before,
-        beforeLabel: beforeLabel,
-        pendingLabel: pendingLabel,
-      );
-    }
-    return _Frame(
-      aspectRatio: aspectRatio,
-      image: before,
-      tagTop: beforeLabel,
-      note: note,
+    return _photo(
+      before,
+      state == MakeoverState.ready ? MakeoverState.rendering : state,
     );
   }
 }
 
-/// The slider's layout before the makeover exists: the photo on the start
-/// half, a skeleton on the other half naming what is being rendered, and
-/// the divider where the handle will be. When the image lands, the slider
-/// takes its place with the photo exactly where it was.
-class _Pending extends StatelessWidget {
-  const _Pending({
+/// The makeover arriving while the user looks: the slider fades in over the
+/// photo with its handle at the end edge (so the frame still shows only the
+/// photo), then the handle sweeps to the middle and uncovers the makeover.
+///
+/// [BeforeAfterSlider] owns its value once built, so each frame of the sweep
+/// builds it afresh at the animated value; when the sweep ends the screen
+/// swaps in a settled slider at the same value, which the user then drags.
+class _MakeoverReveal extends StatefulWidget {
+  const _MakeoverReveal({
+    required this.underlay,
+    required this.slider,
+    required this.onDone,
+  });
+
+  /// The photo as it was while the makeover rendered.
+  final Widget underlay;
+  final Widget Function(double beforeShare, {Key? key}) slider;
+  final VoidCallback onDone;
+
+  @override
+  State<_MakeoverReveal> createState() => _MakeoverRevealState();
+}
+
+class _MakeoverRevealState extends State<_MakeoverReveal>
+    with SingleTickerProviderStateMixin {
+  late final AnimationController _controller = AnimationController(
+    vsync: this,
+    duration: KanzMotion.slow * 2,
+  );
+  late final Animation<double> _fade = CurvedAnimation(
+    parent: _controller,
+    curve: const Interval(0, 0.5, curve: KanzMotion.standard),
+  );
+  late final Animation<double> _sweep = CurvedAnimation(
+    parent: _controller,
+    curve: const Interval(0.5, 1, curve: KanzMotion.emphasized),
+  );
+
+  @override
+  void initState() {
+    super.initState();
+    _controller.forward().whenComplete(() {
+      if (!mounted) return;
+      // The handle has arrived: the same tick as reaching an end by hand.
+      KanzHaptics.selection();
+      widget.onDone();
+    });
+  }
+
+  @override
+  void dispose() {
+    _controller.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Stack(
+      children: [
+        widget.underlay,
+        Positioned.fill(
+          child: FadeTransition(
+            opacity: _fade,
+            child: AnimatedBuilder(
+              animation: _sweep,
+              builder: (context, _) {
+                final share = 1 - 0.5 * _sweep.value;
+                return widget.slider(share, key: ValueKey(share));
+              },
+            ),
+          ),
+        ),
+      ],
+    );
+  }
+}
+
+/// The user's photo edge to edge, "Before" at the top start and the
+/// makeover's status at the top end, where "After" will appear. While the
+/// makeover renders a thin progress line runs along the bottom edge.
+class _PhotoFrame extends StatelessWidget {
+  const _PhotoFrame({
     required this.aspectRatio,
-    required this.before,
+    required this.image,
     required this.beforeLabel,
-    required this.pendingLabel,
+    required this.status,
+    required this.working,
   });
 
   final double aspectRatio;
-  final ImageProvider before;
+  final ImageProvider image;
   final String beforeLabel;
-  final String pendingLabel;
+  final Widget status;
+  final bool working;
 
   @override
   Widget build(BuildContext context) {
     final c = context.kanzColors;
     return AspectRatio(
       aspectRatio: aspectRatio,
-      child: LayoutBuilder(
-        builder: (context, constraints) {
-          final size = constraints.biggest;
-          return Stack(
-            fit: StackFit.expand,
-            children: [
-              const Skeleton(
-                height: double.infinity,
-                borderRadius: BorderRadius.zero,
-              ),
-              PositionedDirectional(
-                start: 0,
-                top: 0,
-                bottom: 0,
-                width: size.width / 2,
-                child: ClipRect(
-                  child: OverflowBox(
-                    alignment: AlignmentDirectional.centerStart,
-                    maxWidth: size.width,
-                    minWidth: size.width,
-                    child: Image(
-                      image: before,
-                      fit: BoxFit.cover,
-                      width: size.width,
-                      height: size.height,
-                      excludeFromSemantics: true,
-                      gaplessPlayback: true,
-                      errorBuilder: (context, error, stack) =>
-                          ColoredBox(color: c.photoBackdrop),
+      child: ColoredBox(
+        color: c.photoBackdrop,
+        child: Stack(
+          fit: StackFit.expand,
+          children: [
+            Image(
+              image: image,
+              fit: BoxFit.cover,
+              excludeFromSemantics: true,
+              gaplessPlayback: true,
+              errorBuilder: (context, error, stack) => const SizedBox.expand(),
+            ),
+            PositionedDirectional(
+              top: KanzSpace.s12,
+              start: KanzSpace.s12,
+              end: KanzSpace.s12,
+              child: Row(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  ExcludeSemantics(child: _MonoTag(beforeLabel)),
+                  const SizedBox(width: KanzSpace.s12),
+                  Expanded(
+                    child: Align(
+                      alignment: AlignmentDirectional.topEnd,
+                      child: status,
                     ),
                   ),
-                ),
+                ],
               ),
-              Center(
-                child: Container(
-                  width: 2,
-                  height: double.infinity,
+            ),
+            if (working && !context.reduceMotion)
+              const PositionedDirectional(
+                start: 0,
+                end: 0,
+                bottom: 0,
+                child: LinearProgressIndicator(
+                  minHeight: 2,
                   color: KanzPhotoColors.ink,
+                  backgroundColor: Color(0x3DF2EFE8),
                 ),
               ),
-              PositionedDirectional(
-                top: KanzSpace.s12,
-                start: KanzSpace.s12,
-                child: PhotoTag(label: beforeLabel),
-              ),
-              PositionedDirectional(
-                top: KanzSpace.s12,
-                start: size.width / 2 + KanzSpace.s12,
-                end: KanzSpace.s12,
-                child: Semantics(
-                  liveRegion: true,
-                  child: Row(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Padding(
-                        padding: const EdgeInsets.only(top: 2),
-                        child: SizedBox.square(
-                          dimension: 12,
-                          child: context.reduceMotion
-                              ? Icon(
-                                  KanzIcons.clock,
-                                  size: 12,
-                                  color: c.inkSecondary,
-                                )
-                              : CircularProgressIndicator(
-                                  strokeWidth: 1.5,
-                                  color: c.inkSecondary,
-                                ),
-                        ),
-                      ),
-                      const SizedBox(width: KanzSpace.s8),
-                      Expanded(child: MonoLabel(pendingLabel)),
-                    ],
-                  ),
-                ),
-              ),
-            ],
-          );
-        },
+          ],
+        ),
       ),
     );
   }
 }
 
-/// One picture edge to edge with optional mono tags on the photo.
-class _Frame extends StatelessWidget {
-  const _Frame({
+/// A text scan whose described item has no picture but whose makeover
+/// exists: the makeover alone, tagged "After".
+class _AfterOnly extends StatelessWidget {
+  const _AfterOnly({
     required this.aspectRatio,
     required this.image,
+    required this.label,
     this.heroTag,
-    this.tagTop,
-    this.note,
   });
 
   final double aspectRatio;
   final ImageProvider image;
+  final String label;
   final Object? heroTag;
-  final String? tagTop;
-  final String? note;
 
   @override
   Widget build(BuildContext context) {
@@ -227,8 +340,7 @@ class _Frame extends StatelessWidget {
       height: double.infinity,
       excludeFromSemantics: true,
       gaplessPlayback: true,
-      errorBuilder: (context, error, stack) =>
-          ColoredBox(color: c.photoBackdrop),
+      errorBuilder: (context, error, stack) => const SizedBox.expand(),
     );
     if (heroTag != null) picture = Hero(tag: heroTag!, child: picture);
     return AspectRatio(
@@ -239,26 +351,11 @@ class _Frame extends StatelessWidget {
           fit: StackFit.expand,
           children: [
             picture,
-            if (tagTop != null)
-              PositionedDirectional(
-                top: KanzSpace.s12,
-                start: KanzSpace.s12,
-                child: PhotoTag(label: tagTop!),
-              ),
-            if (note != null)
-              PositionedDirectional(
-                start: KanzSpace.s12,
-                end: KanzSpace.s12,
-                bottom: KanzSpace.s12,
-                child: Align(
-                  alignment: AlignmentDirectional.centerStart,
-                  child: PhotoTag(
-                    label: note!,
-                    icon: KanzIcons.info,
-                    uppercase: false,
-                  ),
-                ),
-              ),
+            PositionedDirectional(
+              top: KanzSpace.s12,
+              start: KanzSpace.s12,
+              child: ExcludeSemantics(child: _MonoTag(label)),
+            ),
           ],
         ),
       ),
@@ -267,21 +364,19 @@ class _Frame extends StatelessWidget {
 }
 
 /// A text scan with no picture: the description set in Fraunces on the
-/// sunken paper, under the frame's label.
+/// sunken paper, under the frame's label, with the makeover's status.
 class _DescriptionFrame extends StatelessWidget {
   const _DescriptionFrame({
     required this.aspectRatio,
     required this.label,
     required this.description,
-    this.note,
-    this.pendingLabel,
+    required this.status,
   });
 
   final double aspectRatio;
   final String? label;
   final String description;
-  final String? note;
-  final String? pendingLabel;
+  final Widget status;
 
   @override
   Widget build(BuildContext context) {
@@ -313,91 +408,93 @@ class _DescriptionFrame extends StatelessWidget {
             const SizedBox(height: KanzSpace.s16),
           ],
           Text(description, style: t.headlineMedium),
-          if (pendingLabel != null || note != null) ...[
-            const SizedBox(height: KanzSpace.s24),
-            Row(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Padding(
-                  padding: const EdgeInsets.only(top: 2),
-                  child: SizedBox.square(
-                    dimension: 14,
-                    child: pendingLabel != null && !context.reduceMotion
-                        ? CircularProgressIndicator(
-                            strokeWidth: 1.5,
-                            color: c.inkSecondary,
-                          )
-                        : Icon(
-                            pendingLabel != null
-                                ? KanzIcons.clock
-                                : KanzIcons.info,
-                            size: 14,
-                            color: c.inkSecondary,
-                          ),
-                  ),
-                ),
-                const SizedBox(width: KanzSpace.s8),
-                Expanded(
-                  child: Text(pendingLabel ?? note!, style: t.bodySmall),
-                ),
-              ],
-            ),
-          ],
+          const SizedBox(height: KanzSpace.s24),
+          status,
         ],
       ),
     );
   }
 }
 
-/// A solid dark label on a photo (the before/after tag style), optionally
-/// with a glyph. Solid, not translucent, so it reads on any image.
-class PhotoTag extends StatelessWidget {
-  const PhotoTag({
-    super.key,
+/// The makeover's status in one line: a spinner while it renders, a pause
+/// glyph when the server's image quota is spent, an info glyph when the
+/// drawing failed. A solid dark chip on a photo; plain secondary text on
+/// paper.
+class _StatusTag extends StatelessWidget {
+  const _StatusTag({
     required this.label,
-    this.icon,
-    this.uppercase = true,
+    required this.kind,
+    this.onPhoto = true,
   });
 
   final String label;
-  final IconData? icon;
-
-  /// Mono uppercase for short tags; sentence case for a note.
-  final bool uppercase;
+  final MakeoverState kind;
+  final bool onPhoto;
 
   @override
   Widget build(BuildContext context) {
+    final c = context.kanzColors;
+    final ink = onPhoto ? KanzPhotoColors.ink : c.inkSecondary;
+    final Widget glyph = switch (kind) {
+      MakeoverState.rendering when !context.reduceMotion =>
+        CircularProgressIndicator(strokeWidth: 1.5, color: ink),
+      MakeoverState.rendering => Icon(KanzIcons.clock, size: 14, color: ink),
+      MakeoverState.paused => Icon(KanzIcons.pause, size: 14, color: ink),
+      MakeoverState.failed ||
+      MakeoverState.ready => Icon(KanzIcons.info, size: 14, color: ink),
+    };
+    final text = Text(
+      label,
+      style:
+          (onPhoto
+                  ? context.textStyles.labelMedium
+                  : context.textStyles.bodySmall)
+              ?.copyWith(color: ink),
+    );
+    final row = Row(
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        SizedBox.square(dimension: 14, child: glyph),
+        const SizedBox(width: KanzSpace.s8),
+        Flexible(child: text),
+      ],
+    );
     return Semantics(
+      liveRegion: true,
       container: true,
-      child: Container(
-        padding: const EdgeInsetsDirectional.symmetric(
-          horizontal: KanzSpace.s8,
-          vertical: KanzSpace.s4,
-        ),
-        decoration: const BoxDecoration(
-          color: KanzPhotoColors.tag,
-          borderRadius: KanzRadii.tagAll,
-        ),
-        child: Row(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            if (icon != null) ...[
-              Icon(icon, size: 14, color: KanzPhotoColors.ink),
-              const SizedBox(width: KanzSpace.s8),
-            ],
-            Flexible(
-              child: uppercase
-                  ? MonoLabel(label, color: KanzPhotoColors.ink)
-                  : Text(
-                      label,
-                      style: context.textStyles.bodySmall?.copyWith(
-                        color: KanzPhotoColors.ink,
-                      ),
-                    ),
-            ),
-          ],
-        ),
+      child: onPhoto
+          ? Container(
+              padding: const EdgeInsetsDirectional.symmetric(
+                horizontal: KanzSpace.s8,
+                vertical: KanzSpace.s4,
+              ),
+              decoration: const BoxDecoration(
+                color: KanzPhotoColors.tag,
+                borderRadius: KanzRadii.tagAll,
+              ),
+              child: row,
+            )
+          : row,
+    );
+  }
+}
+
+/// A mono tag on a photo, drawn like the slider's own "Before" and "After"
+/// tags so nothing shifts when the photo becomes the slider.
+class _MonoTag extends StatelessWidget {
+  const _MonoTag(this.label);
+
+  final String label;
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
+      decoration: const BoxDecoration(
+        color: KanzPhotoColors.tag,
+        borderRadius: BorderRadius.all(Radius.circular(4)),
       ),
+      child: MonoLabel(label, color: KanzPhotoColors.ink),
     );
   }
 }

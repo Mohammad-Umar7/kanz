@@ -60,6 +60,10 @@ class _ResultsScreenState extends ConsumerState<ResultsScreen> {
   /// The item whose card the carousel last scrolled to.
   String? _shownCardId;
 
+  /// The last connection problem, kept while a re-check runs so the banner
+  /// does not flicker away and back.
+  BackendStatus? _problem;
+
   String get _id => widget.scanId;
 
   ScanSession get _session => ref.read(scanSessionProvider(_id).notifier);
@@ -213,8 +217,19 @@ class _ResultsScreenState extends ConsumerState<ResultsScreen> {
     });
     final session = ref.watch(scanSessionProvider(_id));
     final l10n = context.l10n;
-    final format = ResultsFormat.of(context, ref.watch(vocabProvider));
-    final offline = ref.watch(backendStatusProvider) == BackendStatus.offline;
+    final format = ResultsFormat.of(
+      context,
+      ref.watch(vocabProvider),
+      content: session.lang,
+    );
+    final status = ref.watch(backendStatusProvider);
+    _problem = switch (status) {
+      BackendStatus.offline || BackendStatus.unreachable => status,
+      BackendStatus.online => null,
+      BackendStatus.checking => _problem,
+    };
+    final problem = _problem;
+    final offline = problem != null;
 
     final Widget body = switch (session.origin) {
       ScanOrigin.loading => const _RestoringSkeleton(),
@@ -225,6 +240,8 @@ class _ResultsScreenState extends ConsumerState<ResultsScreen> {
             title: l10n.resultsMissingTitle,
             message: l10n.resultsMissingBody,
             actionLabel: l10n.resultsNewScan,
+            actionIcon: KanzIcons.camera,
+            primaryAction: true,
             onAction: () => context.go(AppRoutes.scan(ScanMode.camera)),
           ),
         ],
@@ -251,7 +268,19 @@ class _ResultsScreenState extends ConsumerState<ResultsScreen> {
         ),
         body: Column(
           children: [
-            if (offline) OfflineBanner(message: l10n.resultsOffline),
+            if (problem != null)
+              OfflineBanner(
+                message: switch ((status, problem)) {
+                  (BackendStatus.checking, _) => l10n.resultsChecking,
+                  (_, BackendStatus.offline) => l10n.resultsOffline,
+                  _ => l10n.resultsUnreachable,
+                },
+                checking: status == BackendStatus.checking,
+                actionLabel: status == BackendStatus.checking
+                    ? null
+                    : l10n.resultsCheckAgain,
+                onAction: () => ref.invalidate(healthProvider),
+              ),
             Expanded(child: body),
           ],
         ),
@@ -282,13 +311,13 @@ class _ResultsScreenState extends ConsumerState<ResultsScreen> {
     if (textScan) {
       header = TextScanHeader(
         label: l10n.resultsTextScan,
-        description: session.inputText ?? '',
+        description: format.ai(session.inputText ?? ''),
       );
     } else {
       final photo = scanPhoto(session);
       header = photo == null
           ? const AspectRatio(
-              aspectRatio: ResultsPhoto.minAspect,
+              aspectRatio: ResultsPhoto.placeholderAspect,
               child: Skeleton(
                 height: double.infinity,
                 borderRadius: KanzRadii.cardAll,
@@ -354,7 +383,8 @@ class _ResultsScreenState extends ConsumerState<ResultsScreen> {
           message: apiErrorMessage(l10n, identifyError),
           retryLabel: l10n.commonRetry,
           onRetry: () => unawaited(_session.retry(PipelineStage.identifying)),
-          code: [identifyError.code.name, ?identifyError.requestId].join(' · '),
+          code: supportCode(identifyError),
+          codeLabel: l10n.commonSupportCode,
         ),
       ] else ...[
         if (identified)
@@ -371,7 +401,7 @@ class _ResultsScreenState extends ConsumerState<ResultsScreen> {
                 eyebrow: textScan
                     ? l10n.resultsReadAs
                     : l10n.resultsItemsFound(items.length),
-                summary: analysis.analysis.summary,
+                summary: format.ai(analysis.analysis.summary),
                 large: !textScan,
               ),
             ),
@@ -410,7 +440,7 @@ class _ResultsScreenState extends ConsumerState<ResultsScreen> {
               onFocus: (item) => unawaited(_session.focusItem(item.id)),
             ),
           ),
-          const SizedBox(height: KanzSpace.s48),
+          SizedBox(height: multi ? KanzSpace.s32 : KanzSpace.s48),
           _paths(session, format),
           const SizedBox(height: KanzSpace.s48),
           DropoffSection(
@@ -553,7 +583,7 @@ class _RestoringSkeleton extends StatelessWidget {
       ),
       children: const [
         AspectRatio(
-          aspectRatio: ResultsPhoto.minAspect,
+          aspectRatio: ResultsPhoto.placeholderAspect,
           child: Skeleton(
             height: double.infinity,
             borderRadius: KanzRadii.cardAll,

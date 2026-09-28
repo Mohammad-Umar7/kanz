@@ -78,19 +78,23 @@ class _LocationRationaleScreenState
       rationale: PermissionRationale(
         art: PermissionArt.location,
         title: l10n.permissionsLocationTitle,
+        // Restricted by policy: the reasons no longer apply, only the
+        // way around it does.
         reasons: [
-          RationaleReason(
-            icon: KanzIcons.directions,
-            text: l10n.permissionsLocationReason1,
-          ),
-          RationaleReason(
-            icon: KanzIcons.locate,
-            text: l10n.permissionsLocationReason2,
-          ),
-          RationaleReason(
-            icon: KanzIcons.map,
-            text: l10n.permissionsLocationReason3,
-          ),
+          if (!restricted) ...[
+            RationaleReason(
+              icon: KanzIcons.directions,
+              text: l10n.permissionsLocationReason1,
+            ),
+            RationaleReason(
+              icon: KanzIcons.locate,
+              text: l10n.permissionsLocationReason2,
+            ),
+            RationaleReason(
+              icon: KanzIcons.map,
+              text: l10n.permissionsLocationReason3,
+            ),
+          ],
         ],
         primaryLabel: switch (outcome) {
           AskOutcome.blocked => l10n.commonOpenSettings,
@@ -107,14 +111,13 @@ class _LocationRationaleScreenState
         footnote: asking
             ? l10n.permissionsAsking
             : rationaleFootnote(l10n, outcome),
+        notice: rationaleNotice(l10n, outcome, switch (outcome) {
+          AskOutcome.fresh => null,
+          AskOutcome.denied => l10n.permissionsLocationDenied,
+          AskOutcome.blocked => l10n.permissionsLocationBlocked,
+          AskOutcome.restricted => l10n.permissionsLocationRestricted,
+        }),
       ),
-      noticeTitle: rationaleNoticeTitle(l10n, outcome),
-      notice: switch (outcome) {
-        AskOutcome.fresh => null,
-        AskOutcome.denied => l10n.permissionsLocationDenied,
-        AskOutcome.blocked => l10n.permissionsLocationBlocked,
-        AskOutcome.restricted => l10n.permissionsLocationRestricted,
-      },
     );
   }
 }

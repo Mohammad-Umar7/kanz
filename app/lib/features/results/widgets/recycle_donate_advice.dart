@@ -96,7 +96,7 @@ class _RecycleCard extends StatelessWidget {
           _ItemHeading(
             item: item,
             format: format,
-            fallback: instruction.stream,
+            fallback: format.ai(instruction.stream),
           ),
           const SizedBox(height: KanzSpace.s12),
           _StatusLine(
@@ -104,7 +104,7 @@ class _RecycleCard extends StatelessWidget {
             color: color,
             text: l10n.resultsRecyclableValue(
               recyclabilityLabel(l10n, instruction.status),
-              instruction.stream,
+              format.ai(instruction.stream),
             ),
           ),
           if (instruction.note case final note? when note.trim().isNotEmpty)
@@ -113,7 +113,7 @@ class _RecycleCard extends StatelessWidget {
                 start: GuideList.textInset,
                 top: KanzSpace.s4,
               ),
-              child: Text(note, style: context.textStyles.bodySmall),
+              child: Text(format.ai(note), style: context.textStyles.bodySmall),
             ),
           const SizedBox(height: KanzSpace.s16),
           Divider(height: 1, color: c.line),
@@ -121,17 +121,17 @@ class _RecycleCard extends StatelessWidget {
           ..._spaced([
             GuideList(
               title: l10n.resultsPrep,
-              lines: instruction.prepSteps,
+              lines: format.aiLines(instruction.prepSteps),
               style: GuideListStyle.numbered,
             ),
             GuideList(
               title: l10n.resultsDo,
-              lines: instruction.dos,
+              lines: format.aiLines(instruction.dos),
               style: GuideListStyle.dos,
             ),
             GuideList(
               title: l10n.resultsDont,
-              lines: instruction.donts,
+              lines: format.aiLines(instruction.donts),
               style: GuideListStyle.donts,
             ),
           ]),
@@ -179,7 +179,7 @@ class DonateAdvice extends StatelessWidget {
           EmptyState(
             icon: KanzIcons.donate,
             title: l10n.resultsDonateUnavailableTitle,
-            message: path.summary,
+            message: format.ai(path.summary),
           ),
           for (final option in path.options) ...[
             Padding(
@@ -203,7 +203,7 @@ class DonateAdvice extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
           if (path.summary.trim().isNotEmpty) ...[
-            Text(path.summary, style: context.textStyles.bodyLarge),
+            Text(format.ai(path.summary), style: context.textStyles.bodyLarge),
             const SizedBox(height: KanzSpace.s16),
           ],
           for (var i = 0; i < path.options.length; i++) ...[
@@ -251,7 +251,11 @@ class _DonateCard extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
-          _ItemHeading(item: item, format: format, fallback: option.reason),
+          _ItemHeading(
+            item: item,
+            format: format,
+            fallback: format.ai(option.reason),
+          ),
           const SizedBox(height: KanzSpace.s12),
           _StatusLine(
             icon: option.suitable
@@ -268,7 +272,7 @@ class _DonateCard extends StatelessWidget {
               top: KanzSpace.s4,
             ),
             child: Text(
-              option.reason,
+              format.ai(option.reason),
               style: context.textStyles.bodyMedium?.copyWith(
                 color: c.inkSecondary,
               ),
@@ -279,10 +283,13 @@ class _DonateCard extends StatelessWidget {
             Divider(height: 1, color: c.line),
             const SizedBox(height: KanzSpace.s16),
             ..._spaced([
-              GuideList(title: l10n.resultsDonateWhere, lines: option.where),
+              GuideList(
+                title: l10n.resultsDonateWhere,
+                lines: format.aiLines(option.where),
+              ),
               GuideList(
                 title: l10n.resultsPrep,
-                lines: option.prepSteps,
+                lines: format.aiLines(option.prepSteps),
                 style: GuideListStyle.numbered,
               ),
             ]),
@@ -333,7 +340,10 @@ class _ItemHeading extends StatelessWidget {
         const SizedBox(height: KanzSpace.s4),
         Semantics(
           header: true,
-          child: Text(item.name, style: context.textStyles.titleMedium),
+          child: Text(
+            format.ai(item.name),
+            style: context.textStyles.titleMedium,
+          ),
         ),
       ],
     );

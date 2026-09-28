@@ -297,31 +297,71 @@ class SpecimenCard extends StatelessWidget {
   }
 }
 
-/// A horizontal row of compact [SpecimenCard]s under the photo. Cards share
-/// the height of the tallest one, so the row grows with text size and
-/// language instead of clipping.
-class SpecimenCarousel extends StatelessWidget {
+/// A horizontal row of [SpecimenCard]s under the photo. Cards share the
+/// height of the tallest one, so the row grows with text size and language
+/// instead of clipping.
+///
+/// Pass [initialIndex] to open the row on a given card (the item selected
+/// on the photo), or a [controller] to scroll it yourself; card `i` starts
+/// at `i * (itemWidth + 12)`.
+class SpecimenCarousel extends StatefulWidget {
   const SpecimenCarousel({
     super.key,
     required this.children,
     this.itemWidth = 232,
+    this.initialIndex = 0,
+    this.controller,
   });
 
   final List<Widget> children;
   final double itemWidth;
 
+  /// The card scrolled to the start edge when the row is first built.
+  final int initialIndex;
+  final ScrollController? controller;
+
+  /// Space between cards.
+  static const double gap = KanzSpace.s12;
+
+  /// Scroll offset that puts card [index] on the start gutter.
+  static double offsetFor(int index, double itemWidth) =>
+      index <= 0 ? 0 : index * (itemWidth + gap);
+
+  @override
+  State<SpecimenCarousel> createState() => _SpecimenCarouselState();
+}
+
+class _SpecimenCarouselState extends State<SpecimenCarousel> {
+  ScrollController? _own;
+
+  ScrollController get _controller =>
+      widget.controller ??
+      (_own ??= ScrollController(
+        initialScrollOffset: SpecimenCarousel.offsetFor(
+          widget.initialIndex,
+          widget.itemWidth,
+        ),
+      ));
+
+  @override
+  void dispose() {
+    _own?.dispose();
+    super.dispose();
+  }
+
   @override
   Widget build(BuildContext context) {
     return SingleChildScrollView(
+      controller: _controller,
       scrollDirection: Axis.horizontal,
       padding: KanzSpace.page,
       child: IntrinsicHeight(
         child: Row(
           crossAxisAlignment: CrossAxisAlignment.stretch,
-          spacing: KanzSpace.s12,
+          spacing: SpecimenCarousel.gap,
           children: [
-            for (final child in children)
-              SizedBox(width: itemWidth, child: child),
+            for (final child in widget.children)
+              SizedBox(width: widget.itemWidth, child: child),
           ],
         ),
       ),

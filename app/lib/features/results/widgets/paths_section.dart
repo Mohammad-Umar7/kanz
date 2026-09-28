@@ -59,23 +59,31 @@ class PathsSection extends StatelessWidget {
     final disposalOnly = session.isDisposalOnly;
     // Counts appear once known, and only when there is something to count.
     String? count(int n) => ready && n > 0 ? '$n' : null;
+    // On a narrow phone a glyph, a label and a count do not fit a third of
+    // the width: the count would read as the next tab's. The glyphs go
+    // first, so each label keeps its own count.
+    final glyphs = MediaQuery.sizeOf(context).width >= 380;
+    IconData? glyph(IconData icon) => glyphs ? icon : null;
 
     final tabs = [
       disposalOnly
-          ? SegmentedTab(label: l10n.resultsTabDispose, icon: KanzIcons.safety)
+          ? SegmentedTab(
+              label: l10n.resultsTabDispose,
+              icon: glyph(KanzIcons.safety),
+            )
           : SegmentedTab(
               label: l10n.resultsTabUpcycle,
-              icon: KanzIcons.upcycle,
+              icon: glyph(KanzIcons.upcycle),
               count: count(session.ideas.length),
             ),
       SegmentedTab(
         label: l10n.resultsTabRecycle,
-        icon: KanzIcons.recycle,
+        icon: glyph(KanzIcons.recycle),
         count: count(recommendation?.recycle.instructions.length ?? 0),
       ),
       SegmentedTab(
         label: l10n.resultsTabDonate,
-        icon: KanzIcons.donate,
+        icon: glyph(KanzIcons.donate),
         count: count(
           recommendation?.donate.options.where((o) => o.suitable).length ?? 0,
         ),
@@ -89,7 +97,8 @@ class PathsSection extends StatelessWidget {
         message: apiErrorMessage(l10n, ideasStage.error),
         retryLabel: l10n.commonRetry,
         onRetry: (ideasStage.error?.retryable ?? true) ? onRetryIdeas : null,
-        code: _code(ideasStage.error?.code.name, ideasStage.error?.requestId),
+        code: supportCode(ideasStage.error),
+        codeLabel: l10n.commonSupportCode,
       );
     } else if (!ready) {
       content = Padding(
@@ -150,6 +159,7 @@ class PathsSection extends StatelessWidget {
           title: disposalOnly
               ? l10n.resultsPathsTitleDisposal
               : l10n.resultsPathsTitle,
+          large: true,
         ),
         const SizedBox(height: KanzSpace.s16),
         Padding(
@@ -167,7 +177,3 @@ class PathsSection extends StatelessWidget {
     );
   }
 }
-
-/// "ai_unavailable · req_5f3c2a1b", for support.
-String? _code(String? code, String? requestId) =>
-    code == null ? null : [code, ?requestId].join(' · ');

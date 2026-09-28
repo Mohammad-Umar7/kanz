@@ -6,8 +6,8 @@
   "ideaBefore": "قبل",
   "ideaAfter": "بعد",
   "ideaRendering": "جارٍ رسم الشكل الجديد",
-  "ideaImagePaused": "توليد الصور متوقف على هذا الخادم، لذلك لا توجد معاينة بعد.",
-  "ideaImageFailed": "لم تُرسم المعاينة.",
+  "ideaImagePaused": "رسم الصور متوقف",
+  "ideaImageFailed": "لم يُرسم الشكل الجديد",
   "ideaFromDescription": "من وصفك",
   "ideaDifficulty": "الصعوبة",
   "ideaTime": "الوقت",
@@ -21,6 +21,6 @@
   "ideaBasedOn": "المصادر",
   "ideaSeeTutorial": "اعرض الدرس",
   "ideaMissingTitle": "هذه الفكرة لم تعد متاحة",
-  "ideaMissingBody": "تغيّرت أفكار هذا المسح. ارجع لترى الأفكار الحالية.",
+  "ideaMissingBody": "تغيّرت أفكار هذا الفحص. ارجع لترى الأفكار الحالية.",
   "ideaBackToResults": "العودة إلى النتائج"
 }

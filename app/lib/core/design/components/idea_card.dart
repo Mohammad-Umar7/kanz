@@ -121,7 +121,7 @@ class IdeaCard extends StatelessWidget {
                       crossAxisAlignment: WrapCrossAlignment.center,
                       children: [
                         if (meta.isNotEmpty)
-                          MonoLabel(meta.join('  ·  '), color: c.ink),
+                          MonoLabel(meta.join(' · '), color: c.ink),
                         ?toolMatch,
                       ],
                     ),

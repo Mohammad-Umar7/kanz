@@ -219,6 +219,7 @@ void main() {
         child: GalleryPickView(
           onPhoto: (_) {},
           onCancel: () {},
+          onCamera: () {},
           onDescribe: () {},
         ),
       );
@@ -233,6 +234,7 @@ void main() {
         child: GalleryPickView(
           onPhoto: (_) {},
           onCancel: () {},
+          onCamera: () {},
           onDescribe: () {},
         ),
       );

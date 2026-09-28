@@ -107,13 +107,16 @@ class PipelineSection extends StatelessWidget {
         l10n.resultsSummaryIdeas(session.ideas.length),
       if (session.stage(PipelineStage.dropoff).isDone)
         l10n.resultsSummaryPlaces(session.facilities?.places.length ?? 0),
-      if (_imagesPaused) l10n.resultsSummaryImagesPaused,
     ];
     // Each part stays whole when the line wraps ("3 places", never "3" and
-    // "places" on two lines): spaces inside a part do not break.
-    return [
-      for (final part in parts) part.replaceAll(' ', '\u00A0'),
-    ].join('  ·  ');
+    // "places" on two lines), and each "·" leads the part it introduces, so
+    // a line can break before a separator but never leaves one dangling.
+    final line = [
+      for (var i = 0; i < parts.length; i++)
+        '${i == 0 ? '' : '·\u00A0'}${parts[i].replaceAll(' ', '\u00A0')}',
+    ].join(' ');
+    // Paused images are a standing condition, not a result: their own line.
+    return _imagesPaused ? '$line\n${l10n.resultsSummaryImagesPaused}' : line;
   }
 
   @override

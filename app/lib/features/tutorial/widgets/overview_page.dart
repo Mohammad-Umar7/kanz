@@ -94,7 +94,7 @@ class TutorialOverviewPage extends StatelessWidget {
           actionLabel: adapting
               ? l10n.tutorialAdaptingRow
               : (offline
-                    ? l10n.tutorialAdaptOffline
+                    ? l10n.tutorialAdaptOfflineRow
                     : l10n.tutorialChangeSetup),
           actionState: adapting
               ? AdaptActionState.busy

@@ -6,7 +6,7 @@ library;
 import 'dart:io';
 
 import 'package:flutter/material.dart';
-import 'package:intl/intl.dart' show DateFormat;
+import 'package:intl/intl.dart' show Bidi, DateFormat;
 
 import '../../core/data/models/models.dart';
 import '../../core/data/vocab/vocab.dart';
@@ -39,6 +39,39 @@ String? scanMaterial(Vocab vocab, Locale locale, ScanSummary scan) {
   return category == null
       ? null
       : vocab.material(category).label.forLocale(locale);
+}
+
+/// A title the user or the AI wrote (a scan or project name), set in the
+/// direction of its own words: an English scan reopened with the app in
+/// Arabic reads left to right with its punctuation in place, while it
+/// still starts on the row's start edge like the rest of the layout.
+class OwnDirectionText extends StatelessWidget {
+  const OwnDirectionText(
+    this.text, {
+    super.key,
+    this.style,
+    this.maxLines,
+    this.overflow,
+  });
+
+  final String text;
+  final TextStyle? style;
+  final int? maxLines;
+  final TextOverflow? overflow;
+
+  @override
+  Widget build(BuildContext context) {
+    final rtl = Bidi.detectRtlDirectionality(text);
+    return Text(
+      text,
+      style: style,
+      maxLines: maxLines,
+      overflow: overflow,
+      textDirection: rtl ? TextDirection.rtl : TextDirection.ltr,
+      // Aligned to the layout's start edge, whatever the text's direction.
+      textAlign: context.isRtl ? TextAlign.right : TextAlign.left,
+    );
+  }
 }
 
 /// "14:05", in Western digits like every other figure in Kanz.

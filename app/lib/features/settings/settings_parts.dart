@@ -19,7 +19,6 @@ class RadioRow extends StatelessWidget {
     required this.selected,
     required this.onTap,
     this.subtitle,
-    this.trailing,
     this.titleDirection,
     this.divider = true,
   });
@@ -28,9 +27,6 @@ class RadioRow extends StatelessWidget {
   final String? subtitle;
   final bool selected;
   final VoidCallback onTap;
-
-  /// Shown before the radio mark (a chevron to change the city).
-  final Widget? trailing;
 
   /// For a title written in the other script (العربية in English).
   final TextDirection? titleDirection;
@@ -52,14 +48,9 @@ class RadioRow extends StatelessWidget {
         onTap: onTap,
         child: Container(
           constraints: const BoxConstraints(minHeight: 56),
-          margin: const EdgeInsetsDirectional.only(start: KanzSpace.gutter),
-          padding: const EdgeInsetsDirectional.fromSTEB(
-            0,
-            KanzSpace.s12,
-            KanzSpace.gutter,
-            KanzSpace.s12,
-          ),
-          // The hairline starts at the gutter so the rows read as one list.
+          margin: KanzSpace.page,
+          padding: const EdgeInsets.symmetric(vertical: KanzSpace.s12),
+          // The hairline sits inside both gutters, like every list in Kanz.
           decoration: BoxDecoration(
             border: divider ? Border(bottom: BorderSide(color: c.line)) : null,
           ),
@@ -82,10 +73,6 @@ class RadioRow extends StatelessWidget {
                   ],
                 ),
               ),
-              if (trailing != null) ...[
-                const SizedBox(width: KanzSpace.s12),
-                trailing!,
-              ],
               const SizedBox(width: KanzSpace.s16),
               RadioMark(selected: selected),
             ],

@@ -16,6 +16,7 @@
   "tutorialUpdated": "مُحدَّث",
   "tutorialChangeSetup": "غيّر المهارة أو الأدوات",
   "tutorialAdaptingRow": "نعدّل الدليل حسب أدواتك",
+  "tutorialAdaptOfflineRow": "تعديل الدليل يحتاج إلى اتصال",
   "tutorialAdaptTooltip": "عدّل الدليل حسب مهارتك وأدواتك",
   "tutorialSpecSkill": "المهارة",
   "tutorialSpecTime": "الوقت",

@@ -38,6 +38,9 @@ class SpecimenSection extends StatelessWidget {
   /// view when its box is tapped on the photo.
   final Map<String, GlobalKey>? cardKeys;
 
+  /// The gap [SpecimenCarousel] leaves between its cards.
+  static const double cardGap = KanzSpace.s12;
+
   @override
   Widget build(BuildContext context) {
     final l10n = context.l10n;
@@ -48,10 +51,16 @@ class SpecimenSection extends StatelessWidget {
     String position(int i) =>
         '${format.index(i + 1)} / ${format.index(items.length)}';
 
-    // Several items: their full labels side by side, the next one peeking
-    // in, so QUALITY, QTY and STATE stay spelled out for every item.
+    // Several items: their full labels side by side, so QUALITY, QTY and
+    // STATE stay spelled out for every item. The next card peeks in by its
+    // border and part of its padding only (never cut words); "01 / 02" on
+    // each card says there is more.
+    const peek = KanzSpace.s12;
     final cardWidth = math.min(
-      MediaQuery.sizeOf(context).width - 2 * KanzSpace.gutter - KanzSpace.s24,
+      MediaQuery.sizeOf(context).width -
+          KanzSpace.gutter -
+          SpecimenSection.cardGap -
+          peek,
       420.0,
     );
     return Column(
@@ -60,6 +69,7 @@ class SpecimenSection extends StatelessWidget {
         SectionHeader(
           title: l10n.resultsMaterialsTitle,
           subtitle: multi ? l10n.resultsMaterialsSubtitle : null,
+          large: true,
         ),
         const SizedBox(height: KanzSpace.s16),
         if (multi)
@@ -93,7 +103,9 @@ class SpecimenSection extends StatelessWidget {
               child: item.id == focusId
                   ? _FocusedNote(
                       key: ValueKey('focused-${item.id}'),
-                      label: l10n.resultsFocusedItem,
+                      label: l10n.resultsFocusedItem(
+                        format.ai(_inSentence(item.name, format.locale)),
+                      ),
                     )
                   : Align(
                       key: ValueKey('focus-${item.id}'),
@@ -112,6 +124,8 @@ class SpecimenSection extends StatelessWidget {
   }
 }
 
+/// Which item the ideas below are about, as a quiet caption under the
+/// carousel.
 class _FocusedNote extends StatelessWidget {
   const _FocusedNote({super.key, required this.label});
 
@@ -120,17 +134,31 @@ class _FocusedNote extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final c = context.kanzColors;
-    return ConstrainedBox(
-      constraints: const BoxConstraints(minHeight: KanzSpace.touchTarget),
+    return Padding(
+      padding: const EdgeInsets.symmetric(vertical: KanzSpace.s8),
       child: Row(
+        crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Icon(KanzIcons.checkCircle, size: 18, color: c.inkSecondary),
+          Padding(
+            padding: const EdgeInsets.only(top: 1),
+            child: Icon(KanzIcons.checkCircle, size: 16, color: c.inkSecondary),
+          ),
           const SizedBox(width: KanzSpace.s8),
-          Expanded(child: MonoLabel(label)),
+          Expanded(child: Text(label, style: context.textStyles.bodySmall)),
         ],
       ),
     );
   }
+}
+
+/// [name] as it reads inside a sentence: "Glass jam jar" becomes "glass jam
+/// jar", while names that open with an acronym ("PET bottle") keep their
+/// capitals. Arabic has no case.
+String _inSentence(String name, Locale locale) {
+  if (locale.languageCode != 'en' || name.length < 2) return name;
+  final second = name[1];
+  if (second.toLowerCase() != second) return name;
+  return name[0].toLowerCase() + name.substring(1);
 }
 
 /// Stands in for the specimen label while the materials are identified:

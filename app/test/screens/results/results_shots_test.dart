@@ -317,6 +317,18 @@ void main() {
           final lid = ScanFixtures.jarAnalysis(
             arabic: config.isArabic,
           ).analysis.items[1].name;
+          // The lid's card only peeks in: swipe the row to it, then tap it.
+          await tester.drag(
+            find
+                .byWidgetPredicate(
+                  (w) =>
+                      w is Scrollable &&
+                      axisDirectionToAxis(w.axisDirection) == Axis.horizontal,
+                )
+                .first,
+            Offset(config.isArabic ? 400 : -400, 0),
+          );
+          await tester.pump(const Duration(milliseconds: 400));
           await tester.tap(find.text(lid).first);
           await tester.pump();
         },

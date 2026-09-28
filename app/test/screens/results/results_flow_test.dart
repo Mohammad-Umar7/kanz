@@ -7,6 +7,7 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:go_router/go_router.dart';
 import 'package:kanz/core/data/models/models.dart';
 import 'package:kanz/core/network/api_exception.dart';
+import 'package:kanz/core/state/connectivity_providers.dart';
 import 'package:kanz/core/state/dropoff_controller.dart';
 import 'package:kanz/core/state/scan_session.dart';
 import 'package:kanz/core/state/settings_providers.dart';
@@ -40,6 +41,7 @@ void main() {
     ScanSessionState session, {
     String? location,
     _Dropoff? dropoff,
+    BackendStatus status = BackendStatus.online,
   }) async {
     tester.view
       ..devicePixelRatio = 1
@@ -55,6 +57,7 @@ void main() {
           preferences: preferences,
           sessions: {session.scanId: session},
           log: log,
+          status: status,
           extra: [
             if (dropoff != null)
               dropoffControllerProvider.overrideWith(() => dropoff),
@@ -208,6 +211,15 @@ void main() {
     expect(router.state.uri.toString(), '/scan?mode=gallery');
   });
 
+  testWidgets('a server that does not answer is named, not called offline', (
+    tester,
+  ) async {
+    await open(tester, ScanFixtures.jar(), status: BackendStatus.unreachable);
+    expect(find.text(l10n.resultsUnreachable), findsOneWidget);
+    expect(find.text(l10n.resultsOffline), findsNothing);
+    expect(find.text(l10n.resultsCheckAgain), findsOneWidget);
+  });
+
   testWidgets('images paused on the quota never offer a retry', (tester) async {
     final rec = ScanFixtures.jarRecommendation();
     await open(
@@ -220,11 +232,17 @@ void main() {
         images: ScanFixtures.pausedImages(rec),
       ),
     );
-    // Mono labels are set in capitals.
+    // One note (its mono title is set in capitals) instead of three copies
+    // of the photo; the ideas read as a numbered list.
     expect(
-      find.text(l10n.resultsIdeaImagePaused.toUpperCase()),
-      findsNWidgets(3),
+      find.text(l10n.resultsImagesPausedTitle.toUpperCase()),
+      findsOneWidget,
     );
+    expect(find.text(l10n.resultsIdeaImagePaused.toUpperCase()), findsNothing);
+    for (final idea in rec.upcycle) {
+      await scrollTo(tester, find.text(idea.title));
+      expect(find.text(idea.title), findsOneWidget);
+    }
     expect(find.text(l10n.resultsIdeaImageRetry), findsNothing);
     expect(find.text(l10n.commonRetry), findsNothing);
   });

@@ -46,19 +46,23 @@ class _CameraRationaleScreenState
       rationale: PermissionRationale(
         art: PermissionArt.camera,
         title: l10n.permissionsCameraTitle,
+        // Restricted by policy: the reasons no longer apply, only the
+        // way around it does.
         reasons: [
-          RationaleReason(
-            icon: KanzIcons.scan,
-            text: l10n.permissionsCameraReason1,
-          ),
-          RationaleReason(
-            icon: KanzIcons.lock,
-            text: l10n.permissionsCameraReason2,
-          ),
-          RationaleReason(
-            icon: KanzIcons.gallery,
-            text: l10n.permissionsCameraReason3,
-          ),
+          if (!restricted) ...[
+            RationaleReason(
+              icon: KanzIcons.scan,
+              text: l10n.permissionsCameraReason1,
+            ),
+            RationaleReason(
+              icon: KanzIcons.lock,
+              text: l10n.permissionsCameraReason2,
+            ),
+            RationaleReason(
+              icon: KanzIcons.gallery,
+              text: l10n.permissionsCameraReason3,
+            ),
+          ],
         ],
         primaryLabel: switch (outcome) {
           AskOutcome.blocked => l10n.commonOpenSettings,
@@ -75,14 +79,13 @@ class _CameraRationaleScreenState
         footnote: asking
             ? l10n.permissionsAsking
             : rationaleFootnote(l10n, outcome),
+        notice: rationaleNotice(l10n, outcome, switch (outcome) {
+          AskOutcome.fresh => null,
+          AskOutcome.denied => l10n.permissionsCameraDenied,
+          AskOutcome.blocked => l10n.permissionsCameraBlocked,
+          AskOutcome.restricted => l10n.permissionsCameraRestricted,
+        }),
       ),
-      noticeTitle: rationaleNoticeTitle(l10n, outcome),
-      notice: switch (outcome) {
-        AskOutcome.fresh => null,
-        AskOutcome.denied => l10n.permissionsCameraDenied,
-        AskOutcome.blocked => l10n.permissionsCameraBlocked,
-        AskOutcome.restricted => l10n.permissionsCameraRestricted,
-      },
     );
   }
 }

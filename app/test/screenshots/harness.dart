@@ -394,3 +394,36 @@ Future<File> takeShot(
   out.writeAsBytesSync(bytes!);
   return out;
 }
+
+/// Fails when an [EmptyState] or [ErrorState] on screen does not start on
+/// the page gutter: its title must begin [gutter] dp from the start edge
+/// (the right edge in Arabic). A state block under a loose parent (a
+/// centered Stack, a bare scroll view) used to shrink to its text and float
+/// off the gutter in Arabic; call this after [takeShot] for screens that
+/// show a state.
+void expectStatesOnGutter(
+  WidgetTester tester, {
+  double gutter = KanzSpace.gutter,
+}) {
+  final width = tester.view.physicalSize.width / tester.view.devicePixelRatio;
+  final states = find.byWidgetPredicate(
+    (w) => w is EmptyState || w is ErrorState,
+  );
+  expect(states, findsWidgets, reason: 'no state block on screen');
+  for (final element in states.evaluate()) {
+    // The first Text in a state block is its title (the glyph is an Icon).
+    final title = find
+        .descendant(
+          of: find.byElementPredicate((e) => e == element),
+          matching: find.byType(Text),
+        )
+        .first;
+    final rect = tester.getRect(title);
+    final rtl = Directionality.of(element) == TextDirection.rtl;
+    expect(
+      rtl ? width - rect.right : rect.left,
+      moreOrLessEquals(gutter, epsilon: 0.5),
+      reason: 'state title starts off the ${rtl ? 'right' : 'left'} gutter',
+    );
+  }
+}

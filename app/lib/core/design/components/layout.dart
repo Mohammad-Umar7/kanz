@@ -260,13 +260,14 @@ class KanzListTile extends StatelessWidget {
       ),
     );
     if (!divider) return tile;
-    // The hairline starts at the gutter so rows read as one list.
+    // The hairline sits inside the gutters on both sides, like every other
+    // rule in Kanz, so rows read as one list.
     return Column(
       mainAxisSize: MainAxisSize.min,
       children: [
         tile,
         Padding(
-          padding: const EdgeInsetsDirectional.only(start: KanzSpace.gutter),
+          padding: KanzSpace.page,
           child: Divider(height: 1, color: c.line),
         ),
       ],

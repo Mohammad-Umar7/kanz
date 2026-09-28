@@ -265,6 +265,9 @@ class _DropoffScreenState extends ConsumerState<DropoffScreen>
     );
   }
 
+  /// The title, and the list and map toggle at the end of its line; with
+  /// large text the toggle moves under the title rather than squeezing it
+  /// onto two lines.
   Widget _header(DropoffState state, bool mapAvailable) {
     final l10n = context.l10n;
     return Padding(
@@ -274,15 +277,17 @@ class _DropoffScreenState extends ConsumerState<DropoffScreen>
         KanzSpace.gutter,
         KanzSpace.s8,
       ),
-      child: Row(
+      child: Wrap(
+        alignment: WrapAlignment.spaceBetween,
+        crossAxisAlignment: WrapCrossAlignment.center,
+        spacing: KanzSpace.s16,
+        runSpacing: KanzSpace.s12,
         children: [
-          Expanded(
-            child: Semantics(
-              header: true,
-              child: Text(
-                l10n.dropoffTitle,
-                style: context.textStyles.headlineLarge,
-              ),
+          Semantics(
+            header: true,
+            child: Text(
+              l10n.dropoffTitle,
+              style: context.textStyles.headlineLarge,
             ),
           ),
           if (mapAvailable)
@@ -640,6 +645,7 @@ class _DropoffScreenState extends ConsumerState<DropoffScreen>
               where.cityName ?? results.centerLabel,
             ),
             actionLabel: l10n.dropoffEmptyAction,
+            actionIcon: KanzIcons.map,
             onAction: _chooseLocation,
           ),
         ),
@@ -657,6 +663,7 @@ class _DropoffScreenState extends ConsumerState<DropoffScreen>
             title: l10n.dropoffTypeEmptyTitle,
             message: l10n.dropoffTypeEmptyMessage,
             actionLabel: l10n.dropoffTypeShowAll,
+            actionIcon: KanzIcons.filters,
             onAction: _controller.clearTypes,
           ),
         )

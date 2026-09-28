@@ -81,6 +81,13 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen>
     if (city != null) await ref.read(settingsProvider.notifier).useCity(city);
   }
 
+  /// "A fixed city": switches to the saved city, or asks for one first.
+  Future<void> _useCityMode() async {
+    final city = ref.read(settingsProvider).city;
+    if (city == null) return _pickCity();
+    await ref.read(settingsProvider.notifier).useCity(city);
+  }
+
   @override
   Widget build(BuildContext context) {
     final l10n = context.l10n;
@@ -90,15 +97,18 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen>
     final settings = ref.watch(settingsProvider);
     final controller = ref.read(settingsProvider.notifier);
     final vocab = ref.watch(vocabProvider);
-    final contentLang = ref.watch(contentLangProvider);
+    // What "Phone language" means right now, even while Kanz is set to the
+    // other language.
+    final phoneLang = ref.watch(systemLangProvider);
     final permission = ref.watch(locationPermissionProvider).value;
 
-    final systemLanguage = contentLang == Lang.ar
+    final systemLanguage = phoneLang == Lang.ar
         ? l10n.commonLanguageArabic
         : l10n.commonLanguageEnglish;
     final cityName = settings.city == null
         ? null
         : vocab.city(settings.city!).label.forLocale(locale);
+    final cityMode = settings.locationMode == LocationMode.city;
     final gpsOff =
         settings.locationMode == LocationMode.gps &&
         permission != null &&
@@ -232,18 +242,28 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen>
                   ),
                   RadioRow(
                     title: l10n.settingsLocationCity,
+                    // The City row below names the city once it is in use.
                     subtitle: cityName == null
                         ? l10n.settingsLocationCityNone
-                        : l10n.settingsLocationCityDetail(cityName),
+                        : (cityMode
+                              ? null
+                              : l10n.settingsLocationCityDetail(cityName)),
                     selected: settings.locationMode == LocationMode.city,
                     divider: false,
-                    trailing: Icon(
-                      KanzIcons.chevronForward,
-                      size: 18,
-                      color: c.inkSecondary,
-                    ),
-                    onTap: _pickCity,
+                    onTap: _useCityMode,
                   ),
+                  // The choice and the navigation are separate rows: the
+                  // radio picks the mode, this row changes the city.
+                  if (cityMode && cityName != null) ...[
+                    const SizedBox(height: KanzSpace.s8),
+                    KanzListTile(
+                      leading: const Icon(KanzIcons.map),
+                      title: l10n.settingsCity,
+                      value: cityName,
+                      showChevron: true,
+                      onTap: _pickCity,
+                    ),
+                  ],
                   if (settings.locationMode == null)
                     _Note(l10n.settingsLocationUndecided),
 
@@ -292,14 +312,15 @@ class _Note extends StatelessWidget {
   }
 }
 
-class _About extends StatelessWidget {
+class _About extends ConsumerWidget {
   const _About();
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     final l10n = context.l10n;
     final t = context.textStyles;
     final c = context.kanzColors;
+    final version = ref.watch(appVersionProvider).value;
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
@@ -318,6 +339,18 @@ class _About extends StatelessWidget {
           ),
         ),
         const SizedBox(height: KanzSpace.s8),
+        if (version != null)
+          KanzListTile(
+            leading: const Icon(KanzIcons.info),
+            title: l10n.settingsVersion,
+            // "1.0.0 (1)" reads left to right in Arabic too.
+            trailing: MonoLabel(
+              version,
+              uppercase: false,
+              textDirection: TextDirection.ltr,
+            ),
+            divider: true,
+          ),
         KanzListTile(
           leading: const Icon(KanzIcons.source),
           title: l10n.settingsLicenses,

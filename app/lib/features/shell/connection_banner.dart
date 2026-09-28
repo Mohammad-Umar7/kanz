@@ -34,20 +34,21 @@ class ConnectionBanner extends StatelessWidget {
         : (problem == BackendStatus.offline
               ? l10n.shellOffline
               : l10n.shellUnreachable);
-    // The banner is an inverse surface: light status bar glyphs on the dark
-    // ink banner in the light theme, dark ones in the dark theme.
-    final lightGlyphs = c.inverse.computeLuminance() < 0.5;
+    // The banner is a quiet sunken strip in both themes: dark status bar
+    // glyphs on the light paper, light ones in the dark theme.
+    final lightGlyphs = c.surfaceSunken.computeLuminance() < 0.5;
     final overlay =
         (lightGlyphs ? SystemUiOverlayStyle.light : SystemUiOverlayStyle.dark)
             .copyWith(statusBarColor: Colors.transparent);
     return AnnotatedRegion<SystemUiOverlayStyle>(
       value: overlay,
       child: ColoredBox(
-        color: c.inverse,
+        color: c.surfaceSunken,
         child: SafeArea(
           bottom: false,
           child: OfflineBanner(
             message: message,
+            checking: checking,
             actionLabel: checking ? null : l10n.shellRetry,
             onAction: checking ? null : onRetry,
           ),

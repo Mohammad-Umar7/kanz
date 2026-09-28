@@ -74,7 +74,7 @@ class DisposalAdvice extends StatelessWidget {
                 ),
                 if (recommendation.routing.reason case final reason?) ...[
                   const SizedBox(height: KanzSpace.s12),
-                  Text(reason, style: t.bodyLarge),
+                  Text(format.ai(reason), style: t.bodyLarge),
                 ],
                 if (hazards.isNotEmpty) ...[
                   const SizedBox(height: KanzSpace.s16),
@@ -140,23 +140,26 @@ class DisposalGuideCard extends StatelessWidget {
               children: [
                 MaterialDot(item.category.id),
                 const SizedBox(width: KanzSpace.s8),
-                Expanded(child: MonoLabel(item.name, maxLines: 2)),
+                Expanded(child: MonoLabel(format.ai(item.name), maxLines: 2)),
               ],
             ),
             const SizedBox(height: KanzSpace.s8),
           ],
-          Text(guidance.headline, style: context.textStyles.headlineSmall),
+          Text(
+            format.ai(guidance.headline),
+            style: context.textStyles.headlineSmall,
+          ),
           const SizedBox(height: KanzSpace.s20),
           GuideList(
             title: l10n.resultsDisposalSteps,
-            lines: guidance.steps,
+            lines: format.aiLines(guidance.steps),
             style: GuideListStyle.numbered,
           ),
           if (guidance.never.isNotEmpty) ...[
             const SizedBox(height: KanzSpace.s20),
             GuideList(
               title: l10n.resultsDisposalNever,
-              lines: guidance.never,
+              lines: format.aiLines(guidance.never),
               style: GuideListStyle.donts,
               danger: true,
             ),
