@@ -29,7 +29,7 @@ from pathlib import Path
 from app.images.templates import PromptTemplate, load_template
 from app.schemas.analysis import Item
 from app.schemas.recommend import UpcycleIdea
-from app.schemas.tutorial import Tutorial
+from app.schemas.tutorial import Tutorial, TutorialStep
 
 # Closes every image prompt. Each clause fixes a failure seen with image models:
 # glossy "product shots" instead of home photos, reframed compositions that break the
@@ -88,6 +88,16 @@ def bullets(lines: list[str]) -> str:
     return "\n".join(f"- {clean(line)}" for line in lines if clean(line))
 
 
+def idea_visual(idea: UpcycleIdea) -> str:
+    """What the finished project looks like: ``after_visual``, else the (localized) title and pitch."""
+    return idea.after_visual.strip() or f"{idea.title}. {idea.pitch}"
+
+
+def step_visual(step: TutorialStep) -> str:
+    """What the object looks like after a step: ``image_prompt``, else the (localized) title and instruction."""
+    return step.image_prompt.strip() or f"{step.title}. {step.instruction}"
+
+
 class ImageDirector:
     def __init__(self, prompts_dir: Path) -> None:
         self.prompts_dir = prompts_dir
@@ -96,7 +106,7 @@ class ImageDirector:
     def after(self, idea: UpcycleIdea) -> ImagePrompt:
         """Edit of the original photo into the finished project (references: [original])."""
         template = self._template("image_after")
-        values = {"after_visual": sentence(idea.after_visual)}
+        values = {"after_visual": sentence(idea_visual(idea))}
         return self._finish(template, ["task", "identity", "scene"], values)
 
     # ------------------------------------------------------------------- step
@@ -115,15 +125,15 @@ class ImageDirector:
 
         # The goal gives context ("the wire becomes a handle"). Without the idea, the
         # final step's image_prompt is the best English description of the finished object.
-        goal = idea.after_visual if idea is not None else steps[-1].image_prompt
+        goal = idea_visual(idea) if idea is not None else step_visual(steps[-1])
         values = {
             "step": str(number),
             "total": str(total),
             "goal": clause(goal),
-            "image_prompt": sentence(steps[number - 1].image_prompt),
+            "image_prompt": sentence(step_visual(steps[number - 1])),
             "previous_step": str(number - 1),
-            "previous_prompt": clause(steps[number - 2].image_prompt) if number > 1 else "",
-            "upcoming": bullets([f"Step {k}: {s.image_prompt}" for k, s in enumerate(steps, 1) if k > number]),
+            "previous_prompt": clause(step_visual(steps[number - 2])) if number > 1 else "",
+            "upcoming": bullets([f"Step {k}: {step_visual(s)}" for k, s in enumerate(steps, 1) if k > number]),
             "after_index": "2" if number == 1 else "3",
         }
 

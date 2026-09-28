@@ -159,3 +159,12 @@ def test_reference_prompt_quotes_a_bounded_description(director: ImageDirector) 
     assert "The owner's description: \"my 'old' jeans pile\"" in text
     long = director.reference("denim " * 500).text
     assert len(long) < 2500
+
+
+def test_blank_model_fields_fall_back_to_titles(director: ImageDirector, idea: UpcycleIdea, lantern: Tutorial) -> None:
+    blank_idea = idea.model_copy(update={"after_visual": "  "})
+    assert f"{idea.title}. {idea.pitch}" in director.after(blank_idea).text
+
+    steps = [s.model_copy(update={"image_prompt": ""}) if s.number == 2 else s for s in lantern.steps]
+    text = director.step(lantern.model_copy(update={"steps": steps}), 2, idea=idea, with_after=False).text
+    assert f"{steps[1].title}. {steps[1].instruction}" in text
