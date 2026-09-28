@@ -31,9 +31,11 @@ class HistoryActions {
 
   final Ref _ref;
 
-  /// Removes a scan, its projects and its photo from the device.
+  /// Removes a scan, its projects, its photo and its generated images from
+  /// the device. Impact already recorded for it stays.
   Future<void> deleteScan(String scanId) async {
     await _ref.read(scanRepositoryProvider).delete(scanId);
+    await _ref.read(imageCacheRepositoryProvider).deleteForScan(scanId);
     _ref.invalidate(scanSessionProvider(scanId));
   }
 }

@@ -114,6 +114,21 @@ class ImageCacheRepository {
     return _onDisk(rows.firstOrNull);
   }
 
+  /// Removes every image downloaded for [scanId] (after and step images) and
+  /// its files, when the scan is deleted from History.
+  Future<void> deleteForScan(String scanId) async {
+    final rows = await (_db.select(
+      _db.imageCache,
+    )..where((e) => e.scanId.equals(scanId))).get();
+    await (_db.delete(
+      _db.imageCache,
+    )..where((e) => e.scanId.equals(scanId))).go();
+    for (final row in rows) {
+      final file = File(row.localPath);
+      if (file.existsSync()) await file.delete();
+    }
+  }
+
   ImageCacheEntry? _onDisk(ImageCacheEntry? e) =>
       e != null && File(e.localPath).existsSync() ? e : null;
 

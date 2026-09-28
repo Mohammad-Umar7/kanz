@@ -165,5 +165,40 @@ void main() {
       expect(File(first.localPath).existsSync(), isFalse);
       expect(File(regenerated.localPath).existsSync(), isTrue);
     });
+
+    test('deleting a scan removes its images and their files', () async {
+      final dir = await Directory.systemTemp.createTemp('kanz_img');
+      addTearDown(() => dir.delete(recursive: true));
+      final repo = ImageCacheRepository(
+        db: db,
+        directory: dir,
+        download: (url) async => Uint8List.fromList([1, 2, 3]),
+      );
+      final after = ImageResponse.fromJson(fixture('image_after.json'));
+      final step = ImageResponse.fromJson(fixture('image_step.json'));
+      final kept = await repo.store(
+        after.copyWith(key: 'other_scan_after'),
+        scanId: 's2',
+        ideaId: 'idea_9f2c41aa',
+      );
+      final removed = [
+        await repo.store(after, scanId: 's1', ideaId: 'idea_9f2c41aa'),
+        await repo.store(
+          step,
+          scanId: 's1',
+          ideaId: 'idea_9f2c41aa',
+          tutorialId: 'tut_1',
+        ),
+      ];
+
+      await repo.deleteForScan('s1');
+
+      for (final entry in removed) {
+        expect(await repo.entry(entry.key), isNull);
+        expect(File(entry.localPath).existsSync(), isFalse);
+      }
+      expect(await repo.afterImage('s2', 'idea_9f2c41aa'), isNotNull);
+      expect(File(kept.localPath).existsSync(), isTrue);
+    });
   });
 }

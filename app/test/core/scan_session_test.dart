@@ -1,3 +1,4 @@
+import 'dart:io';
 import 'dart:typed_data';
 
 import 'package:flutter_test/flutter_test.dart';
@@ -6,6 +7,8 @@ import 'package:kanz/core/data/models/models.dart';
 import 'package:kanz/core/network/api_exception.dart';
 import 'package:kanz/core/services/location_service.dart';
 import 'package:kanz/core/services/permission_service.dart';
+import 'package:kanz/core/state/core_providers.dart';
+import 'package:kanz/core/state/history_providers.dart';
 import 'package:kanz/core/state/location_resolver.dart';
 import 'package:kanz/core/state/scan_session.dart';
 import 'package:kanz/core/state/settings_providers.dart';
@@ -341,5 +344,25 @@ void main() {
     h.container.listen(provider, (_, _) {});
     final marked = await h.container.read(provider.future);
     expect(marked, {'item_1', 'item_2'});
+  });
+
+  test('deleting a scan removes its photo and generated images', () async {
+    h = await TestHarness.create(prefs: _cityMode);
+    final id = newScanId();
+    await h.container
+        .read(scanSessionProvider(id).notifier)
+        .startFromPhoto(bytes: _photo);
+    await waitFor(() => settled(id));
+    final s = stateOf(id);
+    final files = [
+      s.localImagePath!,
+      for (final image in s.afterImages.values) image.localPath!,
+    ];
+    expect(files.every((f) => File(f).existsSync()), isTrue);
+
+    await h.container.read(historyActionsProvider).deleteScan(id);
+
+    expect(files.where((f) => File(f).existsSync()), isEmpty);
+    expect(await h.container.read(scanRepositoryProvider).get(id), isNull);
   });
 }
