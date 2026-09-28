@@ -28,8 +28,10 @@ How it works
   and texture, while the changes of earlier steps stay); the last step also sees the
   after image, so the ending matches the reveal the user already saw. Missing earlier
   steps are rendered first, in order.
-* **Bin image**, keyed ``(image_id, item.id)``: ``bin_<item_id>.jpg``, the item shown
-  prepared for its stream, edited from the photo cropped to the item's box.
+* **Bin image**, keyed ``(image_id, item.id, variant)``: ``bin_<item_id>_<variant>.jpg``,
+  the item shown prepared for its stream, edited from the photo cropped to the item's
+  box. ``variant`` fingerprints the item (``item_variant``), so a corrected item gets
+  a new picture.
 * **Caching and de-duplication.** Files on disk are the cache (``cached: true``).
   Concurrent requests for the same key share one in-flight render (``SingleFlight``),
   so the background chain and the tutorial screen never render the same step twice.
@@ -75,6 +77,7 @@ from app.core.tutorials import TutorialStore, get_tutorial_store
 from app.images.director import ImageDirector, ImagePrompt, clean, step_visual
 from app.images.flights import SingleFlight
 from app.images.framing import closest_aspect_ratio, crop_to_box, image_size
+from app.schemas.analysis import Item
 from app.schemas.images import AfterImageRequest, BinImageRequest, ImageResponse, StepImageRequest
 from app.schemas.recommend import UpcycleIdea
 from app.schemas.tutorial import Tutorial
@@ -140,16 +143,34 @@ def step_key(tutorial: Tutorial, step: int) -> str:
     return f"{tutorial.image_id}:step:{tutorial.idea_id}:{tutorial.skill}:{chain_id(tutorial)}:{step}"
 
 
-def bin_key(image_id: str, item_id: str) -> str:
-    return f"{image_id}:bin:{item_id}"
+def step_name(tutorial: Tutorial, step: int) -> str:
+    return f"step_{tutorial.idea_id}_{tutorial.skill}_{chain_id(tutorial)}_{step}"
+
+
+def item_variant(item: Item) -> str:
+    """Fingerprint (8 hex) of the item a bin picture shows, apart from its language.
+
+    Item ids ("item_1") are only stable within one analysis: when the user corrects an
+    item (glass to plastic) or the same photo is analyzed again, the id can stand for
+    another item or material. Category, resin code, condition tags and box decide what the
+    picture shows, so a change in any of them gets its own picture, while the same item
+    described in another language keeps sharing it.
+    """
+    box = None if item.bbox is None else [round(v, 2) for v in (item.bbox.x, item.bbox.y, item.bbox.w, item.bbox.h)]
+    raw = json.dumps([item.category, item.resin_code, sorted(item.state), box], separators=(",", ":"))
+    return hashlib.sha256(raw.encode("utf-8")).hexdigest()[:8]
+
+
+def bin_key(image_id: str, item: Item) -> str:
+    return f"{image_id}:bin:{item.id}:{item_variant(item)}"
+
+
+def bin_name(item: Item) -> str:
+    return f"bin_{item.id}_{item_variant(item)}"
 
 
 def reference_key(image_id: str) -> str:
     return f"{image_id}:reference"
-
-
-def step_name(tutorial: Tutorial, step: int) -> str:
-    return f"step_{tutorial.idea_id}_{tutorial.skill}_{chain_id(tutorial)}_{step}"
 
 
 def _safe_id(value: str, field: str) -> str:
@@ -217,12 +238,16 @@ class ImageService:
         return self._response(result, kind="step", key=key, timings=timings, step=req.step, skill=tutorial.skill)
 
     async def bin_image(self, req: BinImageRequest) -> ImageResponse:
-        """The item prepared for its bin, edited from a crop around the item. Cached per (image_id, item.id)."""
+        """The item prepared for its bin, edited from a crop around the item.
+
+        Cached per (image_id, item.id, item_variant(item)).
+        """
         image_id, item = req.image_id, req.item
         _safe_id(item.id, "item id")
         self._require_source(image_id)
         # The request may carry the localized prep steps from /recommend; the item's own are the fallback.
         prep_steps = req.prep_steps or item.recyclability.prep_steps
+        name, key = bin_name(item), bin_key(image_id, item)
         timings: Timings = {}
 
         async def build() -> StoredImage:
@@ -231,7 +256,7 @@ class ImageService:
             return await self._render(
                 kind="bin",
                 image_id=image_id,
-                name=f"bin_{item.id}",
+                name=name,
                 prompt=self.director.bin(item, prep_steps),
                 references=[focus],
                 aspect_ratio=closest_aspect_ratio(*image_size(focus)),
@@ -240,10 +265,8 @@ class ImageService:
             )
 
         with stage_timer(timings, "image_bin"):
-            result = await self._obtain(
-                bin_key(image_id, item.id), image_id, f"bin_{item.id}", build, regenerate=req.regenerate
-            )
-        return self._response(result, kind="bin", key=bin_key(image_id, item.id), timings=timings)
+            result = await self._obtain(key, image_id, name, build, regenerate=req.regenerate)
+        return self._response(result, kind="bin", key=key, timings=timings)
 
     async def reference_image(self, image_id: str) -> ImageResponse:
         """A text scan's base photo, rendered on first use, so the app has a 'before' picture for it."""
