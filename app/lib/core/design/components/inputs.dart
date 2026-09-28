@@ -108,7 +108,7 @@ class KanzSwitchTile extends StatelessWidget {
   Widget build(BuildContext context) {
     final c = context.kanzColors;
     final t = context.textStyles;
-    return MergeSemantics(
+    final tile = MergeSemantics(
       child: InkWell(
         onTap: onChanged == null ? null : () => onChanged!(!value),
         child: Container(
@@ -119,11 +119,6 @@ class KanzSwitchTile extends StatelessWidget {
             KanzSpace.s16,
             KanzSpace.s12,
           ),
-          decoration: divider
-              ? BoxDecoration(
-                  border: Border(bottom: BorderSide(color: c.line)),
-                )
-              : null,
           child: Row(
             children: [
               Expanded(
@@ -144,6 +139,18 @@ class KanzSwitchTile extends StatelessWidget {
           ),
         ),
       ),
+    );
+    if (!divider) return tile;
+    // The hairline starts at the gutter so rows read as one list.
+    return Column(
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        tile,
+        Padding(
+          padding: const EdgeInsetsDirectional.only(start: KanzSpace.gutter),
+          child: Divider(height: 1, color: c.line),
+        ),
+      ],
     );
   }
 }

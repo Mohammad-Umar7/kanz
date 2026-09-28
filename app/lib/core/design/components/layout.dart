@@ -211,7 +211,7 @@ class KanzListTile extends StatelessWidget {
   Widget build(BuildContext context) {
     final c = context.kanzColors;
     final t = context.textStyles;
-    return Semantics(
+    final tile = Semantics(
       button: onTap != null,
       child: InkWell(
         onTap: onTap,
@@ -221,11 +221,6 @@ class KanzListTile extends StatelessWidget {
             horizontal: KanzSpace.gutter,
             vertical: KanzSpace.s12,
           ),
-          decoration: divider
-              ? BoxDecoration(
-                  border: Border(bottom: BorderSide(color: c.line)),
-                )
-              : null,
           child: Row(
             children: [
               if (leading != null) ...[
@@ -263,6 +258,18 @@ class KanzListTile extends StatelessWidget {
           ),
         ),
       ),
+    );
+    if (!divider) return tile;
+    // The hairline starts at the gutter so rows read as one list.
+    return Column(
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        tile,
+        Padding(
+          padding: const EdgeInsetsDirectional.only(start: KanzSpace.gutter),
+          child: Divider(height: 1, color: c.line),
+        ),
+      ],
     );
   }
 }
