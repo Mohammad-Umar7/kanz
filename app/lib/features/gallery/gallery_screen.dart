@@ -27,6 +27,7 @@ class _DesignGalleryScreenState extends State<DesignGalleryScreen> {
   bool _dark = false;
   bool _rtl = false;
   bool _largeText = false;
+  bool _seeded = false;
   GalleryImages? _painted;
 
   @override
@@ -37,6 +38,17 @@ class _DesignGalleryScreenState extends State<DesignGalleryScreen> {
         if (mounted) setState(() => _painted = images);
       });
     }
+  }
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    // Open in the app's current theme and language; the toggles take over
+    // from there.
+    if (_seeded) return;
+    _seeded = true;
+    _dark = Theme.of(context).brightness == Brightness.dark;
+    _rtl = Localizations.maybeLocaleOf(context)?.languageCode == 'ar';
   }
 
   @override
