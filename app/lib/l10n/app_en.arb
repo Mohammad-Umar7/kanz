@@ -1,0 +1,174 @@
+{
+  "@@locale": "en",
+  "commonAppName": "Kanz",
+  "@commonAppName": {
+    "description": "Product name. Arabic uses the Arabic word for treasure."
+  },
+  "commonBack": "Back",
+  "commonBackendChecking": "Checking the connection",
+  "commonBackendOffline": "Offline",
+  "commonBackendOnline": "Connected",
+  "commonBackendUnreachable": "Server not reachable",
+  "commonCancel": "Cancel",
+  "commonClose": "Close",
+  "commonCo2eDisclaimer": "Estimate, verify before quoting.",
+  "@commonCo2eDisclaimer": {
+    "description": "Always shown next to the CO2e figure on the Impact tab."
+  },
+  "commonCo2eKg": "{kg} kg CO2e",
+  "@commonCo2eKg": {
+    "placeholders": {
+      "kg": {
+        "type": "String"
+      }
+    }
+  },
+  "commonContinue": "Continue",
+  "commonDaysAgo": "{count, plural, =1{1 day ago} other{{count} days ago}}",
+  "@commonDaysAgo": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "commonDifficultyEasy": "Easy",
+  "commonDifficultyHard": "Hard",
+  "commonDifficultyMedium": "Medium",
+  "commonDistanceKm": "{km} km",
+  "@commonDistanceKm": {
+    "placeholders": {
+      "km": {
+        "type": "String"
+      }
+    }
+  },
+  "commonDistanceMeters": "{meters} m",
+  "@commonDistanceMeters": {
+    "placeholders": {
+      "meters": {
+        "type": "String"
+      }
+    }
+  },
+  "commonDone": "Done",
+  "commonErrorAiInvalidOutput": "The AI's answer didn't make sense this time. Try again.",
+  "commonErrorAiQuotaExhausted": "The AI quota on this server is used up for now.",
+  "commonErrorAiTimeout": "The AI took too long to answer. Try again.",
+  "commonErrorAiUnavailable": "The AI service is busy right now. Try again in a moment.",
+  "commonErrorBadRequest": "Something in that request was off. Please try again.",
+  "commonErrorBadResponse": "The server sent an answer Kanz didn't expect. Try again.",
+  "commonErrorCancelled": "Cancelled.",
+  "commonErrorGeneric": "Something went wrong. Try again.",
+  "commonErrorImageInvalid": "That file isn't a photo Kanz can read. Try another one.",
+  "commonErrorImageTooLarge": "That photo is too large. Try a smaller one.",
+  "commonErrorInternal": "Something went wrong on our side. Try again.",
+  "commonErrorInterrupted": "This step didn't finish last time. Try again.",
+  "commonErrorNotFound": "Kanz can't find that anymore.",
+  "commonErrorOffline": "You're offline. Check your connection and try again.",
+  "commonErrorPlacesUnavailable": "Drop-off points can't be loaded right now. Try again soon.",
+  "commonErrorRateLimited": "Lots of requests at once. Wait a moment, then try again.",
+  "commonErrorTimeout": "This is taking too long. Check your connection and try again.",
+  "commonHoursAgo": "{count, plural, =1{1 hour ago} other{{count} hours ago}}",
+  "@commonHoursAgo": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "commonJustNow": "Just now",
+  "commonLanguageArabic": "العربية",
+  "@commonLanguageArabic": {
+    "description": "Always written in Arabic, in both languages."
+  },
+  "commonLanguageEnglish": "English",
+  "commonLanguageSystem": "Phone language",
+  "commonLevelHigh": "High",
+  "commonLevelLow": "Low",
+  "commonLevelMedium": "Medium",
+  "commonLoading": "Loading",
+  "commonMinutes": "{count} min",
+  "@commonMinutes": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "commonMinutesAgo": "{count, plural, =1{1 min ago} other{{count} min ago}}",
+  "@commonMinutesAgo": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "commonNext": "Next",
+  "commonOk": "OK",
+  "commonOpenSettings": "Open settings",
+  "commonPhotoBlurry": "The photo is blurry",
+  "commonPhotoCluttered": "Too many things in the frame",
+  "commonPhotoGlare": "Glare is hiding the item",
+  "commonPhotoNoItems": "No items found in the photo",
+  "commonPhotoTooClose": "The item is too close",
+  "commonPhotoTooDark": "The photo is too dark",
+  "commonPhotoTooFar": "The item is too far away",
+  "commonRecyclableConditional": "Recyclable after prep",
+  "commonRecyclableNo": "Not recyclable",
+  "commonRecyclableYes": "Recyclable",
+  "commonRegenerate": "Try another image",
+  "@commonRegenerate": {
+    "description": "Button that asks the backend for a new generated image."
+  },
+  "commonRetry": "Try again",
+  "commonSave": "Save",
+  "commonShare": "Share",
+  "commonSkillAdvanced": "Advanced",
+  "commonSkillBeginner": "Beginner",
+  "commonSkillIntermediate": "Intermediate",
+  "commonSkip": "Skip",
+  "commonSpeechCareful": "Careful",
+  "@commonSpeechCareful": {
+    "description": "Spoken before a step's warning in hands-free mode."
+  },
+  "commonSpeechTip": "Tip",
+  "@commonSpeechTip": {
+    "description": "Spoken before a step's tip in hands-free mode."
+  },
+  "commonStageDropoff": "Locating drop-off points",
+  "commonStageIdeas": "Checking safety and finding ideas",
+  "commonStageIdentifying": "Identifying materials",
+  "commonStageMakeovers": "Rendering makeovers",
+  "commonStepNumber": "Step {number}",
+  "@commonStepNumber": {
+    "placeholders": {
+      "number": {
+        "type": "int"
+      }
+    }
+  },
+  "commonStepOf": "Step {current} of {total}",
+  "@commonStepOf": {
+    "placeholders": {
+      "current": {
+        "type": "int"
+      },
+      "total": {
+        "type": "int"
+      }
+    }
+  },
+  "commonThemeDark": "Dark",
+  "commonThemeLight": "Light",
+  "commonThemeSystem": "Match phone",
+  "commonWeightKg": "{kg} kg",
+  "@commonWeightKg": {
+    "placeholders": {
+      "kg": {
+        "type": "String"
+      }
+    }
+  },
+  "commonYesterday": "Yesterday"
+}
