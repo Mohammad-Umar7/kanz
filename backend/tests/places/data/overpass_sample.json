@@ -1,0 +1,44 @@
+{
+  "_comment": "Synthetic Overpass API response written by hand for the parser tests. Not real places: ids, names and coordinates are made up around a point in Abu Dhabi.",
+  "version": 0.6,
+  "generator": "hand-written test data",
+  "elements": [
+    {
+      "type": "node", "id": 9000000001, "lat": 24.4550, "lon": 54.3780,
+      "tags": {"amenity": "recycling", "recycling_type": "container", "recycling:glass_bottles": "yes", "recycling:paper": "yes",
+               "addr:housenumber": "12", "addr:street": "Test Street", "addr:city": "Test City", "opening_hours": "24/7"}
+    },
+    {
+      "type": "way", "id": 9000000002, "center": {"lat": 24.4600, "lon": 54.3800},
+      "tags": {"amenity": "recycling", "recycling_type": "container", "recycling:clothes": "yes", "name": "Synthetic Clothes Bin"}
+    },
+    {
+      "type": "node", "id": 9000000003, "lat": 24.4520, "lon": 54.3700,
+      "tags": {"amenity": "recycling", "recycling_type": "container"}
+    },
+    {
+      "type": "node", "id": 9000000004, "lat": 24.4580, "lon": 54.3750,
+      "tags": {"amenity": "recycling", "name:en": "Make A Wish"}
+    },
+    {
+      "type": "node", "id": 9000000005, "lat": 24.4700, "lon": 54.3900,
+      "tags": {"amenity": "recycling", "recycling_type": "container", "recycling:batteries": "yes", "operator": "Synthetic Operator"}
+    },
+    {
+      "type": "node", "id": 9000000006, "lat": 24.4490, "lon": 54.3810,
+      "tags": {"shop": "charity", "name": "Synthetic Charity Shop", "phone": "+971 2 000 0000", "website": "https://example.org"}
+    },
+    {
+      "type": "node", "id": 9000000007, "lat": 24.4400, "lon": 54.3600,
+      "tags": {"amenity": "recycling", "recycling_type": "centre", "name": "Synthetic Recycling Centre", "name:ar": "مركز تدوير تجريبي"}
+    },
+    {
+      "type": "node", "id": 9000000008, "lat": 24.4530, "lon": 54.3790,
+      "tags": {"amenity": "waste_disposal", "waste": "trash"}
+    },
+    {
+      "type": "way", "id": 9000000009,
+      "tags": {"amenity": "recycling", "recycling:glass": "yes", "name": "Way without a center"}
+    }
+  ]
+}
