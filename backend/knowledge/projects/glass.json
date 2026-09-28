@@ -1,0 +1,246 @@
+[
+  {
+    "id": "proj_glass_jar_lantern",
+    "kind": "project",
+    "title": "Hanging jar lantern",
+    "title_ar": "فانوس برطمان معلّق",
+    "materials": ["glass", "metal"],
+    "items": ["glass jar", "jam jar", "mason jar", "pickle jar"],
+    "summary": "A wire collar and a twine-wrapped handle turn an empty jar into a lantern for a balcony, garden or dinner table.",
+    "summary_ar": "طوق من السلك ومقبض ملفوف بالخيط يحوّلان البرطمان الفارغ إلى فانوس للشرفة أو الحديقة أو مائدة العشاء.",
+    "result": "a clear glass jar with a twisted wire collar under the rim and an arched twine-wrapped handle, a tea light glowing on a thin layer of sand inside",
+    "difficulty": "easy",
+    "time_minutes": 35,
+    "tools": ["craft_wire", "pliers", "twine", "scissors"],
+    "extra_materials": ["LED or wax tea light", "a cup of sand or small pebbles"],
+    "steps_outline": [
+      "Soak the jar in warm soapy water and peel off the label and glue",
+      "Wrap craft wire twice around the groove under the rim and twist it tight with pliers",
+      "Hook a 30 cm length of wire to both sides of the collar to form a handle",
+      "Wind twine tightly along the handle and tie it off",
+      "Pour in 2 cm of sand and set a tea light in the middle"
+    ],
+    "safety": [
+      "Tuck sharp wire ends flat against the glass",
+      "Use an LED tea light indoors and never leave a flame unattended",
+      "Check the jar for chips or cracks before you start"
+    ],
+    "techniques": ["wiring", "knotting", "candles"],
+    "tags": ["lighting", "decor", "outdoor", "gift"]
+  },
+  {
+    "id": "proj_glass_jar_herb_garden",
+    "kind": "project",
+    "title": "Windowsill herb jar",
+    "title_ar": "برطمان أعشاب على حافة النافذة",
+    "materials": ["glass"],
+    "items": ["glass jar", "mason jar", "large jam jar", "coffee jar"],
+    "summary": "A clean jar with a drainage layer of pebbles grows basil, mint or parsley on a sunny windowsill.",
+    "summary_ar": "برطمان نظيف بطبقة تصريف من الحصى يزرع فيه الريحان أو النعناع أو البقدونس على نافذة مشمسة.",
+    "result": "a clear glass jar showing layers of pebbles and dark potting soil, a small leafy basil plant growing out of the top",
+    "difficulty": "easy",
+    "time_minutes": 25,
+    "tools": ["scissors"],
+    "extra_materials": ["small pebbles or gravel", "a spoonful of activated charcoal (optional)", "potting mix", "herb seedling"],
+    "steps_outline": [
+      "Wash the jar and remove the label",
+      "Add 3 cm of pebbles for drainage, then a thin layer of charcoal if you have it",
+      "Fill with potting mix up to 2 cm below the rim",
+      "Plant the seedling, press the soil gently and trim any damaged leaves",
+      "Water lightly and place it where it gets at least four hours of sun"
+    ],
+    "safety": [
+      "Jars have no drainage hole: water little and often so roots never sit in water",
+      "Only use a jar that held food, never one that held chemicals"
+    ],
+    "techniques": ["planting"],
+    "tags": ["garden", "kitchen", "indoor plants", "beginner"]
+  },
+  {
+    "id": "proj_glass_painted_jar",
+    "kind": "project",
+    "title": "Painted jar desk organizer",
+    "title_ar": "منظّم مكتب من برطمان مطلي",
+    "materials": ["glass"],
+    "items": ["glass jar", "jam jar", "sauce jar"],
+    "summary": "Paint on the outside and a clean masked band turn a jar into a pen, brush or makeup-brush holder.",
+    "summary_ar": "طلاء من الخارج مع شريط غير مطلي يحوّل البرطمان إلى حامل أقلام أو فرش.",
+    "result": "a glass jar painted matte white on the outside with one clear unpainted band around the middle, holding pens and pencils",
+    "difficulty": "easy",
+    "time_minutes": 60,
+    "tools": ["acrylic_paint", "paintbrush", "masking_tape", "twine"],
+    "extra_materials": ["rubbing alcohol or vinegar to degrease", "pens or brushes to fill it"],
+    "steps_outline": [
+      "Remove the label and wipe the outside with vinegar or alcohol so paint sticks",
+      "Mask a straight band around the jar with masking tape",
+      "Paint the outside in thin coats, letting each coat dry",
+      "Peel the tape while the last coat is slightly soft for a clean edge",
+      "Tie twine around the neck as a finishing touch"
+    ],
+    "safety": [
+      "Paint the outside only; this jar is for desk items, not food",
+      "Work on newspaper and wear gloves or old clothes"
+    ],
+    "techniques": ["painting"],
+    "tags": ["storage", "desk", "decor", "gift"]
+  },
+  {
+    "id": "proj_glass_bottle_twine_vase",
+    "kind": "project",
+    "title": "Twine-wrapped bottle vase",
+    "title_ar": "مزهرية من زجاجة ملفوفة بالخيط",
+    "materials": ["glass"],
+    "items": ["wine bottle", "glass bottle", "juice bottle", "olive oil bottle"],
+    "summary": "Natural twine wound around a bottle makes a rustic vase for dried or fresh flowers.",
+    "summary_ar": "خيط القنّب الملفوف حول الزجاجة يصنع مزهرية ريفية للزهور المجففة أو الطازجة.",
+    "result": "a glass bottle with its lower two thirds tightly wrapped in natural brown twine, the clear glass neck left bare, holding a few dried flowers",
+    "difficulty": "easy",
+    "time_minutes": 40,
+    "tools": ["twine", "strong_glue", "scissors"],
+    "extra_materials": ["fresh or dried flowers"],
+    "steps_outline": [
+      "Soak off the label and dry the bottle completely",
+      "Glue the end of the twine near the base",
+      "Wind the twine upwards in tight rows, adding a dot of glue every few turns",
+      "Stop below the shoulder, cut the twine and glue the end down",
+      "Fill with water or dried stems"
+    ],
+    "safety": ["Keep glue off your fingers and let it cure before adding water"],
+    "techniques": ["gluing", "knotting"],
+    "tags": ["decor", "flowers", "gift", "beginner"]
+  },
+  {
+    "id": "proj_glass_jar_soap_dispenser",
+    "kind": "project",
+    "title": "Jar soap dispenser",
+    "title_ar": "موزّع صابون من برطمان",
+    "materials": ["glass", "metal"],
+    "items": ["mason jar", "glass jar with metal lid", "jam jar"],
+    "summary": "A pump from an empty soap bottle fitted through the jar's metal lid makes a sturdy refillable dispenser.",
+    "summary_ar": "مضخة من عبوة صابون فارغة تُركّب في غطاء البرطمان المعدني لتصنع موزّعًا متينًا قابلًا لإعادة التعبئة.",
+    "result": "a clear glass jar filled with liquid hand soap, its metal lid fitted with a white pump dispenser",
+    "difficulty": "medium",
+    "time_minutes": 30,
+    "tools": ["hammer", "screwdriver", "strong_glue"],
+    "extra_materials": ["pump top from an empty soap bottle", "a thick nail", "liquid soap"],
+    "steps_outline": [
+      "Mark the centre of the lid and place it on a wooden board",
+      "Tap a nail through the centre, then widen the hole with a screwdriver until the pump tube fits",
+      "Push the pump through and trim the tube to reach the bottom of the jar",
+      "Glue around the pump collar and let it cure",
+      "Fill with soap and screw the lid on"
+    ],
+    "safety": [
+      "Wear work gloves: the punched lid edge is sharp",
+      "Hold the lid on a board, never in your hand, while hammering"
+    ],
+    "techniques": ["hammering", "sharp_metal", "gluing"],
+    "tags": ["bathroom", "kitchen", "refill"]
+  },
+  {
+    "id": "proj_glass_jar_terrarium",
+    "kind": "project",
+    "title": "Succulent jar terrarium",
+    "title_ar": "حديقة زجاجية للنباتات العصارية",
+    "materials": ["glass"],
+    "items": ["wide glass jar", "fish bowl", "large mason jar", "glass vase"],
+    "summary": "Layers of gravel, charcoal and cactus soil in a wide jar hold a small low-care garden of succulents.",
+    "summary_ar": "طبقات من الحصى والفحم وتربة الصبار في برطمان واسع تحتضن حديقة صغيرة من النباتات العصارية قليلة العناية.",
+    "result": "a wide clear glass jar with visible layers of white gravel and dark soil, three small green succulents and a few decorative stones on top",
+    "difficulty": "easy",
+    "time_minutes": 40,
+    "tools": ["scissors"],
+    "extra_materials": ["gravel", "activated charcoal", "cactus soil", "2-3 small succulents", "a long spoon"],
+    "steps_outline": [
+      "Clean and dry the jar inside and out",
+      "Add 3 cm of gravel, then a thin layer of charcoal",
+      "Spoon in cactus soil to about a third of the jar's height",
+      "Plant the succulents with a spoon, largest first, and press the soil around them",
+      "Top with small stones and mist lightly"
+    ],
+    "safety": ["Leave the jar open: closed jars trap moisture and rot succulents"],
+    "techniques": ["planting"],
+    "tags": ["garden", "indoor plants", "decor", "gift"]
+  },
+  {
+    "id": "proj_glass_bottle_fairy_lamp",
+    "kind": "project",
+    "title": "Bottle fairy-light lamp",
+    "title_ar": "مصباح زجاجة بأضواء صغيرة",
+    "materials": ["glass"],
+    "items": ["wine bottle", "glass bottle", "liquor bottle"],
+    "summary": "A string of battery LED fairy lights fed into a clean bottle makes a soft table lamp with no wiring.",
+    "summary_ar": "سلسلة أضواء LED صغيرة تعمل بالبطارية داخل زجاجة نظيفة تصنع مصباحًا هادئًا دون أي توصيلات كهربائية.",
+    "result": "a clear glass bottle filled with a coil of warm white LED fairy lights glowing inside, twine wrapped around the neck",
+    "difficulty": "easy",
+    "time_minutes": 15,
+    "tools": ["twine", "scissors"],
+    "extra_materials": ["battery LED fairy lights (cork-style or with a small battery box)"],
+    "steps_outline": [
+      "Remove the label and dry the bottle inside",
+      "Feed the fairy lights into the neck a little at a time",
+      "Leave the battery box outside or use a cork-style light that plugs the neck",
+      "Wrap twine around the neck to hide the wire"
+    ],
+    "safety": ["Use LED lights only: they stay cool inside the glass"],
+    "techniques": ["knotting"],
+    "tags": ["lighting", "decor", "beginner", "gift"]
+  },
+  {
+    "id": "proj_glass_jar_wall_organizer",
+    "kind": "project",
+    "title": "Wall-mounted jar organizer",
+    "title_ar": "منظّم برطمانات مثبّت على الحائط",
+    "materials": ["glass", "wood", "metal"],
+    "items": ["glass jars", "mason jars", "jam jars"],
+    "summary": "Three jars held to a sanded board with hose clamps store cotton pads, brushes or screws on the wall.",
+    "summary_ar": "ثلاثة برطمانات مثبتة على لوح خشبي مصنفر بمشابك الخراطيم لتخزين القطن أو الفرش أو البراغي على الحائط.",
+    "result": "a sanded natural wood board mounted on a wall with three clear glass jars held upright by metal hose clamps, filled with cotton pads and brushes",
+    "difficulty": "medium",
+    "time_minutes": 90,
+    "tools": ["drill", "screwdriver", "sandpaper", "measuring_tape", "ruler_pencil"],
+    "extra_materials": ["wood board about 60 x 12 cm", "3 hose clamps sized to the jars", "wood screws", "wall plugs"],
+    "steps_outline": [
+      "Sand the board smooth and wipe off the dust",
+      "Mark three evenly spaced jar positions",
+      "Drill pilot holes and screw each hose clamp to the board",
+      "Slide the jars in and tighten the clamps just enough to hold them",
+      "Drill the wall, fit plugs and screw the board up, checking it is level"
+    ],
+    "safety": [
+      "Wear safety glasses when drilling and a dust mask while sanding",
+      "Check for pipes and cables before drilling a wall",
+      "Tighten clamps gently: too much pressure can crack glass"
+    ],
+    "techniques": ["drilling", "sanding"],
+    "tags": ["storage", "bathroom", "workshop", "intermediate"]
+  },
+  {
+    "id": "proj_glass_jar_pantry_storage",
+    "kind": "project",
+    "title": "Labelled pantry jars",
+    "title_ar": "برطمانات مؤونة بملصقات",
+    "materials": ["glass"],
+    "items": ["glass jars", "jam jars", "sauce jars", "coffee jars"],
+    "summary": "Matching clean jars with hand-written labels keep rice, lentils, spices and snacks airtight and easy to see.",
+    "summary_ar": "برطمانات نظيفة متناسقة بملصقات مكتوبة باليد تحفظ الأرز والعدس والبهارات بإحكام وتسهّل رؤيتها.",
+    "result": "a row of clean clear glass jars with their original lids, filled with rice, lentils and pasta, each with a small hand-written kraft paper label",
+    "difficulty": "easy",
+    "time_minutes": 30,
+    "tools": ["masking_tape", "scissors", "ruler_pencil"],
+    "extra_materials": ["kraft paper or blank labels", "cooking oil and baking soda to lift old glue"],
+    "steps_outline": [
+      "Soak the jars, then rub off glue with a paste of oil and baking soda",
+      "Wash jars and lids in hot soapy water and dry them completely",
+      "Cut labels to the same size and write the contents and date",
+      "Stick the labels on the outside, straight and at the same height",
+      "Fill with dry food and close tightly"
+    ],
+    "safety": [
+      "Only reuse jars that held food, and check the lid seal is intact",
+      "Dry jars completely before filling to prevent mold"
+    ],
+    "techniques": ["cutting"],
+    "tags": ["kitchen", "storage", "zero waste", "beginner"]
+  }
+]
