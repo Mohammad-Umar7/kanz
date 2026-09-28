@@ -1,0 +1,45 @@
+[
+  {
+    "user": "## Scanned items\n- item_1 (focus): Faded blue denim jeans | category textile | material Cotton denim | 1 pc | quality 2/5 (Faded, frayed hems, small hole at one knee) | state: worn, faded, torn\nFocus item: item_1\n\n## Person\nSkill: beginner\nTools they have: scissors (Scissors), sewing_kit (Needle and thread)\n\n## Knowledge (cite only these ids)\n[proj_textile_denim_pocket_organizer] Denim pocket wall organizer (textile, wood)\nFor: jeans, denim jacket, denim skirt. Back pockets cut from old jeans and stitched to a denim panel hold mail, remotes or craft tools on a wall.\nResult: a rectangle of blue denim hanging from a wooden stick, with four back pockets from the same jeans stitched on in two rows, holding letters and pencils\nDifficulty: medium; about 60 min; tools: scissors, sewing_kit, ruler_pencil, twine\n\n[proj_textile_draught_stopper] Fabric-scrap draught stopper (textile)\nFor: jeans leg, old sleeves, fabric scraps, socks. A tube of fabric stuffed with scraps lies along the door to keep cool air in and dust out.\nResult: a long soft fabric tube made from a jeans leg, stuffed full and tied at both ends, lying along the bottom of a door\nDifficulty: easy; about 45 min; tools: scissors, sewing_kit, measuring_tape\n\n[proj_textile_cleaning_cloths] Reusable cleaning cloths (textile)\nFor: cotton T-shirt, old towel, flannel shirt, worn clothes. Worn cotton cut into squares replaces paper towels for dusting, polishing and spills.\nResult: a neat stack of square cleaning cloths cut from the same cotton fabric, folded on a kitchen counter\nDifficulty: easy; about 10 min; tools: scissors, ruler_pencil\n\nPropose the three ideas.",
+    "answer": {
+      "ideas": [
+        {
+          "title": "Denim door draught stopper",
+          "pitch": "One jeans leg stuffed with scraps keeps cool air in and dust out under the door.",
+          "difficulty": "easy",
+          "time_minutes": 40,
+          "tools_needed": ["scissors", "sewing_kit"],
+          "uses_item_ids": ["item_1"],
+          "extra_materials": ["Old clothes or fabric scraps for stuffing"],
+          "after_visual": "the same faded blue denim, one jeans leg sewn closed at both ends and stuffed into a long soft tube, lying along the bottom of a white door",
+          "safety_note": null,
+          "source_ids": ["proj_textile_draught_stopper"]
+        },
+        {
+          "title": "Back-pocket wall organizer",
+          "pitch": "The original back pockets become a hanging organizer for mail, chargers and keys.",
+          "difficulty": "medium",
+          "time_minutes": 70,
+          "tools_needed": ["scissors", "sewing_kit", "twine"],
+          "uses_item_ids": ["item_1"],
+          "extra_materials": ["A straight stick or wooden dowel", "Denim thread"],
+          "after_visual": "the same faded blue denim cut into a flat rectangle hanging from a wooden stick, with the jeans' two back pockets stitched on side by side, holding envelopes and a phone charger",
+          "safety_note": "Push the needle through thick seams with a thimble, not your fingertip.",
+          "source_ids": ["proj_textile_denim_pocket_organizer"]
+        },
+        {
+          "title": "Heavy-duty cleaning rags",
+          "pitch": "Tough denim squares for scrubbing bikes, tools and outdoor furniture, then washing and reusing.",
+          "difficulty": "easy",
+          "time_minutes": 15,
+          "tools_needed": ["scissors"],
+          "uses_item_ids": ["item_1"],
+          "extra_materials": [],
+          "after_visual": "a neat stack of square rags cut from the same faded blue denim, the frayed edges visible, folded in a small basket",
+          "safety_note": null,
+          "source_ids": ["proj_textile_cleaning_cloths"]
+        }
+      ]
+    }
+  }
+]
