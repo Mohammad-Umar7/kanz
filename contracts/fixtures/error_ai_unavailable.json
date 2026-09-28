@@ -1,0 +1,8 @@
+{
+  "error": {
+    "code": "ai_unavailable",
+    "message": "The AI service is busy right now. Please try again in a moment.",
+    "retryable": true,
+    "request_id": "req_5f3c2a1b"
+  }
+}

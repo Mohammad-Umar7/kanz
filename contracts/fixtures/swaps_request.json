@@ -1,0 +1,20 @@
+{
+  "materials": [
+    "plastic bags",
+    "cling film"
+  ],
+  "history": {
+    "period_days": 30,
+    "counts": {
+      "plastic": 6,
+      "glass": 2
+    },
+    "top_items": [
+      "plastic bottle"
+    ],
+    "top_item_counts": [
+      6
+    ]
+  },
+  "lang": "en"
+}

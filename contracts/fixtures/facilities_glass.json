@@ -1,0 +1,92 @@
+{
+  "places": [
+    {
+      "id": "osm:node/1000000001",
+      "name": "Fixture glass bank A",
+      "address": "Fixture street 1",
+      "lat": 24.461,
+      "lng": 54.372,
+      "distance_m": 950,
+      "open_now": null,
+      "phone": null,
+      "website": null,
+      "maps_url": "https://www.google.com/maps/search/?api=1&query=24.4610,54.3720",
+      "facility_types": [
+        "collection_point"
+      ],
+      "category_keys": [
+        "glass"
+      ],
+      "accepted_materials": [
+        "glass",
+        "paper",
+        "plastic"
+      ],
+      "accepted_note": "Glass, paper, plastic",
+      "rating": null,
+      "source": "osm"
+    },
+    {
+      "id": "g:FIXTURE_PLACE_B",
+      "name": "Fixture recycling centre B",
+      "address": "Fixture road 2",
+      "lat": 24.4402,
+      "lng": 54.3995,
+      "distance_m": 2700,
+      "open_now": true,
+      "phone": "+971 2 000 0000",
+      "website": "https://example.org",
+      "maps_url": "https://www.google.com/maps/search/?api=1&query=24.4402,54.3995",
+      "facility_types": [
+        "recycling_center"
+      ],
+      "category_keys": [
+        "glass",
+        "metal"
+      ],
+      "accepted_materials": null,
+      "accepted_note": null,
+      "rating": 4.3,
+      "source": "google"
+    },
+    {
+      "id": "osm:way/1000000003",
+      "name": "Fixture collection point C",
+      "address": null,
+      "lat": 24.4789,
+      "lng": 54.3551,
+      "distance_m": 3400,
+      "open_now": null,
+      "phone": null,
+      "website": null,
+      "maps_url": "https://www.google.com/maps/search/?api=1&query=24.4789,54.3551",
+      "facility_types": [
+        "collection_point"
+      ],
+      "category_keys": [
+        "glass"
+      ],
+      "accepted_materials": [
+        "glass"
+      ],
+      "accepted_note": null,
+      "rating": null,
+      "source": "osm"
+    }
+  ],
+  "center": {
+    "lat": 24.4539,
+    "lng": 54.3773
+  },
+  "center_label": "Abu Dhabi",
+  "sources_used": [
+    "google",
+    "osm"
+  ],
+  "notice": null,
+  "timings_ms": {
+    "google": 820,
+    "osm": 1450,
+    "total": 1480
+  }
+}

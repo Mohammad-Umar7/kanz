@@ -1,0 +1,104 @@
+{
+  "image_id": "img_3f9a1c2b7d4e5f60",
+  "idea": {
+    "id": "idea_9f2c41aa",
+    "title": "Hanging jar lantern",
+    "pitch": "A warm tea-light lantern with a twine handle, for the balcony or a dinner table.",
+    "difficulty": "easy",
+    "time_minutes": 35,
+    "tools_needed": [
+      "twine",
+      "craft_wire",
+      "pliers",
+      "scissors"
+    ],
+    "tools_have": [
+      "twine",
+      "pliers",
+      "scissors"
+    ],
+    "tools_missing": [
+      "craft_wire"
+    ],
+    "uses_item_ids": [
+      "item_1"
+    ],
+    "extra_materials": [
+      "Tea light",
+      "Sand or small pebbles"
+    ],
+    "after_visual": "the same clear glass jar, label removed, a wire loop wrapped tightly under the rim with a twine-wrapped handle, a lit tea light sitting on a thin layer of sand inside",
+    "safety_note": "Never leave a lit candle unattended; use an LED tea light indoors.",
+    "sources": [
+      {
+        "id": "proj_glass_jar_lantern",
+        "title": "Jar lantern project",
+        "kind": "project"
+      },
+      {
+        "id": "safety_glass_handling",
+        "title": "Glass safety",
+        "kind": "safety"
+      }
+    ]
+  },
+  "items": [
+    {
+      "id": "item_1",
+      "name": "Glass jam jar",
+      "category": "glass",
+      "material": "Clear soda-lime glass",
+      "resin_code": null,
+      "is_raw_material": false,
+      "quantity": {
+        "value": 1.0,
+        "unit": "pcs",
+        "is_estimate": false,
+        "display": "1 pc"
+      },
+      "quality": {
+        "score": 4,
+        "label": "Good",
+        "notes": "No chips or cracks; label residue on one side."
+      },
+      "state": [
+        "empty",
+        "label_on",
+        "lid_on",
+        "intact"
+      ],
+      "recyclability": {
+        "status": "yes",
+        "stream": "Glass bottle bank",
+        "prep_steps": [
+          "Rinse out food residue",
+          "Remove the metal lid",
+          "Peel off the label if it comes away easily"
+        ],
+        "reason": null
+      },
+      "reuse": {
+        "level": "high",
+        "note": "Thick, clear glass with a screw thread: ideal for storage or lighting."
+      },
+      "hazards": [],
+      "confidence": 0.93,
+      "bbox": {
+        "x": 0.31,
+        "y": 0.18,
+        "w": 0.36,
+        "h": 0.62
+      },
+      "user_corrected": false
+    }
+  ],
+  "profile": {
+    "skill": "beginner",
+    "tools": [
+      "scissors",
+      "pliers",
+      "twine"
+    ],
+    "lang": "en"
+  }
+}

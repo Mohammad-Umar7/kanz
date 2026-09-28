@@ -1,0 +1,71 @@
+{
+  "image_id": "img_b477e2a91c0d3e55",
+  "image_url": "/static/uploads/img_b477e2a91c0d3e55.jpg",
+  "image_width": 1600,
+  "image_height": 1200,
+  "analysis": {
+    "items": [
+      {
+        "id": "item_1",
+        "name": "AA alkaline batteries",
+        "category": "hazardous",
+        "material": "Alkaline cell (zinc / manganese dioxide)",
+        "resin_code": null,
+        "is_raw_material": false,
+        "quantity": {
+          "value": 4.0,
+          "unit": "pcs",
+          "is_estimate": false,
+          "display": "4 pcs"
+        },
+        "quality": {
+          "score": 2,
+          "label": "Worn",
+          "notes": "Used; one shows light corrosion at the terminal."
+        },
+        "state": [
+          "worn",
+          "dirty"
+        ],
+        "recyclability": {
+          "status": "conditional",
+          "stream": "Battery collection point",
+          "prep_steps": [
+            "Tape the terminals",
+            "Keep them dry in a jar until drop-off"
+          ],
+          "reason": "Only through dedicated battery collection, never household bins."
+        },
+        "reuse": {
+          "level": "low",
+          "note": "Spent single-use cells have no safe reuse."
+        },
+        "hazards": [
+          "battery"
+        ],
+        "confidence": 0.96,
+        "bbox": {
+          "x": 0.22,
+          "y": 0.3,
+          "w": 0.55,
+          "h": 0.4
+        },
+        "user_corrected": false
+      }
+    ],
+    "summary": "Four used AA batteries.",
+    "photo": {
+      "usable": true,
+      "issue": "ok",
+      "retake_tip": null
+    },
+    "primary_item_id": "item_1",
+    "source": "image",
+    "classifier_hint": null
+  },
+  "lang": "en",
+  "timings_ms": {
+    "analysis": 3920,
+    "total": 4105
+  }
+}

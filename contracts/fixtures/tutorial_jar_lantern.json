@@ -1,0 +1,141 @@
+{
+  "tutorial": {
+    "tutorial_id": "tut_8d1e2f3a4b5c6d7e",
+    "idea_id": "idea_9f2c41aa",
+    "image_id": "img_3f9a1c2b7d4e5f60",
+    "title": "Hanging jar lantern",
+    "adapted_note": "Adapted for Beginner: pliers instead of a drill, no glass cutting.",
+    "skill": "beginner",
+    "total_minutes": 33,
+    "materials": [
+      {
+        "name": "Glass jam jar",
+        "quantity": "1",
+        "from_scan": true,
+        "item_id": "item_1"
+      },
+      {
+        "name": "Craft wire",
+        "quantity": "60 cm",
+        "from_scan": false,
+        "item_id": null
+      },
+      {
+        "name": "Twine",
+        "quantity": "2 m",
+        "from_scan": false,
+        "item_id": null
+      },
+      {
+        "name": "Sand or small pebbles",
+        "quantity": "1 cup",
+        "from_scan": false,
+        "item_id": null
+      },
+      {
+        "name": "Tea light",
+        "quantity": "1",
+        "from_scan": false,
+        "item_id": null
+      }
+    ],
+    "tools": [
+      {
+        "tool_id": "pliers",
+        "have": true,
+        "alternative": null
+      },
+      {
+        "tool_id": "scissors",
+        "have": true,
+        "alternative": null
+      },
+      {
+        "tool_id": "twine",
+        "have": true,
+        "alternative": null
+      },
+      {
+        "tool_id": "craft_wire",
+        "have": false,
+        "alternative": "A straightened metal coat hanger or a sturdy key-ring chain"
+      }
+    ],
+    "safety": [
+      "Wear work gloves when bending wire",
+      "Check the jar for chips before you start"
+    ],
+    "steps": [
+      {
+        "number": 1,
+        "title": "Soak off the label",
+        "instruction": "Fill a bowl with warm soapy water and soak the jar for 10 minutes, then peel the label and rub off the glue with a cloth.",
+        "tip": "A little cooking oil lifts stubborn glue.",
+        "warning": null,
+        "duration_minutes": 12,
+        "image_prompt": "the same jar with the paper label fully removed, clean and dry on the counter, lid set aside"
+      },
+      {
+        "number": 2,
+        "title": "Wrap the wire collar",
+        "instruction": "Wrap craft wire twice around the groove under the rim and twist the ends together with pliers until it doesn't slide.",
+        "tip": null,
+        "warning": "Wire ends are sharp: tuck them flat against the glass.",
+        "duration_minutes": 5,
+        "image_prompt": "the same clean jar with a snug double loop of thin silver wire twisted around the neck under the rim"
+      },
+      {
+        "number": 3,
+        "title": "Add the handle",
+        "instruction": "Cut 30 cm of wire, hook each end through the collar on opposite sides and bend them closed to form an arch.",
+        "tip": null,
+        "warning": null,
+        "duration_minutes": 5,
+        "image_prompt": "the same jar now with an arched wire handle attached to the neck collar on both sides"
+      },
+      {
+        "number": 4,
+        "title": "Wrap the handle in twine",
+        "instruction": "Tie twine to one end of the handle and wind it tightly along the arch. Tie off and dab the knot with glue if you have some.",
+        "tip": "Keep each turn touching the last for a neat finish.",
+        "warning": null,
+        "duration_minutes": 8,
+        "image_prompt": "the same jar lantern with its wire handle fully wrapped in natural brown twine"
+      },
+      {
+        "number": 5,
+        "title": "Add sand and a tea light",
+        "instruction": "Pour 2 cm of sand or pebbles into the jar and press a tea light into the middle.",
+        "tip": null,
+        "warning": "Use an LED tea light indoors and never leave a flame unattended.",
+        "duration_minutes": 3,
+        "image_prompt": "the finished jar lantern with a layer of pale sand inside and a tea light sitting in the middle, lit"
+      }
+    ],
+    "finishing": [
+      "Hang it from a hook at least 30 cm below anything that can burn"
+    ],
+    "care": [
+      "Wipe soot off the inside with a damp cloth",
+      "Replace the sand if wax spills into it"
+    ],
+    "sources": [
+      {
+        "id": "proj_glass_jar_lantern",
+        "title": "Jar lantern project",
+        "kind": "project"
+      },
+      {
+        "id": "safety_glass_handling",
+        "title": "Glass safety",
+        "kind": "safety"
+      }
+    ],
+    "lang": "en"
+  },
+  "timings_ms": {
+    "retrieval": 300,
+    "tutorial_writer": 8200,
+    "total": 8550
+  }
+}

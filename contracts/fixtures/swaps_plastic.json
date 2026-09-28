@@ -1,0 +1,71 @@
+{
+  "swaps": [
+    {
+      "id": "swap_plastic_bag_tote",
+      "from_item": "Single-use plastic bags",
+      "to_item": "A folding cotton or canvas tote",
+      "why": "One tote replaces hundreds of thin bags that tear quickly and end up as litter.",
+      "tip": "Keep one folded in your car and one clipped to your keys so it is there when you shop.",
+      "effort": "low",
+      "cost": "low",
+      "category": "plastic",
+      "impact_note": null,
+      "matched_input": "plastic bags",
+      "from_history": false,
+      "sources": [
+        {
+          "id": "swap_plastic_bag_tote",
+          "title": "Reusable shopping bags",
+          "kind": "swap"
+        }
+      ]
+    },
+    {
+      "id": "swap_cling_film_beeswax",
+      "from_item": "Cling film",
+      "to_item": "Beeswax wraps or a plate over the bowl",
+      "why": "Wraps are washable and last about a year; a plate costs nothing.",
+      "tip": "Warm the wrap in your hands so it grips the bowl's edge.",
+      "effort": "low",
+      "cost": "medium",
+      "category": "plastic",
+      "impact_note": null,
+      "matched_input": "cling film",
+      "from_history": false,
+      "sources": [
+        {
+          "id": "swap_cling_film_beeswax",
+          "title": "Food wraps",
+          "kind": "swap"
+        }
+      ]
+    },
+    {
+      "id": "swap_bottled_water_filter",
+      "from_item": "Bottled water",
+      "to_item": "A filter jug and a steel bottle",
+      "why": "You scanned mostly plastic bottles; refilling one bottle removes that stream.",
+      "tip": "Fill the bottle the night before and keep it by your keys.",
+      "effort": "low",
+      "cost": "medium",
+      "category": "plastic",
+      "impact_note": null,
+      "matched_input": null,
+      "from_history": true,
+      "sources": [
+        {
+          "id": "swap_bottled_water_filter",
+          "title": "Refillable water",
+          "kind": "swap"
+        }
+      ]
+    }
+  ],
+  "history_insight": "You scanned 6 plastic bottles this month.",
+  "lang": "en",
+  "timings_ms": {
+    "retrieval": 350,
+    "swap_advisor": 4200,
+    "total": 4600
+  }
+}

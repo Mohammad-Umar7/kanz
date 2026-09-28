@@ -1,0 +1,71 @@
+{
+  "image_id": "img_7e5d0c4b3a291f88",
+  "image_url": "/static/uploads/img_7e5d0c4b3a291f88.jpg",
+  "image_width": 1200,
+  "image_height": 1600,
+  "analysis": {
+    "items": [
+      {
+        "id": "item_1",
+        "name": "Cotton t-shirt",
+        "category": "textile",
+        "material": "100% cotton jersey",
+        "resin_code": null,
+        "is_raw_material": false,
+        "quantity": {
+          "value": 1.0,
+          "unit": "pcs",
+          "is_estimate": false,
+          "display": "1 pc"
+        },
+        "quality": {
+          "score": 3,
+          "label": "Fair",
+          "notes": "Faded print and a small hole near the hem."
+        },
+        "state": [
+          "clean",
+          "faded",
+          "worn",
+          "torn"
+        ],
+        "recyclability": {
+          "status": "conditional",
+          "stream": "Textile recycling bank",
+          "prep_steps": [
+            "Wash and dry it",
+            "Bag it to keep it dry"
+          ],
+          "reason": "Clean, dry textiles only."
+        },
+        "reuse": {
+          "level": "high",
+          "note": "Soft knit cotton cuts cleanly and does not fray."
+        },
+        "hazards": [],
+        "confidence": 0.9,
+        "bbox": {
+          "x": 0.12,
+          "y": 0.1,
+          "w": 0.76,
+          "h": 0.8
+        },
+        "user_corrected": false
+      }
+    ],
+    "summary": "A faded grey cotton t-shirt, laid flat.",
+    "photo": {
+      "usable": true,
+      "issue": "ok",
+      "retake_tip": null
+    },
+    "primary_item_id": "item_1",
+    "source": "image",
+    "classifier_hint": null
+  },
+  "lang": "en",
+  "timings_ms": {
+    "analysis": 4010,
+    "total": 4200
+  }
+}

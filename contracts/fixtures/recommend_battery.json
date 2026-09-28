@@ -1,0 +1,84 @@
+{
+  "routing": {
+    "mode": "disposal_only",
+    "hazardous_item_ids": [
+      "item_1"
+    ],
+    "reason": "Batteries can leak or catch fire, so there's no DIY here. Here's how to get rid of them safely."
+  },
+  "upcycle": [],
+  "recycle": {
+    "instructions": [
+      {
+        "item_id": "item_1",
+        "status": "conditional",
+        "stream": "Battery collection point",
+        "prep_steps": [
+          "Put tape over both terminals",
+          "Store in a dry jar until you drop them off"
+        ],
+        "dos": [
+          "Use the battery boxes at supermarkets and electronics stores"
+        ],
+        "donts": [
+          "Never put batteries in the household bin",
+          "Don't store them loose in a drawer with metal"
+        ],
+        "note": null
+      }
+    ],
+    "sources": [
+      {
+        "id": "safety_batteries",
+        "title": "Battery safety",
+        "kind": "safety"
+      }
+    ]
+  },
+  "donate": {
+    "available": false,
+    "summary": "Used batteries can't be donated.",
+    "options": []
+  },
+  "disposal": [
+    {
+      "item_id": "item_1",
+      "hazard": "battery",
+      "headline": "Take the batteries to a battery collection point.",
+      "steps": [
+        "Tape both ends of every battery",
+        "Keep them in a dry glass jar",
+        "Drop them at a collection box"
+      ],
+      "never": [
+        "Never throw them in the bin",
+        "Never burn, crush or open them",
+        "Never try to recharge alkaline cells"
+      ]
+    }
+  ],
+  "facility_categories": [
+    {
+      "key": "battery",
+      "label": "Battery collection",
+      "facility_types": [
+        "hazardous_waste",
+        "e_waste",
+        "collection_point"
+      ],
+      "material_categories": [
+        "hazardous"
+      ],
+      "item_ids": [
+        "item_1"
+      ]
+    }
+  ],
+  "lang": "en",
+  "timings_ms": {
+    "safety_router": 1,
+    "retrieval": 380,
+    "recycle": 3300,
+    "total": 3450
+  }
+}

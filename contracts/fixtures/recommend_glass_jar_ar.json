@@ -1,0 +1,222 @@
+{
+  "routing": {
+    "mode": "diy",
+    "hazardous_item_ids": [],
+    "reason": null
+  },
+  "upcycle": [
+    {
+      "id": "idea_9f2c41aa",
+      "title": "فانوس برطمان معلّق",
+      "pitch": "فانوس دافئ بشمعة صغيرة ومقبض من الخيط، للشرفة أو مائدة العشاء.",
+      "difficulty": "easy",
+      "time_minutes": 35,
+      "tools_needed": [
+        "twine",
+        "craft_wire",
+        "pliers",
+        "scissors"
+      ],
+      "tools_have": [
+        "twine",
+        "pliers",
+        "scissors"
+      ],
+      "tools_missing": [
+        "craft_wire"
+      ],
+      "uses_item_ids": [
+        "item_1"
+      ],
+      "extra_materials": [
+        "شمعة صغيرة",
+        "رمل أو حصى صغيرة"
+      ],
+      "after_visual": "the same clear glass jar, label removed, a wire loop wrapped tightly under the rim with a twine-wrapped handle, a lit tea light sitting on a thin layer of sand inside",
+      "safety_note": "لا تترك الشمعة مشتعلة دون مراقبة، واستخدم شمعة LED داخل المنزل.",
+      "sources": [
+        {
+          "id": "proj_glass_jar_lantern",
+          "title": "مشروع فانوس البرطمان",
+          "kind": "project"
+        },
+        {
+          "id": "safety_glass_handling",
+          "title": "سلامة التعامل مع الزجاج",
+          "kind": "safety"
+        }
+      ]
+    },
+    {
+      "id": "idea_1b7e03d5",
+      "title": "برطمان أعشاب للمطبخ",
+      "pitch": "ازرع الريحان أو النعناع على حافة النافذة مع طبقة حصى للتصريف.",
+      "difficulty": "easy",
+      "time_minutes": 25,
+      "tools_needed": [
+        "scissors"
+      ],
+      "tools_have": [
+        "scissors"
+      ],
+      "tools_missing": [],
+      "uses_item_ids": [
+        "item_1"
+      ],
+      "extra_materials": [
+        "حصى",
+        "تربة زراعية",
+        "شتلة أعشاب"
+      ],
+      "after_visual": "the same glass jar filled with a pebble layer, dark potting soil and a small basil plant",
+      "safety_note": null,
+      "sources": [
+        {
+          "id": "proj_glass_jar_herb_garden",
+          "title": "حديقة أعشاب في برطمان",
+          "kind": "project"
+        }
+      ]
+    },
+    {
+      "id": "idea_c40d9e17",
+      "title": "منظّم مكتب مطلي",
+      "pitch": "طلاء مطفأ وحزام من الخيط يحوّلانه إلى حامل أقلام وفرش.",
+      "difficulty": "medium",
+      "time_minutes": 60,
+      "tools_needed": [
+        "acrylic_paint",
+        "paintbrush",
+        "masking_tape",
+        "twine"
+      ],
+      "tools_have": [
+        "twine"
+      ],
+      "tools_missing": [
+        "acrylic_paint",
+        "paintbrush",
+        "masking_tape"
+      ],
+      "uses_item_ids": [
+        "item_1",
+        "item_2"
+      ],
+      "extra_materials": [
+        "أقلام وفرش لملئه"
+      ],
+      "after_visual": "the same jar painted matte white on the outside with a clean unpainted band, holding pens and pencils",
+      "safety_note": null,
+      "sources": [
+        {
+          "id": "proj_glass_painted_jar",
+          "title": "منظّم البرطمان المطلي",
+          "kind": "project"
+        }
+      ]
+    }
+  ],
+  "recycle": {
+    "instructions": [
+      {
+        "item_id": "item_1",
+        "status": "yes",
+        "stream": "حاوية الزجاج",
+        "prep_steps": [
+          "اشطفه من بقايا الطعام",
+          "انزع الغطاء",
+          "لا بأس ببقاء الملصق إن لم ينفصل"
+        ],
+        "dos": [
+          "افرز حسب اللون إن كانت للحاوية فتحات منفصلة"
+        ],
+        "donts": [
+          "لا تضع أكواب الشرب أو المرايا أو الخزف",
+          "لا تضع الزجاج في كيس"
+        ],
+        "note": null
+      },
+      {
+        "item_id": "item_2",
+        "status": "yes",
+        "stream": "تدوير المعادن (العلب)",
+        "prep_steps": [
+          "افصل الغطاء عن البرطمان"
+        ],
+        "dos": [
+          "اجمع الأغطية الصغيرة داخل علبة واضغط فوهتها"
+        ],
+        "donts": [
+          "لا تترك الغطاء مركّبًا على البرطمان"
+        ],
+        "note": null
+      }
+    ],
+    "sources": [
+      {
+        "id": "mat_glass",
+        "title": "الزجاج: التعرّف والتحضير",
+        "kind": "material_guide"
+      }
+    ]
+  },
+  "donate": {
+    "available": true,
+    "summary": "البرطمانات النظيفة مرحّب بها في مطابخ المجتمع ومتاجر إعادة التعبئة.",
+    "options": [
+      {
+        "item_id": "item_1",
+        "suitable": true,
+        "reason": "برطمان سليم ونظيف بغطاء يعمل.",
+        "where": [
+          "متاجر إعادة التعبئة",
+          "المطابخ المجتمعية"
+        ],
+        "prep_steps": [
+          "اغسله وجففه",
+          "أبقِ الغطاء معه"
+        ]
+      }
+    ]
+  },
+  "disposal": [],
+  "facility_categories": [
+    {
+      "key": "glass",
+      "label": "تدوير الزجاج",
+      "facility_types": [
+        "recycling_center",
+        "collection_point"
+      ],
+      "material_categories": [
+        "glass"
+      ],
+      "item_ids": [
+        "item_1"
+      ]
+    },
+    {
+      "key": "metal",
+      "label": "تدوير المعادن",
+      "facility_types": [
+        "recycling_center",
+        "scrap_metal"
+      ],
+      "material_categories": [
+        "metal"
+      ],
+      "item_ids": [
+        "item_2"
+      ]
+    }
+  ],
+  "lang": "ar",
+  "timings_ms": {
+    "safety_router": 1,
+    "retrieval": 420,
+    "upcycle": 6150,
+    "recycle": 3900,
+    "donate": 2700,
+    "total": 6620
+  }
+}

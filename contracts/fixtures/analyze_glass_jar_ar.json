@@ -1,0 +1,116 @@
+{
+  "image_id": "img_3f9a1c2b7d4e5f60",
+  "image_url": "/static/uploads/img_3f9a1c2b7d4e5f60.jpg",
+  "image_width": 1200,
+  "image_height": 1600,
+  "analysis": {
+    "items": [
+      {
+        "id": "item_1",
+        "name": "برطمان مربى زجاجي",
+        "category": "glass",
+        "material": "زجاج شفاف (صودا-جير)",
+        "resin_code": null,
+        "is_raw_material": false,
+        "quantity": {
+          "value": 1.0,
+          "unit": "pcs",
+          "is_estimate": false,
+          "display": "قطعة واحدة"
+        },
+        "quality": {
+          "score": 4,
+          "label": "جيد",
+          "notes": "لا شقوق ولا كسور، وبقايا ملصق على جانب واحد."
+        },
+        "state": [
+          "empty",
+          "label_on",
+          "lid_on",
+          "intact"
+        ],
+        "recyclability": {
+          "status": "yes",
+          "stream": "حاوية الزجاج",
+          "prep_steps": [
+            "اشطفه من بقايا الطعام",
+            "انزع الغطاء المعدني",
+            "أزل الملصق إن انفصل بسهولة"
+          ],
+          "reason": null
+        },
+        "reuse": {
+          "level": "high",
+          "note": "زجاج سميك وشفاف بفوهة ملولبة، مثالي للتخزين أو الإضاءة."
+        },
+        "hazards": [],
+        "confidence": 0.93,
+        "bbox": {
+          "x": 0.31,
+          "y": 0.18,
+          "w": 0.36,
+          "h": 0.62
+        },
+        "user_corrected": false
+      },
+      {
+        "id": "item_2",
+        "name": "غطاء برطمان معدني",
+        "category": "metal",
+        "material": "فولاذ مطلي بالقصدير مع بطانة بلاستيكية",
+        "resin_code": null,
+        "is_raw_material": false,
+        "quantity": {
+          "value": 1.0,
+          "unit": "pcs",
+          "is_estimate": false,
+          "display": "قطعة واحدة"
+        },
+        "quality": {
+          "score": 4,
+          "label": "جيد",
+          "notes": "خدوش خفيفة ولا صدأ."
+        },
+        "state": [
+          "clean",
+          "intact"
+        ],
+        "recyclability": {
+          "status": "yes",
+          "stream": "تدوير المعادن (العلب)",
+          "prep_steps": [
+            "افصله عن البرطمان"
+          ],
+          "reason": null
+        },
+        "reuse": {
+          "level": "medium",
+          "note": "يمكن ثقبه لفانوس معلّق أو استخدامه كقاعدة أكواب."
+        },
+        "hazards": [],
+        "confidence": 0.81,
+        "bbox": {
+          "x": 0.33,
+          "y": 0.15,
+          "w": 0.32,
+          "h": 0.08
+        },
+        "user_corrected": false
+      }
+    ],
+    "summary": "برطمان مربى زجاجي فارغ بغطائه المعدني.",
+    "photo": {
+      "usable": true,
+      "issue": "ok",
+      "retake_tip": null
+    },
+    "primary_item_id": "item_1",
+    "source": "image",
+    "classifier_hint": null
+  },
+  "lang": "ar",
+  "timings_ms": {
+    "analysis": 4180,
+    "total": 4390
+  }
+}

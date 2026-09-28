@@ -1,0 +1,141 @@
+{
+  "tutorial": {
+    "tutorial_id": "tut_8d1e2f3a4b5c6d7e",
+    "idea_id": "idea_9f2c41aa",
+    "image_id": "img_3f9a1c2b7d4e5f60",
+    "title": "فانوس برطمان معلّق",
+    "adapted_note": "مُعدّ للمبتدئين: كماشة بدل المثقاب، ودون قص للزجاج.",
+    "skill": "beginner",
+    "total_minutes": 33,
+    "materials": [
+      {
+        "name": "برطمان مربى زجاجي",
+        "quantity": "1",
+        "from_scan": true,
+        "item_id": "item_1"
+      },
+      {
+        "name": "سلك حِرفي",
+        "quantity": "60 سم",
+        "from_scan": false,
+        "item_id": null
+      },
+      {
+        "name": "خيط قنّب",
+        "quantity": "2 م",
+        "from_scan": false,
+        "item_id": null
+      },
+      {
+        "name": "رمل أو حصى صغيرة",
+        "quantity": "كوب واحد",
+        "from_scan": false,
+        "item_id": null
+      },
+      {
+        "name": "شمعة صغيرة",
+        "quantity": "1",
+        "from_scan": false,
+        "item_id": null
+      }
+    ],
+    "tools": [
+      {
+        "tool_id": "pliers",
+        "have": true,
+        "alternative": null
+      },
+      {
+        "tool_id": "scissors",
+        "have": true,
+        "alternative": null
+      },
+      {
+        "tool_id": "twine",
+        "have": true,
+        "alternative": null
+      },
+      {
+        "tool_id": "craft_wire",
+        "have": false,
+        "alternative": "علاقة ملابس معدنية مفرودة أو سلسلة مفاتيح متينة"
+      }
+    ],
+    "safety": [
+      "ارتدِ قفازات العمل عند ثني السلك",
+      "افحص البرطمان بحثًا عن أي كسور قبل البدء"
+    ],
+    "steps": [
+      {
+        "number": 1,
+        "title": "انزع الملصق بالنقع",
+        "instruction": "املأ وعاءً بماء دافئ وصابون وانقع البرطمان 10 دقائق، ثم انزع الملصق وامسح الغراء بقطعة قماش.",
+        "tip": "قليل من زيت الطبخ يزيل الغراء العنيد.",
+        "warning": null,
+        "duration_minutes": 12,
+        "image_prompt": "the same jar with the paper label fully removed, clean and dry on the counter, lid set aside"
+      },
+      {
+        "number": 2,
+        "title": "لفّ طوق السلك",
+        "instruction": "لفّ السلك مرتين حول التجويف أسفل الحافة واجدل طرفيه بالكماشة حتى لا ينزلق.",
+        "tip": null,
+        "warning": "أطراف السلك حادة: اثنها لتلتصق بالزجاج.",
+        "duration_minutes": 5,
+        "image_prompt": "the same clean jar with a snug double loop of thin silver wire twisted around the neck under the rim"
+      },
+      {
+        "number": 3,
+        "title": "أضف المقبض",
+        "instruction": "قصّ 30 سم من السلك، وعلّق كل طرف في الطوق من جهتين متقابلتين واثنهما لتشكيل قوس.",
+        "tip": null,
+        "warning": null,
+        "duration_minutes": 5,
+        "image_prompt": "the same jar now with an arched wire handle attached to the neck collar on both sides"
+      },
+      {
+        "number": 4,
+        "title": "لفّ المقبض بالخيط",
+        "instruction": "اربط الخيط بطرف المقبض ولفّه بإحكام على طول القوس، ثم اعقده وضع نقطة غراء إن توفّر.",
+        "tip": "اجعل كل لفّة ملاصقة للتي قبلها لمظهر أنيق.",
+        "warning": null,
+        "duration_minutes": 8,
+        "image_prompt": "the same jar lantern with its wire handle fully wrapped in natural brown twine"
+      },
+      {
+        "number": 5,
+        "title": "أضف الرمل والشمعة",
+        "instruction": "اسكب 2 سم من الرمل أو الحصى داخل البرطمان وثبّت الشمعة في المنتصف.",
+        "tip": null,
+        "warning": "استخدم شمعة LED داخل المنزل ولا تترك اللهب دون مراقبة.",
+        "duration_minutes": 3,
+        "image_prompt": "the finished jar lantern with a layer of pale sand inside and a tea light sitting in the middle, lit"
+      }
+    ],
+    "finishing": [
+      "علّقه على خطاف يبعد 30 سم على الأقل عن أي شيء قابل للاشتعال"
+    ],
+    "care": [
+      "امسح السخام من الداخل بقطعة قماش مبللة",
+      "استبدل الرمل إذا سال عليه الشمع"
+    ],
+    "sources": [
+      {
+        "id": "proj_glass_jar_lantern",
+        "title": "مشروع فانوس البرطمان",
+        "kind": "project"
+      },
+      {
+        "id": "safety_glass_handling",
+        "title": "سلامة التعامل مع الزجاج",
+        "kind": "safety"
+      }
+    ],
+    "lang": "ar"
+  },
+  "timings_ms": {
+    "retrieval": 300,
+    "tutorial_writer": 8900,
+    "total": 9250
+  }
+}

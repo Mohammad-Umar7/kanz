@@ -1,0 +1,162 @@
+{
+  "routing": {
+    "mode": "diy",
+    "hazardous_item_ids": [],
+    "reason": null
+  },
+  "upcycle": [
+    {
+      "id": "idea_5e8a0b21",
+      "title": "No-sew tote bag",
+      "pitch": "Cut the sleeves and neck, tie the hem: a washable shopping bag in 20 minutes.",
+      "difficulty": "easy",
+      "time_minutes": 20,
+      "tools_needed": [
+        "scissors",
+        "ruler_pencil"
+      ],
+      "tools_have": [
+        "scissors"
+      ],
+      "tools_missing": [
+        "ruler_pencil"
+      ],
+      "uses_item_ids": [
+        "item_1"
+      ],
+      "extra_materials": [],
+      "after_visual": "the same grey cotton t-shirt made into a tote bag: sleeves and neckline cut away, bottom hem cut into fringe strips tied in knots",
+      "safety_note": null,
+      "sources": [
+        {
+          "id": "proj_textile_tshirt_tote",
+          "title": "T-shirt tote bag",
+          "kind": "project"
+        }
+      ]
+    },
+    {
+      "id": "idea_2d9f6c30",
+      "title": "Braided rag rug coaster set",
+      "pitch": "Cut the shirt into yarn and braid four sturdy coasters.",
+      "difficulty": "medium",
+      "time_minutes": 75,
+      "tools_needed": [
+        "scissors",
+        "sewing_kit"
+      ],
+      "tools_have": [
+        "scissors"
+      ],
+      "tools_missing": [
+        "sewing_kit"
+      ],
+      "uses_item_ids": [
+        "item_1"
+      ],
+      "extra_materials": [],
+      "after_visual": "four round coasters coiled from braided strips of the same grey cotton jersey",
+      "safety_note": null,
+      "sources": [
+        {
+          "id": "proj_textile_braided_coasters",
+          "title": "Braided coasters",
+          "kind": "project"
+        }
+      ]
+    },
+    {
+      "id": "idea_8c1a4e77",
+      "title": "Cleaning cloths",
+      "pitch": "Square, hemless cloths that beat paper towels for dusting and polishing.",
+      "difficulty": "easy",
+      "time_minutes": 10,
+      "tools_needed": [
+        "scissors"
+      ],
+      "tools_have": [
+        "scissors"
+      ],
+      "tools_missing": [],
+      "uses_item_ids": [
+        "item_1"
+      ],
+      "extra_materials": [],
+      "after_visual": "a neat stack of square cloths cut from the same grey cotton t-shirt",
+      "safety_note": null,
+      "sources": [
+        {
+          "id": "proj_textile_cleaning_cloths",
+          "title": "Rag cleaning cloths",
+          "kind": "project"
+        }
+      ]
+    }
+  ],
+  "recycle": {
+    "instructions": [
+      {
+        "item_id": "item_1",
+        "status": "conditional",
+        "stream": "Textile recycling bank",
+        "prep_steps": [
+          "Wash and dry it",
+          "Put it in a tied bag"
+        ],
+        "dos": [
+          "Include worn or torn cotton: it becomes insulation or rags"
+        ],
+        "donts": [
+          "Don't include wet or mouldy textiles"
+        ],
+        "note": null
+      }
+    ],
+    "sources": []
+  },
+  "donate": {
+    "available": true,
+    "summary": "Wearable despite fading: a clothing donation bin can pass it on.",
+    "options": [
+      {
+        "item_id": "item_1",
+        "suitable": true,
+        "reason": "Clean and wearable; the small hole can be mended.",
+        "where": [
+          "Clothing donation bins",
+          "Charity shops"
+        ],
+        "prep_steps": [
+          "Wash it",
+          "Fold it into a bag"
+        ]
+      }
+    ]
+  },
+  "disposal": [],
+  "facility_categories": [
+    {
+      "key": "textile_donation",
+      "label": "Clothes donation",
+      "facility_types": [
+        "donation",
+        "collection_point"
+      ],
+      "material_categories": [
+        "textile"
+      ],
+      "item_ids": [
+        "item_1"
+      ]
+    }
+  ],
+  "lang": "en",
+  "timings_ms": {
+    "safety_router": 1,
+    "retrieval": 410,
+    "upcycle": 5900,
+    "recycle": 3100,
+    "donate": 2800,
+    "total": 6300
+  }
+}

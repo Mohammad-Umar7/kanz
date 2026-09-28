@@ -1,0 +1,222 @@
+{
+  "routing": {
+    "mode": "diy",
+    "hazardous_item_ids": [],
+    "reason": null
+  },
+  "upcycle": [
+    {
+      "id": "idea_9f2c41aa",
+      "title": "Hanging jar lantern",
+      "pitch": "A warm tea-light lantern with a twine handle, for the balcony or a dinner table.",
+      "difficulty": "easy",
+      "time_minutes": 35,
+      "tools_needed": [
+        "twine",
+        "craft_wire",
+        "pliers",
+        "scissors"
+      ],
+      "tools_have": [
+        "twine",
+        "pliers",
+        "scissors"
+      ],
+      "tools_missing": [
+        "craft_wire"
+      ],
+      "uses_item_ids": [
+        "item_1"
+      ],
+      "extra_materials": [
+        "Tea light",
+        "Sand or small pebbles"
+      ],
+      "after_visual": "the same clear glass jar, label removed, a wire loop wrapped tightly under the rim with a twine-wrapped handle, a lit tea light sitting on a thin layer of sand inside",
+      "safety_note": "Never leave a lit candle unattended; use an LED tea light indoors.",
+      "sources": [
+        {
+          "id": "proj_glass_jar_lantern",
+          "title": "Jar lantern project",
+          "kind": "project"
+        },
+        {
+          "id": "safety_glass_handling",
+          "title": "Glass safety",
+          "kind": "safety"
+        }
+      ]
+    },
+    {
+      "id": "idea_1b7e03d5",
+      "title": "Kitchen herb jar",
+      "pitch": "Grow basil or mint on the windowsill, with a pebble layer for drainage.",
+      "difficulty": "easy",
+      "time_minutes": 25,
+      "tools_needed": [
+        "scissors"
+      ],
+      "tools_have": [
+        "scissors"
+      ],
+      "tools_missing": [],
+      "uses_item_ids": [
+        "item_1"
+      ],
+      "extra_materials": [
+        "Pebbles",
+        "Potting mix",
+        "Herb seedling"
+      ],
+      "after_visual": "the same glass jar filled with a pebble layer, dark potting soil and a small basil plant",
+      "safety_note": null,
+      "sources": [
+        {
+          "id": "proj_glass_jar_herb_garden",
+          "title": "Jar herb garden",
+          "kind": "project"
+        }
+      ]
+    },
+    {
+      "id": "idea_c40d9e17",
+      "title": "Painted desk organizer",
+      "pitch": "Frosted paint and a twine band turn it into a pen and brush holder.",
+      "difficulty": "medium",
+      "time_minutes": 60,
+      "tools_needed": [
+        "acrylic_paint",
+        "paintbrush",
+        "masking_tape",
+        "twine"
+      ],
+      "tools_have": [
+        "twine"
+      ],
+      "tools_missing": [
+        "acrylic_paint",
+        "paintbrush",
+        "masking_tape"
+      ],
+      "uses_item_ids": [
+        "item_1",
+        "item_2"
+      ],
+      "extra_materials": [
+        "Pens and brushes to fill it"
+      ],
+      "after_visual": "the same jar painted matte white on the outside with a clean unpainted band, holding pens and pencils",
+      "safety_note": null,
+      "sources": [
+        {
+          "id": "proj_glass_painted_jar",
+          "title": "Painted jar organizer",
+          "kind": "project"
+        }
+      ]
+    }
+  ],
+  "recycle": {
+    "instructions": [
+      {
+        "item_id": "item_1",
+        "status": "yes",
+        "stream": "Glass bottle bank",
+        "prep_steps": [
+          "Rinse out food residue",
+          "Remove the lid",
+          "Labels can stay on if they won't peel"
+        ],
+        "dos": [
+          "Sort by color if the bank has separate slots"
+        ],
+        "donts": [
+          "Don't include drinking glasses, mirrors or ceramics",
+          "Don't bag the glass"
+        ],
+        "note": null
+      },
+      {
+        "item_id": "item_2",
+        "status": "yes",
+        "stream": "Metal recycling (cans)",
+        "prep_steps": [
+          "Keep the lid separate from the jar"
+        ],
+        "dos": [
+          "Put several small lids inside a can and pinch it closed"
+        ],
+        "donts": [
+          "Don't leave the lid screwed on the jar"
+        ],
+        "note": null
+      }
+    ],
+    "sources": [
+      {
+        "id": "mat_glass",
+        "title": "Glass: identification and prep",
+        "kind": "material_guide"
+      }
+    ]
+  },
+  "donate": {
+    "available": true,
+    "summary": "Clean jars are welcome at community kitchens and refill shops.",
+    "options": [
+      {
+        "item_id": "item_1",
+        "suitable": true,
+        "reason": "Intact, clean jar with a working lid.",
+        "where": [
+          "Refill and zero-waste shops",
+          "Community kitchens"
+        ],
+        "prep_steps": [
+          "Wash and dry it",
+          "Keep the lid with it"
+        ]
+      }
+    ]
+  },
+  "disposal": [],
+  "facility_categories": [
+    {
+      "key": "glass",
+      "label": "Glass recycling",
+      "facility_types": [
+        "recycling_center",
+        "collection_point"
+      ],
+      "material_categories": [
+        "glass"
+      ],
+      "item_ids": [
+        "item_1"
+      ]
+    },
+    {
+      "key": "metal",
+      "label": "Metal recycling",
+      "facility_types": [
+        "recycling_center",
+        "scrap_metal"
+      ],
+      "material_categories": [
+        "metal"
+      ],
+      "item_ids": [
+        "item_2"
+      ]
+    }
+  ],
+  "lang": "en",
+  "timings_ms": {
+    "safety_router": 1,
+    "retrieval": 420,
+    "upcycle": 6150,
+    "recycle": 3900,
+    "donate": 2700,
+    "total": 6620
+  }
+}

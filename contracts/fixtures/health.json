@@ -1,0 +1,17 @@
+{
+  "status": "ok",
+  "app_name": "Kanz",
+  "version": "1.0.0",
+  "models": {
+    "vision": "gemini-3.6-flash",
+    "text": "gemini-3.6-flash",
+    "image": "gemini-3.1-flash-image",
+    "embed": "gemini-embedding-001"
+  },
+  "ai_configured": true,
+  "knowledge_docs": 96,
+  "rag_ready": true,
+  "places_google": true,
+  "places_osm": true,
+  "uptime_s": 42
+}

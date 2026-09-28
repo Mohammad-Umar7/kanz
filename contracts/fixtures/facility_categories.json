@@ -1,0 +1,126 @@
+{
+  "categories": [
+    {
+      "key": "glass",
+      "label": "Glass recycling",
+      "facility_types": [
+        "recycling_center",
+        "collection_point"
+      ],
+      "material_categories": [
+        "glass"
+      ],
+      "item_ids": []
+    },
+    {
+      "key": "plastic",
+      "label": "Plastic recycling",
+      "facility_types": [
+        "recycling_center",
+        "collection_point"
+      ],
+      "material_categories": [
+        "plastic"
+      ],
+      "item_ids": []
+    },
+    {
+      "key": "paper",
+      "label": "Paper and cardboard",
+      "facility_types": [
+        "recycling_center",
+        "collection_point"
+      ],
+      "material_categories": [
+        "paper"
+      ],
+      "item_ids": []
+    },
+    {
+      "key": "metal",
+      "label": "Metal recycling",
+      "facility_types": [
+        "recycling_center",
+        "scrap_metal"
+      ],
+      "material_categories": [
+        "metal"
+      ],
+      "item_ids": []
+    },
+    {
+      "key": "textile_donation",
+      "label": "Clothes donation",
+      "facility_types": [
+        "donation",
+        "collection_point"
+      ],
+      "material_categories": [
+        "textile"
+      ],
+      "item_ids": []
+    },
+    {
+      "key": "wood",
+      "label": "Wood collection",
+      "facility_types": [
+        "wood_collection",
+        "recycling_center"
+      ],
+      "material_categories": [
+        "wood"
+      ],
+      "item_ids": []
+    },
+    {
+      "key": "e_waste",
+      "label": "E-waste",
+      "facility_types": [
+        "e_waste",
+        "recycling_center"
+      ],
+      "material_categories": [
+        "electronics"
+      ],
+      "item_ids": []
+    },
+    {
+      "key": "battery",
+      "label": "Battery collection",
+      "facility_types": [
+        "hazardous_waste",
+        "e_waste",
+        "collection_point"
+      ],
+      "material_categories": [
+        "hazardous"
+      ],
+      "item_ids": []
+    },
+    {
+      "key": "hazardous",
+      "label": "Hazardous waste",
+      "facility_types": [
+        "hazardous_waste"
+      ],
+      "material_categories": [
+        "hazardous"
+      ],
+      "item_ids": []
+    },
+    {
+      "key": "donation",
+      "label": "Donation points",
+      "facility_types": [
+        "donation"
+      ],
+      "material_categories": [
+        "textile",
+        "wood",
+        "other"
+      ],
+      "item_ids": []
+    }
+  ],
+  "lang": "en"
+}

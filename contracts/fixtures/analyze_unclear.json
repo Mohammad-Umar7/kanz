@@ -1,0 +1,23 @@
+{
+  "image_id": "img_0c1d2e3f4a5b6c7d",
+  "image_url": "/static/uploads/img_0c1d2e3f4a5b6c7d.jpg",
+  "image_width": 1600,
+  "image_height": 1200,
+  "analysis": {
+    "items": [],
+    "summary": "The photo is too dark and blurred to identify anything.",
+    "photo": {
+      "usable": false,
+      "issue": "too_dark",
+      "retake_tip": "Move next to a window or turn on a light, then hold the phone still for a second."
+    },
+    "primary_item_id": null,
+    "source": "image",
+    "classifier_hint": null
+  },
+  "lang": "en",
+  "timings_ms": {
+    "analysis": 2950,
+    "total": 3100
+  }
+}

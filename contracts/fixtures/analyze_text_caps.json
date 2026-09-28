@@ -1,0 +1,62 @@
+{
+  "image_id": "txt_5a6b7c8d9e0f1a2b",
+  "image_url": null,
+  "image_width": null,
+  "image_height": null,
+  "analysis": {
+    "items": [
+      {
+        "id": "item_1",
+        "name": "Plastic bottle caps",
+        "category": "plastic",
+        "material": "HDPE #2 / PP #5 caps",
+        "resin_code": 2,
+        "is_raw_material": true,
+        "quantity": {
+          "value": 30.0,
+          "unit": "pcs",
+          "is_estimate": true,
+          "display": "~30 pcs"
+        },
+        "quality": {
+          "score": 4,
+          "label": "Good",
+          "notes": null
+        },
+        "state": [
+          "clean"
+        ],
+        "recyclability": {
+          "status": "conditional",
+          "stream": "Plastics recycling",
+          "prep_steps": [
+            "Collect in a bottle"
+          ],
+          "reason": "Loose caps are too small for some sorting lines."
+        },
+        "reuse": {
+          "level": "high",
+          "note": "Bright, uniform pieces work well for mosaics."
+        },
+        "hazards": [],
+        "confidence": 0.72,
+        "bbox": null,
+        "user_corrected": false
+      }
+    ],
+    "summary": "About thirty mixed plastic bottle caps.",
+    "photo": {
+      "usable": true,
+      "issue": "ok",
+      "retake_tip": null
+    },
+    "primary_item_id": "item_1",
+    "source": "text",
+    "classifier_hint": null
+  },
+  "lang": "en",
+  "timings_ms": {
+    "analysis": 2600,
+    "total": 2650
+  }
+}
