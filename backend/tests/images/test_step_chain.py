@@ -12,7 +12,7 @@ from app.images.service import ImageService, step_name
 from app.schemas.images import StepImageRequest
 from app.schemas.recommend import UpcycleIdea
 from app.schemas.tutorial import Tutorial
-from tests.images.fakes import FakeImageGateway, ImageCall, until
+from tests.images.fakes import FakeImageGateway, ImageCall, make_tutorial, until
 
 
 def step_exists(store: ImageStore, tutorial: Tutorial, n: int) -> bool:
@@ -54,6 +54,37 @@ async def test_one_chain_per_tutorial(
     await service.wait_for_chains()
     assert len(gateway.calls) == 6
     assert service._chains == {}
+
+
+async def test_a_readapted_tutorial_supersedes_the_older_chain(
+    service: ImageService, gateway: FakeImageGateway, tutorial: Tutorial, idea: UpcycleIdea
+) -> None:
+    gateway.gate = asyncio.Event()
+    service.start_step_chain(tutorial, idea)
+    await until(lambda: gateway.calls)  # the beginner chain is rendering its step 1
+
+    advanced = make_tutorial(tutorial.image_id, idea, skill="advanced")
+    service.start_step_chain(advanced, idea)
+    gateway.gate.set()
+    await service.wait_for_chains()
+    await until(lambda: step_exists(service.store, tutorial, 1))
+
+    # The render in flight finished and was cached; the old chain started nothing after it.
+    assert not step_exists(service.store, tutorial, 2)
+    assert all(step_exists(service.store, advanced, n) for n in range(1, 6))
+    assert gateway.labels.count("step1") == 2 and gateway.labels.count("step2") == 1
+    assert service._chains == {}
+
+
+async def test_chains_for_different_ideas_run_side_by_side(
+    service: ImageService, gateway: FakeImageGateway, tutorial: Tutorial, ideas: list[UpcycleIdea]
+) -> None:
+    other = make_tutorial(tutorial.image_id, ideas[1])
+    service.start_step_chain(tutorial, ideas[0])
+    service.start_step_chain(other, ideas[1])
+    assert len(service._chains) == 2
+    await service.wait_for_chains()
+    assert all(step_exists(service.store, t, n) for t in (tutorial, other) for n in range(1, 6))
 
 
 async def test_chain_stops_on_a_failure_logs_it_and_can_resume(

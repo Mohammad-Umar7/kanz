@@ -34,8 +34,10 @@ How it works
   so the background chain and the tutorial screen never render the same step twice.
   ``regenerate`` bypasses the cache for that one picture and overwrites it.
 * **Background chain.** ``start_step_chain`` renders steps 1..n in order as soon as a
-  tutorial exists, one chain per tutorial, kept in a registry so the task is not
-  garbage-collected. Failures are logged and stop the chain; they never propagate.
+  tutorial exists, kept in a registry so the task is not garbage-collected. One chain
+  runs per photo and idea: a re-adapted tutorial (other skill, tools or language)
+  supersedes the older chain, so abandoned tutorials stop using render slots and quota.
+  Failures are logged and stop the chain; they never propagate.
 * **Resilience.** A semaphore caps concurrent renders at ``MAX_CONCURRENT_RENDERS``;
   dependencies (the previous step, the after image) are awaited outside it, so a chain
   can never deadlock waiting for its own slot. Timeouts, retries and fallback models
@@ -174,7 +176,8 @@ class ImageService:
         self.director = director or ImageDirector(settings.prompts_dir)
         self._slots = asyncio.Semaphore(max_concurrent)
         self._flights: SingleFlight[StoredImage] = SingleFlight()
-        self._chains: dict[str, asyncio.Task[None]] = {}
+        # Background step chains, one per photo and idea: "<image_id>:<idea_id>" -> (tutorial_id, task).
+        self._chains: dict[str, tuple[str, asyncio.Task[None]]] = {}
         self._quota_blocked_until = 0.0
 
     # ============================================================ public API
@@ -254,6 +257,11 @@ class ImageService:
 
         The idea is persisted first (even when autostart is off) so that later
         ``/images/step`` calls can build the after image for the final step.
+
+        One chain runs per photo and idea. A new tutorial for the same pair (the user
+        switched skill, tools or language) supersedes the older chain: those pictures
+        are no longer on screen, so the old chain starts no further steps. Its render in
+        flight still finishes and is cached, because renders are shielded.
         """
         tutorial_id = tutorial.tutorial_id
         try:
@@ -261,26 +269,30 @@ class ImageService:
                 self.save_idea(tutorial.image_id, idea)
             if not self.settings.step_images_autostart:
                 return
-            running = self._chains.get(tutorial_id)
-            if running is not None and not running.done():
-                return  # one chain per tutorial
+            slot = f"{tutorial.image_id}:{tutorial.idea_id}"
+            current = self._chains.get(slot)
+            if current is not None and not current[1].done():
+                if current[0] == tutorial_id:
+                    return  # already rendering this tutorial
+                current[1].cancel()
+                log.info("step chain tutorial=%s superseded by tutorial=%s", current[0], tutorial_id)
             task = asyncio.get_running_loop().create_task(
                 self._run_chain(tutorial, idea), name=f"step-chain:{tutorial_id}"
             )
-            self._chains[tutorial_id] = task
-            task.add_done_callback(lambda t: self._chain_finished(tutorial_id, t))
+            self._chains[slot] = (tutorial_id, task)
+            task.add_done_callback(lambda t: self._chain_finished(slot, t))
         except Exception:
             log.exception("step chain tutorial=%s could not start", tutorial_id)
 
     async def wait_for_chains(self) -> None:
         """Wait for the step chains running now."""
-        running = [t for t in self._chains.values() if not t.done()]
+        running = [task for _, task in self._chains.values() if not task.done()]
         if running:
             await asyncio.gather(*running, return_exceptions=True)
 
     async def aclose(self) -> None:
         """Cancel running chains and renders (server shutdown). Finished pictures stay cached."""
-        chains = [t for t in self._chains.values() if not t.done()]
+        chains = [task for _, task in self._chains.values() if not task.done()]
         for task in chains:
             task.cancel()
         pending = chains + self._flights.cancel_all()
@@ -518,14 +530,20 @@ class ImageService:
                 (exc.detail or exc.message)[:200],
             )
             return
+        except asyncio.CancelledError:
+            log.info(
+                "step chain tutorial=%s cancelled at step %d/%d (superseded or shutdown)", tutorial_id, number, total
+            )
+            raise
         except Exception:
             log.exception("step chain tutorial=%s failed at step %d/%d", tutorial_id, number, total)
             return
         log.info("step chain tutorial=%s done steps=%d ms=%d", tutorial_id, total, _ms(start))
 
-    def _chain_finished(self, tutorial_id: str, task: asyncio.Task[None]) -> None:
-        if self._chains.get(tutorial_id) is task:
-            del self._chains[tutorial_id]
+    def _chain_finished(self, slot: str, task: asyncio.Task[None]) -> None:
+        current = self._chains.get(slot)
+        if current is not None and current[1] is task:
+            del self._chains[slot]
 
     # ============================================================= helpers
     @staticmethod
