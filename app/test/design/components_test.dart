@@ -3,6 +3,7 @@
 // fonts and no layout overflow. The gallery sections are the fixture: they
 // exercise every component in its states.
 import 'package:flutter/material.dart';
+import 'package:flutter/rendering.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:kanz/core/design/design.dart';
@@ -74,6 +75,15 @@ void main() {
           Directionality.of(tester.element(find.byType(SpecimenCard).first)),
           rtl ? TextDirection.rtl : TextDirection.ltr,
         );
+
+        // Overflow is not the only failure: a Text with maxLines or an
+        // ellipsis silently hides words. Nothing the user needs to read may
+        // be cut at this size.
+        final cut = [
+          for (final p in tester.allRenderObjects.whereType<RenderParagraph>())
+            if (p.didExceedMaxLines) p.text.toPlainText(),
+        ];
+        expect(cut, isEmpty);
       });
     }
   }
