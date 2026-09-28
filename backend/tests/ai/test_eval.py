@@ -78,6 +78,18 @@ def test_model_log_records_only_the_model_that_answered():
         handler.emit(logging.LogRecord("kanz.gemini", logging.INFO, "", 0, fmt, args, None))
     assert handler.take() == ["material_analyst@v2: gemini-3.5-flash"]
     assert handler.take() == []
+    handler.emit(
+        logging.LogRecord(
+            "kanz.pipeline",
+            logging.WARNING,
+            "",
+            0,
+            "upcycle_designer failed, using project fallback: %r",
+            ("busy",),
+            None,
+        )
+    )
+    assert handler.take() == ["fallback: upcycle_designer"]
 
 
 def test_resume_reruns_only_errored_photos_and_merges(tmp_path, monkeypatch):

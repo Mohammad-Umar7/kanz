@@ -47,7 +47,7 @@ log = logging.getLogger("kanz.eval")
 
 
 class ModelLog(logging.Handler):
-    """Collects which model actually answered each stage (the gateway may have fallen back)."""
+    """Collects which model answered each stage, and which branches used their deterministic fallback."""
 
     def __init__(self) -> None:
         super().__init__(logging.INFO)
@@ -55,7 +55,9 @@ class ModelLog(logging.Handler):
 
     def emit(self, record: logging.LogRecord) -> None:
         msg = record.getMessage()
-        if msg.startswith("gemini stage=") and "ok=True" in msg:
+        if record.name == "kanz.pipeline" and " failed, " in msg:
+            self.answers.append(f"fallback: {msg.split(' failed, ', 1)[0]}")
+        elif msg.startswith("gemini stage=") and "ok=True" in msg:
             fields = dict(part.split("=", 1) for part in msg.split()[1:] if "=" in part)
             self.answers.append(f"{fields.get('stage', '?')}: {fields.get('model', '?')}")
 
@@ -266,6 +268,7 @@ async def evaluate(entries: list[dict[str, Any]], args: argparse.Namespace) -> t
 
     models = ModelLog()
     logging.getLogger("kanz.gemini").addHandler(models)
+    logging.getLogger("kanz.pipeline").addHandler(models)
     rows: list[Row] = []
     for n, entry in enumerate(entries):
         row = Row(
