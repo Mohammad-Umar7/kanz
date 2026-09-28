@@ -1,6 +1,5 @@
 import 'dart:async';
 import 'dart:convert';
-import 'dart:developer' as developer;
 import 'dart:io';
 
 import 'package:dio/dio.dart';
@@ -359,8 +358,9 @@ Map<String, dynamic> _asJsonMap(Object? data) {
 String _trimSlash(String url) =>
     url.endsWith('/') ? url.substring(0, url.length - 1) : url;
 
-/// Debug-only log line per call: method, path, status, latency and the
-/// backend's X-Request-ID, so a slow or failed call can be found in server logs.
+/// Debug-only log line per call (logcat tag `flutter`): method, path, status,
+/// latency and the backend's X-Request-ID, so a slow or failed call can be
+/// found in the server logs.
 class _RequestLogInterceptor extends Interceptor {
   static const _startKey = 'kanz_started_at';
 
@@ -401,9 +401,11 @@ class _RequestLogInterceptor extends Interceptor {
         ? '?'
         : '${DateTime.now().millisecondsSinceEpoch - started}';
     final requestId = headers?.value(_requestIdHeader) ?? '-';
-    developer.log(
-      '${options.method} ${options.path} -> ${status ?? error} in $ms ms [$requestId]',
-      name: 'kanz.api',
+    // debugPrint reaches `adb logcat` (tag "flutter"), so latency and request
+    // ids can be read on a phone during QA without attaching a debugger.
+    debugPrint(
+      'kanz.api ${options.method} ${options.path} -> ${status ?? error} '
+      'in $ms ms [$requestId]',
     );
   }
 }
