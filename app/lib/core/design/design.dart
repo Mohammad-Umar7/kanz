@@ -13,6 +13,7 @@ export 'context.dart';
 export 'contrast.dart';
 export 'haptics.dart';
 export 'icons.dart';
+export 'map_styles.dart';
 export 'material_colors.dart';
 export 'theme.dart';
 export 'tokens.dart';
