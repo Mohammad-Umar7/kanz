@@ -15,6 +15,7 @@ class MonoLabel extends StatelessWidget {
     this.maxLines,
     this.textAlign,
     this.uppercase = true,
+    this.textDirection,
   });
 
   final String text;
@@ -27,6 +28,11 @@ class MonoLabel extends StatelessWidget {
   final bool strong;
   final int? maxLines;
   final TextAlign? textAlign;
+
+  /// Set to [TextDirection.ltr] for numeric sequences such as "01 / 02":
+  /// in an Arabic paragraph the bidi algorithm would otherwise lay them
+  /// out right to left and show "02 / 01".
+  final TextDirection? textDirection;
 
   @override
   Widget build(BuildContext context) {
@@ -42,6 +48,7 @@ class MonoLabel extends StatelessWidget {
       maxLines: maxLines,
       overflow: maxLines == null ? null : TextOverflow.ellipsis,
       textAlign: textAlign,
+      textDirection: textDirection,
     );
   }
 }
@@ -195,36 +202,40 @@ class QualityBar extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final c = context.kanzColors;
+    final bar = Row(
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        for (var i = 0; i < segments; i++) ...[
+          if (i > 0) const SizedBox(width: 3),
+          Container(
+            key: ValueKey('quality-segment-$i'),
+            width: segmentWidth,
+            height: 6,
+            decoration: BoxDecoration(
+              color: i < score ? c.ink : c.track,
+              borderRadius: const BorderRadius.all(Radius.circular(1.5)),
+            ),
+          ),
+        ],
+      ],
+    );
     return Semantics(
       label: semanticsLabel,
       excludeSemantics: true,
-      child: Row(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          for (var i = 0; i < segments; i++) ...[
-            if (i > 0) const SizedBox(width: 3),
-            Container(
-              key: ValueKey('quality-segment-$i'),
-              width: segmentWidth,
-              height: 6,
-              decoration: BoxDecoration(
-                color: i < score ? c.ink : c.track,
-                borderRadius: const BorderRadius.all(Radius.circular(1.5)),
-              ),
+      // The word moves under the bar when a narrow grid cell, a long word
+      // ("Like new", "مستهلك") or large text leaves no room beside it; it is
+      // never cut off.
+      child: label == null
+          ? bar
+          : Wrap(
+              spacing: KanzSpace.s8,
+              runSpacing: KanzSpace.s4,
+              crossAxisAlignment: WrapCrossAlignment.center,
+              children: [
+                bar,
+                Text(label!, style: context.textStyles.bodyMedium),
+              ],
             ),
-          ],
-          if (label != null) ...[
-            const SizedBox(width: KanzSpace.s8),
-            Flexible(
-              child: Text(
-                label!,
-                style: context.textStyles.bodyMedium,
-                overflow: TextOverflow.ellipsis,
-              ),
-            ),
-          ],
-        ],
-      ),
     );
   }
 }
