@@ -29,7 +29,11 @@ void main() {
 
   bool settled(String id) {
     final s = stateOf(id);
-    return !s.isBusy && s.afterImages.values.every((i) => !i.isLoading);
+    // Images count as settled once they are on the device (or failed).
+    return !s.isBusy &&
+        s.afterImages.values.every(
+          (i) => i.status == ImageStatus.failed || i.localPath != null,
+        );
   }
 
   test(
