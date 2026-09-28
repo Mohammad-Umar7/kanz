@@ -1,10 +1,16 @@
-"""POST /v1/images/after, /step, /bin: generated images, returned as static URLs."""
+"""POST /v1/images/after, /step, /bin, /reference: generated images, returned as static URLs."""
 
 from fastapi import APIRouter
 
 from app.api.responses import AI, COMMON, error_responses
 from app.images import service
-from app.schemas.images import AfterImageRequest, BinImageRequest, ImageResponse, StepImageRequest
+from app.schemas.images import (
+    AfterImageRequest,
+    BinImageRequest,
+    ImageResponse,
+    ReferenceImageRequest,
+    StepImageRequest,
+)
 
 router = APIRouter(prefix="/images", tags=["images"])
 
@@ -31,3 +37,11 @@ async def step_image(req: StepImageRequest) -> ImageResponse:
 async def bin_image(req: BinImageRequest) -> ImageResponse:
     """The scanned item shown ready for recycling (rinsed, cap off, flattened)."""
     return await service.bin_image(req)
+
+
+@router.post("/reference", response_model=ImageResponse, summary="Picture a text-described item", responses=_ERRORS)
+async def reference_image(req: ReferenceImageRequest) -> ImageResponse:
+    """Text scans have no photo: this renders a realistic photo of the described item once,
+    which then serves as the 'before' picture and the base for after and step images.
+    """
+    return await service.reference_image(req.image_id)

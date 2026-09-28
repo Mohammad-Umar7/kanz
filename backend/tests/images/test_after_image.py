@@ -30,7 +30,7 @@ async def test_first_request_edits_the_original_photo(
     assert path.exists()
     assert resp.kind == "after"
     assert resp.cached is False
-    assert resp.url == f"/static/generated/{photo_id}/after_{idea.id}.jpg"
+    assert resp.url.split("?")[0] == f"/static/generated/{photo_id}/after_{idea.id}.jpg"
     assert resp.key == f"{photo_id}:after:{idea.id}"
     assert (resp.width, resp.height) == jpeg_size(path.read_bytes())
     assert resp.step is None and resp.skill is None

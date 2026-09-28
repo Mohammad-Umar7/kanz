@@ -116,6 +116,11 @@ async def lifespan(app: FastAPI) -> AsyncIterator[None]:
             seeding.cancel()
             with contextlib.suppress(asyncio.CancelledError):
                 await seeding
+        # Cancel background step-image chains and in-flight renders cleanly.
+        from app.images import service as image_service  # noqa: PLC0415
+
+        with contextlib.suppress(Exception):
+            await image_service.shutdown()
 
 
 def create_app(settings: Settings | None = None) -> FastAPI:

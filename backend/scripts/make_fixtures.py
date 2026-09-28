@@ -982,8 +982,43 @@ FIXTURES = {
 }
 
 
+def _align_with_services() -> None:
+    """Take the parts other modules own from the real code, so fixtures never drift from it.
+
+    Facility categories come from backend/config/facility_categories.json via the Places
+    module; step-image names and keys come from the image service.
+    """
+    from app.images.service import after_key, step_key, step_name  # noqa: PLC0415
+    from app.places.categories import catalog, categories_for_items  # noqa: PLC0415
+
+    FIXTURES["facility_categories"] = FacilityCategoriesResponse(categories=catalog("en"), lang="en")
+    pairs = [
+        ("recommend_glass_jar", analyze_jar),
+        ("recommend_glass_jar_ar", analyze_jar_ar),
+        ("recommend_battery", analyze_battery),
+        ("recommend_tshirt", analyze_tshirt),
+    ]
+    for name, analyzed in pairs:
+        rec = FIXTURES[name]
+        cats = categories_for_items(analyzed.analysis.items, rec.lang)
+        FIXTURES[name] = rec.model_copy(update={"facility_categories": cats})
+    FIXTURES["image_after"] = image_after.model_copy(
+        update={
+            "url": f"/static/generated/{JAR_IMG}/after_{lantern.id}.jpg?v=19a0e94fe84",
+            "key": after_key(JAR_IMG, lantern.id),
+        }
+    )
+    FIXTURES["image_step"] = image_step.model_copy(
+        update={
+            "url": f"/static/generated/{JAR_IMG}/{step_name(tutorial_jar, 1)}.jpg?v=19a0e950bf9",
+            "key": step_key(tutorial_jar, 1),
+        }
+    )
+
+
 def main() -> None:
     OUT.mkdir(parents=True, exist_ok=True)
+    _align_with_services()
     assert glass_cat.key == "glass"
     for name, model in FIXTURES.items():
         data = model.model_dump(mode="json")

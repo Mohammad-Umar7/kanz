@@ -200,7 +200,8 @@
       "label": "Metal recycling",
       "facility_types": [
         "recycling_center",
-        "scrap_metal"
+        "scrap_metal",
+        "collection_point"
       ],
       "material_categories": [
         "metal"

@@ -183,7 +183,7 @@
   "facility_categories": [
     {
       "key": "glass",
-      "label": "تدوير الزجاج",
+      "label": "إعادة تدوير الزجاج",
       "facility_types": [
         "recycling_center",
         "collection_point"
@@ -197,10 +197,11 @@
     },
     {
       "key": "metal",
-      "label": "تدوير المعادن",
+      "label": "إعادة تدوير المعادن",
       "facility_types": [
         "recycling_center",
-        "scrap_metal"
+        "scrap_metal",
+        "collection_point"
       ],
       "material_categories": [
         "metal"

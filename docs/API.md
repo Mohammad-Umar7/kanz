@@ -15,7 +15,8 @@ JSON over HTTP. The backend holds every key; the app never calls Gemini or Googl
 | Language | `lang` is `en` or `ar`. Free text in responses is in that language; enum values and JSON keys stay English |
 | Request id | Every response has an `X-Request-ID` header; error bodies repeat it |
 | Timings | Every AI response has `timings_ms` (stage -> milliseconds) |
-| Images | Returned as paths such as `/static/generated/<image_id>/<name>.jpg`; join with the base URL. Generated images are cached by key |
+| Images | Returned as paths such as `/static/generated/<image_id>/<name>.jpg?v=<version>`; join with the base URL. The `v` query changes when an image is regenerated, so clients never show a stale cached picture. Generated images are cached by key |
+| Body limits | Uploads over `MAX_UPLOAD_MB` get 413 `image_too_large` before parsing; oversized JSON bodies get 413 `bad_request` |
 | Rate limit | Per client IP, `RATE_LIMIT_PER_MINUTE` (default 90) across `/v1`; `429` with code `rate_limited` |
 | Errors | Non-2xx bodies are `ErrorResponse` (see below) |
 
@@ -67,7 +68,7 @@ Warm-up and status. `HealthResponse`: `status`, `app_name`, `version`, `models`,
 | Field | Type | Notes |
 | --- | --- | --- |
 | `image` | file (JPEG/PNG/WebP) | Optional if `text` is given. The app sends ~1600 px long edge, JPEG q85 |
-| `text` | string | Optional if `image` is given. "a pile of old denim jeans" |
+| `text` | string | Optional if `image` is given, up to 2000 characters. "a pile of old denim jeans". Whitespace-only text and empty file parts count as missing (400) |
 | `lang` | `en` \| `ar` | Default `en` |
 
 Response `AnalyzeResponse`: `image_id` (`img_...` for photos, `txt_...` for text), `image_url`, `image_width`, `image_height`, `analysis`, `lang`, `timings_ms`.
@@ -81,6 +82,8 @@ Fixtures: `analyze_glass_jar.json`, `analyze_glass_jar_ar.json`, `analyze_batter
 ### `POST /v1/recommend`
 
 Body `RecommendRequest`: `image_id`, `analysis` (possibly user-corrected; corrected items have `user_corrected: true`), `profile {skill, tools[], lang}`, `focus_item_id?`.
+
+Fails fast, before any model call, with 404 `not_found` for an unknown `image_id` and 400 `bad_request` when `analysis.items` is empty or `focus_item_id` is not one of the items.
 
 Response `RecommendResponse`:
 
@@ -105,15 +108,19 @@ Fixtures: `tutorial_request_jar_lantern.json`, `tutorial_jar_lantern.json`, `tut
 
 ### `POST /v1/images/after`
 
-Body `{image_id, idea, regenerate?}`. Edits the user's photo into the finished project (keeps the object's identity, lighting and camera angle; 4:3). Response `ImageResponse {url, width, height, kind: "after", key, cached, timings_ms}`. Fixture: `image_after.json`.
+Body `{image_id, idea, regenerate?}`. Edits the user's photo into the finished project (keeps the object's identity, lighting and camera angle). The output uses the aspect ratio of the source photo (4:3 for text scans) so the before/after slider lines up. Response `ImageResponse {url, width, height, kind: "after", key, cached, timings_ms}`. Fixture: `image_after.json`.
 
 ### `POST /v1/images/step`
 
-Body `{image_id, tutorial_id, step, regenerate?}`. Step 1 edits the original photo; step N edits step N-1's image (original photo as an extra reference); the last step also references the idea's after image. Missing earlier steps are generated first. Cached by `(image_id, idea, step, skill)`. Response `ImageResponse` with `kind: "step"`, `step`, `skill`. Fixture: `image_step.json`.
+Body `{image_id, tutorial_id, step, regenerate?}`. Step 1 edits the original photo; step N edits step N-1's image (original photo as an extra reference); the last step also references the idea's after image. Missing earlier steps are generated first. Cached by `(image_id, idea, skill, chain, step)`, where `chain` is an 8-hex fingerprint of the tutorial's step image prompts: a tutorial re-adapted to other tools gets its own pictures when its steps differ. Keys look like `<image_id>:step:<idea_id>:<skill>:<chain>:<n>`. Response `ImageResponse` with `kind: "step"`, `step`, `skill`. Fixture: `image_step.json`.
 
 ### `POST /v1/images/bin`
 
-Body `{image_id, item, prep_steps, regenerate?}`. The item shown correctly prepared for its bin (rinsed, cap off, flattened). Response `ImageResponse` with `kind: "bin"`.
+Body `{image_id, item, prep_steps, regenerate?}`. The item shown correctly prepared for its bin (rinsed, cap off, flattened). Response `ImageResponse` with `kind: "bin"`. Keyed by `<image_id>:bin:<item_id>:<variant>`, where `variant` fingerprints the item's category, resin code, state and box, so a user-corrected item gets its own picture.
+
+### `POST /v1/images/reference`
+
+Body `{image_id}` for a text scan (`txt_...`; other ids get 400). Renders, once, a realistic photo of the described item; it is the "before" picture of the before/after slider and the base image for after and step images. Response `ImageResponse` with `kind: "reference"`.
 
 ### `POST /v1/facilities`
 
@@ -129,4 +136,4 @@ The category catalog for the Drop-off tab's filter chips. `FacilityCategoriesRes
 
 Body `SwapsRequest`: `materials[]` (chip ids and/or free text), `history?` (`{period_days, counts {material: n}, top_items[], top_item_counts[]}` computed on the device), `lang`.
 
-Response `SwapsResponse`: `swaps[] {id, from_item, to_item, why, tip, effort, cost, category, impact_note, matched_input, from_history, sources}`, `history_insight`, `lang`, `timings_ms`. Fixtures: `swaps_request.json`, `swaps_plastic.json`.
+Response `SwapsResponse`: `swaps[] {id, from_item, to_item, why, tip, effort, cost, category, impact_note, matched_input, from_history, sources}` (`matched_input` is the readable, localized input label, e.g. "plastic bags" for the chip `plastic_bags`), `history_insight`, `lang`, `timings_ms`. Fixtures: `swaps_request.json`, `swaps_plastic.json`.

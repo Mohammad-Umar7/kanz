@@ -148,6 +148,20 @@
       "item_ids": [
         "item_1"
       ]
+    },
+    {
+      "key": "textile_recycling",
+      "label": "Textile recycling",
+      "facility_types": [
+        "recycling_center",
+        "collection_point"
+      ],
+      "material_categories": [
+        "textile"
+      ],
+      "item_ids": [
+        "item_1"
+      ]
     }
   ],
   "lang": "en",

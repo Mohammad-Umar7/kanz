@@ -25,7 +25,7 @@ async def test_bin_image_edits_a_crop_around_the_item(
     variant = item_variant(jar_item)
     assert resp.kind == "bin"
     assert resp.key == f"{photo_id}:bin:{jar_item.id}:{variant}"
-    assert resp.url == f"/static/generated/{photo_id}/bin_{jar_item.id}_{variant}.jpg"
+    assert resp.url.split("?")[0] == f"/static/generated/{photo_id}/bin_{jar_item.id}_{variant}.jpg"
     assert resp.cached is False
     assert "image_bin" in resp.timings_ms and "render_bin" in resp.timings_ms
 

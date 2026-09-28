@@ -41,7 +41,8 @@
       "label": "Metal recycling",
       "facility_types": [
         "recycling_center",
-        "scrap_metal"
+        "scrap_metal",
+        "collection_point"
       ],
       "material_categories": [
         "metal"
@@ -53,6 +54,18 @@
       "label": "Clothes donation",
       "facility_types": [
         "donation",
+        "collection_point"
+      ],
+      "material_categories": [
+        "textile"
+      ],
+      "item_ids": []
+    },
+    {
+      "key": "textile_recycling",
+      "label": "Textile recycling",
+      "facility_types": [
+        "recycling_center",
         "collection_point"
       ],
       "material_categories": [
@@ -88,9 +101,9 @@
       "key": "battery",
       "label": "Battery collection",
       "facility_types": [
+        "collection_point",
         "hazardous_waste",
-        "e_waste",
-        "collection_point"
+        "e_waste"
       ],
       "material_categories": [
         "hazardous"
@@ -117,6 +130,22 @@
       "material_categories": [
         "textile",
         "wood",
+        "other"
+      ],
+      "item_ids": []
+    },
+    {
+      "key": "general_recycling",
+      "label": "Recycling points",
+      "facility_types": [
+        "recycling_center",
+        "collection_point"
+      ],
+      "material_categories": [
+        "glass",
+        "plastic",
+        "paper",
+        "metal",
         "other"
       ],
       "item_ids": []

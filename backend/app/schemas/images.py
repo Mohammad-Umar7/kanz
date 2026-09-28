@@ -1,4 +1,4 @@
-"""POST /v1/images/after, /v1/images/step, /v1/images/bin: generated images served as static URLs."""
+"""POST /v1/images/after, /step, /bin, /reference: generated images served as static URLs."""
 
 from typing import Literal
 
@@ -30,6 +30,12 @@ class BinImageRequest(ApiModel):
     item: Item
     prep_steps: list[str] = Field(default_factory=list)
     regenerate: bool = False
+
+
+class ReferenceImageRequest(ApiModel):
+    """Text scans only ('txt_...'): a realistic photo of the described item, used as the 'before' image."""
+
+    image_id: str
 
 
 class ImageResponse(ApiModel):

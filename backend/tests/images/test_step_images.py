@@ -34,7 +34,7 @@ async def test_step_one_edits_the_original_photo(
     assert resp.kind == "step" and resp.step == 1 and resp.skill == "beginner"
     chain = chain_id(tutorial)
     assert resp.key == f"{tutorial.image_id}:step:{tutorial.idea_id}:beginner:{chain}:1"
-    assert resp.url.endswith(f"/{tutorial.image_id}/step_{tutorial.idea_id}_beginner_{chain}_1.jpg")
+    assert resp.url.split("?")[0].endswith(f"/{tutorial.image_id}/step_{tutorial.idea_id}_beginner_{chain}_1.jpg")
     assert resp.cached is False
     assert "image_step" in resp.timings_ms
 

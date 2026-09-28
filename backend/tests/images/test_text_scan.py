@@ -32,7 +32,7 @@ async def test_reference_photo_is_rendered_before_the_first_edit(
     ref_path = store.generated_path(text_id, "reference")
     assert ref_path.exists()
     assert gateway.only("after").references == [ref_path.read_bytes()]
-    assert resp.url == f"/static/generated/{text_id}/after_{idea.id}.jpg"
+    assert resp.url.split("?")[0] == f"/static/generated/{text_id}/after_{idea.id}.jpg"
     assert "render_reference" in resp.timings_ms
 
 
@@ -73,7 +73,7 @@ async def test_reference_image_gives_text_scans_a_before_picture(
     first = await service.reference_image(text_id)
     again = await service.reference_image(text_id)
     assert first.kind == "reference" and first.key == f"{text_id}:reference"
-    assert first.url == f"/static/generated/{text_id}/reference.jpg"
+    assert first.url.split("?")[0] == f"/static/generated/{text_id}/reference.jpg"
     assert (first.cached, again.cached) == (False, True)
     assert "image_reference" in again.timings_ms
     assert gateway.labels == ["reference"]

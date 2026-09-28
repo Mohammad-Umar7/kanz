@@ -14,7 +14,9 @@ from __future__ import annotations
 
 import hashlib
 import io
+import os
 import re
+import uuid
 from dataclasses import dataclass
 from pathlib import Path
 
@@ -119,16 +121,29 @@ class ImageStore:
         return self.s.generated_dir / image_id / f"{name}.jpg"
 
     def generated_url(self, image_id: str, name: str) -> str:
-        return self._url(f"/static/generated/{_check_id(image_id)}/{_check_id(name)}.jpg")
+        """URL of a generated image with a version tag.
+
+        Regenerating overwrites the same file, so the URL carries ``?v=<mtime>``: phones and
+        CachedNetworkImage then fetch the new picture instead of a cached old one.
+        """
+        path = self.generated_path(image_id, name)
+        version = format(path.stat().st_mtime_ns // 1_000_000, "x") if path.exists() else "0"
+        return self._url(f"/static/generated/{_check_id(image_id)}/{_check_id(name)}.jpg?v={version}")
 
     def save_generated(self, image_id: str, name: str, data: bytes) -> StoredImage:
-        """Store a generated image as JPEG (Gemini may return PNG)."""
+        """Store a generated image as JPEG (Gemini may return PNG).
+
+        Written to a temporary file and moved into place, so a crash or a concurrent static
+        download never sees a half-written JPEG.
+        """
         img = Image.open(io.BytesIO(data)).convert("RGB")
         buf = io.BytesIO()
         img.save(buf, "JPEG", quality=JPEG_QUALITY, optimize=True)
         path = self.generated_path(image_id, name)
         path.parent.mkdir(parents=True, exist_ok=True)
-        path.write_bytes(buf.getvalue())
+        tmp = path.with_name(f".{path.name}.{uuid.uuid4().hex[:8]}.tmp")
+        tmp.write_bytes(buf.getvalue())
+        os.replace(tmp, path)
         return StoredImage(image_id, path, self.generated_url(image_id, name), img.width, img.height)
 
     def read_generated(self, image_id: str, name: str) -> StoredImage | None:

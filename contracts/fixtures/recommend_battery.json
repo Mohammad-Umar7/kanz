@@ -62,9 +62,9 @@
       "key": "battery",
       "label": "Battery collection",
       "facility_types": [
+        "collection_point",
         "hazardous_waste",
-        "e_waste",
-        "collection_point"
+        "e_waste"
       ],
       "material_categories": [
         "hazardous"
