@@ -50,6 +50,7 @@ async def test_rejected_thinking_level_is_retried_at_low_and_remembered():
         ("primary", "MINIMAL"),
         ("fallback", "MINIMAL"),
         ("fallback", "LOW"),
-        ("primary", "MINIMAL"),
-        ("fallback", "LOW"),  # remembered: no wasted MINIMAL attempt the second time
+        # The primary is cooling down after its quota error, and the fallback's LOW level is
+        # remembered: the second call wastes no attempt at all.
+        ("fallback", "LOW"),
     ]

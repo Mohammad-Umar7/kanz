@@ -31,8 +31,16 @@ class Settings(BaseSettings):
     # --- Gemini models, by role ---
     model_vision: str = "gemini-3.6-flash"  # Material Analyst (multimodal, structured output)
     model_text: str = "gemini-3.6-flash"  # Designers, advisors, tutorial writer
-    model_fallbacks: list[str] = ["gemini-3.5-flash", "gemini-flash-latest", "gemini-3.1-flash-lite"]
+    # Tried in order when a model is overloaded or out of quota (each model has its own quota).
+    model_fallbacks: list[str] = [
+        "gemini-3.5-flash",
+        "gemini-3.1-flash-lite",
+        "gemini-3.5-flash-lite",
+        "gemini-flash-latest",
+        "gemini-3.7-flash",
+    ]
     thinking_level: str = "low"  # minimal | low | medium | high; low keeps latency inside targets
+    material_classifier: str = "none"  # pluggable MaterialClassifier; "none" = no-op (see app/ai/classifier.py)
     model_image: str = "gemini-3.1-flash-image"  # native image editing ("Nano Banana 2")
     model_image_fallback: str = "gemini-3.1-flash-lite-image"
     model_embed: str = "gemini-embedding-001"

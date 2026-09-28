@@ -111,6 +111,8 @@ def isolated(monkeypatch: pytest.MonkeyPatch, settings: Settings):
     monkeypatch.setattr(tutorials, "_store", tutorials.TutorialStore(settings))
     monkeypatch.setattr(rag_index, "_index", KnowledgeIndex(settings, gateway=FakeGateway()))
     monkeypatch.setattr("app.ai.pipeline.get_settings", lambda: settings)
+    # Most tests use fixture image ids with no stored upload; test_scan_lookup.py covers the check.
+    monkeypatch.setattr("app.ai.pipeline._require_scan", lambda image_id: None)
     return settings
 
 

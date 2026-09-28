@@ -20,7 +20,7 @@ from app.ai.graph import analyze_graph, recommend_graph, tutorial_graph
 from app.ai.nodes.tutorial import start_step_images
 from app.ai.state import PipelineContext
 from app.config import get_settings
-from app.core.errors import BadRequest
+from app.core.errors import BadRequest, NotFound
 from app.core.storage import get_store
 from app.core.timing import stage_timer
 from app.core.tutorials import get_tutorial_store, tutorial_id_for
@@ -78,11 +78,26 @@ async def recommend(req: RecommendRequest, *, gateway: GeminiGateway | None = No
     start = time.perf_counter()
     if not req.analysis.items:
         raise BadRequest("Nothing was identified in this scan yet. Retake the photo, then try again.")
+    _require_scan(req.image_id)
     lang = req.profile.lang
     state = await recommend_graph().ainvoke({"request": req, "lang": lang}, context=_context(gateway))
     timings = dict(state.get("timings", {}))
     timings["total"] = _ms(start)
     return state["response"].model_copy(update={"timings_ms": timings})
+
+
+def _require_scan_impl(image_id: str) -> None:
+    """Fail fast (404) for an unknown photo or text scan instead of spending model calls on it."""
+    store = get_store()
+    try:
+        exists = store.upload_exists(image_id) if image_id.startswith("img_") else bool(store.load_text_scan(image_id))
+    except NotFound:
+        exists = False
+    if not exists:
+        raise NotFound("We couldn't find that scan. It may have expired; please scan the item again.")
+
+
+_require_scan = _require_scan_impl
 
 
 async def tutorial(req: TutorialRequest, *, gateway: GeminiGateway | None = None) -> TutorialResponse:

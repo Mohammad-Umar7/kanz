@@ -22,6 +22,7 @@ from __future__ import annotations
 import asyncio
 import logging
 import random
+import re
 import time
 from collections.abc import Callable, Sequence
 from dataclasses import dataclass
@@ -67,10 +68,19 @@ class _AttemptError(Exception):
     """Internal: classifies one failed attempt."""
 
     def __init__(self, kind: str, detail: str) -> None:
-        # kind: "retry" (transient), "quota" (skip model), "fatal" (skip model), "timeout"
+        # kind: "retry" (transient), "rate" (per-minute limit), "quota" (skip model),
+        # "fatal" (skip model), "timeout"
         self.kind = kind
         self.detail = detail
+        self.retry_after = 0.0
         super().__init__(detail)
+
+
+_RETRY_IN = re.compile(r"retry in ([0-9.]+)s", re.IGNORECASE)
+
+# How long a model is skipped after it failed in a way that will not clear up by itself soon.
+QUOTA_COOLDOWN_S = 15 * 60  # daily quota used up, or no quota at all ("limit: 0")
+OVERLOAD_COOLDOWN_S = 20  # 503 "high demand": let parallel calls try another model first
 
 
 def _classify(exc: Exception) -> _AttemptError:
@@ -81,6 +91,12 @@ def _classify(exc: Exception) -> _AttemptError:
         text = str(exc)
         if code == 429 and ("limit: 0" in text or "PerDay" in text):
             return _AttemptError("quota", text[:300])
+        if code == 429:
+            # Per-minute limit: waiting on this model is slower than asking the next one.
+            match = _RETRY_IN.search(text)
+            err = _AttemptError("rate", text[:300])
+            err.retry_after = float(match.group(1)) if match else 30.0
+            return err
         if code in RETRYABLE_STATUS:
             return _AttemptError("retry", text[:300])
         return _AttemptError("fatal", text[:300])
@@ -122,6 +138,21 @@ class GeminiGateway:
         # Models that rejected the MINIMAL thinking level (e.g. an older model behind an alias):
         # they are called with LOW from then on instead of being skipped as a fallback.
         self._low_thinking_models: set[str] = set()
+        # model -> monotonic time until which it is skipped (quota used up, rate limited, overloaded).
+        self._cooldown_until: dict[str, float] = {}
+
+    def _cool_down(self, model: str, seconds: float) -> None:
+        until = time.monotonic() + seconds
+        self._cooldown_until[model] = max(until, self._cooldown_until.get(model, 0.0))
+
+    def _available(self, models: Sequence[str]) -> list[str]:
+        """Models not cooling down, in order. Empty when every model is cooling down."""
+        now = time.monotonic()
+        return [m for m in models if self._cooldown_until.get(m, 0.0) <= now]
+
+    def reset_cooldowns(self) -> None:
+        """Forget cooldowns, e.g. after billing was enabled on the key."""
+        self._cooldown_until.clear()
 
     # ------------------------------------------------------------------ client
     @property
@@ -152,10 +183,17 @@ class GeminiGateway:
         timeout: float,
         call: Callable[[str], Any],
     ) -> tuple[Any, str]:
-        """Run ``call(model)`` with retries/backoff per model, then fall back to the next model."""
+        """Run ``call(model)`` with retries/backoff per model, then fall back to the next model.
+
+        Models that recently ran out of quota, hit a per-minute limit or were overloaded are
+        skipped until their cooldown ends, so one busy model does not add seconds to every
+        request. If every model is cooling down the call fails fast.
+        """
         last: _AttemptError | None = None
-        saw_quota = saw_timeout = False
-        for model in models:
+        candidates = self._available(models)
+        if not candidates:
+            raise AiQuotaExhausted(detail=f"all models cooling down for stage {stage}: {list(models)}")
+        for model in candidates:
             for attempt in range(self.settings.llm_retries + 1):
                 start = time.perf_counter()
                 try:
@@ -181,22 +219,31 @@ class GeminiGateway:
                         last.kind,
                         last.detail[:160],
                     )
-                    if last.kind == "quota":
-                        saw_quota = True
-                        break  # this model has no quota left; try the next one
-                    if last.kind == "fatal":
+                    if self._should_move_on(model, last, attempt):
                         break
-                    if last.kind == "timeout":
-                        saw_timeout = True
-                        break  # a slow model will likely stay slow; fall back instead of waiting again
-                    if attempt < self.settings.llm_retries:
-                        await asyncio.sleep(min(8.0, 0.8 * (2**attempt)) + random.uniform(0, 0.4))
+                    await asyncio.sleep(min(8.0, 0.8 * (2**attempt)) + random.uniform(0, 0.4))
         detail = last.detail if last else "no models configured"
-        if saw_quota and last is not None and last.kind == "quota":
+        kind = last.kind if last else ""
+        if kind == "quota":
             raise AiQuotaExhausted(detail=detail)
-        if saw_timeout and last is not None and last.kind == "timeout":
+        if kind == "timeout":
             raise AiTimeout(detail=detail)
         raise AiUnavailable(detail=detail)
+
+    def _should_move_on(self, model: str, err: _AttemptError, attempt: int) -> bool:
+        """Decide after a failed attempt: True = try the next model, False = back off and retry."""
+        if err.kind == "quota":
+            self._cool_down(model, QUOTA_COOLDOWN_S)  # no quota left on this model
+            return True
+        if err.kind == "rate":
+            self._cool_down(model, err.retry_after)  # per-minute limit: the next model answers sooner
+            return True
+        if err.kind in ("fatal", "timeout"):
+            return True  # a slow model will likely stay slow; fall back instead of waiting again
+        if attempt >= 1 or attempt >= self.settings.llm_retries:
+            self._cool_down(model, OVERLOAD_COOLDOWN_S)  # still overloaded after a retry: park it
+            return True
+        return False
 
     # ------------------------------------------------------- structured JSON
     async def structured(

@@ -13,9 +13,7 @@ To plug one in later:
    onnxruntime, or a call to a Vertex AI endpoint. Return None when unsure (below a
    confidence threshold) so a weak guess never biases the analyst.
 2. Register it in ``_REGISTRY`` under a short key.
-3. Select it with the ``MATERIAL_CLASSIFIER=<key>`` environment variable. (``backend/.env``
-   only feeds declared ``Settings`` fields; once ``material_classifier`` is added there, the
-   same key works in ``.env`` too.)
+3. Select it with ``MATERIAL_CLASSIFIER=<key>`` in ``backend/.env`` (``Settings.material_classifier``).
 
 The default is ``NoOpClassifier``: no hint, no latency, no extra dependency.
 """
@@ -23,7 +21,6 @@ The default is ``NoOpClassifier``: no hint, no latency, no extra dependency.
 from __future__ import annotations
 
 import logging
-import os
 from collections.abc import Callable
 from dataclasses import dataclass
 from functools import lru_cache
@@ -71,9 +68,7 @@ _REGISTRY: dict[str, Callable[[], MaterialClassifier]] = {"none": NoOpClassifier
 
 
 def _configured_name() -> str:
-    # ``material_classifier`` is read from settings when the lead adds it to Settings; until
-    # then the MATERIAL_CLASSIFIER environment variable selects the implementation.
-    value = getattr(get_settings(), "material_classifier", None) or os.getenv("MATERIAL_CLASSIFIER", "none")
+    value = get_settings().material_classifier
     return str(value).strip().lower() or "none"
 
 
