@@ -33,6 +33,8 @@ class FakeApi implements ApiClient {
   final List<Lang> categoryLangs = [];
   final List<String> analyzedTexts = [];
 
+  Future<HealthResponse> Function() onHealth = () async =>
+      HealthResponse.fromJson(fixture('health.json'));
   Future<AnalyzeResponse> Function() onAnalyze = () async =>
       AnalyzeResponse.fromJson(fixture('analyze_glass_jar.json'));
   Future<RecommendResponse> Function() onRecommend = () async =>
@@ -67,9 +69,9 @@ class FakeApi implements ApiClient {
       pathOrUrl.startsWith('http') ? pathOrUrl : '$baseUrl$pathOrUrl';
 
   @override
-  Future<HealthResponse> health({CancelToken? cancelToken}) async {
+  Future<HealthResponse> health({CancelToken? cancelToken}) {
     calls.add('health');
-    return HealthResponse.fromJson(fixture('health.json'));
+    return onHealth();
   }
 
   @override

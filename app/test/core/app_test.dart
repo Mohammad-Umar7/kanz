@@ -5,6 +5,8 @@ import 'package:go_router/go_router.dart';
 import 'package:kanz/app/app.dart';
 import 'package:kanz/app/router.dart';
 import 'package:kanz/core/data/models/models.dart';
+import 'package:kanz/core/network/api_exception.dart';
+import 'package:kanz/core/state/connectivity_providers.dart';
 import 'package:kanz/core/state/core_providers.dart';
 import 'package:kanz/core/state/settings_providers.dart';
 import 'package:kanz/features/home/home_screen.dart';
@@ -14,6 +16,7 @@ import 'package:kanz/features/tutorial/tutorial_screen.dart';
 import 'package:kanz/l10n/l10n.dart';
 
 import 'support/fakes.dart';
+import 'support/fixtures.dart';
 
 void main() {
   late TestHarness h;
@@ -119,5 +122,30 @@ void main() {
       Directionality.of(tester.element(find.byType(HomeScreen))),
       TextDirection.ltr,
     );
+  });
+
+  testWidgets('the launch health check retries while the backend starts', (
+    tester,
+  ) async {
+    h =
+        await tester.runAsync(
+              () =>
+                  TestHarness.create(prefs: {'settings.onboarding_done': true}),
+            )
+            as TestHarness;
+    var attempts = 0;
+    h.api.onHealth = () async {
+      if (++attempts == 1) throw const ApiException.timeout();
+      return HealthResponse.fromJson(fixture('health.json'));
+    };
+    await pumpApp(tester);
+    expect(attempts, 1);
+
+    // The provider's own retry policy: once more after two seconds.
+    await tester.pump(const Duration(seconds: 3));
+    await tester.pumpAndSettle();
+
+    expect(attempts, 2);
+    expect(h.container.read(backendStatusProvider), BackendStatus.online);
   });
 }

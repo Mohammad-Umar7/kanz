@@ -21,9 +21,6 @@ class _KanzAppState extends ConsumerState<KanzApp> with WidgetsBindingObserver {
   void initState() {
     super.initState();
     WidgetsBinding.instance.addObserver(this);
-    // Wake the backend while the first screen renders: a cold start loads the
-    // knowledge base, and the first scan should not pay for it.
-    ref.read(healthProvider);
   }
 
   @override
@@ -43,6 +40,11 @@ class _KanzAppState extends ConsumerState<KanzApp> with WidgetsBindingObserver {
 
   @override
   Widget build(BuildContext context) {
+    // Wake the backend while the first screen renders: a cold start loads the
+    // knowledge base, and the first scan should not pay for it. Listening (not
+    // just reading) keeps the health check active, so its retries run even
+    // before a screen shows the backend status.
+    ref.listen(healthProvider, (_, _) {});
     final router = ref.watch(routerProvider);
     final themeMode = ref.watch(settingsProvider.select((s) => s.themeMode));
     final locale = ref.watch(appLocaleProvider);
