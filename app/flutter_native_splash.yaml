@@ -1,0 +1,21 @@
+# Native splash screens: paper in light mode, warm near-black in dark mode,
+# the gem in the center. Regenerate with:
+#   dart run flutter_native_splash:create
+flutter_native_splash:
+  color: "#F4F1EA"
+  image: assets/brand/splash.png
+  color_dark: "#111210"
+  image_dark: assets/brand/splash_dark.png
+
+  # Android 12+ draws the splash icon inside a 768 px circle of a 1152 px
+  # canvas; splash.png is laid out for exactly that.
+  android_12:
+    color: "#F4F1EA"
+    image: assets/brand/splash.png
+    color_dark: "#111210"
+    image_dark: assets/brand/splash_dark.png
+
+  android: true
+  ios: true
+  web: false
+  fullscreen: false
