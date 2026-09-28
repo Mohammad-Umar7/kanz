@@ -7,18 +7,18 @@ Models: vision `gemini-3.1-flash-lite`, text `gemini-3.1-flash-lite`, embeddings
 | Metric | Value |
 | --- | --- |
 | photos | 21 |
-| errors | 3 |
-| passed | 18/21 (86%) |
-| category accuracy | 17/17 (100%) |
-| category any item | 17/17 (100%) |
-| hazard accuracy | 17/17 (100%) |
-| item count ok | 17/17 (100%) |
+| errors | 0 |
+| passed | 21/21 (100%) |
+| category accuracy | 20/20 (100%) |
+| category any item | 20/20 (100%) |
+| hazard accuracy | 20/20 (100%) |
+| item count ok | 20/20 (100%) |
 | unclear detected | 1/1 (100%) |
-| analysis ms p50 | 7629 |
+| analysis ms p50 | 7555 |
 | analysis ms p90 | 17286 |
-| total ms p50 | 7683 |
+| total ms p50 | 7613 |
 | total ms p90 | 17309 |
-| recommend total ms | [7815, 6138, 12535] |
+| recommend total ms | [8212, 6138, 12535] |
 
 Category accuracy uses the focus (primary) item; for hazardous photos the hazardous item counts, because
 the focus item is deliberately chosen among the safe ones. Hazard accuracy asks whether a disposal-only
@@ -28,7 +28,7 @@ hazard was flagged exactly when one was expected.
 
 | Photo | Expected | Predicted | Items | Hazards flagged | Category | Hazard | Top conf. | Usable | Analysis ms | Total ms | Model | Run |
 | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
-| glass_jar.jpg | glass | glass | Glass mason jar; Metal lid | - | yes | yes | 1.0 | yes | 11381 | 11416 | gemini-3.1-flash-lite | first |
+| glass_jar.jpg | glass | glass | Glass mason jar; Metal lid | - | yes | yes | 1.0 | yes | 4847 | 4898 | gemini-3.1-flash-lite | rerun |
 | glass_bottle.jpg | glass | glass | Glass wine bottle; Metal screw cap | - | yes | yes | 1.0 | yes | 7629 | 7683 | gemini-3.1-flash-lite | first |
 | pet_bottle.jpg | plastic | plastic | PET water bottle | - | yes | yes | 1.0 | yes | 4416 | 4454 | gemini-3.1-flash-lite | first |
 | plastic_container.jpg | plastic | plastic | Plastic food container | - | yes | yes | 1.0 | yes | 4692 | 4737 | gemini-3.1-flash-lite | rerun |
@@ -40,11 +40,11 @@ hazard was flagged exactly when one was expected.
 | wooden_crate.jpg | wood | wood | Wooden crates | - | yes | yes | 1.0 | yes | 16250 | 16288 | gemini-3.1-flash-lite | rerun |
 | wooden_pallet.jpg | wood | wood | Wooden shipping pallet; Leather work glove | sharp_edges | yes | yes | 1.0 | yes | 10978 | 11003 | gemini-3.1-flash-lite | first |
 | cardboard_box.jpg | paper | paper | Corrugated cardboard box | - | yes | yes | 1.0 | yes | 17286 | 17309 | gemini-3.1-flash-lite | rerun |
-| newspapers.jpg | paper | error: ai_unavailable: 503 UNAVAILABLE. {'error': {'code': 503, 'message': 'This model is currently experiencing high demand. S | | | | | | | | | | rerun |
+| newspapers.jpg | paper | paper | Newspaper stack | - | yes | yes | 1.0 | yes | 4016 | 4045 | gemini-3.1-flash-lite | rerun |
 | light_bulb.jpg | hazardous + hazard | hazardous | Incandescent light bulb | light_bulb | yes | yes | 1.0 | yes | 5851 | 5873 | gemini-3.1-flash-lite | first |
 | aerosol_can.jpg | hazardous + hazard | hazardous | Aerosol contact cleaner | aerosol, chemical | yes | yes | 1.0 | yes | 12640 | 12676 | gemini-3.1-flash-lite | first |
-| fabric_scraps.jpg | textile | error: ai_unavailable: 503 UNAVAILABLE. {'error': {'code': 503, 'message': 'This model is currently experiencing high demand. S | | | | | | | | | | rerun |
-| bottle_caps.jpg | plastic | error: ai_unavailable: 503 UNAVAILABLE. {'error': {'code': 503, 'message': 'This model is currently experiencing high demand. S | | | | | | | | | | rerun |
+| fabric_scraps.jpg | textile | textile | Fabric scraps | - | yes | yes | 0.95 | yes | 7807 | 7835 | gemini-3.1-flash-lite | rerun |
+| bottle_caps.jpg | plastic | plastic | Plastic bottle caps | - | yes | yes | 1.0 | yes | 6292 | 6336 | gemini-3.1-flash-lite | rerun |
 | smartphone_old.jpg | electronics + hazard | electronics | Wiko smartphone | battery, broken_glass, e_waste | yes | yes | 1.0 | yes | 5762 | 5802 | gemini-3.1-flash-lite | first |
 | medicine_blister.jpg | hazardous + hazard | hazardous | Birth control pill blister pack | medicine | yes | yes | 1.0 | yes | 23225 | 23302 | gemini-3.1-flash-lite | rerun |
 | mixed_recyclables.jpg | plastic | plastic | Plastic milk bottles; Mixed plastic packaging | - | yes | yes | 0.95 | yes | 13829 | 13880 | gemini-3.1-flash-lite | rerun |
@@ -55,12 +55,12 @@ hazard was flagged exactly when one was expected.
 ### glass_jar.jpg
 
 - Mode: `diy`; donate available: True
-- Ideas: Hanging jar lantern (easy; sources: proj_glass_jar_lantern); Painted jar desk organizer (easy; sources: proj_glass_painted_jar); Labelled pantry jars (easy; sources: proj_glass_jar_pantry_storage)
+- Ideas: Painted desk organizer (easy; sources: proj_glass_painted_jar); Labelled pantry storage (easy; sources: proj_glass_jar_pantry_storage); Hanging jar lantern (easy; sources: proj_glass_jar_lantern)
 - Recycle streams: Glass bottle bank; Metal recycling bin
 - Disposal: none
 - Facility categories: glass, metal
-- Timings (ms): {"safety_router": 0, "retrieval": 447, "donate": 2717, "dropoff": 8, "recycle": 6529, "upcycle": 7347, "total": 7815}
-- Models: embed: gemini-embedding-001; donation_advisor@v1: gemini-3.1-flash-lite; recycling_advisor@v1: gemini-3.1-flash-lite
+- Timings (ms): {"safety_router": 0, "retrieval": 485, "donate": 2656, "dropoff": 9, "recycle": 4025, "upcycle": 7705, "total": 8212}
+- Models: embed: gemini-embedding-001; donation_advisor@v1: gemini-3.1-flash-lite; recycling_advisor@v1: gemini-3.1-flash-lite; upcycle_designer@v1: gemini-3.1-flash-lite
 
 ### aa_batteries.jpg
 

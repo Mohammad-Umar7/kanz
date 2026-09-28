@@ -21,19 +21,19 @@
  },
  "summary": {
   "photos": 21,
-  "errors": 3,
-  "passed": "18/21 (86%)",
-  "category_accuracy": "17/17 (100%)",
-  "category_any_item": "17/17 (100%)",
-  "hazard_accuracy": "17/17 (100%)",
-  "item_count_ok": "17/17 (100%)",
+  "errors": 0,
+  "passed": "21/21 (100%)",
+  "category_accuracy": "20/20 (100%)",
+  "category_any_item": "20/20 (100%)",
+  "hazard_accuracy": "20/20 (100%)",
+  "item_count_ok": "20/20 (100%)",
   "unclear_detected": "1/1 (100%)",
-  "analysis_ms_p50": 7629,
+  "analysis_ms_p50": 7555,
   "analysis_ms_p90": 17286,
-  "total_ms_p50": 7683,
+  "total_ms_p50": 7613,
   "total_ms_p90": 17309,
   "recommend_total_ms": [
-   7815,
+   8212,
    6138,
    12535
   ]
@@ -63,23 +63,23 @@
    "hazard_ok": true,
    "items_ok": true,
    "timings_ms": {
-    "upload": 27,
+    "upload": 41,
     "classifier": 0,
-    "analysis": 11381,
+    "analysis": 4847,
     "safety": 0,
-    "total": 11416
+    "total": 4898
    },
    "models": [
     "material_analyst@v2: gemini-3.1-flash-lite"
    ],
-   "run": "first",
+   "run": "rerun",
    "error": null,
    "recommend": {
     "mode": "diy",
     "ideas": [
-     "Hanging jar lantern (easy; sources: proj_glass_jar_lantern)",
-     "Painted jar desk organizer (easy; sources: proj_glass_painted_jar)",
-     "Labelled pantry jars (easy; sources: proj_glass_jar_pantry_storage)"
+     "Painted desk organizer (easy; sources: proj_glass_painted_jar)",
+     "Labelled pantry storage (easy; sources: proj_glass_jar_pantry_storage)",
+     "Hanging jar lantern (easy; sources: proj_glass_jar_lantern)"
     ],
     "recycle_streams": [
      "Glass bottle bank",
@@ -93,17 +93,18 @@
     ],
     "timings_ms": {
      "safety_router": 0,
-     "retrieval": 447,
-     "donate": 2717,
-     "dropoff": 8,
-     "recycle": 6529,
-     "upcycle": 7347,
-     "total": 7815
+     "retrieval": 485,
+     "donate": 2656,
+     "dropoff": 9,
+     "recycle": 4025,
+     "upcycle": 7705,
+     "total": 8212
     },
     "models": [
      "embed: gemini-embedding-001",
      "donation_advisor@v1: gemini-3.1-flash-lite",
-     "recycling_advisor@v1: gemini-3.1-flash-lite"
+     "recycling_advisor@v1: gemini-3.1-flash-lite",
+     "upcycle_designer@v1: gemini-3.1-flash-lite"
     ]
    },
    "passed": true
@@ -570,23 +571,35 @@
    "expected_hazard": false,
    "expected_items_min": 1,
    "expected_unclear": false,
-   "predicted_category": null,
-   "categories": [],
-   "items": [],
+   "predicted_category": "paper",
+   "categories": [
+    "paper"
+   ],
+   "items": [
+    "Newspaper stack"
+   ],
    "hazards": [],
-   "top_confidence": null,
-   "usable": null,
+   "top_confidence": 1.0,
+   "usable": true,
    "retake_tip": null,
-   "category_ok": false,
-   "category_any_ok": false,
-   "hazard_ok": false,
-   "items_ok": false,
-   "timings_ms": {},
-   "models": [],
+   "category_ok": true,
+   "category_any_ok": true,
+   "hazard_ok": true,
+   "items_ok": true,
+   "timings_ms": {
+    "upload": 25,
+    "classifier": 0,
+    "analysis": 4016,
+    "safety": 0,
+    "total": 4045
+   },
+   "models": [
+    "material_analyst@v2: gemini-3.1-flash-lite"
+   ],
    "run": "rerun",
-   "error": "ai_unavailable: 503 UNAVAILABLE. {'error': {'code': 503, 'message': 'This model is currently experiencing high demand. Spikes in demand are usually temporary. Please try again later.', 'status': 'UNAVAILABLE'}}",
+   "error": null,
    "recommend": null,
-   "passed": false
+   "passed": true
   },
   {
    "file": "light_bulb.jpg",
@@ -671,23 +684,35 @@
    "expected_hazard": false,
    "expected_items_min": 1,
    "expected_unclear": false,
-   "predicted_category": null,
-   "categories": [],
-   "items": [],
+   "predicted_category": "textile",
+   "categories": [
+    "textile"
+   ],
+   "items": [
+    "Fabric scraps"
+   ],
    "hazards": [],
-   "top_confidence": null,
-   "usable": null,
+   "top_confidence": 0.95,
+   "usable": true,
    "retake_tip": null,
-   "category_ok": false,
-   "category_any_ok": false,
-   "hazard_ok": false,
-   "items_ok": false,
-   "timings_ms": {},
-   "models": [],
+   "category_ok": true,
+   "category_any_ok": true,
+   "hazard_ok": true,
+   "items_ok": true,
+   "timings_ms": {
+    "upload": 25,
+    "classifier": 0,
+    "analysis": 7807,
+    "safety": 0,
+    "total": 7835
+   },
+   "models": [
+    "material_analyst@v2: gemini-3.1-flash-lite"
+   ],
    "run": "rerun",
-   "error": "ai_unavailable: 503 UNAVAILABLE. {'error': {'code': 503, 'message': 'This model is currently experiencing high demand. Spikes in demand are usually temporary. Please try again later.', 'status': 'UNAVAILABLE'}}",
+   "error": null,
    "recommend": null,
-   "passed": false
+   "passed": true
   },
   {
    "file": "bottle_caps.jpg",
@@ -695,23 +720,35 @@
    "expected_hazard": false,
    "expected_items_min": 1,
    "expected_unclear": false,
-   "predicted_category": null,
-   "categories": [],
-   "items": [],
+   "predicted_category": "plastic",
+   "categories": [
+    "plastic"
+   ],
+   "items": [
+    "Plastic bottle caps"
+   ],
    "hazards": [],
-   "top_confidence": null,
-   "usable": null,
+   "top_confidence": 1.0,
+   "usable": true,
    "retake_tip": null,
-   "category_ok": false,
-   "category_any_ok": false,
-   "hazard_ok": false,
-   "items_ok": false,
-   "timings_ms": {},
-   "models": [],
+   "category_ok": true,
+   "category_any_ok": true,
+   "hazard_ok": true,
+   "items_ok": true,
+   "timings_ms": {
+    "upload": 42,
+    "classifier": 0,
+    "analysis": 6292,
+    "safety": 0,
+    "total": 6336
+   },
+   "models": [
+    "material_analyst@v2: gemini-3.1-flash-lite"
+   ],
    "run": "rerun",
-   "error": "ai_unavailable: 503 UNAVAILABLE. {'error': {'code': 503, 'message': 'This model is currently experiencing high demand. Spikes in demand are usually temporary. Please try again later.', 'status': 'UNAVAILABLE'}}",
+   "error": null,
    "recommend": null,
-   "passed": false
+   "passed": true
   },
   {
    "file": "smartphone_old.jpg",
