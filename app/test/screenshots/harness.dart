@@ -31,6 +31,26 @@
 /// }
 /// ```
 ///
+/// Screens that read Riverpod providers need a scope above the app; pass it
+/// with `wrap`, overriding the providers with fixture data:
+///
+/// ```dart
+/// await takeShot(
+///   tester,
+///   name: 'swaps',
+///   config: config,
+///   wrap: (app) => ProviderScope(
+///     overrides: [swapsProvider.overrideWith(...)],
+///     child: app,
+///   ),
+///   child: const SwapsScreen(),
+/// );
+/// ```
+///
+/// To render a screen at its real route, inside the shell and with working
+/// `context.go`, pass `routerConfig: GoRouter(initialLocation: '/swaps', ...)`
+/// instead of `child`.
+///
 /// Run `flutter test test/screenshots` and open the PNGs in `_out/`.
 /// `ShotConfig.matrix()` covers 360x800 and 412x915, light and dark, English
 /// and Arabic; pass `textScales: [1.0, 1.3]` to add large text.
@@ -237,8 +257,10 @@ Future<FixturePhoto> loadFixturePhoto(WidgetTester tester, String name) async {
   return (image: MemoryImage(bytes), size: size!);
 }
 
-/// Renders [child] with [config] and writes `_out/<name>_<config.id>.png`.
+/// Renders [child] (or the app at [routerConfig]'s location) with [config]
+/// and writes `_out/<name>_<config.id>.png`.
 ///
+/// - [wrap]: widgets above the app, usually a Riverpod `ProviderScope`.
 /// - [precache]: images to decode before the capture.
 /// - [fullPage]: capture the child at its natural height (up to
 ///   [maxHeight]) instead of a fixed phone viewport.
@@ -248,7 +270,9 @@ Future<FixturePhoto> loadFixturePhoto(WidgetTester tester, String name) async {
 Future<File> takeShot(
   WidgetTester tester, {
   required String name,
-  required Widget child,
+  Widget? child,
+  RouterConfig<Object>? routerConfig,
+  Widget Function(Widget app)? wrap,
   ShotConfig config = const ShotConfig(),
   List<ImageProvider> precache = const [],
   bool fullPage = false,
@@ -257,6 +281,11 @@ Future<File> takeShot(
   int frames = 20,
   Iterable<LocalizationsDelegate<dynamic>> localizationsDelegates = const [],
 }) async {
+  assert(
+    (child == null) != (routerConfig == null),
+    'Pass either child or routerConfig',
+  );
+  assert(!fullPage || child != null, 'fullPage needs a child');
   await loadKanzFonts();
 
   final logical = fullPage ? Size(config.size.width, maxHeight) : config.size;
@@ -276,7 +305,7 @@ Future<File> takeShot(
       ? KanzTheme.dark(locale: config.locale)
       : KanzTheme.light(locale: config.locale);
 
-  Widget home = child;
+  Widget? home = child;
   if (fullPage) {
     home = Material(
       color: theme.scaffoldBackgroundColor,
@@ -298,33 +327,46 @@ Future<File> takeShot(
     );
   }
 
-  final app = MaterialApp(
-    debugShowCheckedModeBanner: false,
-    theme: theme,
-    locale: config.locale,
-    supportedLocales: const [Locale('en'), Locale('ar')],
-    localizationsDelegates: [
-      ...localizationsDelegates,
-      GlobalMaterialLocalizations.delegate,
-      GlobalWidgetsLocalizations.delegate,
-      GlobalCupertinoLocalizations.delegate,
-    ],
-    builder: (context, appChild) => MediaQuery(
-      data: MediaQuery.of(context).copyWith(
-        textScaler: TextScaler.linear(config.textScale),
-        disableAnimations: config.reduceMotion,
-      ),
-      child: appChild!,
+  final delegates = [
+    ...localizationsDelegates,
+    GlobalMaterialLocalizations.delegate,
+    GlobalWidgetsLocalizations.delegate,
+    GlobalCupertinoLocalizations.delegate,
+  ];
+  Widget builder(BuildContext context, Widget? appChild) => MediaQuery(
+    data: MediaQuery.of(context).copyWith(
+      textScaler: TextScaler.linear(config.textScale),
+      disableAnimations: config.reduceMotion,
     ),
-    home: home,
+    child: appChild!,
   );
+  Widget app = routerConfig == null
+      ? MaterialApp(
+          debugShowCheckedModeBanner: false,
+          theme: theme,
+          locale: config.locale,
+          supportedLocales: const [Locale('en'), Locale('ar')],
+          localizationsDelegates: delegates,
+          builder: builder,
+          home: home,
+        )
+      : MaterialApp.router(
+          debugShowCheckedModeBanner: false,
+          theme: theme,
+          locale: config.locale,
+          supportedLocales: const [Locale('en'), Locale('ar')],
+          localizationsDelegates: delegates,
+          builder: builder,
+          routerConfig: routerConfig,
+        );
+  if (wrap != null) app = wrap(app);
 
   await tester.pumpWidget(
     fullPage ? app : RepaintBoundary(key: _captureKey, child: app),
   );
 
   if (precache.isNotEmpty) {
-    final context = tester.element(find.byType(MaterialApp));
+    final context = tester.element(find.byType(Navigator).first);
     await tester.runAsync(
       () => Future.wait([for (final p in precache) precacheImage(p, context)]),
     );
