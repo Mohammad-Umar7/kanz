@@ -5,5 +5,5 @@ Public seam (keep these signatures):
     async def after_image(req: AfterImageRequest) -> ImageResponse
     async def step_image(req: StepImageRequest) -> ImageResponse
     async def bin_image(req: BinImageRequest) -> ImageResponse
-    def start_step_chain(tutorial: Tutorial) -> None   # fire-and-forget background generation
+    def start_step_chain(tutorial: Tutorial, idea: UpcycleIdea | None = None) -> None  # fire-and-forget
 """

@@ -84,7 +84,8 @@ def status() -> tuple[int, bool]
 async def after_image(req: AfterImageRequest) -> ImageResponse
 async def step_image(req: StepImageRequest) -> ImageResponse
 async def bin_image(req: BinImageRequest) -> ImageResponse
-def start_step_chain(tutorial: Tutorial) -> None
+def start_step_chain(tutorial: Tutorial, idea: UpcycleIdea | None = None) -> None
+    # fire-and-forget; also persists the idea so later /images/step calls can build the after image
 
 # app/places/categories.py           (Places & Swaps)
 def catalog(lang) -> list[FacilityCategory]
@@ -96,6 +97,17 @@ async def search(req: FacilitiesRequest) -> FacilitiesResponse
 # app/swaps/service.py               (Places & Swaps)
 async def suggest(req: SwapsRequest) -> SwapsResponse
 ```
+
+### Knowledge base documents (`backend/knowledge/`, original writing)
+
+Every document has `id` (prefix by kind), `kind`, `title`, `title_ar`, `materials` (MaterialCategory ids) and kind-specific fields. The RAG seeder embeds a text rendering of each document and stores `kind` and material flags as metadata.
+
+| Kind | File(s) | Owner | Fields |
+| --- | --- | --- | --- |
+| `project` | `projects/<material>.json` (>= 42 total, >= 7 per glass/plastic/paper/metal/textile/wood) | AI Pipeline | `id: proj_<material>_<slug>`, `items` (e.g. jar, bottle), `difficulty` easy/medium/hard, `time_minutes`, `tools` (ToolId), `extra_materials`, `steps_outline` (4-8), `safety`, `tags` |
+| `material_guide` | `materials.json`, `resin_codes.json` | AI Pipeline | `id: mat_<category>` / `resin_<n>_<name>`, `identification`, `cleaning_prep`, `recycling {stream, accepted, not_accepted}`, `notes`; resin codes add `resin_code`, `common_items`, `recyclability` |
+| `safety` | `safety.json` | AI Pipeline | `id: safety_<topic>`, `applies_to {hazards, materials, techniques}`, `rules`, `never` |
+| `swap` | `swaps.json` (>= 30) | Places & Swaps | `id: swap_<slug>`, `from_item`, `to_item`, `replaces_category`, `keywords`, `why`, `tip`, `effort`, `cost` (low/medium/high), `impact_note`, `impact_source` (null unless a citable source backs a number) |
 
 ## 5. Workstreams and ownership
 
