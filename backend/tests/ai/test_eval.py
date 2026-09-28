@@ -1,6 +1,7 @@
 """The eval script's scoring and report rendering (no live calls)."""
 
 import importlib.util
+import sys
 
 from app.config import BACKEND_DIR
 from app.schemas.analysis import AnalyzeResponse
@@ -10,6 +11,7 @@ from .conftest import fixture_json
 # eval/ is a scripts folder, not a package: load run_eval.py by path.
 _spec = importlib.util.spec_from_file_location("run_eval", BACKEND_DIR / "eval" / "run_eval.py")
 run_eval = importlib.util.module_from_spec(_spec)
+sys.modules["run_eval"] = run_eval  # dataclasses resolve their module through sys.modules
 _spec.loader.exec_module(run_eval)
 
 
