@@ -316,7 +316,7 @@ class _ControlsSectionState extends State<ControlsSection> {
             children: [
               KanzButton(
                 label: s.seeTutorial,
-                icon: KanzIcons.forward,
+                trailingIcon: KanzIcons.forward,
                 onPressed: () {},
                 expand: true,
               ),
