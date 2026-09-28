@@ -225,6 +225,26 @@ class KanzType extends ThemeExtension<KanzType> {
   }
 
   @override
+  bool operator ==(Object other) =>
+      other is KanzType &&
+      other.data == data &&
+      other.dataStrong == dataStrong &&
+      other.numeralLarge == numeralLarge &&
+      other.numeral == numeral &&
+      other.numeralSmall == numeralSmall &&
+      other.uppercaseData == uppercaseData;
+
+  @override
+  int get hashCode => Object.hash(
+    data,
+    dataStrong,
+    numeralLarge,
+    numeral,
+    numeralSmall,
+    uppercaseData,
+  );
+
+  @override
   KanzType lerp(ThemeExtension<KanzType>? other, double t) {
     if (other is! KanzType) return this;
     return KanzType(

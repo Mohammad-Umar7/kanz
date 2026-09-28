@@ -6,6 +6,7 @@
 /// DESIGN.md at the repository root.
 library;
 
+import 'package:flutter/foundation.dart' show listEquals;
 import 'package:flutter/material.dart';
 
 /// Semantic color tokens, available from the theme as a [ThemeExtension].
@@ -200,6 +201,37 @@ class KanzColors extends ThemeExtension<KanzColors> {
       shadow: shadow ?? this.shadow,
     );
   }
+
+  List<Color> get _all => [
+    background,
+    surface,
+    surfaceSunken,
+    raised,
+    track,
+    ink,
+    inkSecondary,
+    inkDisabled,
+    line,
+    lineStrong,
+    accent,
+    onAccent,
+    inverse,
+    onInverse,
+    danger,
+    onDanger,
+    caution,
+    positive,
+    scrim,
+    photoBackdrop,
+    shadow,
+  ];
+
+  @override
+  bool operator ==(Object other) =>
+      other is KanzColors && listEquals(other._all, _all);
+
+  @override
+  int get hashCode => Object.hashAll(_all);
 
   @override
   KanzColors lerp(ThemeExtension<KanzColors>? other, double t) {

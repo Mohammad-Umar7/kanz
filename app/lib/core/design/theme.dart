@@ -25,11 +25,28 @@ import 'typography.dart';
 abstract final class KanzTheme {
   /// Light theme: paper background, white cards, ink text.
   static ThemeData light({Locale? locale}) =>
-      _build(KanzColors.light, Brightness.light, locale);
+      _cached(KanzColors.light, Brightness.light, locale);
 
   /// Dark theme: near-black warm background, warm off-white ink.
   static ThemeData dark({Locale? locale}) =>
-      _build(KanzColors.dark, Brightness.dark, locale);
+      _cached(KanzColors.dark, Brightness.dark, locale);
+
+  // One ThemeData per brightness and script. MaterialApp animates between
+  // unequal themes, so building a fresh one on every rebuild of the app
+  // root would start a 200 ms whole-app theme lerp each time.
+  static final Map<(Brightness, bool), ThemeData> _themes = {};
+
+  static ThemeData _cached(
+    KanzColors c,
+    Brightness brightness,
+    Locale? locale,
+  ) {
+    final arabic = KanzFonts.isArabic(locale);
+    return _themes.putIfAbsent((
+      brightness,
+      arabic,
+    ), () => _build(c, brightness, arabic: arabic));
+  }
 
   /// The [ColorScheme] for a palette. Public so tests can audit every slot.
   static ColorScheme colorScheme(KanzColors c, Brightness brightness) {
@@ -91,8 +108,11 @@ abstract final class KanzTheme {
     );
   }
 
-  static ThemeData _build(KanzColors c, Brightness brightness, Locale? locale) {
-    final arabic = KanzFonts.isArabic(locale);
+  static ThemeData _build(
+    KanzColors c,
+    Brightness brightness, {
+    required bool arabic,
+  }) {
     final scheme = colorScheme(c, brightness);
     final text = KanzTypography.textTheme(c, arabic: arabic);
     final type = KanzType.build(c, arabic: arabic);
