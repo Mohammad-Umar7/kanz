@@ -4,6 +4,7 @@
 import 'dart:io';
 
 import 'package:flutter/material.dart';
+import 'package:flutter/rendering.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:kanz/core/design/design.dart';
@@ -250,6 +251,63 @@ void main() {
       await tester.pump(const Duration(seconds: 2));
       expect(tester.takeException(), isNull);
       expect(find.text('JAR · 93%'), findsOneWidget);
+    });
+  });
+
+  group('SpecimenCard', () {
+    SpecimenCard card(String qualityLabel) => SpecimenCard(
+      labels: const SpecimenLabels(
+        material: 'المادة',
+        type: 'النوع',
+        quantity: 'الكمية',
+        quality: 'الجودة',
+        state: 'الحالة',
+        recyclable: 'قابل للتدوير',
+        confidence: 'الثقة',
+        edit: 'صحّح هذا الغرض',
+      ),
+      categoryId: 'hazardous',
+      categoryLabel: 'خطرة',
+      name: 'بطاريات قلوية AA',
+      material: 'خلية قلوية',
+      quantity: '4 قطع',
+      qualityScore: 2,
+      qualityLabel: qualityLabel,
+      qualitySemantics: 'الجودة 2 من 5',
+      stateLabels: const [],
+      recyclable: SpecimenRecyclable.conditional,
+      recyclableLabel: 'فقط في نقطة جمع البطاريات',
+      confidence: '96%',
+      index: '01 / 02',
+      onEdit: () {},
+    );
+
+    testWidgets('keeps "01 / 02" left to right in Arabic', (tester) async {
+      await tester.pumpWidget(
+        _app(card('مستهلك'), direction: TextDirection.rtl),
+      );
+      // MonoLabel keeps a semantics label, so find the paragraph inside.
+      final index = tester.renderObject<RenderParagraph>(
+        find.descendant(
+          of: find.text('01 / 02'),
+          matching: find.byType(RichText),
+        ),
+      );
+      expect(index.textDirection, TextDirection.ltr);
+    });
+
+    testWidgets('shows the whole quality word in a narrow cell', (
+      tester,
+    ) async {
+      await tester.pumpWidget(
+        _app(card('مستهلك'), direction: TextDirection.rtl),
+      );
+      final word = tester.renderObject<RenderParagraph>(find.text('مستهلك'));
+      expect(word.didExceedMaxLines, isFalse);
+      expect(
+        word.size.width,
+        greaterThanOrEqualTo(word.getMaxIntrinsicWidth(double.infinity) - 0.5),
+      );
     });
   });
 
