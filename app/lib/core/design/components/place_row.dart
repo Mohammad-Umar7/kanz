@@ -20,6 +20,7 @@ class PlaceRow extends StatelessWidget {
     required this.openLabel,
     required this.materialIds,
     required this.directionsLabel,
+    this.materialsLabel,
     this.address,
     this.typeLabel,
     this.onTap,
@@ -40,6 +41,9 @@ class PlaceRow extends StatelessWidget {
   /// Accepted material category ids, drawn as dots.
   final List<String> materialIds;
   final String directionsLabel;
+
+  /// Spoken version of the dots, for example "Accepts glass and metal".
+  final String? materialsLabel;
   final String? address;
 
   /// Facility type, for example "Recycling center".
@@ -77,7 +81,7 @@ class PlaceRow extends StatelessWidget {
             border: divider ? Border(bottom: BorderSide(color: c.line)) : null,
           ),
           child: Row(
-            crossAxisAlignment: CrossAxisAlignment.start,
+            crossAxisAlignment: CrossAxisAlignment.center,
             children: [
               Expanded(
                 child: MergeSemantics(
@@ -122,13 +126,16 @@ class PlaceRow extends StatelessWidget {
                             ],
                           ),
                           if (materialIds.isNotEmpty)
-                            Row(
-                              mainAxisSize: MainAxisSize.min,
-                              spacing: KanzSpace.s4,
-                              children: [
-                                for (final id in materialIds.take(6))
-                                  MaterialDot(id),
-                              ],
+                            Semantics(
+                              label: materialsLabel,
+                              child: Row(
+                                mainAxisSize: MainAxisSize.min,
+                                spacing: KanzSpace.s4,
+                                children: [
+                                  for (final id in materialIds.take(6))
+                                    MaterialDot(id),
+                                ],
+                              ),
                             ),
                         ],
                       ),

@@ -222,7 +222,7 @@ class _StageRow extends StatelessWidget {
                         const SizedBox(width: KanzSpace.s8),
                         Padding(
                           padding: const EdgeInsets.only(top: 2),
-                          child: MonoLabel(stage.detail!),
+                          child: MonoLabel(stage.detail!, uppercase: false),
                         ),
                       ],
                     ],

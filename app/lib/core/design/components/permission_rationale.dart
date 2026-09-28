@@ -213,10 +213,25 @@ class _CameraArtPainter extends CustomPainter {
         ..strokeWidth = 2
         ..color = box,
     );
+    // Its label tag, drawn like the real overlay: dark chip, color dot and
+    // two strokes standing in for text.
+    final tag = RRect.fromRectAndRadius(
+      Rect.fromLTWH(detection.left, detection.top - 22, s * 0.26, 16),
+      const Radius.circular(4),
+    );
+    canvas.drawRRect(tag, Paint()..color = ink);
     canvas.drawCircle(
-      Offset(detection.left + 8, detection.top - 10),
-      3.5,
+      Offset(tag.left + 9, tag.center.dy),
+      3,
       Paint()..color = box,
+    );
+    canvas.drawLine(
+      Offset(tag.left + 17, tag.center.dy),
+      Offset(tag.right - 7, tag.center.dy),
+      Paint()
+        ..strokeWidth = 2
+        ..strokeCap = StrokeCap.round
+        ..color = surface.withValues(alpha: 0.8),
     );
   }
 

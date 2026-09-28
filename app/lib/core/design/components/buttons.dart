@@ -154,8 +154,8 @@ enum KanzIconButtonStyle {
   /// Glyph in a hairline circle.
   outlined,
 
-  /// Glyph on a solid dark disc, for controls laid over photos and the
-  /// camera preview. Opaque on purpose: no blur, no glass.
+  /// Glyph on a dark disc (80 % ink), for controls laid over photos and
+  /// the camera preview. A plain tint, never a blur or glass effect.
   onPhoto,
 }
 
@@ -191,7 +191,7 @@ class KanzIconButton extends StatelessWidget {
       ),
       KanzIconButtonStyle.onPhoto => (
         selected ? KanzColors.dark.accent : const Color(0xFFF2EFE8),
-        const Color(0xB3161616),
+        const Color(0xCC161616),
         null,
       ),
     };
@@ -220,6 +220,7 @@ class ScanActionButton extends StatefulWidget {
     this.label,
     this.icon = KanzIcons.scan,
     this.size = 56,
+    this.elevated = false,
   });
 
   final String semanticsLabel;
@@ -227,6 +228,10 @@ class ScanActionButton extends StatefulWidget {
   final String? label;
   final IconData icon;
   final double size;
+
+  /// Soft shadow, only when the button floats over content (never inside
+  /// the navigation bar).
+  final bool elevated;
 
   @override
   State<ScanActionButton> createState() => _ScanActionButtonState();
@@ -287,7 +292,7 @@ class _ScanActionButtonState extends State<ScanActionButton> {
           decoration: BoxDecoration(
             color: widget.onPressed == null ? c.inkDisabled : c.accent,
             borderRadius: radius,
-            boxShadow: extended ? null : KanzElevation.floating(c),
+            boxShadow: widget.elevated ? KanzElevation.floating(c) : null,
           ),
           child: Material(
             type: MaterialType.transparency,
