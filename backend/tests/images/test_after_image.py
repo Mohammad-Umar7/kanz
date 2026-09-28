@@ -116,6 +116,20 @@ async def test_renders_are_capped_by_the_semaphore(
     assert gateway.max_active == 3
 
 
+async def test_render_timings_leave_out_the_wait_for_a_slot(
+    service: ImageService, gateway: FakeImageGateway, photo_id: str, idea: UpcycleIdea
+) -> None:
+    gateway.gate = asyncio.Event()
+    variants = [idea.model_copy(update={"id": f"idea_{n:08x}"}) for n in range(4)]
+    batch = asyncio.gather(*(service.after_image(request(photo_id, v)) for v in variants))
+    await until(lambda: gateway.active == 3)
+    await asyncio.sleep(0.3)  # the fourth render waits for a slot all this time
+    gateway.gate.set()
+    # The three first renders spent the pause rendering; the fourth spent it queued.
+    queued = min(await batch, key=lambda r: r.timings_ms["render_after"])
+    assert queued.timings_ms["image_after"] - queued.timings_ms["render_after"] >= 250
+
+
 async def test_unknown_photo_is_not_found_and_writes_nothing(
     service: ImageService, gateway: FakeImageGateway, store: ImageStore, idea: UpcycleIdea
 ) -> None:
