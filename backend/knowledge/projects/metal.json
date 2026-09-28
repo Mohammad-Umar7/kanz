@@ -1,0 +1,212 @@
+[
+  {
+    "id": "proj_metal_tin_can_planter",
+    "kind": "project",
+    "title": "Painted tin-can herb planters",
+    "title_ar": "أصص أعشاب من علب الصفيح المطلية",
+    "materials": ["metal"],
+    "items": ["tin can", "food can", "steel can", "tomato can"],
+    "summary": "Food cans with drainage holes and painted outsides make a matching row of herb planters for a sunny sill.",
+    "summary_ar": "علب طعام بثقوب تصريف وطلاء خارجي تصنع صفًا متناسقًا من أصص الأعشاب لنافذة مشمسة.",
+    "result": "three steel food cans with labels removed, painted in matte pastel colors on the outside, planted with basil, mint and parsley",
+    "difficulty": "easy",
+    "time_minutes": 40,
+    "tools": ["hammer", "acrylic_paint", "paintbrush", "sandpaper"],
+    "extra_materials": ["a nail", "potting mix", "herb seedlings", "small stones for drainage"],
+    "steps_outline": [
+      "Soak off the labels and wash the cans",
+      "Rub the rim with sandpaper so no sharp burr is left",
+      "Stand each can upside down on wood and punch 3-4 drainage holes with a hammer and nail",
+      "Paint the outside only and let it dry fully",
+      "Add stones, soil and a herb seedling"
+    ],
+    "safety": [
+      "Wear work gloves: can rims and punched holes are sharp",
+      "Paint the outside only and keep the soil side bare"
+    ],
+    "techniques": ["hammering", "sharp_metal", "sanding", "painting", "planting"],
+    "tags": ["garden", "kitchen", "decor"]
+  },
+  {
+    "id": "proj_metal_punched_can_lantern",
+    "kind": "project",
+    "title": "Punched tin-can lantern",
+    "title_ar": "فانوس من علبة صفيح مثقّبة",
+    "materials": ["metal"],
+    "items": ["tin can", "steel food can", "large coffee can"],
+    "summary": "A pattern of nail holes punched into a can throws dots of light across the wall when a tea light glows inside.",
+    "summary_ar": "نقش من ثقوب المسمار في علبة الصفيح يرسم نقاط ضوء على الجدار عندما تتوهج شمعة صغيرة بداخلها.",
+    "result": "a steel can with a pattern of small punched holes forming a star, a wire handle on top and warm candlelight shining through the holes",
+    "difficulty": "medium",
+    "time_minutes": 60,
+    "tools": ["hammer", "pliers", "craft_wire", "masking_tape", "ruler_pencil"],
+    "extra_materials": ["a nail", "water and a freezer", "a paper pattern", "a tea light"],
+    "steps_outline": [
+      "Fill the clean can with water and freeze it overnight so it holds its shape",
+      "Tape a paper pattern around the can",
+      "Lay it on a towel and punch along the pattern with a hammer and nail",
+      "Punch two holes near the rim and fit a wire handle with pliers",
+      "Let the ice melt, dry the can and add a tea light"
+    ],
+    "safety": [
+      "Wear work gloves and safety glasses while punching",
+      "Metal gets hot around a flame: lift it by the handle only and never leave it unattended"
+    ],
+    "techniques": ["hammering", "sharp_metal", "wiring", "candles"],
+    "tags": ["lighting", "outdoor", "decor"]
+  },
+  {
+    "id": "proj_metal_can_rope_pen_holder",
+    "kind": "project",
+    "title": "Rope-wrapped can caddy",
+    "title_ar": "حامل أقلام من علب ملفوفة بالحبل",
+    "materials": ["metal"],
+    "items": ["tin cans", "aluminium cans with the top removed", "food cans"],
+    "summary": "Cans wrapped in twine or rope and glued together make a desk caddy for pens, brushes and scissors.",
+    "summary_ar": "علب ملفوفة بخيط القنّب أو الحبل وملصوقة معًا تصنع حاملًا مكتبيًا للأقلام والفرش والمقصات.",
+    "result": "three steel cans of different heights tightly wrapped in natural jute rope and glued side by side, holding pens and scissors",
+    "difficulty": "easy",
+    "time_minutes": 45,
+    "tools": ["twine", "strong_glue", "scissors", "masking_tape"],
+    "extra_materials": ["jute rope or thick twine"],
+    "steps_outline": [
+      "Wash the cans and cover each rim with a strip of masking tape",
+      "Glue the end of the rope at the base of a can",
+      "Wind the rope up in tight rows, gluing every few turns",
+      "Glue the finished cans together in a cluster",
+      "Fill with pens and brushes"
+    ],
+    "safety": ["Tape or file the rims first: opened cans have sharp edges"],
+    "techniques": ["gluing", "knotting"],
+    "tags": ["desk", "storage", "beginner", "gift"]
+  },
+  {
+    "id": "proj_metal_lid_magnets",
+    "kind": "project",
+    "title": "Jar-lid photo magnets",
+    "title_ar": "مغناطيسات صور من أغطية البرطمانات",
+    "materials": ["metal"],
+    "items": ["jar lids", "metal lids", "bottle tops"],
+    "summary": "Metal jar lids framing small photos or patterned paper become fridge magnets and gifts.",
+    "summary_ar": "أغطية البرطمانات المعدنية تؤطر صورًا صغيرة أو أوراقًا منقوشة لتصبح مغناطيسات للثلاجة وهدايا.",
+    "result": "four round metal jar lids used as frames, each holding a small family photo, stuck to a white fridge door",
+    "difficulty": "easy",
+    "time_minutes": 30,
+    "tools": ["scissors", "strong_glue", "ruler_pencil"],
+    "extra_materials": ["small photos or patterned paper", "round magnets"],
+    "steps_outline": [
+      "Wash and dry the lids",
+      "Trace the inside of a lid on the photo and cut the circle",
+      "Glue the photo inside the lid",
+      "Glue a magnet to the back and let it cure"
+    ],
+    "safety": ["Keep magnets away from small children who could swallow them"],
+    "techniques": ["cutting", "gluing"],
+    "tags": ["gift", "kids", "decor", "beginner"]
+  },
+  {
+    "id": "proj_metal_can_wind_chime",
+    "kind": "project",
+    "title": "Can and lid wind chime",
+    "title_ar": "أجراس رياح من العلب والأغطية",
+    "materials": ["metal", "wood"],
+    "items": ["tin cans", "jar lids", "metal lids"],
+    "summary": "Cans and lids hung at different lengths from a stick ring softly against each other in the breeze.",
+    "summary_ar": "علب وأغطية معلقة بأطوال مختلفة من عصا ترنّ بهدوء عندما يلامس بعضها بعضًا مع النسيم.",
+    "result": "a driftwood stick with four small painted tin cans and several jar lids hanging from twine at different lengths, moving in the breeze",
+    "difficulty": "medium",
+    "time_minutes": 60,
+    "tools": ["hammer", "twine", "scissors", "pliers"],
+    "extra_materials": ["a nail", "a stick or wooden spoon", "beads (optional)"],
+    "steps_outline": [
+      "Wash the cans and lids and tape or file any sharp rims",
+      "Punch a hole in the centre of each can base and lid with a hammer and nail on a board",
+      "Thread twine through each hole and knot a bead or washer inside to stop it",
+      "Tie the strings along the stick at different lengths",
+      "Add a twine loop to hang it and adjust until the pieces touch"
+    ],
+    "safety": ["Wear work gloves and safety glasses when punching metal"],
+    "techniques": ["hammering", "sharp_metal", "knotting"],
+    "tags": ["outdoor", "garden", "kids", "decor"]
+  },
+  {
+    "id": "proj_metal_can_wall_organizer",
+    "kind": "project",
+    "title": "Wall-mounted can organizer",
+    "title_ar": "منظّم علب مثبّت على الحائط",
+    "materials": ["metal", "wood"],
+    "items": ["tin cans", "large food cans"],
+    "summary": "Cans screwed to a board by their sides hold brushes, tools or utensils on a workshop or kitchen wall.",
+    "summary_ar": "علب مثبتة بالبراغي على لوح من جوانبها تحمل الفرش أو الأدوات على حائط الورشة أو المطبخ.",
+    "result": "a painted wooden board on a wall with five steel cans screwed on in a staggered pattern, holding brushes, pliers and screwdrivers",
+    "difficulty": "medium",
+    "time_minutes": 60,
+    "tools": ["drill", "screwdriver", "sandpaper", "ruler_pencil"],
+    "extra_materials": ["a wooden board", "short screws with washers", "wall plugs and screws"],
+    "steps_outline": [
+      "Sand the board and plan where each can will sit",
+      "Drill a small hole in the side of each can near the rim and near the base",
+      "Screw the cans to the board through the holes, with a washer under each screw",
+      "Tape or file the can rims",
+      "Fix the board to the wall and fill the cans"
+    ],
+    "safety": [
+      "Wear safety glasses when drilling and work gloves when handling cans",
+      "Clamp or hold cans with a cloth while drilling: the bit can grab thin metal"
+    ],
+    "techniques": ["drilling", "sharp_metal", "sanding"],
+    "tags": ["workshop", "storage", "kitchen", "intermediate"]
+  },
+  {
+    "id": "proj_metal_can_plant_markers",
+    "kind": "project",
+    "title": "Embossed can plant markers",
+    "title_ar": "علامات نباتات منقوشة من علب الألمنيوم",
+    "materials": ["metal"],
+    "items": ["aluminium drink cans", "soda cans"],
+    "summary": "Flat aluminium cut from a drink can takes embossed letters with a pen, making weatherproof plant labels.",
+    "summary_ar": "ألمنيوم مسطح مقطوع من علبة مشروب يُنقش عليه بالقلم ليصنع علامات نباتات تتحمل الطقس.",
+    "result": "several shiny aluminium plant markers with rounded corners and embossed herb names, pushed into pots of basil and mint",
+    "difficulty": "medium",
+    "time_minutes": 40,
+    "tools": ["scissors", "craft_knife", "ruler_pencil"],
+    "extra_materials": ["a ballpoint pen", "a folded towel to press on", "wooden sticks (optional)"],
+    "steps_outline": [
+      "Rinse the can and let it dry",
+      "Pierce the side with the craft knife, then cut off the top and bottom with scissors",
+      "Cut the sheet into strips and round every corner with scissors",
+      "Lay each strip on a towel and write the plant name firmly with a ballpoint pen",
+      "Push the markers into the soil or tape them to sticks"
+    ],
+    "safety": [
+      "Wear work gloves the whole time: cut aluminium edges are very sharp",
+      "Round every corner and fold back any burr"
+    ],
+    "techniques": ["blade_cutting", "sharp_metal", "cutting"],
+    "tags": ["garden", "labels", "intermediate"]
+  },
+  {
+    "id": "proj_metal_lid_coasters",
+    "kind": "project",
+    "title": "Jar-lid coasters",
+    "title_ar": "قواعد أكواب من أغطية البرطمانات",
+    "materials": ["metal", "textile"],
+    "items": ["large jar lids", "metal lids"],
+    "summary": "Wide metal lids lined with felt or cork from an old board make a set of sturdy drink coasters.",
+    "summary_ar": "أغطية معدنية واسعة مبطنة باللباد أو الفلين من لوح قديم تصنع طقمًا متينًا من قواعد الأكواب.",
+    "result": "four round metal jar lids turned upside down, each filled with a snug disc of grey felt, a glass of water standing on one",
+    "difficulty": "easy",
+    "time_minutes": 20,
+    "tools": ["scissors", "strong_glue", "ruler_pencil"],
+    "extra_materials": ["felt, cork or thick fabric scraps"],
+    "steps_outline": [
+      "Wash the lids and remove any rubber seal that is loose",
+      "Trace a lid on felt or cork and cut a disc slightly inside the line",
+      "Glue the disc into the lid and press it flat",
+      "Glue a small felt circle underneath so it doesn't scratch tables"
+    ],
+    "safety": ["Let the glue cure for a day before putting wet glasses on them"],
+    "techniques": ["cutting", "gluing"],
+    "tags": ["home", "gift", "beginner"]
+  }
+]
