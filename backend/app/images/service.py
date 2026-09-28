@@ -7,6 +7,9 @@ Public seam (used by the API routes and by the AI pipeline):
     async def bin_image(req: BinImageRequest) -> ImageResponse
     def start_step_chain(tutorial: Tutorial, idea: UpcycleIdea | None = None) -> None  # fire-and-forget
 
+Also available (not yet routed): ``async def reference_image(image_id)`` returns a text
+scan's rendered base photo, the natural "before" picture for scans that have no upload.
+
 How it works
 ------------
 * **Every picture edits a real photo.** The base is the user's upload or, for a text
@@ -71,7 +74,7 @@ from app.schemas.tutorial import Tutorial
 log = logging.getLogger("kanz.images")
 
 MAX_CONCURRENT_RENDERS = 3
-QUOTA_COOLDOWN_S = 120.0
+QUOTA_COOLDOWN_S = 60.0
 REFERENCE_NAME = "reference"
 
 Kind = Literal["after", "step", "bin", "reference"]
@@ -215,6 +218,16 @@ class ImageService:
                 bin_key(image_id, item.id), image_id, f"bin_{item.id}", build, regenerate=req.regenerate
             )
         return self._response(result, kind="bin", key=bin_key(image_id, item.id), timings=timings)
+
+    async def reference_image(self, image_id: str) -> ImageResponse:
+        """A text scan's base photo, rendered on first use, so the app has a 'before' picture for it."""
+        if not image_id.startswith("txt_"):
+            raise BadRequest("Only text scans have a generated reference photo.", detail=image_id)
+        self._require_source(image_id)
+        timings: Timings = {}
+        with stage_timer(timings, "image_reference"):
+            result = await self._reference(image_id, timings)
+        return self._response(result, kind="reference", key=reference_key(image_id), timings=timings)
 
     def start_step_chain(self, tutorial: Tutorial, idea: UpcycleIdea | None = None) -> None:
         """Render every step of ``tutorial`` in the background, in order. Never raises.
@@ -529,6 +542,10 @@ async def step_image(req: StepImageRequest) -> ImageResponse:
 
 async def bin_image(req: BinImageRequest) -> ImageResponse:
     return await get_image_service().bin_image(req)
+
+
+async def reference_image(image_id: str) -> ImageResponse:
+    return await get_image_service().reference_image(image_id)
 
 
 def start_step_chain(tutorial: Tutorial, idea: UpcycleIdea | None = None) -> None:

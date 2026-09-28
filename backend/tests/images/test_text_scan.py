@@ -4,7 +4,7 @@ import asyncio
 
 import pytest
 
-from app.core.errors import NotFound
+from app.core.errors import BadRequest, NotFound
 from app.core.storage import ImageStore
 from app.core.tutorials import TutorialStore
 from app.images.service import ImageService
@@ -65,3 +65,18 @@ async def test_unknown_text_scan_is_not_found(
     with pytest.raises(NotFound):
         await service.after_image(AfterImageRequest(image_id="txt_0000000000000000", idea=idea))
     assert gateway.calls == []
+
+
+async def test_reference_image_gives_text_scans_a_before_picture(
+    service: ImageService, gateway: FakeImageGateway, text_id: str, photo_id: str
+) -> None:
+    first = await service.reference_image(text_id)
+    again = await service.reference_image(text_id)
+    assert first.kind == "reference" and first.key == f"{text_id}:reference"
+    assert first.url == f"/static/generated/{text_id}/reference.jpg"
+    assert (first.cached, again.cached) == (False, True)
+    assert "image_reference" in again.timings_ms
+    assert gateway.labels == ["reference"]
+
+    with pytest.raises(BadRequest):
+        await service.reference_image(photo_id)
