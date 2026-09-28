@@ -334,9 +334,11 @@ def main(args: argparse.Namespace) -> Path:
     out_dir.mkdir(parents=True, exist_ok=True)
     stem = f"eval_{meta['date']}" + (f"_{args.tag}" if args.tag else "")
     payload = {"meta": meta, "summary": summary, "rows": [asdict(r) | {"passed": r.passed} for r in rows]}
-    (out_dir / f"{stem}.json").write_text(json.dumps(payload, indent=1, ensure_ascii=False), encoding="utf-8")
+    (out_dir / f"{stem}.json").write_text(
+        json.dumps(payload, indent=1, ensure_ascii=False), encoding="utf-8", newline="\n"
+    )
     report = out_dir / f"{stem}.md"
-    report.write_text(markdown(rows, summary, meta), encoding="utf-8")
+    report.write_text(markdown(rows, summary, meta), encoding="utf-8", newline="\n")
     return report
 
 
