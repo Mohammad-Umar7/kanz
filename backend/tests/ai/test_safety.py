@@ -16,7 +16,9 @@ def item(**overrides):
 # ---------------------------------------------------------------- normalisation
 class TestNormalisation:
     def test_electronics_always_carry_e_waste(self):
-        phone = safety.normalise_item(item(name="Old smartphone", category="electronics", material="Glass and metal"), "en")
+        phone = safety.normalise_item(
+            item(name="Old smartphone", category="electronics", material="Glass and metal"), "en"
+        )
         assert "e_waste" in phone.hazards
 
     def test_batteries_are_flagged_and_promoted_to_hazardous(self):
@@ -52,7 +54,9 @@ class TestNormalisation:
         assert thing.hazards == ["chemical"]
 
     def test_disposal_only_items_are_never_plain_recyclable(self):
-        cells = safety.normalise_item(item(name="Lithium battery", category="hazardous", recyclability_status="yes"), "en")
+        cells = safety.normalise_item(
+            item(name="Lithium battery", category="hazardous", recyclability_status="yes"), "en"
+        )
         assert cells.recyclability.status == "conditional"
         assert cells.recyclability.reason
 

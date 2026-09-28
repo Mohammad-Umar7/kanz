@@ -6,6 +6,7 @@ import pytest
 
 from app.ai.llm_schemas import LlmAnalysis, LlmIdeas
 from app.ai.prompts import load_prompt, parse_prompt, prompt_versions
+from app.ai.safety import gear_rules_text
 from app.config import BACKEND_DIR
 
 AGENTS = [
@@ -45,13 +46,13 @@ def test_only_the_analyst_uses_the_vision_model():
 
 
 def test_render_fills_known_placeholders_and_keeps_unknown_ones():
-    prompt = parse_prompt("---\nname: x\nversion: 2\nrole: X\nmodel_role: text\ntemperature: 0.1\n---\nSpeak {lang_name}. {other}")
+    prompt = parse_prompt(
+        "---\nname: x\nversion: 2\nrole: X\nmodel_role: text\ntemperature: 0.1\n---\nSpeak {lang_name}. {other}"
+    )
     assert prompt.render(lang_name="Modern Standard Arabic") == "Speak Modern Standard Arabic. {other}\n"
 
 
 def test_rendered_designer_prompt_contains_the_gear_table():
-    from app.ai.safety import gear_rules_text
-
     text = load_prompt("upcycle_designer", PROMPTS_DIR).render(lang_name="English", gear_rules=gear_rules_text())
     assert "{" not in text
     assert "spray painting: a dust mask" in text

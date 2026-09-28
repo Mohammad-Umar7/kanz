@@ -19,7 +19,7 @@ from typing import Any
 
 import pytest
 from PIL import Image
-from pydantic import BaseModel
+from pydantic import BaseModel, ValidationError
 
 from app.ai.rag import index as rag_index
 from app.ai.rag.index import KnowledgeIndex
@@ -37,7 +37,9 @@ Answer = dict | BaseModel | Exception | Callable[[list], Any]
 class FakeGateway:
     """Scripted replacement for ``GeminiGateway`` (structured + embed)."""
 
-    def __init__(self, answers: dict[type, Answer | list[Answer]] | None = None, *, embed_error: Exception | None = None):
+    def __init__(
+        self, answers: dict[type, Answer | list[Answer]] | None = None, *, embed_error: Exception | None = None
+    ):
         self.answers = dict(answers or {})
         self.embed_error = embed_error
         self.calls: list[dict[str, Any]] = []
@@ -56,18 +58,19 @@ class FakeGateway:
         return schema.model_validate(answer.model_dump() if isinstance(answer, BaseModel) else answer)
 
     async def structured(self, *, stage: str, system: str, contents: list, schema: type, validator=None, **kwargs):
+        """Like the real gateway: validate the schema and the node's rules, repair once, then give up."""
         self.calls.append({"stage": stage, "system": system, "contents": contents, "schema": schema, **kwargs})
-        obj = self._next(schema, 0, contents)
-        problems = validator(obj) if validator else []
-        if not problems:
-            return obj
-        self.problems.append(problems)
-        obj = self._next(schema, 1, contents)
-        problems = validator(obj) if validator else []
-        if problems:
+        for attempt in (0, 1):
+            try:
+                obj = self._next(schema, attempt, contents)
+            except ValidationError as err:
+                problems = [f"{'.'.join(map(str, e['loc']))}: {e['msg']}" for e in err.errors()]
+            else:
+                problems = validator(obj) if validator else []
+                if not problems:
+                    return obj
             self.problems.append(problems)
-            raise AiInvalidOutput(detail="; ".join(problems))
-        return obj
+        raise AiInvalidOutput(detail="; ".join(problems))
 
     def schemas_called(self) -> list[str]:
         return [c["schema"].__name__ for c in self.calls]
@@ -185,7 +188,9 @@ def llm_item(**overrides: Any) -> dict:
     return item
 
 
-def llm_analysis(*items: dict, usable: bool = True, issue: str = "ok", tip: str | None = None, summary: str = "An empty jar.") -> dict:
+def llm_analysis(
+    *items: dict, usable: bool = True, issue: str = "ok", tip: str | None = None, summary: str = "An empty jar."
+) -> dict:
     return {"photo": {"usable": usable, "issue": issue, "retake_tip": tip}, "items": list(items), "summary": summary}
 
 
