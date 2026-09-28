@@ -442,6 +442,29 @@ class _ControlsSectionState extends State<ControlsSection> {
           ),
         ),
         _Demo(
+          'KANZLISTTILE',
+          bleed: true,
+          child: Column(
+            children: [
+              KanzListTile(
+                leading: const Icon(KanzIcons.language),
+                title: s.languageSetting,
+                value: s.languageValue,
+                showChevron: true,
+                divider: true,
+                onTap: () {},
+              ),
+              KanzListTile(
+                leading: const Icon(KanzIcons.tools),
+                title: s.toolsSetting,
+                subtitle: s.toolsDetail,
+                showChevron: true,
+                onTap: () {},
+              ),
+            ],
+          ),
+        ),
+        _Demo(
           'KANZSWITCHTILE',
           bleed: true,
           child: KanzSwitchTile(
@@ -859,10 +882,8 @@ class DropOffSection extends StatelessWidget {
           ),
         ),
         _Demo(
-          'SWAPCARD',
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.stretch,
-            spacing: KanzSpace.s12,
+          'SWAPCARD · STAGGERED ENTRANCE',
+          child: StaggeredColumn(
             children: [
               for (final swap in s.swaps)
                 SwapCard(

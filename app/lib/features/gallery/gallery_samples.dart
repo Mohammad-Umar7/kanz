@@ -195,6 +195,10 @@ class GallerySamples {
     required this.fieldLabel,
     required this.fieldHint,
     required this.fieldHelper,
+    required this.languageSetting,
+    required this.languageValue,
+    required this.toolsSetting,
+    required this.toolsDetail,
     required this.handsFree,
     required this.handsFreeDetail,
     required this.sheetTitle,
@@ -299,6 +303,10 @@ class GallerySamples {
   final String fieldLabel;
   final String fieldHint;
   final String fieldHelper;
+  final String languageSetting;
+  final String languageValue;
+  final String toolsSetting;
+  final String toolsDetail;
   final String handsFree;
   final String handsFreeDetail;
   final String sheetTitle;
@@ -543,6 +551,10 @@ class GallerySamples {
     fieldLabel: 'Describe the item',
     fieldHint: 'A pile of old denim jeans',
     fieldHelper: 'Materials and condition help the most.',
+    languageSetting: 'Language',
+    languageValue: 'English',
+    toolsSetting: 'My tools',
+    toolsDetail: 'Scissors, pliers, twine and 4 more',
     handsFree: 'Hands-free mode',
     handsFreeDetail: 'Reads each step aloud and listens for "next".',
     sheetTitle: 'Correct this item',
@@ -782,6 +794,10 @@ class GallerySamples {
     fieldLabel: 'صف الغرض',
     fieldHint: 'كومة من سراويل الجينز القديمة',
     fieldHelper: 'المواد والحالة هما الأهم.',
+    languageSetting: 'اللغة',
+    languageValue: 'العربية',
+    toolsSetting: 'أدواتي',
+    toolsDetail: 'مقص وكماشة وخيط و4 أخرى',
     handsFree: 'وضع بلا لمس',
     handsFreeDetail: 'يقرأ كل خطوة بصوت عالٍ وينتظر كلمة "التالي".',
     sheetTitle: 'صحّح هذا الغرض',
