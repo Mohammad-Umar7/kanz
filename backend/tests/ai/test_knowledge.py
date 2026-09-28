@@ -9,7 +9,7 @@ from app.ai.rag.documents import MaterialGuideDoc, ProjectDoc, SafetyDoc, load_d
 from app.config import BACKEND_DIR
 from app.schemas.vocab import DISPOSAL_ONLY_HAZARDS, MATERIAL_CATEGORIES, SAFETY_GEAR, TOOL_IDS
 
-from .conftest import FIXTURES
+from .conftest import FIXTURES, fixture_analysis
 
 KNOWLEDGE = BACKEND_DIR / "knowledge"
 DIY_MATERIALS = ("glass", "plastic", "paper", "metal", "textile", "wood")
@@ -85,10 +85,31 @@ def test_ids_used_by_the_contract_fixtures_exist(docs):
 
 
 def test_projects_obey_the_same_safety_rules_as_the_agents(projects):
-    """The knowledge base must never teach what the validators would reject."""
+    """The knowledge base must never teach what the validators would reject.
+
+    Each project is checked as if its own items had been scanned, so a plastic project may
+    not heat "the caps" and a paper project may not put a candle "inside it".
+    """
+    template = fixture_analysis("analyze_glass_jar.json").items[0]
     for p in projects:
-        texts = [p.summary, p.result, *p.steps_outline]
-        assert safety.check_text_rules(texts) == [], p.id
+        scanned = [
+            template.model_copy(update={"id": f"item_{n}", "name": name, "category": p.materials[0]})
+            for n, name in enumerate(p.items, 1)
+        ]
+        texts = [p.summary, p.result, *p.steps_outline, *p.safety]
+        assert safety.check_text_rules(texts, items=scanned) == [], p.id
+
+
+def test_guides_and_safety_rules_pass_the_validators(docs):
+    """Agents quote these documents, so their wording must not trip the checks either."""
+    for d in docs:
+        if isinstance(d, SafetyDoc):
+            texts = [*d.rules, *d.never]
+        elif isinstance(d, MaterialGuideDoc):
+            texts = [*d.identification, *d.cleaning_prep, *d.notes, *d.donation]
+        else:
+            continue
+        assert safety.check_text_rules(texts) == [], d.id
 
 
 def test_projects_name_the_gear_their_techniques_need(projects):
