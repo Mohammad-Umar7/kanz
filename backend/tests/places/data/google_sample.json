@@ -1,0 +1,33 @@
+{
+  "_comment": "Synthetic Places API (New) Text Search response written by hand for the parser tests. Not real places.",
+  "places": [
+    {
+      "id": "SYNTHETIC_PLACE_A",
+      "displayName": {"text": "Synthetic Glass Recycling Centre", "languageCode": "en"},
+      "formattedAddress": "1 Test Road, Test City",
+      "location": {"latitude": 24.4551, "longitude": 54.3781},
+      "currentOpeningHours": {"openNow": true},
+      "internationalPhoneNumber": "+971 2 111 1111",
+      "websiteUri": "https://example.org/glass",
+      "googleMapsUri": "https://maps.google.com/?cid=1",
+      "rating": 4.4,
+      "businessStatus": "OPERATIONAL"
+    },
+    {
+      "id": "SYNTHETIC_PLACE_B",
+      "displayName": {"text": "Synthetic Bottle Bank", "languageCode": "en"},
+      "location": {"latitude": 24.4800, "longitude": 54.4000},
+      "googleMapsUri": "https://maps.google.com/?cid=2"
+    },
+    {
+      "id": "SYNTHETIC_PLACE_CLOSED",
+      "displayName": {"text": "Synthetic Closed Depot", "languageCode": "en"},
+      "location": {"latitude": 24.4600, "longitude": 54.3700},
+      "businessStatus": "CLOSED_PERMANENTLY"
+    },
+    {
+      "id": "SYNTHETIC_PLACE_NO_LOCATION",
+      "displayName": {"text": "Synthetic Place Without Location", "languageCode": "en"}
+    }
+  ]
+}
