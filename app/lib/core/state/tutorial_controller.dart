@@ -94,6 +94,9 @@ class TutorialController extends Notifier<TutorialState> {
   int _generation = 0;
   CancelToken? _token;
 
+  /// Cancels the step image requests of a tutorial that was replaced.
+  CancelToken? _imagesToken;
+
   /// Tutorial whose step chain is currently being walked (one walker at a time).
   String? _chainFor;
 
@@ -102,7 +105,10 @@ class TutorialController extends Notifier<TutorialState> {
 
   @override
   TutorialState build() {
-    ref.onDispose(() => _token?.cancel());
+    ref.onDispose(() {
+      _token?.cancel();
+      _imagesToken?.cancel();
+    });
     scheduleMicrotask(_load);
     final settings = ref.read(settingsProvider);
     return TutorialState(skill: settings.skill, tools: settings.tools);
@@ -115,7 +121,7 @@ class TutorialController extends Notifier<TutorialState> {
 
   /// Re-writes the tutorial for another skill level or tool set. The backend
   /// returns a new tutorial id (and adapted steps); progress restarts because
-  /// the steps changed.
+  /// the steps changed. The same skill and tools keep everything as it is.
   Future<void> adapt({
     required SkillLevel skill,
     required List<ToolId> tools,
@@ -123,6 +129,11 @@ class TutorialController extends Notifier<TutorialState> {
     final idea = state.idea;
     final project = state.project;
     if (idea == null || project == null) return;
+    if (skill == state.skill &&
+        tools.toSet().containsAll(state.tools) &&
+        state.tools.toSet().containsAll(tools)) {
+      return;
+    }
     state = state.copyWith(adapting: true, adaptError: null);
     try {
       final tutorial = await _fetchTutorial(idea, skill: skill, tools: tools);
@@ -130,6 +141,12 @@ class TutorialController extends Notifier<TutorialState> {
       await _projects.saveTutorial(project.id, tutorial, tools: tools);
       final saved = await _projects.get(project.id);
       if (!ref.mounted) return;
+      final sameTutorial = tutorial.tutorialId == state.tutorial?.tutorialId;
+      if (!sameTutorial) {
+        // The old chain's pictures belong to steps that no longer exist.
+        _imagesToken?.cancel();
+        _imagesToken = null;
+      }
       state = state.copyWith(
         adapting: false,
         tutorial: tutorial,
@@ -138,9 +155,9 @@ class TutorialController extends Notifier<TutorialState> {
         tools: tools,
         currentStep: saved?.currentStep ?? 1,
         completedSteps: saved?.completedSteps ?? const {},
-        stepImages: const {},
+        stepImages: sameTutorial ? state.stepImages : const {},
       );
-      unawaited(_loadStepImages());
+      if (!sameTutorial) unawaited(_loadStepImages());
     } on Object catch (error) {
       final e = ApiException.from(error);
       if (!ref.mounted || e.isCancelled) return;
@@ -152,7 +169,9 @@ class TutorialController extends Notifier<TutorialState> {
     if (number < 1 || number > state.stepCount) return;
     state = state.copyWith(currentStep: number);
     final project = state.project;
-    if (project != null) await _projects.setCurrentStep(project.id, number);
+    if (project != null) {
+      await _persist(() => _projects.setCurrentStep(project.id, number));
+    }
   }
 
   Future<void> next() => goToStep(state.currentStep + 1);
@@ -170,7 +189,7 @@ class TutorialController extends Notifier<TutorialState> {
       steps.remove(number);
     }
     state = state.copyWith(completedSteps: steps);
-    await _projects.setStepDone(project.id, number, done: done);
+    await _persist(() => _projects.setStepDone(project.id, number, done: done));
   }
 
   /// Finishes the project: saves it as completed and records one "upcycled"
@@ -221,6 +240,8 @@ class TutorialController extends Notifier<TutorialState> {
     final generation = ++_generation;
     _token?.cancel();
     _token = CancelToken();
+    _imagesToken?.cancel();
+    _imagesToken = null;
     state = state.copyWith(phase: TutorialPhase.loading, error: null);
     try {
       final idea = await _findIdea();
@@ -371,7 +392,7 @@ class TutorialController extends Notifier<TutorialState> {
           step: number,
           regenerate: regenerate,
         ),
-        cancelToken: _token,
+        cancelToken: _imagesToken ??= CancelToken(),
       );
       if (!current()) return false;
       final ready = GeneratedImageState(
@@ -402,6 +423,16 @@ class TutorialController extends Notifier<TutorialState> {
         GeneratedImageState(status: ImageStatus.failed, error: e),
       );
       return false;
+    }
+  }
+
+  /// Progress writes are best effort: the step already changed on screen, and
+  /// a failed write (storage full) only loses it for the next launch.
+  Future<void> _persist(Future<void> Function() write) async {
+    try {
+      await write();
+    } on Object catch (e) {
+      debugPrint('Tutorial progress not saved: $e');
     }
   }
 

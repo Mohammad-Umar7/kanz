@@ -134,6 +134,54 @@ void main() {
     },
   );
 
+  test('adapting to the current skill and tools changes nothing', () async {
+    h = await TestHarness.create(
+      prefs: {
+        'settings.skill': 'beginner',
+        'settings.tools': ['scissors', 'twine'],
+      },
+    );
+    await _seedScan(h);
+    controller();
+    await waitFor(
+      () => stateOf().phase == TutorialPhase.ready && imagesSettled(),
+    );
+
+    await controller().adapt(
+      skill: SkillLevel.beginner,
+      tools: const [ToolId.twine, ToolId.scissors],
+    );
+
+    expect(h.api.tutorialRequests, hasLength(1));
+    expect(stateOf().adapting, isFalse);
+    expect(stateOf().stepImages.values.every((i) => i.isReady), isTrue);
+  });
+
+  test(
+    'an adapt that returns the same tutorial keeps its step images',
+    () async {
+      h = await TestHarness.create();
+      await _seedScan(h);
+      controller();
+      await waitFor(
+        () => stateOf().phase == TutorialPhase.ready && imagesSettled(),
+      );
+      final stepCalls = h.api.stepRequests.length;
+
+      // The fake answers every profile with the same tutorial id, as the
+      // backend does when the profile normalizes to the same key.
+      await controller().adapt(
+        skill: SkillLevel.intermediate,
+        tools: const [ToolId.drill],
+      );
+
+      expect(h.api.tutorialRequests, hasLength(2));
+      expect(stateOf().stepImages, hasLength(5));
+      expect(stateOf().stepImages.values.every((i) => i.isReady), isTrue);
+      expect(h.api.stepRequests, hasLength(stepCalls));
+    },
+  );
+
   test(
     'a failed adapt keeps the current tutorial and reports the error',
     () async {
