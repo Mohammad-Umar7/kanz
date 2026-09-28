@@ -1,0 +1,60 @@
+# ---- Secrets (never commit) ----
+.env
+*.env
+!.env.example
+**/local.properties
+**/key.properties
+*.jks
+*.keystore
+**/android/secrets.properties
+
+# ---- Python ----
+__pycache__/
+*.py[cod]
+.venv/
+venv/
+.pytest_cache/
+.ruff_cache/
+.mypy_cache/
+.coverage
+htmlcov/
+*.egg-info/
+
+# ---- Backend runtime data ----
+backend/data/
+backend/eval/photos/*
+!backend/eval/photos/README.md
+!backend/eval/photos/CREDITS.md
+
+# ---- Flutter / Dart ----
+.dart_tool/
+.flutter-plugins
+.flutter-plugins-dependencies
+.packages
+.pub-cache/
+.pub/
+build/
+app/coverage/
+*.iml
+.idea/
+.gradle/
+**/android/.kotlin/
+**/android/app/debug
+**/android/app/profile
+**/android/app/release
+**/ios/Pods/
+**/ios/.symlinks/
+**/ios/Flutter/Generated.xcconfig
+**/ios/Flutter/flutter_export_environment.sh
+**/ios/Flutter/ephemeral/
+**/ios/Runner/GeneratedPluginRegistrant.*
+
+# ---- Screenshot runs (reviewed, then curated copies go to docs/screenshots) ----
+app/test/screenshots/_out/
+qa/_raw/
+
+# ---- OS / editors ----
+.DS_Store
+Thumbs.db
+.vscode/
+*.log
