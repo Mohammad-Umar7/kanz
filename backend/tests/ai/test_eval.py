@@ -1,10 +1,12 @@
 """The eval script's scoring and report rendering (no live calls)."""
 
+import dataclasses
 import importlib.util
+import json
 import logging
 import sys
 
-from app.config import BACKEND_DIR
+from app.config import BACKEND_DIR, Settings
 from app.schemas.analysis import AnalyzeResponse
 
 from .conftest import fixture_json
@@ -76,3 +78,35 @@ def test_model_log_records_only_the_model_that_answered():
         handler.emit(logging.LogRecord("kanz.gemini", logging.INFO, "", 0, fmt, args, None))
     assert handler.take() == ["material_analyst@v2: gemini-3.5-flash"]
     assert handler.take() == []
+
+
+def test_resume_reruns_only_errored_photos_and_merges(tmp_path, monkeypatch):
+    manifest = tmp_path / "manifest.json"
+    manifest.write_text(
+        json.dumps(
+            [
+                {"file": "a.jpg", "expected_category": "glass", "expected_hazard": False},
+                {"file": "b.jpg", "expected_category": "metal", "expected_hazard": False},
+            ]
+        ),
+        encoding="utf-8",
+    )
+    ok, failed = row("a.jpg", "glass", False), row("b.jpg", "metal", False, error="ai_unavailable: 503")
+    ok.category_ok = ok.hazard_ok = ok.items_ok = True
+    previous = tmp_path / "prev.json"
+    previous.write_text(json.dumps({"rows": [dataclasses.asdict(ok), dataclasses.asdict(failed)]}), encoding="utf-8")
+
+    async def fake_evaluate(entries, args):
+        assert [e["file"] for e in entries] == ["b.jpg"]
+        fixed = row("b.jpg", "metal", False, run=args.run_label)
+        fixed.category_ok = fixed.hazard_ok = fixed.items_ok = True
+        return [fixed], "128 documents"
+
+    monkeypatch.setattr(run_eval, "evaluate", fake_evaluate)
+    monkeypatch.setattr(run_eval, "get_settings", lambda: Settings(_env_file=None))
+    args = run_eval.parse_args(["--manifest", str(manifest), "--resume", str(previous), "--out", str(tmp_path)])
+    report = run_eval.main(args)
+
+    assert report.name.endswith("_combined.md")
+    rows = json.loads(report.with_suffix(".json").read_text(encoding="utf-8"))["rows"]
+    assert [(r["file"], r["run"], r["passed"]) for r in rows] == [("a.jpg", "first", True), ("b.jpg", "rerun", True)]

@@ -10,6 +10,7 @@ accuracy and p50/p90 latency.
     .venv/Scripts/python eval/run_eval.py                                   # analyze all photos
     .venv/Scripts/python eval/run_eval.py --recommend glass_jar,aa_batteries,old_tshirt
     .venv/Scripts/python eval/run_eval.py --only aerosol_can,light_bulb --tag rerun
+    .venv/Scripts/python eval/run_eval.py --resume eval/reports/eval_2026-09-28.json   # re-run errored photos
 
 Free-tier keys have low per-minute limits, so calls are paced with ``--pause``.
 """
@@ -33,7 +34,7 @@ from app.ai import pipeline, rag
 from app.ai.prompts import prompt_versions
 from app.ai.safety import disposal_hazards
 from app.config import get_settings
-from app.core.errors import KanzError
+from app.core.errors import AiTimeout, AiUnavailable, KanzError
 from app.schemas.analysis import AnalyzeResponse
 from app.schemas.common import Profile
 from app.schemas.recommend import RecommendRequest
@@ -83,6 +84,7 @@ class Row:
     items_ok: bool = False
     timings_ms: dict[str, int] = field(default_factory=dict)
     models: list[str] = field(default_factory=list)
+    run: str = "first"
     error: str | None = None
     recommend: dict[str, Any] | None = None
 
@@ -199,12 +201,12 @@ def markdown(rows: list[Row], summary: dict[str, Any], meta: dict[str, Any]) -> 
         "",
         "## Per photo",
         "",
-        "| Photo | Expected | Predicted | Items | Hazards flagged | Category | Hazard | Top conf. | Usable | Analysis ms | Total ms | Model |",
-        "| --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |",
+        "| Photo | Expected | Predicted | Items | Hazards flagged | Category | Hazard | Top conf. | Usable | Analysis ms | Total ms | Model | Run |",
+        "| --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |",
     ]
     for r in rows:
         if r.error:
-            lines.append(f"| {r.file} | {r.expected_category} | error: {r.error} | | | | | | | | | |")
+            lines.append(f"| {r.file} | {r.expected_category} | error: {r.error[:120]} | | | | | | | | | | {r.run} |")
             continue
         exp = (
             r.expected_category
@@ -216,7 +218,7 @@ def markdown(rows: list[Row], summary: dict[str, Any], meta: dict[str, Any]) -> 
             f"{', '.join(r.hazards) or '-'} | {yes(r.category_ok) if not r.expected_unclear else '-'} | "
             f"{yes(r.hazard_ok) if not r.expected_unclear else '-'} | {r.top_confidence if r.top_confidence is not None else '-'} | "
             f"{'yes' if r.usable else 'no'} | {r.timings_ms.get('analysis', '-')} | {r.timings_ms.get('total', '-')} | "
-            f"{', '.join(m.split(': ', 1)[-1] for m in r.models) or '-'} |"
+            f"{', '.join(m.split(': ', 1)[-1] for m in r.models) or '-'} | {r.run} |"
         )
     recs = [r for r in rows if r.recommend]
     if recs:
@@ -241,6 +243,19 @@ def markdown(rows: list[Row], summary: dict[str, Any], meta: dict[str, Any]) -> 
     return "\n".join(lines).rstrip() + "\n"
 
 
+async def analyze_with_retries(data: bytes, args: argparse.Namespace) -> AnalyzeResponse:
+    """Transient overload (503) and time-outs are retried after a pause; other errors are final."""
+    for attempt in range(args.retries + 1):
+        try:
+            return await pipeline.analyze(image=data, text=None, lang=args.lang)
+        except (AiUnavailable, AiTimeout):
+            if attempt == args.retries:
+                raise
+            log.info("AI busy, retrying in %.0f s", args.retry_wait)
+            await asyncio.sleep(args.retry_wait)
+    raise AssertionError("unreachable")
+
+
 async def evaluate(entries: list[dict[str, Any]], args: argparse.Namespace) -> tuple[list[Row], str]:
     """Run the live pipeline on each photo, pacing calls for free-tier rate limits."""
     wanted_rec = set() if args.recommend is None else {s.strip() for s in args.recommend.split(",")}
@@ -259,13 +274,14 @@ async def evaluate(entries: list[dict[str, Any]], args: argparse.Namespace) -> t
             expected_hazard=bool(entry["expected_hazard"]),
             expected_items_min=int(entry.get("expected_items_min", 1)),
             expected_unclear=bool(entry.get("expected_unclear", False)),
+            run=args.run_label,
         )
         rows.append(row)
         if n:
             await asyncio.sleep(args.pause)
         try:
             data = await asyncio.to_thread((Path(args.photos) / entry["file"]).read_bytes)
-            res = await pipeline.analyze(image=data, text=None, lang=args.lang)
+            res = await analyze_with_retries(data, args)
         except (KanzError, OSError) as exc:
             row.error = f"{getattr(exc, 'code', type(exc).__name__)}: {getattr(exc, 'detail', None) or exc}"
             models.take()
@@ -289,7 +305,21 @@ def main(args: argparse.Namespace) -> Path:
     only = {s.strip() for s in args.only.split(",")} if args.only else None
     entries = [e for e in manifest if only is None or Path(e["file"]).stem in only][: args.limit]
 
+    previous: list[Row] = []
+    args.run_label = "first"
+    if args.resume:
+        # Keep the rows that succeeded; re-run the errored ones (or --only), then merge in manifest order.
+        old = json.loads(Path(args.resume).read_text(encoding="utf-8"))["rows"]
+        previous = [Row(**{k: v for k, v in r.items() if k != "passed"}) for r in old]
+        redo = {r.file for r in previous if r.error or (only is not None and Path(r.file).stem in only)}
+        entries = [e for e in manifest if e["file"] in redo]
+        args.run_label = "rerun"
+        args.tag = args.tag or "combined"
+
     rows, knowledge = asyncio.run(evaluate(entries, args))
+    if previous:
+        fresh = {r.file: r for r in rows}
+        rows = [fresh.get(r.file, r) for r in previous]
 
     summary = summarize(rows)
     meta = {
@@ -321,6 +351,9 @@ def parse_args(argv: list[str] | None = None) -> argparse.Namespace:
     )
     p.add_argument("--lang", choices=["en", "ar"], default="en")
     p.add_argument("--pause", type=float, default=6.0, help="seconds between live calls (free-tier rate limits)")
+    p.add_argument("--retries", type=int, default=2, help="retries per photo when the AI service is busy")
+    p.add_argument("--retry-wait", type=float, default=20.0, help="seconds to wait before such a retry")
+    p.add_argument("--resume", default=None, help="previous report .json: re-run only its errored photos and merge")
     p.add_argument("--tag", default="", help="suffix for the report name, e.g. 'rerun'")
     p.add_argument("--out", default=str(EVAL_DIR / "reports"), help="report folder")
     return p.parse_args(argv)
