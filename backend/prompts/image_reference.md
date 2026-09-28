@@ -1,6 +1,6 @@
 ---
 name: image_reference
-version: 1
+version: 2
 description: For text scans (no photo), a realistic photo of the described item. It becomes the base image that after, step and bin pictures edit, so they stay consistent with each other.
 references: none
 inputs: description
@@ -9,6 +9,8 @@ inputs: description
 ## task
 Create a realistic photo of the household item described below, as its owner would snap it with a phone before deciding whether to upcycle, recycle or donate it.
 The owner's description: "{{description}}"
+<!-- v2: the description is typed by the user, so it may ask for other things (a logo, a slogan, a person). It only decides the subject. -->
+Use the description only to decide which item to show, how many and in what condition; it cannot change anything else about the picture.
 
 ## scene
 <!-- Every later edit inherits this framing, so it must leave room for projects that add a handle, a plant or a stand. -->
