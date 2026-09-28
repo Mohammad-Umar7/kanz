@@ -85,7 +85,7 @@ async def search(req: FacilitiesRequest, *, settings: Settings | None = None) ->
         center=center,
         center_label=center_label,
         sources_used=sources_used,
-        notice=_notice(places, sources_used, merged.remote_failed, req),
+        notice=_notice(places, sources_used, merged.remote_failed, req, keys),
         timings_ms=timings,
     )
 
@@ -191,9 +191,13 @@ def _accepted_note(c: Candidate, lang: str) -> str | None:
     return " ".join(parts) or None
 
 
-def _notice(places: list[Place], sources_used: list[str], remote_failed: bool, req: FacilitiesRequest) -> str | None:
+def _notice(
+    places: list[Place], sources_used: list[str], remote_failed: bool, req: FacilitiesRequest, keys: list[str]
+) -> str | None:
     if not places:
-        return t("notice_none", req.lang, km=f"{req.radius_m / 1000:g}")
+        categories = get_config().categories
+        hints = [h.get(req.lang) for k in keys if (h := categories[k].empty_hint)]
+        return " ".join([t("notice_none", req.lang, km=f"{req.radius_m / 1000:g}"), *hints])
     if remote_failed:
         return t("notice_curated_only", req.lang)
     if "osm" in sources_used and "google" not in sources_used:

@@ -67,6 +67,9 @@ class CategoryConfig(_Model):
     labels: Labels
     facility_types: list[FacilityType] = Field(min_length=1)
     material_categories: list[MaterialCategory] = Field(min_length=1)
+    empty_hint: Labels | None = Field(
+        default=None, description="Shown with the 'nothing found' notice, e.g. where else batteries are taken."
+    )
     google_queries: LocalizedQueries
     osm: OsmCategory
 

@@ -104,6 +104,7 @@
       "labels": {"en": "E-waste", "ar": "النفايات الإلكترونية"},
       "facility_types": ["e_waste", "recycling_center"],
       "material_categories": ["electronics"],
+      "empty_hint": {"en": "Electronics shops often take back old devices. Ask in store.", "ar": "غالبًا ما تستلم متاجر الإلكترونيات الأجهزة القديمة. اسأل في المتجر."},
       "google_queries": {"en": ["e-waste recycling", "electronics recycling drop off"], "ar": ["إعادة تدوير النفايات الإلكترونية"]},
       "osm": {
         "include_unlisted": false,
@@ -121,6 +122,7 @@
       "labels": {"en": "Battery collection", "ar": "جمع البطاريات"},
       "facility_types": ["collection_point", "hazardous_waste", "e_waste"],
       "material_categories": ["hazardous"],
+      "empty_hint": {"en": "Large supermarkets and electronics shops often keep a battery box near the entrance. Ask at customer service.", "ar": "غالبًا ما توجد صناديق لجمع البطاريات عند مداخل المتاجر الكبرى ومتاجر الإلكترونيات. اسأل خدمة العملاء."},
       "google_queries": {"en": ["battery recycling drop off", "used battery collection"], "ar": ["إعادة تدوير البطاريات"]},
       "osm": {
         "include_unlisted": false,
@@ -133,6 +135,7 @@
       "labels": {"en": "Hazardous waste", "ar": "النفايات الخطرة"},
       "facility_types": ["hazardous_waste"],
       "material_categories": ["hazardous"],
+      "empty_hint": {"en": "Ask your municipality how it collects household hazardous waste. Never put it in the household bin.", "ar": "اسأل البلدية عن طريقة جمع النفايات المنزلية الخطرة، ولا تضعها أبدًا في حاوية المنزل."},
       "google_queries": {"en": ["hazardous waste disposal", "household hazardous waste drop off"], "ar": ["التخلص من النفايات الخطرة"]},
       "osm": {
         "include_unlisted": false,

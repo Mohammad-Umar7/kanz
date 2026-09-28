@@ -81,7 +81,8 @@ async def test_nothing_found_gives_a_localized_notice(monkeypatch, osm_only_sett
     Providers(monkeypatch, osm=[])
     res = await service.search(FacilitiesRequest(categories=["battery"], lat=LAT, lng=LNG), settings=osm_only_settings)
     assert res.places == []
-    assert res.notice == "No drop-off points found within 15 km. Try a wider radius or another category."
+    assert res.notice.startswith("No drop-off points found within 15 km. Try a wider radius or another category.")
+    assert "battery box" in res.notice  # the category's hint on where else batteries are taken
     ar = await service.search(
         FacilitiesRequest(categories=["battery"], lat=LAT, lng=LNG, radius_m=2500, lang="ar"),
         settings=osm_only_settings,
