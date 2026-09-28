@@ -1,0 +1,668 @@
+{
+ "meta": {
+  "date": "2026-09-28",
+  "tag": "",
+  "lang": "en",
+  "models": {
+   "vision": "gemini-3.1-flash-lite",
+   "text": "gemini-3.1-flash-lite",
+   "embed": "gemini-embedding-001"
+  },
+  "prompts": {
+   "disposal_advisor": "1",
+   "donation_advisor": "1",
+   "material_analyst": "2",
+   "recycling_advisor": "1",
+   "swap_advisor": "1",
+   "tutorial_writer": "1",
+   "upcycle_designer": "1"
+  },
+  "knowledge": "128 documents, vector (Chroma)"
+ },
+ "summary": {
+  "photos": 21,
+  "errors": 13,
+  "passed": "8/21 (38%)",
+  "category_accuracy": "8/8 (100%)",
+  "category_any_item": "8/8 (100%)",
+  "hazard_accuracy": "8/8 (100%)",
+  "item_count_ok": "8/8 (100%)",
+  "unclear_detected": "n/a",
+  "analysis_ms_p50": 10978,
+  "analysis_ms_p90": 12640,
+  "total_ms_p50": 11003,
+  "total_ms_p90": 12676,
+  "recommend_total_ms": [
+   7815
+  ]
+ },
+ "rows": [
+  {
+   "file": "glass_jar.jpg",
+   "expected_category": "glass",
+   "expected_hazard": false,
+   "expected_items_min": 1,
+   "expected_unclear": false,
+   "predicted_category": "glass",
+   "categories": [
+    "glass",
+    "metal"
+   ],
+   "items": [
+    "Glass mason jar",
+    "Metal lid"
+   ],
+   "hazards": [],
+   "top_confidence": 1.0,
+   "usable": true,
+   "retake_tip": null,
+   "category_ok": true,
+   "category_any_ok": true,
+   "hazard_ok": true,
+   "items_ok": true,
+   "timings_ms": {
+    "upload": 27,
+    "classifier": 0,
+    "analysis": 11381,
+    "safety": 0,
+    "total": 11416
+   },
+   "models": [
+    "material_analyst@v2: gemini-3.1-flash-lite"
+   ],
+   "error": null,
+   "recommend": {
+    "mode": "diy",
+    "ideas": [
+     "Hanging jar lantern (easy; sources: proj_glass_jar_lantern)",
+     "Painted jar desk organizer (easy; sources: proj_glass_painted_jar)",
+     "Labelled pantry jars (easy; sources: proj_glass_jar_pantry_storage)"
+    ],
+    "recycle_streams": [
+     "Glass bottle bank",
+     "Metal recycling bin"
+    ],
+    "donate_available": true,
+    "disposal": [],
+    "facility_categories": [
+     "glass",
+     "metal"
+    ],
+    "timings_ms": {
+     "safety_router": 0,
+     "retrieval": 447,
+     "donate": 2717,
+     "dropoff": 8,
+     "recycle": 6529,
+     "upcycle": 7347,
+     "total": 7815
+    },
+    "models": [
+     "embed: gemini-embedding-001",
+     "donation_advisor@v1: gemini-3.1-flash-lite",
+     "recycling_advisor@v1: gemini-3.1-flash-lite"
+    ]
+   },
+   "passed": true
+  },
+  {
+   "file": "glass_bottle.jpg",
+   "expected_category": "glass",
+   "expected_hazard": false,
+   "expected_items_min": 1,
+   "expected_unclear": false,
+   "predicted_category": "glass",
+   "categories": [
+    "glass",
+    "metal"
+   ],
+   "items": [
+    "Glass wine bottle",
+    "Metal screw cap"
+   ],
+   "hazards": [],
+   "top_confidence": 1.0,
+   "usable": true,
+   "retake_tip": null,
+   "category_ok": true,
+   "category_any_ok": true,
+   "hazard_ok": true,
+   "items_ok": true,
+   "timings_ms": {
+    "upload": 51,
+    "classifier": 0,
+    "analysis": 7629,
+    "safety": 0,
+    "total": 7683
+   },
+   "models": [
+    "material_analyst@v2: gemini-3.1-flash-lite"
+   ],
+   "error": null,
+   "recommend": null,
+   "passed": true
+  },
+  {
+   "file": "pet_bottle.jpg",
+   "expected_category": "plastic",
+   "expected_hazard": false,
+   "expected_items_min": 1,
+   "expected_unclear": false,
+   "predicted_category": "plastic",
+   "categories": [
+    "plastic"
+   ],
+   "items": [
+    "PET water bottle"
+   ],
+   "hazards": [],
+   "top_confidence": 1.0,
+   "usable": true,
+   "retake_tip": null,
+   "category_ok": true,
+   "category_any_ok": true,
+   "hazard_ok": true,
+   "items_ok": true,
+   "timings_ms": {
+    "upload": 35,
+    "classifier": 0,
+    "analysis": 4416,
+    "safety": 0,
+    "total": 4454
+   },
+   "models": [
+    "material_analyst@v2: gemini-3.1-flash-lite"
+   ],
+   "error": null,
+   "recommend": null,
+   "passed": true
+  },
+  {
+   "file": "plastic_container.jpg",
+   "expected_category": "plastic",
+   "expected_hazard": false,
+   "expected_items_min": 1,
+   "expected_unclear": false,
+   "predicted_category": null,
+   "categories": [],
+   "items": [],
+   "hazards": [],
+   "top_confidence": null,
+   "usable": null,
+   "retake_tip": null,
+   "category_ok": false,
+   "category_any_ok": false,
+   "hazard_ok": false,
+   "items_ok": false,
+   "timings_ms": {},
+   "models": [],
+   "error": "ai_unavailable: 503 UNAVAILABLE. {'error': {'code': 503, 'message': 'This model is currently experiencing high demand. Spikes in demand are usually temporary. Please try again later.', 'status': 'UNAVAILABLE'}}",
+   "recommend": null,
+   "passed": false
+  },
+  {
+   "file": "aluminum_can.jpg",
+   "expected_category": "metal",
+   "expected_hazard": false,
+   "expected_items_min": 1,
+   "expected_unclear": false,
+   "predicted_category": "metal",
+   "categories": [
+    "metal"
+   ],
+   "items": [
+    "Aluminium soda can"
+   ],
+   "hazards": [],
+   "top_confidence": 1.0,
+   "usable": true,
+   "retake_tip": null,
+   "category_ok": true,
+   "category_any_ok": true,
+   "hazard_ok": true,
+   "items_ok": true,
+   "timings_ms": {
+    "upload": 38,
+    "classifier": 0,
+    "analysis": 38113,
+    "safety": 0,
+    "total": 38154
+   },
+   "models": [
+    "material_analyst@v2: gemini-3.1-flash-lite"
+   ],
+   "error": null,
+   "recommend": null,
+   "passed": true
+  },
+  {
+   "file": "tin_can.jpg",
+   "expected_category": "metal",
+   "expected_hazard": false,
+   "expected_items_min": 1,
+   "expected_unclear": false,
+   "predicted_category": null,
+   "categories": [],
+   "items": [],
+   "hazards": [],
+   "top_confidence": null,
+   "usable": null,
+   "retake_tip": null,
+   "category_ok": false,
+   "category_any_ok": false,
+   "hazard_ok": false,
+   "items_ok": false,
+   "timings_ms": {},
+   "models": [],
+   "error": "ai_unavailable: 503 UNAVAILABLE. {'error': {'code': 503, 'message': 'This model is currently experiencing high demand. Spikes in demand are usually temporary. Please try again later.', 'status': 'UNAVAILABLE'}}",
+   "recommend": null,
+   "passed": false
+  },
+  {
+   "file": "aa_batteries.jpg",
+   "expected_category": "hazardous",
+   "expected_hazard": true,
+   "expected_items_min": 1,
+   "expected_unclear": false,
+   "predicted_category": null,
+   "categories": [],
+   "items": [],
+   "hazards": [],
+   "top_confidence": null,
+   "usable": null,
+   "retake_tip": null,
+   "category_ok": false,
+   "category_any_ok": false,
+   "hazard_ok": false,
+   "items_ok": false,
+   "timings_ms": {},
+   "models": [],
+   "error": "ai_unavailable: 503 UNAVAILABLE. {'error': {'code': 503, 'message': 'This model is currently experiencing high demand. Spikes in demand are usually temporary. Please try again later.', 'status': 'UNAVAILABLE'}}",
+   "recommend": null,
+   "passed": false
+  },
+  {
+   "file": "old_tshirt.jpg",
+   "expected_category": "textile",
+   "expected_hazard": false,
+   "expected_items_min": 1,
+   "expected_unclear": false,
+   "predicted_category": null,
+   "categories": [],
+   "items": [],
+   "hazards": [],
+   "top_confidence": null,
+   "usable": null,
+   "retake_tip": null,
+   "category_ok": false,
+   "category_any_ok": false,
+   "hazard_ok": false,
+   "items_ok": false,
+   "timings_ms": {},
+   "models": [],
+   "error": "ai_unavailable: 503 UNAVAILABLE. {'error': {'code': 503, 'message': 'This model is currently experiencing high demand. Spikes in demand are usually temporary. Please try again later.', 'status': 'UNAVAILABLE'}}",
+   "recommend": null,
+   "passed": false
+  },
+  {
+   "file": "denim_jeans.jpg",
+   "expected_category": "textile",
+   "expected_hazard": false,
+   "expected_items_min": 1,
+   "expected_unclear": false,
+   "predicted_category": null,
+   "categories": [],
+   "items": [],
+   "hazards": [],
+   "top_confidence": null,
+   "usable": null,
+   "retake_tip": null,
+   "category_ok": false,
+   "category_any_ok": false,
+   "hazard_ok": false,
+   "items_ok": false,
+   "timings_ms": {},
+   "models": [],
+   "error": "ai_timeout: timed out",
+   "recommend": null,
+   "passed": false
+  },
+  {
+   "file": "wooden_crate.jpg",
+   "expected_category": "wood",
+   "expected_hazard": false,
+   "expected_items_min": 1,
+   "expected_unclear": false,
+   "predicted_category": null,
+   "categories": [],
+   "items": [],
+   "hazards": [],
+   "top_confidence": null,
+   "usable": null,
+   "retake_tip": null,
+   "category_ok": false,
+   "category_any_ok": false,
+   "hazard_ok": false,
+   "items_ok": false,
+   "timings_ms": {},
+   "models": [],
+   "error": "ai_unavailable: 503 UNAVAILABLE. {'error': {'code': 503, 'message': 'This model is currently experiencing high demand. Spikes in demand are usually temporary. Please try again later.', 'status': 'UNAVAILABLE'}}",
+   "recommend": null,
+   "passed": false
+  },
+  {
+   "file": "wooden_pallet.jpg",
+   "expected_category": "wood",
+   "expected_hazard": false,
+   "expected_items_min": 1,
+   "expected_unclear": false,
+   "predicted_category": "wood",
+   "categories": [
+    "wood",
+    "textile"
+   ],
+   "items": [
+    "Wooden shipping pallet",
+    "Leather work glove"
+   ],
+   "hazards": [
+    "sharp_edges"
+   ],
+   "top_confidence": 1.0,
+   "usable": true,
+   "retake_tip": null,
+   "category_ok": true,
+   "category_any_ok": true,
+   "hazard_ok": true,
+   "items_ok": true,
+   "timings_ms": {
+    "upload": 22,
+    "classifier": 0,
+    "analysis": 10978,
+    "safety": 0,
+    "total": 11003
+   },
+   "models": [
+    "material_analyst@v2: gemini-3.1-flash-lite"
+   ],
+   "error": null,
+   "recommend": null,
+   "passed": true
+  },
+  {
+   "file": "cardboard_box.jpg",
+   "expected_category": "paper",
+   "expected_hazard": false,
+   "expected_items_min": 1,
+   "expected_unclear": false,
+   "predicted_category": null,
+   "categories": [],
+   "items": [],
+   "hazards": [],
+   "top_confidence": null,
+   "usable": null,
+   "retake_tip": null,
+   "category_ok": false,
+   "category_any_ok": false,
+   "hazard_ok": false,
+   "items_ok": false,
+   "timings_ms": {},
+   "models": [],
+   "error": "ai_unavailable: 503 UNAVAILABLE. {'error': {'code': 503, 'message': 'This model is currently experiencing high demand. Spikes in demand are usually temporary. Please try again later.', 'status': 'UNAVAILABLE'}}",
+   "recommend": null,
+   "passed": false
+  },
+  {
+   "file": "newspapers.jpg",
+   "expected_category": "paper",
+   "expected_hazard": false,
+   "expected_items_min": 1,
+   "expected_unclear": false,
+   "predicted_category": null,
+   "categories": [],
+   "items": [],
+   "hazards": [],
+   "top_confidence": null,
+   "usable": null,
+   "retake_tip": null,
+   "category_ok": false,
+   "category_any_ok": false,
+   "hazard_ok": false,
+   "items_ok": false,
+   "timings_ms": {},
+   "models": [],
+   "error": "ai_unavailable: 503 UNAVAILABLE. {'error': {'code': 503, 'message': 'This model is currently experiencing high demand. Spikes in demand are usually temporary. Please try again later.', 'status': 'UNAVAILABLE'}}",
+   "recommend": null,
+   "passed": false
+  },
+  {
+   "file": "light_bulb.jpg",
+   "expected_category": "hazardous",
+   "expected_hazard": true,
+   "expected_items_min": 1,
+   "expected_unclear": false,
+   "predicted_category": "hazardous",
+   "categories": [
+    "hazardous"
+   ],
+   "items": [
+    "Incandescent light bulb"
+   ],
+   "hazards": [
+    "light_bulb"
+   ],
+   "top_confidence": 1.0,
+   "usable": true,
+   "retake_tip": null,
+   "category_ok": true,
+   "category_any_ok": true,
+   "hazard_ok": true,
+   "items_ok": true,
+   "timings_ms": {
+    "upload": 19,
+    "classifier": 0,
+    "analysis": 5851,
+    "safety": 0,
+    "total": 5873
+   },
+   "models": [
+    "material_analyst@v2: gemini-3.1-flash-lite"
+   ],
+   "error": null,
+   "recommend": null,
+   "passed": true
+  },
+  {
+   "file": "aerosol_can.jpg",
+   "expected_category": "hazardous",
+   "expected_hazard": true,
+   "expected_items_min": 1,
+   "expected_unclear": false,
+   "predicted_category": "hazardous",
+   "categories": [
+    "hazardous"
+   ],
+   "items": [
+    "Aerosol contact cleaner"
+   ],
+   "hazards": [
+    "aerosol",
+    "chemical"
+   ],
+   "top_confidence": 1.0,
+   "usable": true,
+   "retake_tip": null,
+   "category_ok": true,
+   "category_any_ok": true,
+   "hazard_ok": true,
+   "items_ok": true,
+   "timings_ms": {
+    "upload": 33,
+    "classifier": 0,
+    "analysis": 12640,
+    "safety": 0,
+    "total": 12676
+   },
+   "models": [
+    "material_analyst@v2: gemini-3.1-flash-lite"
+   ],
+   "error": null,
+   "recommend": null,
+   "passed": true
+  },
+  {
+   "file": "fabric_scraps.jpg",
+   "expected_category": "textile",
+   "expected_hazard": false,
+   "expected_items_min": 1,
+   "expected_unclear": false,
+   "predicted_category": null,
+   "categories": [],
+   "items": [],
+   "hazards": [],
+   "top_confidence": null,
+   "usable": null,
+   "retake_tip": null,
+   "category_ok": false,
+   "category_any_ok": false,
+   "hazard_ok": false,
+   "items_ok": false,
+   "timings_ms": {},
+   "models": [],
+   "error": "ai_unavailable: 503 UNAVAILABLE. {'error': {'code': 503, 'message': 'This model is currently experiencing high demand. Spikes in demand are usually temporary. Please try again later.', 'status': 'UNAVAILABLE'}}",
+   "recommend": null,
+   "passed": false
+  },
+  {
+   "file": "bottle_caps.jpg",
+   "expected_category": "plastic",
+   "expected_hazard": false,
+   "expected_items_min": 1,
+   "expected_unclear": false,
+   "predicted_category": null,
+   "categories": [],
+   "items": [],
+   "hazards": [],
+   "top_confidence": null,
+   "usable": null,
+   "retake_tip": null,
+   "category_ok": false,
+   "category_any_ok": false,
+   "hazard_ok": false,
+   "items_ok": false,
+   "timings_ms": {},
+   "models": [],
+   "error": "ai_unavailable: 503 UNAVAILABLE. {'error': {'code': 503, 'message': 'This model is currently experiencing high demand. Spikes in demand are usually temporary. Please try again later.', 'status': 'UNAVAILABLE'}}",
+   "recommend": null,
+   "passed": false
+  },
+  {
+   "file": "smartphone_old.jpg",
+   "expected_category": "electronics",
+   "expected_hazard": true,
+   "expected_items_min": 1,
+   "expected_unclear": false,
+   "predicted_category": "electronics",
+   "categories": [
+    "electronics"
+   ],
+   "items": [
+    "Wiko smartphone"
+   ],
+   "hazards": [
+    "battery",
+    "broken_glass",
+    "e_waste"
+   ],
+   "top_confidence": 1.0,
+   "usable": true,
+   "retake_tip": null,
+   "category_ok": true,
+   "category_any_ok": true,
+   "hazard_ok": true,
+   "items_ok": true,
+   "timings_ms": {
+    "upload": 38,
+    "classifier": 0,
+    "analysis": 5762,
+    "safety": 0,
+    "total": 5802
+   },
+   "models": [
+    "material_analyst@v2: gemini-3.1-flash-lite"
+   ],
+   "error": null,
+   "recommend": null,
+   "passed": true
+  },
+  {
+   "file": "medicine_blister.jpg",
+   "expected_category": "hazardous",
+   "expected_hazard": true,
+   "expected_items_min": 1,
+   "expected_unclear": false,
+   "predicted_category": null,
+   "categories": [],
+   "items": [],
+   "hazards": [],
+   "top_confidence": null,
+   "usable": null,
+   "retake_tip": null,
+   "category_ok": false,
+   "category_any_ok": false,
+   "hazard_ok": false,
+   "items_ok": false,
+   "timings_ms": {},
+   "models": [],
+   "error": "ai_unavailable: 503 UNAVAILABLE. {'error': {'code': 503, 'message': 'This model is currently experiencing high demand. Spikes in demand are usually temporary. Please try again later.', 'status': 'UNAVAILABLE'}}",
+   "recommend": null,
+   "passed": false
+  },
+  {
+   "file": "mixed_recyclables.jpg",
+   "expected_category": "plastic",
+   "expected_hazard": false,
+   "expected_items_min": 2,
+   "expected_unclear": false,
+   "predicted_category": null,
+   "categories": [],
+   "items": [],
+   "hazards": [],
+   "top_confidence": null,
+   "usable": null,
+   "retake_tip": null,
+   "category_ok": false,
+   "category_any_ok": false,
+   "hazard_ok": false,
+   "items_ok": false,
+   "timings_ms": {},
+   "models": [],
+   "error": "ai_unavailable: 503 UNAVAILABLE. {'error': {'code': 503, 'message': 'This model is currently experiencing high demand. Spikes in demand are usually temporary. Please try again later.', 'status': 'UNAVAILABLE'}}",
+   "recommend": null,
+   "passed": false
+  },
+  {
+   "file": "unclear_blurry.jpg",
+   "expected_category": "glass",
+   "expected_hazard": false,
+   "expected_items_min": 0,
+   "expected_unclear": true,
+   "predicted_category": null,
+   "categories": [],
+   "items": [],
+   "hazards": [],
+   "top_confidence": null,
+   "usable": null,
+   "retake_tip": null,
+   "category_ok": false,
+   "category_any_ok": false,
+   "hazard_ok": false,
+   "items_ok": false,
+   "timings_ms": {},
+   "models": [],
+   "error": "ai_unavailable: 503 UNAVAILABLE. {'error': {'code': 503, 'message': 'This model is currently experiencing high demand. Spikes in demand are usually temporary. Please try again later.', 'status': 'UNAVAILABLE'}}",
+   "recommend": null,
+   "passed": false
+  }
+ ]
+}
