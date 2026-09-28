@@ -322,6 +322,64 @@ _BULB = Terms(
     en=(r"(?:light ?)?bulbs?", r"fluorescent", r"cfls?", r"halogen", r"light tubes?", r"neon tubes?"),
     ar=("مصباح", "مصابيح", "لمبه", "لمبات", "فلورسنت", "نيون"),
 )
+# Devices are e-waste even when the model (or a user's correction) files them under
+# plastic or metal: a phone must never reach the Upcycle Designer.
+_DEVICE = Terms(
+    en=(
+        r"smart ?phones?",
+        r"phones?",
+        r"laptops?",
+        r"tablet (?:computers?|pcs?)",
+        r"chargers?",
+        r"(?:charging|usb|phone|power) (?:cables?|cords?|leads?)",
+        r"power (?:adapters?|supply|supplies|banks?)",
+        r"extension cords?",
+        r"headphones?",
+        r"headsets?",
+        r"earphones?",
+        r"earbuds?",
+        r"remote controls?",
+        r"circuit boards?",
+        r"computers?",
+        r"keyboards?",
+        r"printers?",
+        r"routers?",
+        r"modems?",
+        r"hard drives?",
+        r"game controllers?",
+        r"consoles?",
+        r"e-?cigarettes?",
+        r"vapes?",
+        r"smart ?watch(?:es)?",
+        r"electronic (?:devices?|gadgets?|toys?|waste)",
+        r"e-?waste",
+        r"electrical appliances?",
+    ),
+    ar=(
+        "هاتف",
+        "جوال",
+        "موبايل",
+        "لابتوب",
+        "حاسوب",
+        "كمبيوتر",
+        "شاحن",
+        "سماعات",
+        "ريموت",
+        "جهاز تحكم",
+        "لوحه مفاتيح",
+        "طابعه",
+        "راوتر",
+        "سيجاره الكترونيه",
+        "الكترونيات",
+        "جهاز الكتروني",
+        "اجهزه الكترونيه",
+    ),
+)
+_DEVICE_ACCESSORY = Terms(
+    en=(r"phone (?:cases?|covers?|stands?|holders?|mounts?|straps?)", r"(?:laptop|computer) (?:bags?|sleeves?|desks?)"),
+    ar=("جراب", "غطاء هاتف", "غطاء الهاتف", "حامل هاتف", "حامل الهاتف", "حقيبه لابتوب"),
+)
+_CASING_CATEGORIES = frozenset({"plastic", "metal", "glass", "other"})
 _CHEMICAL = Terms(
     en=(
         r"bleach",
@@ -656,7 +714,11 @@ def normalise_item(item: Item, lang: str) -> Item:
         if flag not in hazards:
             hazards.append(flag)
 
-    if item.category == "electronics":
+    device = _DEVICE.found(s) and not _DEVICE_ACCESSORY.found(s)
+    category = item.category
+    if device and category in _CASING_CATEGORIES:
+        category = "electronics"  # a device filed under the material of its casing
+    if category == "electronics" or (device and category == "hazardous"):
         add("e_waste")
     if _BATTERY.found(s):
         add("battery")
@@ -673,7 +735,6 @@ def normalise_item(item: Item, lang: str) -> Item:
     if item.category == "hazardous" and not hazards:
         add("chemical")  # an unexplained "hazardous" item is treated as the most cautious case
 
-    category = item.category
     # Devices keep "electronics" (they go to e-waste); a bulb is a hazardous item even when
     # the model files it under electronics.
     if set(hazards) & _PROMOTE_TO_HAZARDOUS and (category != "electronics" or "light_bulb" in hazards):

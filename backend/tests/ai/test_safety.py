@@ -33,6 +33,29 @@ class TestNormalisation:
         phone = safety.normalise_item(item(name="Phone with battery", category="electronics", material="Mixed"), "en")
         assert phone.category == "electronics"
 
+    @pytest.mark.parametrize(
+        ("name", "category"),
+        [
+            ("Old smartphone", "plastic"),
+            ("Phone charger", "plastic"),
+            ("Wireless earbuds", "other"),
+            ("TV remote control", "plastic"),
+            ("هاتف قديم", "metal"),
+        ],
+    )
+    def test_devices_filed_under_their_casing_are_e_waste(self, name, category):
+        device = safety.normalise_item(item(name=name, category=category, material="x"), "en")
+        assert "e_waste" in device.hazards and device.category == "electronics"
+
+    @pytest.mark.parametrize("name", ["Phone case", "Laptop sleeve", "جراب هاتف"])
+    def test_device_accessories_are_not_devices(self, name):
+        accessory = safety.normalise_item(item(name=name, category="plastic", material="x"), "en")
+        assert accessory.hazards == [] and accessory.category == "plastic"
+
+    def test_a_phone_corrected_to_plastic_still_gets_no_diy(self):
+        phone = item(name="Old smartphone", category="plastic", hazards=[], state=["intact"])
+        assert safety.route(safety.normalise_items([phone], "en"), "en").mode == "disposal_only"
+
     def test_arabic_battery_name_is_recognised(self):
         cells = safety.normalise_item(item(name="بطاريات قديمة", category="other", material="خلايا قلوية"), "ar")
         assert "battery" in cells.hazards
