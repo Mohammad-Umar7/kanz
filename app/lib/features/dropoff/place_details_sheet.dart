@@ -101,7 +101,6 @@ class PlaceDetailsSheet extends StatelessWidget {
                     ? '–'
                     : formatDistance(l10n, place.distanceM!),
                 strong: true,
-                textDirection: TextDirection.ltr,
               ),
             ),
             DataGridEntry(

@@ -1,0 +1,32 @@
+{
+  "@@locale": "ar",
+  "historyTitle": "السجل",
+  "historyTabScans": "الفحوص",
+  "historyTabProjects": "مشاريعي",
+  "historyToday": "اليوم",
+  "historyOpenScan": "افتح الفحص",
+  "historyMore": "خيارات أخرى لـ{title}",
+  "historyDelete": "احذف الفحص",
+  "historyDeleteTitle": "أتريد حذف هذا الفحص؟",
+  "historyDeleteBody": "ستُحذف صورته وأفكاره ومشاريعه من هذا الهاتف، وتبقى أرقام أثرك كما هي.",
+  "historyDeleteConfirm": "احذف",
+  "historyDeleted": "حُذف الفحص",
+  "historyDeleteFailed": "تعذّر حذف الفحص. حاول مرة أخرى.",
+
+  "historyScansEmptyTitle": "لا فحوص بعد",
+  "historyScansEmptyBody": "يُحفظ هنا كل غرض تفحصه، ويُفتح حتى دون اتصال.",
+  "historyProjectsEmptyTitle": "لا مشاريع بعد",
+  "historyProjectsEmptyBody": "اختر فكرة لإعادة الابتكار من أحد فحوصك وابدأ درسها، وسيُحفظ تقدّمك هنا.",
+
+  "historyInProgress": "قيد التنفيذ",
+  "historyFinished": "مكتملة",
+  "historyFinishedOn": "اكتمل في {date}",
+  "historyStepsDone": "{done} من {total} خطوات منجزة",
+  "historyNotStarted": "لم تفتح الدرس بعد",
+  "historyResume": "تابِع",
+  "historySeeProject": "اعرض المشروع",
+
+  "historyLoading": "جارٍ تحميل السجل",
+  "historyErrorTitle": "لم يُحمَّل السجل",
+  "historyErrorBody": "تعذّر على كنز قراءة ما حُفظ على هذا الهاتف. حاول مرة أخرى."
+}

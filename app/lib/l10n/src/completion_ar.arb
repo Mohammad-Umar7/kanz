@@ -1,0 +1,37 @@
+{
+  "@@locale": "ar",
+  "completionEyebrow": "اكتمل المشروع",
+  "completionEyebrowInProgress": "قيد التنفيذ",
+  "completionFinishedOn": "اكتمل {date}",
+  "completionMadeFrom": "مصنوع من",
+  "completionSteps": "الخطوات",
+  "completionTime": "الوقت",
+  "completionSkill": "المهارة",
+  "completionStepsValue": "{done} من {total}",
+  "completionBefore": "قبل",
+  "completionAfter": "بعد",
+  "completionCompare": "قارن غرضك قبل التحويل وبعده",
+  "completionPhotoOnly": "صورة التحويل غير متاحة على هذا الخادم، لذا تظهر هنا صورتك الأصلية.",
+  "completionDescribedLabel": "وصفك",
+  "completionNoPhoto": "وصفتَ هذا الغرض بالكلمات، فلا توجد صورة للمقارنة.",
+
+  "completionImpactTitle": "ما الذي تغيّر",
+  "completionItems": "أغراض أنقذتها من النفايات",
+  "completionProjects": "مشاريع مكتملة",
+  "completionStreak": "أيام متتالية",
+  "completionThisProject": "{count, plural, =0{أُضيف هذا المشروع إلى مشاريعك المكتملة.} =1{أنقذ هذا المشروع غرضاً واحداً من النفايات.} =2{أنقذ هذا المشروع غرضين من النفايات.} few{أنقذ هذا المشروع {count} أغراض من النفايات.} many{أنقذ هذا المشروع {count} غرضاً من النفايات.} other{أنقذ هذا المشروع {count} غرض من النفايات.}}",
+
+  "completionShare": "شارك صورة قبل وبعد",
+  "completionShareProject": "شارك هذا المشروع",
+  "completionSharing": "نجهّز الصورة",
+  "completionShareText": "{title}، صنعته من شيء كدت أرميه. خطّطت له مع كنز.",
+  "completionShareFallback": "تعذّر تجهيز الصورة، فشاركنا النص وحده.",
+  "completionCardMadeFrom": "مصنوع من {item}",
+
+  "completionScanAgain": "صوّر غرضاً آخر",
+  "completionSeeProjects": "اعرض مشاريعي",
+  "completionLoading": "نحمّل مشروعك",
+  "completionMissingTitle": "هذا المشروع غير موجود على هاتفك",
+  "completionMissingBody": "ربما حُذف مع المسح الخاص به. تجد مشاريعك الأخرى في السجل.",
+  "completionErrorTitle": "تعذّر تحميل المشروع"
+}

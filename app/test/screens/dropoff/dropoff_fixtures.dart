@@ -34,7 +34,10 @@ class FakeDropoffController extends DropoffController {
     calls.add('toggleCategory:$key');
     final selected = {...state.selectedCategories};
     if (!selected.remove(key)) selected.add(key);
-    state = state.copyWith(selectedCategories: selected);
+    // Like the real controller: nothing selected clears the results.
+    state = selected.isEmpty
+        ? state.copyWith(selectedCategories: selected, results: null)
+        : state.copyWith(selectedCategories: selected);
   }
 
   @override
@@ -262,9 +265,12 @@ DropoffState emptyState({required bool ar}) => DropoffState(
   ),
 );
 
-DropoffState noCategoryState({required bool ar}) => DropoffState(
+/// One category selected; the test deselects it to reach "Pick a material".
+DropoffState oneCategoryState({required bool ar}) => DropoffState(
   catalog: catalogFor(ar: ar),
+  selectedCategories: const {'glass'},
   location: const SearchLocation.city(CityId.abuDhabi),
+  results: mixedResults(ar: ar),
 );
 
 DropoffState errorState({required bool ar, required ApiException error}) =>

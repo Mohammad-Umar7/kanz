@@ -1,0 +1,12 @@
+{
+  "@@locale": "ar",
+  "shellTabHome": "الرئيسية",
+  "shellTabDropoff": "التسليم",
+  "shellTabSwaps": "البدائل",
+  "shellTabImpact": "الأثر",
+  "shellScan": "صوّر غرضًا",
+  "shellOffline": "أنت غير متصل بالإنترنت. الفحوص المحفوظة ما زالت تُفتح.",
+  "shellUnreachable": "تعذّر الوصول إلى خادم كنز. الفحوص المحفوظة ما زالت تُفتح.",
+  "shellChecking": "جارٍ التحقق من الاتصال",
+  "shellRetry": "أعد المحاولة"
+}

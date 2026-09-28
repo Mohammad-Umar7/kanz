@@ -7,9 +7,14 @@ import 'dart:ui' as ui;
 
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
+import 'package:flutter_localizations/flutter_localizations.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:flutter_riverpod/misc.dart' show Override;
 import 'package:flutter_test/flutter_test.dart';
+import 'package:go_router/go_router.dart';
 import 'package:kanz/core/data/vocab/vocab.dart';
 import 'package:kanz/core/design/design.dart';
+import 'package:kanz/l10n/l10n.dart';
 
 import '../../screenshots/harness.dart';
 
@@ -91,10 +96,71 @@ final List<ShotConfig> contentConfigs = [
   const ShotConfig(locale: Locale('ar'), textScale: 1.3),
 ];
 
-/// Secondary states: both sizes and languages, light and dark.
-final List<ShotConfig> stateConfigs = ShotConfig.matrix();
+/// 130 % text on the small phone in both languages: every state must lay
+/// out without overflow at this size too.
+const List<ShotConfig> largeTextConfigs = [
+  ShotConfig(textScale: 1.3),
+  ShotConfig(locale: Locale('ar'), textScale: 1.3),
+];
 
-/// Quick states: small phone, both languages and themes.
-final List<ShotConfig> compactConfigs = ShotConfig.matrix(
-  sizes: const [ShotConfig.compact],
-);
+/// Secondary states: both sizes and languages, light and dark, plus 130 %.
+final List<ShotConfig> stateConfigs = [
+  ...ShotConfig.matrix(),
+  ...largeTextConfigs,
+];
+
+/// Quick states: small phone, both languages and themes, plus 130 %.
+final List<ShotConfig> compactConfigs = [
+  ...ShotConfig.matrix(sizes: const [ShotConfig.compact]),
+  ...largeTextConfigs,
+];
+
+/// Pumps [child] (or [router]) on a 412 x 915 phone under a provider scope,
+/// with the Kanz theme and the app's localizations, for interaction tests.
+Future<void> pumpTab(
+  WidgetTester tester, {
+  Widget? child,
+  GoRouter? router,
+  List<Override> overrides = const [],
+  Locale locale = const Locale('en'),
+}) async {
+  tester.view
+    ..devicePixelRatio = 2
+    ..physicalSize = const Size(412, 915) * 2;
+  addTearDown(tester.view.reset);
+  const delegates = [
+    ...AppLocalizations.localizationsDelegates,
+    GlobalMaterialLocalizations.delegate,
+    GlobalWidgetsLocalizations.delegate,
+    GlobalCupertinoLocalizations.delegate,
+  ];
+  final theme = KanzTheme.light(locale: locale);
+  await tester.pumpWidget(
+    ProviderScope(
+      overrides: overrides,
+      child: router == null
+          ? MaterialApp(
+              theme: theme,
+              locale: locale,
+              supportedLocales: AppLocalizations.supportedLocales,
+              localizationsDelegates: delegates,
+              home: child,
+            )
+          : MaterialApp.router(
+              theme: theme,
+              locale: locale,
+              supportedLocales: AppLocalizations.supportedLocales,
+              localizationsDelegates: delegates,
+              routerConfig: router,
+            ),
+    ),
+  );
+  await settle(tester);
+}
+
+/// Pumps frames for [ms] milliseconds (skeletons and spinners never settle).
+Future<void> settle(WidgetTester tester, {int ms = 800}) async {
+  for (var t = 0; t < ms; t += 100) {
+    await tester.pump(const Duration(milliseconds: 100));
+  }
+}

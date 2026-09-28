@@ -1,0 +1,36 @@
+{
+  "@@locale": "ar",
+  "impactTitle": "أثرك",
+  "impactIntro": "محسوب مما فحصته وسجّلته على هذا الهاتف.",
+  "impactLoading": "جارٍ حساب أثرك",
+
+  "impactItemsLabel": "أغراض أبعدتها عن سلة المهملات",
+  "impactProjectsLabel": "مشاريع مكتملة",
+  "impactStreakLabel": "أيام متتالية",
+  "impactActiveToday": "سجّلت نشاطًا اليوم",
+  "impactKeepStreak": "صوّر غرضًا أو سجّله اليوم حتى لا تنقطع سلسلتك.",
+  "impactStartStreak": "صوّر شيئًا اليوم لتبدأ سلسلة جديدة.",
+  "impactScanAction": "صوّر غرضًا",
+
+  "impactByMaterial": "حسب المادة",
+  "impactByPath": "أين ذهبت",
+  "impactKindUpcycled": "إعادة ابتكار",
+  "impactKindRecycled": "إعادة تدوير",
+  "impactKindDonated": "تبرّع",
+  "impactKindDisposed": "تخلّص آمن",
+  "impactItemCount": "{count, plural, =0{لا أغراض} =1{غرض واحد} =2{غرضان} few{{count} أغراض} many{{count} غرضًا} other{{count} غرض}}",
+  "impactNoItemsYet": "لم تسجّل شيئًا بعد. افتح نتائج أي فحص وحدّد غرضًا على أنه أُعيد تدويره أو تُبرّع به أو أُعيد ابتكاره ليُحتسب هنا.",
+
+  "impactEstimateLabel": "تقدير",
+  "impactMassLabel": "مواد أُبعدت عن المكبّ",
+  "impactCo2Label": "انبعاثات تم تجنّبها",
+
+  "impactHowTitle": "ما الذي يُحتسب هنا",
+  "impactHowItems": "الأغراض التي تحدّدها من نتائج الفحص على أنها أُعيد تدويرها أو تُبرّع بها أو تُخلّص منها بأمان.",
+  "impactHowProjects": "مشاريع إعادة الابتكار التي تُكملها خطوة بخطوة.",
+  "impactHowStreak": "الأيام المتتالية التي فحصت فيها غرضًا، أو سجّلته، أو أكملت فيها مشروعًا.",
+
+  "impactEmptyTitle": "يبدأ أثرك بفحص واحد",
+  "impactEmptyMessage": "صوّر شيئًا توشك على رميه، ثم أعد ابتكاره أو تدويره أو تبرّع به. كل غرض تسجّله يظهر هنا.",
+  "impactErrorTitle": "تعذّر تحميل أثرك"
+}

@@ -1,0 +1,79 @@
+{
+  "@@locale": "en",
+  "homeHeadline": "What are you about to throw away?",
+  "homeLead": "Photograph it and Kanz shows what it's made of and what it could become.",
+  "homeScan": "Scan an item",
+  "homeGallery": "From gallery",
+  "homeDescribe": "Describe it",
+  "homeHistory": "History",
+  "homeSettings": "Settings",
+  "homeResumeEyebrow": "Continue your project",
+  "homeResumeProgress": "Step {current} of {total}",
+  "@homeResumeProgress": {
+    "placeholders": {
+      "current": {
+        "type": "int"
+      },
+      "total": {
+        "type": "int"
+      }
+    }
+  },
+  "homeResumeNotStarted": "Tutorial not opened yet",
+  "homeResume": "Resume",
+  "homeRecentTitle": "Recent scans",
+  "homeSeeAll": "See all",
+  "homeDescription": "Description",
+  "@homeDescription": {
+    "description": "Mono label on the tile of a scan made from a typed description instead of a photo."
+  },
+  "homeUnfinishedScan": "Unfinished scan",
+  "homeItemCount": "{count, plural, =1{1 item} other{{count} items}}",
+  "@homeItemCount": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "homeLoadingRecent": "Loading your recent scans",
+  "homeErrorTitle": "Your scans didn't load",
+  "homeErrorMessage": "Kanz couldn't read the scans saved on this phone. Try again.",
+  "homeImpactTitle": "Your impact",
+  "homeImpactItems": "{count, plural, =1{item out of the bin} other{items out of the bin}}",
+  "@homeImpactItems": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "homeImpactStreak": "{count, plural, =1{day in a row} other{days in a row}}",
+  "@homeImpactStreak": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "homeImpactProjects": "{count, plural, =1{project finished} other{projects finished}}",
+  "@homeImpactProjects": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "homeImpactOpen": "See your impact",
+  "homeGuideEyebrow": "What to photograph",
+  "homeGuideTitle": "Start with something from your kitchen or wardrobe.",
+  "homeGuideGlass": "Jars and bottles",
+  "homeGuideTextile": "T-shirts, jeans and fabric scraps",
+  "homeGuidePaper": "Cardboard boxes and newspapers",
+  "homeGuideMetal": "Tins and drink cans",
+  "homeGuideHazardous": "Batteries and old phones. Kanz shows where to take them safely.",
+  "homeTipsTitle": "For a clear photo",
+  "homeTip1": "One item at a time, filling most of the frame.",
+  "homeTip2": "A plain background and even light.",
+  "homeTip3": "Show labels or recycling marks if it has any."
+}

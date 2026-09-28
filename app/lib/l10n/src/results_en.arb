@@ -1,0 +1,280 @@
+{
+  "@@locale": "en",
+  "resultsTitle": "Scan results",
+  "resultsPhotoSemantics": "{count, plural, =0{Your photo} =1{Your photo, 1 item found} other{Your photo, {count} items found}}",
+  "@resultsPhotoSemantics": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "resultsBoxSemantics": "{name}, {category}, {confidence} confidence",
+  "@resultsBoxSemantics": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      },
+      "category": {
+        "type": "String"
+      },
+      "confidence": {
+        "type": "String"
+      }
+    }
+  },
+  "resultsItemsFound": "{count, plural, =1{1 item found} other{{count} items found}}",
+  "@resultsItemsFound": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "resultsTextScan": "Text scan",
+  "resultsReadAs": "Kanz read this as",
+  "resultsOffline": "You're offline. Saved results still open; new steps wait for a connection.",
+  "resultsShowSteps": "Show steps",
+  "resultsHideSteps": "Hide steps",
+  "resultsSeconds": "{seconds} s",
+  "@resultsSeconds": {
+    "placeholders": {
+      "seconds": {
+        "type": "String"
+      }
+    }
+  },
+  "resultsDoneIn": "Done in {seconds} s",
+  "@resultsDoneIn": {
+    "placeholders": {
+      "seconds": {
+        "type": "String"
+      }
+    }
+  },
+  "resultsSummaryIdeas": "{count, plural, =0{no ideas} =1{1 idea} other{{count} ideas}}",
+  "@resultsSummaryIdeas": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "resultsSummaryPlaces": "{count, plural, =0{no places nearby} =1{1 place} other{{count} places}}",
+  "@resultsSummaryPlaces": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "resultsSummaryDisposal": "safe disposal",
+  "resultsSummaryImagesPaused": "images paused",
+  "resultsStageImagesPaused": "Image generation is paused on this server. Ideas and tutorials still work.",
+  "resultsStageNoMakeoversDisposal": "Nothing to render: this item needs safe disposal.",
+  "resultsStageNoMakeovers": "No ideas to render.",
+  "resultsStageNeedsLocation": "Choose where to look, below.",
+  "resultsStageNoDropoff": "Nothing here needs a drop-off point.",
+  "resultsRetakeFallbackTitle": "Kanz couldn't make out an item",
+  "resultsRetake": "Retake photo",
+  "resultsChooseFromGallery": "Choose from gallery",
+  "resultsTextRejectedTitle": "Kanz couldn't tell what that is",
+  "resultsTextRejectedBody": "Name the item and what it's made of, for example: two empty plastic water bottles.",
+  "resultsDescribeAgain": "Describe it again",
+  "resultsTip": "What to try",
+  "resultsIdentifyErrorTitle": "Kanz couldn't identify the materials",
+  "resultsMissingTitle": "This scan isn't on this phone",
+  "resultsMissingBody": "It may have been deleted from History. Start a new scan to see ideas.",
+  "resultsNewScan": "New scan",
+  "resultsMaterialsTitle": "What it's made of",
+  "resultsMaterialsSubtitle": "Tap an item to see its details.",
+  "resultsLabelMaterial": "Material",
+  "resultsLabelType": "Type",
+  "resultsLabelQuantity": "Qty",
+  "resultsLabelQuality": "Quality",
+  "resultsLabelState": "State",
+  "resultsLabelRecyclable": "Recyclable",
+  "resultsLabelConfidence": "Confidence",
+  "resultsEditItem": "Correct this item",
+  "resultsQualitySemantics": "Quality {score} of 5, {label}",
+  "@resultsQualitySemantics": {
+    "placeholders": {
+      "score": {
+        "type": "int"
+      },
+      "label": {
+        "type": "String"
+      }
+    }
+  },
+  "resultsRecyclableValue": "{status} · {stream}",
+  "@resultsRecyclableValue": {
+    "placeholders": {
+      "status": {
+        "type": "String"
+      },
+      "stream": {
+        "type": "String"
+      }
+    }
+  },
+  "resultsHazardLabel": "{hazards}: safe disposal only, no DIY",
+  "@resultsHazardLabel": {
+    "placeholders": {
+      "hazards": {
+        "type": "String"
+      }
+    }
+  },
+  "resultsCorrectedNote": "Corrected by you.",
+  "resultsFocusItem": "Focus ideas on this item",
+  "resultsFocusedItem": "Ideas below are for this item",
+  "resultsEditSubtitle": "Kanz will update the ideas with your changes.",
+  "resultsEditName": "Name",
+  "resultsEditCategory": "Material",
+  "resultsEditMaterial": "Specific material",
+  "resultsEditMaterialHint": "For example: clear glass, PET #1",
+  "resultsEditQuantity": "Quantity",
+  "resultsEditQuantityInvalid": "Enter a number, like 2 or 0.5",
+  "resultsEditUnit": "Unit",
+  "resultsEditQuality": "Quality",
+  "resultsEditState": "State",
+  "resultsEditHazards": "Hazards",
+  "resultsEditSave": "Save and update ideas",
+  "resultsUnitPcs": "pieces",
+  "resultsUnitKg": "kg",
+  "resultsUnitG": "g",
+  "resultsUnitM": "m",
+  "resultsUnitM2": "m²",
+  "resultsUnitL": "litres",
+  "resultsUnitHandful": "handfuls",
+  "resultsUnitBag": "bags",
+  "resultsPathsTitle": "What it can become",
+  "resultsTabUpcycle": "Upcycle",
+  "resultsTabRecycle": "Recycle",
+  "resultsTabDonate": "Donate",
+  "resultsTabDispose": "Dispose",
+  "resultsFindingIdeas": "Finding ideas that suit your tools",
+  "resultsIdeaRendering": "Rendering the makeover",
+  "resultsIdeaImageFailed": "Preview unavailable",
+  "resultsIdeaImagePaused": "Image generation paused",
+  "resultsIdeaBefore": "Before",
+  "resultsIdeaImageRetry": "Try the image again",
+  "resultsToolsAll": "You have every tool",
+  "resultsToolsNone": "No tools needed",
+  "resultsToolsSome": "You have {have} of {total} tools",
+  "@resultsToolsSome": {
+    "placeholders": {
+      "have": {
+        "type": "int"
+      },
+      "total": {
+        "type": "int"
+      }
+    }
+  },
+  "resultsIdeasErrorTitle": "Ideas didn't load",
+  "resultsNoIdeasTitle": "No DIY ideas for this one",
+  "resultsNoIdeasBody": "Recycling or donating may suit it better. If Kanz misread the item, correct it above.",
+  "resultsBasedOn": "Based on",
+  "resultsHeldBackTitle": "Held back from DIY",
+  "resultsHeldBackBody": "{items} can't be used for DIY. How to get rid of it safely is below the ideas.",
+  "@resultsHeldBackBody": {
+    "placeholders": {
+      "items": {
+        "type": "String"
+      }
+    }
+  },
+  "resultsNoDiyTitle": "No DIY for this item",
+  "resultsDisposalSteps": "What to do",
+  "resultsDisposalNever": "Never",
+  "resultsSafeDisposalTitle": "Safe disposal",
+  "resultsMarkDisposed": "Mark as disposed",
+  "resultsMarkedDisposed": "Disposed · added to your impact",
+  "resultsPrep": "Prep",
+  "resultsDo": "Do",
+  "resultsDont": "Don't",
+  "resultsMarkRecycled": "Mark as recycled",
+  "resultsMarkedRecycled": "Recycled · added to your impact",
+  "resultsRecycleEmpty": "No recycling steps came back for this scan.",
+  "resultsDonateUnavailableTitle": "Not one to donate",
+  "resultsDonateSuitable": "Good to donate",
+  "resultsDonateNotSuitable": "Not suitable to donate",
+  "resultsDonateWhere": "Where",
+  "resultsMarkDonated": "Mark as donated",
+  "resultsMarkedDonated": "Donated · added to your impact",
+  "resultsDropoffTitle": "Drop-off near you",
+  "resultsSeeAll": "See all",
+  "resultsNearYou": "Near your location",
+  "resultsInCity": "In {city}",
+  "@resultsInCity": {
+    "placeholders": {
+      "city": {
+        "type": "String"
+      }
+    }
+  },
+  "resultsAroundCity": "Around {city}, since your location was approximate",
+  "@resultsAroundCity": {
+    "placeholders": {
+      "city": {
+        "type": "String"
+      }
+    }
+  },
+  "resultsDropoffWaiting": "Drop-off points appear once Kanz knows what this is.",
+  "resultsNeedsLocationTitle": "Where should Kanz look?",
+  "resultsNeedsLocationBody": "Use your location or pick a city to see the nearest drop-off points.",
+  "resultsUseMyLocation": "Use my location",
+  "resultsChooseCity": "Choose a city",
+  "resultsLocationOff": "Location is off for Kanz, so pick a city instead.",
+  "resultsNoPlacesTitle": "No drop-off points found nearby",
+  "resultsNoPlacesBody": "The Drop-off tab can search a wider set of places or another city.",
+  "resultsOpenDropoff": "Open Drop-off",
+  "resultsDropoffErrorTitle": "Drop-off points didn't load",
+  "resultsOpenNow": "Open now",
+  "resultsClosedNow": "Closed now",
+  "resultsHoursUnknown": "Hours not listed",
+  "resultsDirections": "Directions to {name}",
+  "@resultsDirections": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "resultsDirectionsFailed": "Maps didn't open. Try again in a moment.",
+  "resultsAccepts": "Accepts {materials}",
+  "@resultsAccepts": {
+    "placeholders": {
+      "materials": {
+        "type": "String"
+      }
+    }
+  },
+  "resultsAttribution": "Places from {sources}",
+  "@resultsAttribution": {
+    "placeholders": {
+      "sources": {
+        "type": "String"
+      }
+    }
+  },
+  "resultsSourceOsm": "OpenStreetMap contributors",
+  "resultsSourceGoogle": "Google",
+  "resultsSourceCurated": "Kanz's own list",
+  "resultsListAnd": "{first} and {last}",
+  "@resultsListAnd": {
+    "placeholders": {
+      "first": {
+        "type": "String"
+      },
+      "last": {
+        "type": "String"
+      }
+    }
+  },
+  "resultsReadingItems": "Reading material, quantity and condition",
+  "resultsPathsTitleDisposal": "How to get rid of it safely"
+}

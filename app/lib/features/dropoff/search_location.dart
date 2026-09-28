@@ -25,6 +25,7 @@ class SearchLocationBar extends StatelessWidget {
     required this.label,
     required this.changeLabel,
     required this.onChange,
+    this.changeHint,
     this.note,
     this.gps = false,
   });
@@ -32,6 +33,9 @@ class SearchLocationBar extends StatelessWidget {
   final String label;
   final String changeLabel;
   final VoidCallback? onChange;
+
+  /// Read after the button's name, for example "Change where to search".
+  final String? changeHint;
   final String? note;
 
   /// Searching around the phone's position (locate glyph) or a city.
@@ -73,7 +77,10 @@ class SearchLocationBar extends StatelessWidget {
             ),
           ),
           const SizedBox(width: KanzSpace.s4),
-          KanzButton.tertiary(label: changeLabel, onPressed: onChange),
+          Semantics(
+            hint: changeHint,
+            child: KanzButton.tertiary(label: changeLabel, onPressed: onChange),
+          ),
         ],
       ),
     );

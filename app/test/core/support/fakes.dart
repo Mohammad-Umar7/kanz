@@ -7,6 +7,7 @@ import 'package:dio/dio.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_riverpod/misc.dart' show Override;
 import 'package:kanz/core/data/db/database.dart';
+import 'package:kanz/core/data/insights/impact.dart';
 import 'package:kanz/core/data/models/models.dart';
 import 'package:kanz/core/data/vocab/vocab.dart';
 import 'package:kanz/core/network/api_client.dart';
@@ -289,6 +290,12 @@ class TestHarness {
         appDatabaseProvider.overrideWithValue(database),
         appDirectoriesProvider.overrideWithValue(AppDirectories(directory)),
         vocabProvider.overrideWithValue(vocab),
+        impactFactorsProvider.overrideWithValue(
+          ImpactFactors.fromJson(
+            jsonDecode(File(ImpactFactors.assetPath).readAsStringSync())
+                as Map<String, dynamic>,
+          ),
+        ),
         apiClientProvider.overrideWithValue(fakeApi),
         imageCompressorProvider.overrideWithValue(FakeCompressor(directory)),
         permissionServiceProvider.overrideWithValue(permissions),

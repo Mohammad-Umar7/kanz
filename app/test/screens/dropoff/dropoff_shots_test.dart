@@ -188,10 +188,14 @@ void main() {
     testWidgets('dropoff no category ${config.id}', (tester) async {
       await _shot(
         tester,
-        name: 'dropoff_no_category',
+        name: 'dropoff_one_category',
         config: config,
-        state: (ar) => noCategoryState(ar: ar),
+        state: (ar) => oneCategoryState(ar: ar),
       );
+      await tester.tap(
+        find.text(config.isArabic ? 'إعادة تدوير الزجاج' : 'Glass recycling'),
+      );
+      await captureAgain(tester, name: 'dropoff_no_category', config: config);
     });
 
     testWidgets('dropoff type filtered empty ${config.id}', (tester) async {
@@ -235,7 +239,12 @@ void main() {
         name: 'dropoff_location_sheet',
         config: config,
       );
-      await tester.tapAt(const Offset(20, 60));
+      // Close the sheet (at 130 % it covers the whole screen).
+      Navigator.of(
+        tester.element(
+          find.text(config.isArabic ? 'ابحث بالقرب من' : 'Search near'),
+        ),
+      ).pop();
       await tester.pump(const Duration(milliseconds: 600));
       await tester.tap(find.text(config.isArabic ? 'كل الأنواع' : 'All types'));
       await captureAgain(tester, name: 'dropoff_type_sheet', config: config);

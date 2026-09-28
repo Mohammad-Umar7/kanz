@@ -35,7 +35,8 @@ void main() {
     await pumpApp(tester);
     expect(find.byType(OnboardingScreen), findsOneWidget);
 
-    await tester.tap(find.byType(FilledButton));
+    // Skip keeps the defaults and finishes onboarding.
+    await tester.tap(find.text('Skip'));
     await tester.pumpAndSettle();
 
     expect(find.byType(HomeScreen), findsOneWidget);

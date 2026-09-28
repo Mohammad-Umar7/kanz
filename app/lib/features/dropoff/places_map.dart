@@ -89,7 +89,7 @@ class _PlacesGoogleMapState extends State<PlacesGoogleMap> {
   @override
   void didUpdateWidget(PlacesGoogleMap old) {
     super.didUpdateWidget(old);
-    if (!identical(old.spec.places, spec.places)) {
+    if (!_samePlaces(old.spec.places, spec.places)) {
       _fitAll();
     } else if (spec.selectedId != null &&
         spec.selectedId != old.spec.selectedId) {
@@ -102,6 +102,14 @@ class _PlacesGoogleMapState extends State<PlacesGoogleMap> {
         );
       }
     }
+  }
+
+  static bool _samePlaces(List<Place> a, List<Place> b) {
+    if (a.length != b.length) return false;
+    for (var i = 0; i < a.length; i++) {
+      if (a[i].id != b[i].id) return false;
+    }
+    return true;
   }
 
   void _fitAll() {
@@ -130,7 +138,9 @@ class _PlacesGoogleMapState extends State<PlacesGoogleMap> {
     );
   }
 
-  BitmapDescriptor _icon(Color fill, {required bool selected}) {
+  /// The pin for [fill], or null while it is being drawn (the marker then
+  /// appears a frame later instead of flashing Google's default pin).
+  BitmapDescriptor? _icon(Color fill, {required bool selected}) {
     final key = _PinKey(fill, selected);
     final cached = _icons[key];
     if (cached != null) return cached;
@@ -150,27 +160,32 @@ class _PlacesGoogleMapState extends State<PlacesGoogleMap> {
         }),
       );
     }
-    return BitmapDescriptor.defaultMarker;
+    return null;
   }
 
   @override
   Widget build(BuildContext context) {
     final markers = <Marker>{
       for (final place in spec.places)
-        Marker(
-          markerId: MarkerId(place.id),
-          position: LatLng(place.lat, place.lng),
-          anchor: const Offset(0.5, 0.5),
-          consumeTapEvents: true,
-          zIndexInt: place.id == spec.selectedId ? 2 : 1,
-          icon: _icon(
-            spec.pinMaterials[place.id] == null
-                ? context.kanzColors.ink
-                : KanzMaterialColors.pin(context, spec.pinMaterials[place.id]!),
-            selected: place.id == spec.selectedId,
+        if (_icon(
+              spec.pinMaterials[place.id] == null
+                  ? context.kanzColors.ink
+                  : KanzMaterialColors.pin(
+                      context,
+                      spec.pinMaterials[place.id]!,
+                    ),
+              selected: place.id == spec.selectedId,
+            )
+            case final icon?)
+          Marker(
+            markerId: MarkerId(place.id),
+            position: LatLng(place.lat, place.lng),
+            anchor: const Offset(0.5, 0.5),
+            consumeTapEvents: true,
+            zIndexInt: place.id == spec.selectedId ? 2 : 1,
+            icon: icon,
+            onTap: () => spec.onPinTap(place),
           ),
-          onTap: () => spec.onPinTap(place),
-        ),
     };
     return Semantics(
       label: spec.semanticsLabel,

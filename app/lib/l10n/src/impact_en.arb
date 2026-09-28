@@ -1,0 +1,38 @@
+{
+  "@@locale": "en",
+  "impactTitle": "Your impact",
+  "@impactTitle": {"description": "Title of the Impact tab."},
+  "impactIntro": "Counted from what you scanned and marked on this phone.",
+  "impactLoading": "Adding up your impact",
+
+  "impactItemsLabel": "Items kept out of the bin",
+  "impactProjectsLabel": "Projects finished",
+  "impactStreakLabel": "Day streak",
+  "impactActiveToday": "Active today",
+  "impactKeepStreak": "Scan or mark one thing today so your streak keeps going.",
+  "impactStartStreak": "Scan something today to start a new streak.",
+  "impactScanAction": "Scan an item",
+
+  "impactByMaterial": "By material",
+  "impactByPath": "Where they went",
+  "impactKindUpcycled": "Upcycled",
+  "impactKindRecycled": "Recycled",
+  "impactKindDonated": "Donated",
+  "impactKindDisposed": "Disposed of safely",
+  "impactItemCount": "{count, plural, =1{1 item} other{{count} items}}",
+  "@impactItemCount": {"placeholders": {"count": {"type": "int"}}},
+  "impactNoItemsYet": "Nothing marked yet. Open a scan's results and mark an item as recycled, donated or upcycled to count it here.",
+
+  "impactEstimateLabel": "Estimate",
+  "impactMassLabel": "Material kept from landfill",
+  "impactCo2Label": "Emissions avoided",
+
+  "impactHowTitle": "What counts here",
+  "impactHowItems": "Items you mark as recycled, donated or disposed of safely from a scan's results.",
+  "impactHowProjects": "Upcycling projects you finish, step by step.",
+  "impactHowStreak": "Days in a row with a scan, a marked item or a finished project.",
+
+  "impactEmptyTitle": "Your impact starts with one scan",
+  "impactEmptyMessage": "Scan something you're about to throw away, then upcycle, recycle or donate it. Each item you mark shows up here.",
+  "impactErrorTitle": "Your impact didn't load"
+}

@@ -21,8 +21,6 @@
   "swapsHistoryTitle": "Use my scan history",
   "swapsHistorySubtitle": "{days, plural, =1{Also covers what you scanned today} other{Also covers what you scanned in the last {days} days}}",
   "@swapsHistorySubtitle": {"placeholders": {"days": {"type": "int"}}},
-  "swapsHistoryCount": "{label} {count}",
-  "@swapsHistoryCount": {"placeholders": {"label": {"type": "String"}, "count": {"type": "int"}}},
 
   "swapsSubmit": "Find swaps",
   "swapsUpdate": "Update swaps",

@@ -1,0 +1,100 @@
+{
+  "@@locale": "en",
+  "settingsTitle": "Settings",
+  "settingsLanguage": "Language",
+  "settingsLanguageSystemDetail": "Now {language}",
+  "@settingsLanguageSystemDetail": {
+    "placeholders": {
+      "language": {
+        "type": "String"
+      }
+    }
+  },
+  "settingsLanguageNote": "Ideas, tutorials and spoken steps use this language too.",
+  "settingsTheme": "Appearance",
+  "settingsWorkshop": "Your workshop",
+  "settingsSkill": "Skill level",
+  "settingsTools": "My tools",
+  "settingsToolsNone": "None yet. Ideas that need no tools come first.",
+  "settingsToolsMore": "{names} and {count} more",
+  "@settingsToolsMore": {
+    "placeholders": {
+      "names": {
+        "type": "String"
+      },
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "settingsToolsListSeparator": ", ",
+  "@settingsToolsListSeparator": {
+    "description": "Separator between tool names in a list."
+  },
+  "settingsLocation": "Location for drop-off points",
+  "settingsLocationGps": "Use my location",
+  "settingsLocationGpsDetail": "Points sorted by distance from you",
+  "settingsLocationGpsOff": "Location access is off. Kanz uses your city until you allow it.",
+  "settingsLocationGpsOffNoCity": "Location access is off. Allow it, or choose a city.",
+  "settingsLocationCity": "A fixed city",
+  "settingsLocationCityDetail": "Search around {city}",
+  "@settingsLocationCityDetail": {
+    "placeholders": {
+      "city": {
+        "type": "String"
+      }
+    }
+  },
+  "settingsLocationCityNone": "Choose a city",
+  "settingsLocationUndecided": "Kanz asks the first time you look for drop-off points.",
+  "settingsTutorials": "Tutorials",
+  "settingsHandsFree": "Hands-free by default",
+  "settingsHandsFreeDetail": "Reads each step aloud and listens for \"next\", \"back\" and \"repeat\".",
+  "settingsServer": "Server",
+  "settingsServerUrl": "Server address",
+  "settingsServerHelper": "Default: {url}",
+  "@settingsServerHelper": {
+    "placeholders": {
+      "url": {
+        "type": "String"
+      }
+    }
+  },
+  "settingsServerInvalid": "Enter a full address that starts with http:// or https://",
+  "settingsServerSave": "Save and test",
+  "settingsServerTest": "Test connection",
+  "settingsServerTesting": "Testing the connection",
+  "settingsServerReset": "Use default",
+  "settingsServerOfflineDetail": "This phone has no network connection.",
+  "settingsServerUnreachableDetail": "Check the address, and that the server is running and on the same network.",
+  "settingsServerNoAi": "No AI key is set on this server, so scans can't be analysed.",
+  "settingsModelVision": "Vision model",
+  "settingsModelText": "Text model",
+  "settingsModelImage": "Image model",
+  "settingsModelEmbed": "Embeddings",
+  "settingsKnowledge": "Knowledge base",
+  "settingsKnowledgeDocs": "{count, plural, =1{1 document} other{{count} documents}}",
+  "@settingsKnowledgeDocs": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "settingsKnowledgeKeyword": "{count, plural, =1{1 document, keyword search} other{{count} documents, keyword search}}",
+  "@settingsKnowledgeKeyword": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "settingsPlaces": "Places sources",
+  "settingsPlacesNone": "None configured",
+  "settingsServerVersion": "Server version",
+  "settingsAbout": "About",
+  "settingsAboutBody": "Kanz identifies what your things are made of, suggests how to upcycle, recycle or donate them, and finds drop-off points in the UAE.",
+  "settingsLicenses": "Open-source licenses",
+  "settingsCo2eNote": "CO2e figures in Kanz are estimates from average emission factors, not measurements.",
+  "settingsEstimates": "Estimates"
+}

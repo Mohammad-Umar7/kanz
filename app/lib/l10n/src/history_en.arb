@@ -1,0 +1,35 @@
+{
+  "@@locale": "en",
+  "historyTitle": "History",
+  "historyTabScans": "Scans",
+  "historyTabProjects": "My projects",
+  "historyToday": "Today",
+  "historyOpenScan": "Open scan",
+  "historyMore": "More options for {title}",
+  "@historyMore": {"placeholders": {"title": {"type": "String"}}},
+  "historyDelete": "Delete scan",
+  "historyDeleteTitle": "Delete this scan?",
+  "historyDeleteBody": "Its photo, ideas and projects are removed from this phone. Your impact numbers stay.",
+  "historyDeleteConfirm": "Delete",
+  "historyDeleted": "Scan deleted",
+  "historyDeleteFailed": "The scan couldn't be deleted. Try again.",
+
+  "historyScansEmptyTitle": "No scans yet",
+  "historyScansEmptyBody": "Every item you scan is saved here and opens even without a connection.",
+  "historyProjectsEmptyTitle": "No projects yet",
+  "historyProjectsEmptyBody": "Pick an upcycling idea from a scan and start its tutorial. Your progress is kept here.",
+
+  "historyInProgress": "In progress",
+  "historyFinished": "Finished",
+  "historyFinishedOn": "Finished {date}",
+  "@historyFinishedOn": {"placeholders": {"date": {"type": "String"}}},
+  "historyStepsDone": "{done} of {total} steps done",
+  "@historyStepsDone": {"placeholders": {"done": {"type": "int"}, "total": {"type": "int"}}},
+  "historyNotStarted": "Tutorial not opened yet",
+  "historyResume": "Resume",
+  "historySeeProject": "See project",
+
+  "historyLoading": "Loading your history",
+  "historyErrorTitle": "History didn't load",
+  "historyErrorBody": "Kanz couldn't read what's saved on this phone. Try again."
+}

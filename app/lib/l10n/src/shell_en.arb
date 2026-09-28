@@ -1,0 +1,16 @@
+{
+  "@@locale": "en",
+  "shellTabHome": "Home",
+  "shellTabDropoff": "Drop-off",
+  "shellTabSwaps": "Swaps",
+  "shellTabImpact": "Impact",
+  "shellScan": "Scan an item",
+  "@shellScan": {"description": "Accessible name of the clay scan action in the middle of the navigation bar."},
+  "shellOffline": "You're offline. Saved scans still open.",
+  "@shellOffline": {"description": "Banner when the phone has no network at all."},
+  "shellUnreachable": "Can't reach the Kanz server. Saved scans still open.",
+  "@shellUnreachable": {"description": "Banner when the network is up but the backend does not answer."},
+  "shellChecking": "Checking the connection",
+  "shellRetry": "Retry",
+  "@shellRetry": {"description": "Short action in the offline banner that checks the server again."}
+}

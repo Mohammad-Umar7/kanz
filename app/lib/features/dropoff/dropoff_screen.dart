@@ -65,6 +65,14 @@ class _DropoffScreenState extends ConsumerState<DropoffScreen>
   Set<String> _orderedSelection = const {};
   bool _selfToggled = false;
 
+  /// The user deselected every category (as opposed to the controller not
+  /// having picked the starting ones yet, which shows the loading rows).
+  bool _clearedAll = false;
+
+  /// How much of the map the places sheet covers, so the map keeps the
+  /// camera and the Google logo in the part that is still visible.
+  double _sheetExtent = _sheetInitial;
+
   DropoffController get _controller =>
       ref.read(dropoffControllerProvider.notifier);
 
@@ -179,6 +187,8 @@ class _DropoffScreenState extends ConsumerState<DropoffScreen>
 
   void _toggleCategory(String key) {
     _selfToggled = true;
+    final selected = ref.read(dropoffControllerProvider).selectedCategories;
+    _clearedAll = selected.length == 1 && selected.contains(key);
     unawaited(_controller.toggleCategory(key));
   }
 
@@ -310,6 +320,7 @@ class _DropoffScreenState extends ConsumerState<DropoffScreen>
           ? l10n.dropoffApproximate(where.cityName ?? '')
           : null,
       changeLabel: l10n.dropoffChangeLocation,
+      changeHint: l10n.dropoffChangeLocationHint,
       onChange: _chooseLocation,
     );
   }
@@ -580,7 +591,7 @@ class _DropoffScreenState extends ConsumerState<DropoffScreen>
       ];
     }
 
-    if (state.selectedCategories.isEmpty && !state.searching) {
+    if (state.selectedCategories.isEmpty && !state.searching && _clearedAll) {
       return [
         box(
           EmptyState(
@@ -713,7 +724,8 @@ class _DropoffScreenState extends ConsumerState<DropoffScreen>
                       center: results.center,
                       pinMaterials: _pinMaterials(state),
                       selectedId: state.selectedPlaceId,
-                      bottomPadding: box.maxHeight * _sheetMin,
+                      bottomPadding:
+                          box.maxHeight * _sheetExtent.clamp(_sheetMin, 0.6),
                       showMyLocation: where.gps,
                       semanticsLabel: context.l10n.dropoffPlotLabel(
                         places.length,
@@ -729,58 +741,67 @@ class _DropoffScreenState extends ConsumerState<DropoffScreen>
                     ),
                   ),
                 ),
-                DraggableScrollableSheet(
-                  initialChildSize: _sheetInitial,
-                  minChildSize: _sheetMin,
-                  snap: true,
-                  snapSizes: const [_sheetInitial],
-                  builder: (context, scroll) => DecoratedBox(
-                    decoration: BoxDecoration(
-                      color: c.surface,
-                      borderRadius: KanzRadii.sheetTop,
-                      boxShadow: KanzElevation.floating(c),
-                    ),
-                    child: ClipRRect(
-                      borderRadius: KanzRadii.sheetTop,
-                      child: CustomScrollView(
-                        controller: scroll,
-                        slivers: [
-                          SliverToBoxAdapter(
-                            child: Center(
-                              child: Container(
-                                margin: const EdgeInsets.only(
-                                  top: KanzSpace.s12,
-                                  bottom: KanzSpace.s4,
-                                ),
-                                width: 36,
-                                height: 4,
-                                decoration: BoxDecoration(
-                                  color: c.lineStrong,
-                                  borderRadius: const BorderRadius.all(
-                                    Radius.circular(2),
+                NotificationListener<DraggableScrollableNotification>(
+                  onNotification: (n) {
+                    // Coarse steps: the map re-lays out on each change.
+                    if ((n.extent - _sheetExtent).abs() > 0.04) {
+                      setState(() => _sheetExtent = n.extent);
+                    }
+                    return false;
+                  },
+                  child: DraggableScrollableSheet(
+                    initialChildSize: _sheetInitial,
+                    minChildSize: _sheetMin,
+                    snap: true,
+                    snapSizes: const [_sheetInitial],
+                    builder: (context, scroll) => DecoratedBox(
+                      decoration: BoxDecoration(
+                        color: c.surface,
+                        borderRadius: KanzRadii.sheetTop,
+                        boxShadow: KanzElevation.floating(c),
+                      ),
+                      child: ClipRRect(
+                        borderRadius: KanzRadii.sheetTop,
+                        child: CustomScrollView(
+                          controller: scroll,
+                          slivers: [
+                            SliverToBoxAdapter(
+                              child: Center(
+                                child: Container(
+                                  margin: const EdgeInsets.only(
+                                    top: KanzSpace.s12,
+                                    bottom: KanzSpace.s4,
+                                  ),
+                                  width: 36,
+                                  height: 4,
+                                  decoration: BoxDecoration(
+                                    color: c.lineStrong,
+                                    borderRadius: const BorderRadius.all(
+                                      Radius.circular(2),
+                                    ),
                                   ),
                                 ),
                               ),
                             ),
-                          ),
-                          SliverToBoxAdapter(
-                            child: _resultsBar(state, vocab, where),
-                          ),
-                          SliverToBoxAdapter(
-                            child: Divider(height: 1, color: c.line),
-                          ),
-                          SliverOpacity(
-                            opacity: state.searching ? 0.45 : 1,
-                            sliver: SliverList.builder(
-                              itemCount: places.length,
-                              itemBuilder: (context, i) =>
-                                  _row(state, vocab, where, i),
+                            SliverToBoxAdapter(
+                              child: _resultsBar(state, vocab, where),
                             ),
-                          ),
-                          SliverToBoxAdapter(
-                            child: PlacesSourcesFooter(results: results),
-                          ),
-                        ],
+                            SliverToBoxAdapter(
+                              child: Divider(height: 1, color: c.line),
+                            ),
+                            SliverOpacity(
+                              opacity: state.searching ? 0.45 : 1,
+                              sliver: SliverList.builder(
+                                itemCount: places.length,
+                                itemBuilder: (context, i) =>
+                                    _row(state, vocab, where, i),
+                              ),
+                            ),
+                            SliverToBoxAdapter(
+                              child: PlacesSourcesFooter(results: results),
+                            ),
+                          ],
+                        ),
                       ),
                     ),
                   ),
