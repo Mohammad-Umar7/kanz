@@ -7,8 +7,22 @@ library;
 
 import 'package:json_annotation/json_annotation.dart';
 
+/// An enum whose values carry their exact wire id.
+abstract interface class WireEnum {
+  String get id;
+}
+
+/// Finds the value of [values] whose wire id is [id], or null.
+T? enumById<T extends WireEnum>(List<T> values, String? id) {
+  if (id == null) return null;
+  for (final v in values) {
+    if (v.id == id) return v;
+  }
+  return null;
+}
+
 /// Content language of AI responses (`Lang`).
-enum Lang {
+enum Lang implements WireEnum {
   @JsonValue('en')
   en('en'),
   @JsonValue('ar')
@@ -16,14 +30,14 @@ enum Lang {
 
   const Lang(this.id);
 
+  @override
   final String id;
 
-  static Lang fromId(String id) =>
-      values.firstWhere((v) => v.id == id, orElse: () => Lang.en);
+  static Lang fromId(String? id) => enumById(values, id) ?? Lang.en;
 }
 
 /// Top-level material family of an item (`MaterialCategory`).
-enum MaterialCategory {
+enum MaterialCategory implements WireEnum {
   @JsonValue('glass')
   glass('glass'),
   @JsonValue('plastic')
@@ -47,14 +61,14 @@ enum MaterialCategory {
 
   const MaterialCategory(this.id);
 
+  @override
   final String id;
 
-  static MaterialCategory? tryFromId(String? id) =>
-      id == null ? null : values.where((v) => v.id == id).firstOrNull;
+  static MaterialCategory? tryFromId(String? id) => enumById(values, id);
 }
 
 /// Tools and protective gear the user can have at home (`ToolId`).
-enum ToolId {
+enum ToolId implements WireEnum {
   @JsonValue('scissors')
   scissors('scissors'),
   @JsonValue('craft_knife')
@@ -116,6 +130,7 @@ enum ToolId {
 
   const ToolId(this.id);
 
+  @override
   final String id;
 
   /// Protective gear is recommended in safety notes but never counted as a tool
@@ -123,12 +138,11 @@ enum ToolId {
   bool get isSafetyGear =>
       this == gloves || this == safetyGlasses || this == dustMask;
 
-  static ToolId? tryFromId(String? id) =>
-      id == null ? null : values.where((v) => v.id == id).firstOrNull;
+  static ToolId? tryFromId(String? id) => enumById(values, id);
 }
 
 /// Observable condition of an item (`StateTag`).
-enum StateTag {
+enum StateTag implements WireEnum {
   @JsonValue('clean')
   clean('clean'),
   @JsonValue('dirty')
@@ -184,11 +198,12 @@ enum StateTag {
 
   const StateTag(this.id);
 
+  @override
   final String id;
 }
 
 /// Hazards that change how an item may be handled (`HazardFlag`).
-enum HazardFlag {
+enum HazardFlag implements WireEnum {
   @JsonValue('battery')
   battery('battery'),
   @JsonValue('e_waste')
@@ -210,6 +225,7 @@ enum HazardFlag {
 
   const HazardFlag(this.id);
 
+  @override
   final String id;
 
   /// Items with these hazards get disposal guidance only, never DIY ideas
@@ -218,7 +234,7 @@ enum HazardFlag {
 }
 
 /// Kind of drop-off point (`FacilityType`).
-enum FacilityType {
+enum FacilityType implements WireEnum {
   @JsonValue('recycling_center')
   recyclingCenter('recycling_center'),
   @JsonValue('collection_point')
@@ -236,11 +252,12 @@ enum FacilityType {
 
   const FacilityType(this.id);
 
+  @override
   final String id;
 }
 
 /// UAE cities used when there is no GPS fix (`CityId`).
-enum CityId {
+enum CityId implements WireEnum {
   @JsonValue('abu_dhabi')
   abuDhabi('abu_dhabi'),
   @JsonValue('al_ain')
@@ -260,14 +277,14 @@ enum CityId {
 
   const CityId(this.id);
 
+  @override
   final String id;
 
-  static CityId? tryFromId(String? id) =>
-      id == null ? null : values.where((v) => v.id == id).firstOrNull;
+  static CityId? tryFromId(String? id) => enumById(values, id);
 }
 
 /// The user's DIY experience (`SkillLevel`).
-enum SkillLevel {
+enum SkillLevel implements WireEnum {
   @JsonValue('beginner')
   beginner('beginner'),
   @JsonValue('intermediate')
@@ -277,14 +294,14 @@ enum SkillLevel {
 
   const SkillLevel(this.id);
 
+  @override
   final String id;
 
-  static SkillLevel? tryFromId(String? id) =>
-      id == null ? null : values.where((v) => v.id == id).firstOrNull;
+  static SkillLevel? tryFromId(String? id) => enumById(values, id);
 }
 
 /// Difficulty of an upcycling idea (`Difficulty`).
-enum Difficulty {
+enum Difficulty implements WireEnum {
   @JsonValue('easy')
   easy('easy'),
   @JsonValue('medium')
@@ -294,11 +311,12 @@ enum Difficulty {
 
   const Difficulty(this.id);
 
+  @override
   final String id;
 }
 
 /// Three-step scale used for reuse potential, swap effort and swap cost (`Level`).
-enum Level {
+enum Level implements WireEnum {
   @JsonValue('low')
   low('low'),
   @JsonValue('medium')
@@ -308,11 +326,12 @@ enum Level {
 
   const Level(this.id);
 
+  @override
   final String id;
 }
 
 /// Whether an item is accepted by recycling (`RecyclabilityStatus`).
-enum RecyclabilityStatus {
+enum RecyclabilityStatus implements WireEnum {
   @JsonValue('yes')
   yes('yes'),
   @JsonValue('conditional')
@@ -322,5 +341,6 @@ enum RecyclabilityStatus {
 
   const RecyclabilityStatus(this.id);
 
+  @override
   final String id;
 }
