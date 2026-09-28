@@ -12,7 +12,7 @@ from app.images.service import ImageService
 from app.schemas.images import StepImageRequest
 from app.schemas.recommend import UpcycleIdea
 from app.schemas.tutorial import Tutorial
-from tests.images.fakes import FakeImageGateway, ImageCall
+from tests.images.fakes import FakeImageGateway, ImageCall, until
 
 
 def step_exists(store: ImageStore, tutorial: Tutorial, n: int) -> bool:
@@ -140,11 +140,11 @@ async def test_module_seam_uses_the_process_service(
 async def test_shutdown_cancels_running_chains_quietly(
     service: ImageService, gateway: FakeImageGateway, tutorial: Tutorial, idea: UpcycleIdea
 ) -> None:
-    gateway.delay = 5.0  # a render that would outlive the server
+    gateway.gate = asyncio.Event()  # never set: a render that would outlive the server
     image_service.set_image_service(service)
     try:
         service.start_step_chain(tutorial, idea)
-        await asyncio.sleep(0.01)
+        await until(lambda: gateway.calls)
         await image_service.shutdown()
     finally:
         image_service.set_image_service(None)

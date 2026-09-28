@@ -9,7 +9,7 @@ from app.core.storage import ImageStore
 from app.images.service import ImageService
 from app.schemas.images import AfterImageRequest
 from app.schemas.recommend import UpcycleIdea
-from tests.images.fakes import FakeImageGateway, jpeg_size, make_jpeg
+from tests.images.fakes import FakeImageGateway, jpeg_size, make_jpeg, until
 
 
 def request(image_id: str, idea: UpcycleIdea, *, regenerate: bool = False) -> AfterImageRequest:
@@ -90,9 +90,14 @@ async def test_concurrent_requests_for_one_key_render_once(
 async def test_renders_are_capped_by_the_semaphore(
     service: ImageService, gateway: FakeImageGateway, photo_id: str, idea: UpcycleIdea
 ) -> None:
-    gateway.delay = 0.03
+    gateway.gate = asyncio.Event()
     variants = [idea.model_copy(update={"id": f"idea_{n:08x}"}) for n in range(6)]
-    await asyncio.gather(*(service.after_image(request(photo_id, v)) for v in variants))
+    batch = asyncio.gather(*(service.after_image(request(photo_id, v)) for v in variants))
+    await until(lambda: gateway.active == 3)
+    await asyncio.sleep(0.01)
+    assert len(gateway.calls) == 3  # the other three wait for a free slot
+    gateway.gate.set()
+    await batch
     assert len(gateway.calls) == 6
     assert gateway.max_active == 3
 

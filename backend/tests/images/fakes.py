@@ -73,6 +73,7 @@ class FakeImageGateway:
 
     calls: list[ImageCall] = field(default_factory=list)
     delay: float = 0.0
+    gate: asyncio.Event | None = None  # when set, every render waits for it (deterministic concurrency tests)
     fail: Callable[[ImageCall], BaseException | None] | None = None
     output: bytes | None = None
     active: int = 0
@@ -93,6 +94,8 @@ class FakeImageGateway:
         self.active += 1
         self.max_active = max(self.max_active, self.active)
         try:
+            if self.gate is not None:
+                await self.gate.wait()
             if self.delay:
                 await asyncio.sleep(self.delay)
             error = self.fail(call) if self.fail else None
@@ -116,6 +119,16 @@ class FakeImageGateway:
         matches = [c for c in self.calls if c.label == label]
         assert len(matches) == 1, f"expected one '{label}' render, got {self.labels}"
         return matches[0]
+
+
+async def until(condition: Callable[[], object], timeout: float = 2.0) -> None:
+    """Yield to the event loop until ``condition()`` is truthy (fails the test after ``timeout``)."""
+    tick = 0.002
+    for _ in range(int(timeout / tick)):
+        if condition():
+            return
+        await asyncio.sleep(tick)
+    raise AssertionError(f"condition not met within {timeout} s")
 
 
 def make_tutorial(image_id: str, idea: UpcycleIdea, skill: str = "beginner") -> Tutorial:
