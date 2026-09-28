@@ -1,0 +1,128 @@
+[
+  {
+    "id": "resin_1_pet",
+    "kind": "material_guide",
+    "title": "Resin code 1: PET",
+    "title_ar": "رمز الراتنج 1: البولي إيثيلين تيريفثالات",
+    "materials": ["plastic"],
+    "resin_code": 1,
+    "common_items": ["water and soda bottles", "juice bottles", "clear salad and fruit clamshells", "cooking oil bottles"],
+    "recyclability": "yes",
+    "identification": ["Clear or lightly tinted, thin and crinkly; the base often has a small dot where it was moulded."],
+    "cleaning_prep": ["Empty and rinse, squash flat, put the cap back on unless told otherwise."],
+    "recycling": {
+      "stream": "Plastics or mixed recycling bin",
+      "accepted": ["drink bottles", "clear food containers"],
+      "not_accepted": ["bottles that held oil-based chemicals or motor oil"]
+    },
+    "notes": ["PET is the most widely recycled plastic; it becomes new bottles, polyester fibre and strapping.", "Designed for single use: do not reuse drink bottles for hot drinks or leave them in hot cars."]
+  },
+  {
+    "id": "resin_2_hdpe",
+    "kind": "material_guide",
+    "title": "Resin code 2: HDPE",
+    "title_ar": "رمز الراتنج 2: البولي إيثيلين عالي الكثافة",
+    "materials": ["plastic"],
+    "resin_code": 2,
+    "common_items": ["milk and juice jugs", "detergent and shampoo bottles", "bottle caps", "sturdy bags"],
+    "recyclability": "yes",
+    "identification": ["Opaque, slightly waxy and stiff; often white or coloured."],
+    "cleaning_prep": ["Rinse out product, leave to drain and replace the cap."],
+    "recycling": {
+      "stream": "Plastics or mixed recycling bin",
+      "accepted": ["milk jugs", "detergent bottles", "shampoo bottles"],
+      "not_accepted": ["containers that held motor oil, pesticides or solvents"]
+    },
+    "notes": ["HDPE is tough and widely recycled into pipes, crates and outdoor furniture.", "Bottles that held detergent or bleach must never be reused for food, drink or pets."]
+  },
+  {
+    "id": "resin_3_pvc",
+    "kind": "material_guide",
+    "title": "Resin code 3: PVC",
+    "title_ar": "رمز الراتنج 3: البولي فينيل كلوريد",
+    "materials": ["plastic"],
+    "resin_code": 3,
+    "common_items": ["pipes", "blister packs", "cling film (some types)", "shower curtains", "cable insulation"],
+    "recyclability": "no",
+    "identification": ["Rigid pipes or soft, rubbery films; blister packs are often PVC bonded to foil."],
+    "cleaning_prep": ["Separate from other plastics; clean offcuts of pipe can go to builders' recycling."],
+    "recycling": {
+      "stream": "General waste or specialist construction recycling",
+      "accepted": ["large clean pipe offcuts at specialist recyclers"],
+      "not_accepted": ["household recycling bins in most places"]
+    },
+    "notes": ["PVC releases hydrogen chloride and dioxins when burned: never burn it.", "Reuse rigid PVC (pipe sections) for garden and storage projects instead."]
+  },
+  {
+    "id": "resin_4_ldpe",
+    "kind": "material_guide",
+    "title": "Resin code 4: LDPE",
+    "title_ar": "رمز الراتنج 4: البولي إيثيلين منخفض الكثافة",
+    "materials": ["plastic"],
+    "resin_code": 4,
+    "common_items": ["carrier bags", "bread bags", "squeezy bottles", "bubble wrap", "shrink wrap"],
+    "recyclability": "conditional",
+    "identification": ["Soft and stretchy; bags stretch before they tear."],
+    "cleaning_prep": ["Shake out crumbs, keep dry, bundle bags inside one bag."],
+    "recycling": {
+      "stream": "Plastic bag collection point (often at supermarkets)",
+      "accepted": ["clean dry carrier bags", "bread bags", "bubble wrap"],
+      "not_accepted": ["kerbside bins in most areas (films jam sorting machines)", "dirty or food-covered film"]
+    },
+    "notes": ["Bags are best reused: as bin liners, for plarn crafts or returned to supermarket collection."]
+  },
+  {
+    "id": "resin_5_pp",
+    "kind": "material_guide",
+    "title": "Resin code 5: PP",
+    "title_ar": "رمز الراتنج 5: البولي بروبيلين",
+    "materials": ["plastic"],
+    "resin_code": 5,
+    "common_items": ["yogurt and ice-cream tubs", "takeaway containers", "bottle caps", "medicine bottles", "straws"],
+    "recyclability": "yes",
+    "identification": ["Stiff but flexible, often semi-opaque; lids flex without cracking."],
+    "cleaning_prep": ["Scrape and rinse out food; greasy takeaway boxes need a hot soapy wash."],
+    "recycling": {
+      "stream": "Plastics or mixed recycling bin",
+      "accepted": ["food tubs", "clean takeaway containers", "caps"],
+      "not_accepted": ["containers with food left in them"]
+    },
+    "notes": ["PP is increasingly recycled into crates, bins and car parts.", "Sturdy PP tubs are among the best plastics to reuse for storage."]
+  },
+  {
+    "id": "resin_6_ps",
+    "kind": "material_guide",
+    "title": "Resin code 6: PS (polystyrene)",
+    "title_ar": "رمز الراتنج 6: البوليسترين",
+    "materials": ["plastic"],
+    "resin_code": 6,
+    "common_items": ["foam takeaway boxes and cups", "packaging foam", "disposable cutlery", "yogurt pots (some)"],
+    "recyclability": "no",
+    "identification": ["Foam that breaks into beads, or brittle clear plastic that snaps with a crack."],
+    "cleaning_prep": ["Keep packaging foam clean and dry; some electronics shops take it back."],
+    "recycling": {
+      "stream": "General waste unless a specialist foam collection exists",
+      "accepted": ["clean packaging foam at specialist collection points"],
+      "not_accepted": ["kerbside recycling in most areas", "food-soiled foam"]
+    },
+    "notes": ["Never heat or burn polystyrene: it releases styrene fumes.", "Clean packaging foam can be reused for posting parcels."]
+  },
+  {
+    "id": "resin_7_other",
+    "kind": "material_guide",
+    "title": "Resin code 7: other plastics",
+    "title_ar": "رمز الراتنج 7: أنواع بلاستيك أخرى",
+    "materials": ["plastic"],
+    "resin_code": 7,
+    "common_items": ["large water cooler bottles (polycarbonate)", "multi-layer pouches", "some bioplastics", "sunglasses and toys"],
+    "recyclability": "conditional",
+    "identification": ["Anything that does not fit codes 1-6, including mixtures and bioplastics."],
+    "cleaning_prep": ["Rinse and check whether the supplier runs a return scheme (common for large water bottles)."],
+    "recycling": {
+      "stream": "Supplier return scheme or general waste",
+      "accepted": ["returnable water cooler bottles through the supplier"],
+      "not_accepted": ["most kerbside bins", "compostable plastics in plastics recycling"]
+    },
+    "notes": ["Water cooler bottles are designed to be returned and refilled: give them back to the supplier."]
+  }
+]
