@@ -15,7 +15,7 @@ Data files that drive the drop-off finder. They are read by `app/places/` at fir
 - `labels`: chip label in English and Arabic.
 - `facility_types`, `material_categories`: ids from `contracts/vocab.json`. The first facility type is what a Google result found by this category is shown as.
 - `google_queries`: Text Search queries per language. Arabic searches also send the first English query, because many UAE listings are named in English.
-- `osm.filters`: OpenStreetMap tag filters. A value is matched exactly, `"*"` means "any value", and `"~pattern"` is a case-insensitive regular expression. `facility_type` sets what a matching place is shown as.
+- `osm.filters`: OpenStreetMap tag filters. A value is matched exactly, `"*"` means "any value", and `"~pattern"` is a case-insensitive regular expression. Keep regular expressions to keys with few distinct values (such as `waste`): a regex on `name` makes Overpass scan every name it stores. `facility_type` sets what a matching place is shown as.
 - `osm.include_unlisted`: also offer recycling containers that do not say what they accept. Most containers in UAE OpenStreetMap data are mapped this way; the app marks them "accepted materials aren't listed".
 
 `routing` decides which categories a scanned item needs:

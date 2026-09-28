@@ -20,10 +20,10 @@ Names are never invented: an unnamed feature gets a generic, localized label suc
 
 from __future__ import annotations
 
+import asyncio
 import json
 import logging
 import re
-import time
 
 import httpx
 
@@ -37,11 +37,13 @@ from app.schemas.vocab import MATERIAL_CATEGORIES
 log = logging.getLogger("kanz.places.osm")
 
 USER_AGENT = "Kanz/1.0 (student project)"
-# Public instances, tried in order when one is busy (429/504 are common at peak times).
+# Public instances, in order of preference; 429 and 504 are common at peak times.
 MIRRORS = (
     "https://overpass-api.de/api/interpreter",
     "https://overpass.kumi.systems/api/interpreter",
 )
+# Seconds to wait for a mirror before also asking the next one (typical answers take 1-3 s).
+HEDGE_AFTER_S = 4.0
 RECYCLING = {"amenity": "recycling"}
 # Tags that can carry a bin's name or its operator (many UAE nodes only have name:en).
 LABEL_TAGS = ("name", "name:en", "name:ar", "operator", "brand")
@@ -49,18 +51,19 @@ LABEL_TAGS = ("name", "name:en", "name:ar", "operator", "brand")
 
 # --------------------------------------------------------------------- query
 def build_query(keys: list[str], lat: float, lng: float, radius_m: int, *, timeout_s: int, cfg: FacilityConfig) -> str:
-    """One union query for all requested categories; ``out tags center`` gives ways a center point."""
-    selectors: list[dict[str, str]] = []
-    wants_unlisted = any(cfg.categories[k].osm.include_unlisted for k in keys)
-    if wants_unlisted:
-        selectors.append(RECYCLING)  # every recycling point; categories are matched locally afterwards
+    """One union query for all requested categories; ``out tags center`` gives ways a center point.
+
+    When unlisted points or known operators matter, every recycling point in the circle is
+    fetched and matched locally. That is also the fast option: a value regex on ``name``
+    makes Overpass scan every distinct name it stores, while all recycling points around
+    a UAE city are a few hundred small features.
+    """
+    broad = any(cfg.categories[k].osm.include_unlisted for k in keys) or bool(_operators_for(keys, cfg))
+    selectors: list[dict[str, str]] = [RECYCLING] if broad else []
     for key in keys:
         for f in cfg.categories[key].osm.filters:
-            if not (wants_unlisted and f.tags.get("amenity") == "recycling"):
+            if not (broad and f.tags.get("amenity") == "recycling"):
                 selectors.append(f.tags)
-    if not wants_unlisted:
-        for op in _operators_for(keys, cfg):
-            selectors += [{**RECYCLING, tag: f"~{op.pattern}"} for tag in ("name", "name:en", "operator")]
 
     around = f"(around:{radius_m},{lat:.6f},{lng:.6f})"
     lines = [f"  nw{_selector(tags)}{around};" for tags in _unique(selectors)]
@@ -256,42 +259,74 @@ async def search(
     settings: Settings | None = None,
     cfg: FacilityConfig | None = None,
 ) -> list[Candidate]:
-    """Query Overpass (mirror by mirror) and parse the result. Raises ``ProviderError`` if every mirror fails."""
+    """Query Overpass and parse the result. Raises ``ProviderError`` if no mirror answers in time."""
     settings = settings or get_settings()
     cfg = cfg or get_config()
-    per_try = settings.places_timeout_s
-    query = build_query(keys, lat, lng, radius_m, timeout_s=int(per_try), cfg=cfg)
-    deadline = time.monotonic() + per_try * 1.5  # room for one quick failover, not two full timeouts
+    query = build_query(keys, lat, lng, radius_m, timeout_s=int(settings.places_timeout_s), cfg=cfg)
+    url, data = await _hedged_fetch(query, _mirrors(settings), budget_s=settings.places_timeout_s)
+    places = parse_elements(data, keys, lang, cfg)
+    log.info("overpass url=%s elements=%d places=%d", url, len(data.get("elements", [])), len(places))
+    return places
+
+
+async def _hedged_fetch(query: str, mirrors: list[str], *, budget_s: float) -> tuple[str, dict]:
+    """Ask the first mirror; if it fails or is still silent after ``HEDGE_AFTER_S``, ask the next too.
+
+    The first good answer wins and the other request is cancelled. A busy public instance
+    then costs a few seconds instead of a full timeout, and a healthy one costs nothing extra.
+    """
+    loop = asyncio.get_running_loop()
+    deadline = loop.time() + budget_s
     errors: list[str] = []
+    running: dict[asyncio.Task, str] = {}
+    queue = list(mirrors)
 
     async with httpx.AsyncClient(headers={"User-Agent": USER_AGENT}) as client:
-        for url in _mirrors(settings):
-            remaining = deadline - time.monotonic()
-            if remaining < 2:
-                errors.append(f"{url}: skipped, time budget used")
-                break
-            try:
-                resp = await client.post(url, data={"data": query}, timeout=min(per_try, remaining))
-            except httpx.HTTPError as exc:
-                errors.append(f"{url}: {type(exc).__name__}")
-                continue
-            if resp.status_code != 200:
-                errors.append(f"{url}: HTTP {resp.status_code}")
-                continue
-            try:
-                data = resp.json()
-            except ValueError:
-                errors.append(f"{url}: body is not JSON")
-                continue
-            remark = str(data.get("remark", ""))
-            if "error" in remark.lower():  # Overpass reports server-side timeouts as a 200 with a remark
-                errors.append(f"{url}: {remark[:120]}")
-                continue
-            places = parse_elements(data, keys, lang, cfg)
-            log.info("overpass url=%s elements=%d places=%d", url, len(data.get("elements", [])), len(places))
-            return places
+
+        def launch() -> None:
+            url = queue.pop(0)
+            timeout = max(1.0, deadline - loop.time())
+            running[asyncio.create_task(_fetch(client, url, query, timeout))] = url
+
+        launch()
+        try:
+            while running:
+                remaining = deadline - loop.time()
+                if remaining <= 0:
+                    errors.append("time budget used")
+                    break
+                wait_s = min(remaining, HEDGE_AFTER_S) if queue else remaining
+                done, _ = await asyncio.wait(running, timeout=wait_s, return_when=asyncio.FIRST_COMPLETED)
+                for task in done:
+                    url = running.pop(task)
+                    if task.exception() is None:
+                        return url, task.result()
+                    errors.append(f"{url}: {task.exception()}")
+                if queue:  # a mirror failed, or the running ones are slow: bring in the next
+                    launch()
+        finally:
+            for task in running:
+                task.cancel()
+            await asyncio.gather(*running, return_exceptions=True)
     log.warning("overpass failed: %s", "; ".join(errors))
-    raise ProviderError("; ".join(errors))
+    raise ProviderError("; ".join(errors) or "no mirror answered")
+
+
+async def _fetch(client: httpx.AsyncClient, url: str, query: str, timeout: float) -> dict:
+    try:
+        resp = await client.post(url, data={"data": query}, timeout=timeout)
+    except httpx.HTTPError as exc:
+        raise ProviderError(type(exc).__name__) from exc
+    if resp.status_code != 200:
+        raise ProviderError(f"HTTP {resp.status_code}")
+    try:
+        data = resp.json()
+    except ValueError as exc:
+        raise ProviderError("body is not JSON") from exc
+    remark = str(data.get("remark", ""))
+    if "error" in remark.lower():  # Overpass reports server-side timeouts as a 200 with a remark
+        raise ProviderError(remark[:120])
+    return data
 
 
 def _mirrors(settings: Settings) -> list[str]:

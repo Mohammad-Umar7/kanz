@@ -1,5 +1,8 @@
 """OpenStreetMap provider: query building, parsing of a hand-written sample, mirror fallback."""
 
+import asyncio
+import time
+
 import httpx
 import pytest
 import respx
@@ -23,12 +26,11 @@ def test_query_for_material_category_fetches_every_recycling_point():
     assert q.rstrip().endswith("out tags center;")
 
 
-def test_query_for_clothes_includes_tags_and_known_charity_names():
+def test_query_for_clothes_fetches_recycling_points_to_recognize_charity_bins_locally():
     q = overpass.build_query(["textile_donation"], 25.2, 55.27, 5000, timeout_s=12, cfg=CFG)
-    assert '["recycling:clothes"="yes"]' in q
+    assert 'nw["amenity"="recycling"](around:5000,25.200000,55.270000);' in q
     assert '["shop"="charity"]' in q
-    assert '["name"~"make.?a.?wish' in q and ",i]" in q
-    assert '["name:en"~' in q and '["operator"~' in q
+    assert "~" not in q  # no server-side regex on names: it is slow on Overpass
 
 
 def test_query_for_batteries_is_specific():
@@ -127,3 +129,21 @@ async def test_all_mirrors_failing_raises(osm_only_settings):
         await overpass.search(
             keys=["glass"], lat=24.45, lng=54.37, radius_m=5000, lang="en", settings=osm_only_settings
         )
+
+
+@respx.mock
+async def test_slow_mirror_is_hedged_with_the_next(monkeypatch, overpass_sample, osm_only_settings):
+    monkeypatch.setattr(overpass, "HEDGE_AFTER_S", 0.05)
+
+    async def slow(request):
+        await asyncio.sleep(5)
+        return httpx.Response(200, json={"elements": []})
+
+    respx.post(overpass.MIRRORS[0]).mock(side_effect=slow)
+    respx.post(overpass.MIRRORS[1]).mock(return_value=httpx.Response(200, json=overpass_sample))
+    started = time.perf_counter()
+    cands = await overpass.search(
+        keys=["glass"], lat=24.4539, lng=54.3773, radius_m=5000, lang="en", settings=osm_only_settings
+    )
+    assert len(cands) == 3
+    assert time.perf_counter() - started < 2
