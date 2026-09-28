@@ -39,6 +39,18 @@ class TestNormalisation:
         )
         assert "chemical" in bottle.hazards and bottle.category == "plastic"
 
+    @pytest.mark.parametrize(
+        ("name", "category", "state"),
+        [
+            ("Coffee capsules", "metal", ["empty"]),
+            ("Maple syrup bottle", "glass", ["empty"]),
+            ("Laundry detergent bottle", "plastic", ["contains_residue"]),
+            ("زجاجة بخاخ بلاستيكية", "plastic", ["empty"]),
+        ],
+    )
+    def test_everyday_items_are_not_mistaken_for_hazards(self, name, category, state):
+        assert safety.normalise_item(item(name=name, category=category, material="x", state=state), "en").hazards == []
+
     def test_rinsed_detergent_bottle_is_not_flagged(self):
         bottle = safety.normalise_item(
             item(name="Detergent bottle", category="plastic", material="HDPE #2", state=["empty", "clean"]), "en"

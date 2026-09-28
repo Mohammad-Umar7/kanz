@@ -143,22 +143,23 @@ _AEROSOL = Terms(
         r"air freshener",
         r"wd-?40",
     ),
-    ar=("بخاخ", "ايروسول", "علبه رذاذ", "معطر جو"),
+    # "بخاخ" alone also means a plastic trigger sprayer, so only can-specific phrases count.
+    ar=("علبه بخاخ", "بخاخ معدني", "ايروسول", "علبه رذاذ", "معطر جو", "مزيل عرق بخاخ", "طلاء بخاخ"),
 )
 _MEDICINE = Terms(
     en=(
         r"medicines?",
         r"medications?",
         r"pills?",
-        r"capsules?",
+        r"(?<!coffee )capsules?",
         r"blister ?packs?",
-        r"syrups?",
+        r"cough syrups?",
         r"antibiotics?",
         r"painkillers?",
         r"inhalers?",
         r"syringes?",
     ),
-    ar=("دواء", "ادويه", "اقراص", "كبسول", "مضاد حيوي", "حقن"),
+    ar=("دواء", "ادويه", "اقراص", "كبسولات دواء", "مضاد حيوي", "حقن"),
 )
 _BULB = Terms(
     en=(r"(?:light ?)?bulbs?", r"fluorescent", r"cfls?", r"halogen", r"light tubes?", r"neon tubes?"),
@@ -203,6 +204,48 @@ _CHEMICAL = Terms(
         "نشادر",
         "منظف",
         "مطهر",
+    ),
+)
+# Strong chemicals only: a container of these with residue is routed to disposal. Everyday
+# detergents and dish soap are not (their bottles are rinsed and recycled), but they still
+# count for the food-reuse rule through _CHEMICAL.
+_CHEMICAL_HAZARD = Terms(
+    en=(
+        r"bleach",
+        r"pesticides?",
+        r"insecticides?",
+        r"herbicides?",
+        r"weed ?killer",
+        r"solvents?",
+        r"(?:paint )?thinners?",
+        r"turpentine",
+        r"white spirit",
+        r"motor oil",
+        r"engine oil",
+        r"antifreeze",
+        r"coolant",
+        r"drain cleaner",
+        r"oven cleaner",
+        r"chemicals?",
+        r"acids?",
+        r"ammonia",
+        r"paint tins?",
+    ),
+    ar=(
+        "مبيض",
+        "كلور",
+        "مبيد",
+        "مذيب",
+        "تنر",
+        "زيت محرك",
+        "زيت المحرك",
+        "مانع تجمد",
+        "كيماوي",
+        "كيميائي",
+        "حمض",
+        "نشادر",
+        "منظف مجاري",
+        "منظف افران",
     ),
 )
 _CONTAINER = Terms(
@@ -428,13 +471,13 @@ def normalise_item(item: Item, lang: str) -> Item:
         add("e_waste")
     if _BATTERY.found(s):
         add("battery")
-    if _AEROSOL.found(s) and item.category in {"metal", "hazardous", "other", "plastic"}:
+    if _AEROSOL.found(s) and item.category in {"metal", "hazardous", "other"}:
         add("aerosol")
     if _MEDICINE.found(s) and item.category not in {"electronics", "organic", "textile", "wood"}:
         add("medicine")
     if _BULB.found(s) and item.category in {"hazardous", "glass", "electronics", "other"}:
         add("light_bulb")
-    if _CHEMICAL.found(s) and ("contains_residue" in item.state or item.category == "hazardous"):
+    if _CHEMICAL_HAZARD.found(s) and ("contains_residue" in item.state or item.category == "hazardous"):
         add("chemical")
     if item.category == "glass" and "broken" in item.state:
         add("broken_glass")
