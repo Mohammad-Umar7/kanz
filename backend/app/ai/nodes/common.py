@@ -15,7 +15,7 @@ from typing import Any
 
 from app.ai import labels, rag
 from app.ai.rag import KnowledgeHit
-from app.ai.safety import has_arabic
+from app.ai.textmatch import has_arabic
 from app.core.errors import KanzError
 from app.core.timing import stage_timer
 from app.schemas.analysis import Item

@@ -14,7 +14,7 @@ import re
 from collections import Counter
 from collections.abc import Callable, Iterable
 
-from app.ai.safety import normalize_ar
+from app.ai.textmatch import normalize_ar
 
 _TOKEN = re.compile(r"[a-z0-9]+|[ء-ي]+")
 _STOP = frozenset(

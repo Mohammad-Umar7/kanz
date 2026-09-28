@@ -8,6 +8,7 @@ Layout:
 * ``convert.py``      deterministic conversion of model output into the public API models.
 * ``labels.py``       localized labels from the shared vocabulary (``contracts/vocab.json``).
 * ``safety.py``       hazard normalisation, the Safety Router and the output safety validators.
+* ``textmatch.py``    bilingual keyword matching with negation scope, used by the validators.
 * ``fallbacks.py``    reviewed, localized content used when a recommendation branch fails.
 * ``classifier.py``   pluggable fine-tuned material classifier hook (no-op by default).
 * ``rag/``            the Knowledge Retriever: ChromaDB + Gemini embeddings, BM25 fallback.
