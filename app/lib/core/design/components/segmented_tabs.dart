@@ -113,6 +113,7 @@ class _Segment extends StatelessWidget {
       enabled: onTap != null,
       inMutuallyExclusiveGroup: true,
       label: tab.count == null ? tab.label : '${tab.label}, ${tab.count}',
+      onTap: onTap,
       excludeSemantics: true,
       child: InkWell(
         onTap: onTap,

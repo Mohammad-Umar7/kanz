@@ -105,6 +105,7 @@ class _NavItem extends StatelessWidget {
       button: true,
       selected: selected,
       label: destination.label,
+      onTap: onTap,
       excludeSemantics: true,
       child: InkResponse(
         onTap: onTap,

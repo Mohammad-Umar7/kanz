@@ -91,14 +91,16 @@ class _PipelineTimelineState extends State<PipelineTimeline> {
 
   Widget _summary(BuildContext context) {
     final c = context.kanzColors;
+    void expand() => setState(() => _expanded = true);
     return Semantics(
       key: const ValueKey('summary'),
       button: true,
       label: widget.summary,
       hint: widget.expandLabel,
+      onTap: expand,
       excludeSemantics: true,
       child: InkWell(
-        onTap: () => setState(() => _expanded = true),
+        onTap: expand,
         borderRadius: KanzRadii.inputAll,
         child: ConstrainedBox(
           constraints: const BoxConstraints(minHeight: KanzSpace.touchTarget),

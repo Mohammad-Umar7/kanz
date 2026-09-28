@@ -36,11 +36,15 @@ class KanzChip extends StatelessWidget {
     final c = context.kanzColors;
     final fg = selected ? c.onInverse : c.ink;
     final enabled = onSelected != null;
+    void toggle() => onSelected!(!selected);
+    // The node replaces the InkWell's semantics (one clean label with the
+    // count), so it carries the tap action itself.
     return Semantics(
       button: true,
       selected: selected,
       enabled: enabled,
       label: count == null ? label : '$label, $count',
+      onTap: enabled ? toggle : null,
       excludeSemantics: true,
       child: ConstrainedBox(
         constraints: const BoxConstraints(minHeight: KanzSpace.touchTarget),
@@ -49,7 +53,7 @@ class KanzChip extends StatelessWidget {
           child: Material(
             type: MaterialType.transparency,
             child: InkWell(
-              onTap: enabled ? () => onSelected!(!selected) : null,
+              onTap: enabled ? toggle : null,
               borderRadius: KanzRadii.chipAll,
               child: AnimatedContainer(
                 duration: KanzMotion.of(context, KanzMotion.fast),
