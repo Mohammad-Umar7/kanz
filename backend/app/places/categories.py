@@ -13,6 +13,7 @@ evaluates them.
 
 from __future__ import annotations
 
+from collections.abc import Iterable
 from dataclasses import dataclass, field
 
 from app.places.config import Condition, FacilityConfig, get_config
@@ -100,5 +101,5 @@ def _category(cfg: FacilityConfig, key: str, lang: str, item_ids: list[str]) -> 
     )
 
 
-def _dedupe(keys) -> list[str]:
+def _dedupe(keys: Iterable[str]) -> list[str]:
     return list(dict.fromkeys(keys))
