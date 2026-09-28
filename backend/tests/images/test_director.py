@@ -84,8 +84,26 @@ def test_edit_prompts_insist_on_preserving_identity(
 def test_after_prompt_uses_the_english_after_visual(director: ImageDirector, idea: UpcycleIdea) -> None:
     prompt = director.after(idea)
     assert clean(idea.after_visual) in prompt.text
-    assert prompt.template == "image_after@v1"
+    assert prompt.template == "image_after@v2"
     assert "before and after pictures line up" in prompt.text
+
+
+def test_projects_that_reshape_the_item_are_not_told_to_keep_its_shape(
+    director: ImageDirector, lantern: Tutorial
+) -> None:
+    # A t-shirt tote bag cuts the sleeves away: "keep the exact shape" would fight the idea,
+    # and restoring the original's shape mid-chain would grow the sleeves back.
+    tote = UpcycleIdea.model_validate(load_fixture("recommend_tshirt")["upcycle"][0])
+    after = director.after(tote).text
+    assert "exact shape" not in after
+    assert "wherever the project does not cut, fold or reshape it" in after
+    assert "every piece is visibly made from this item" in after
+
+    chain = director.step(lantern, 3, idea=None, with_after=False)
+    assert chain.template == "image_step@v2"
+    assert "exact shape" not in chain.text
+    assert "keep every change the earlier steps made" in chain.text
+    assert "except where this step or an earlier one cuts, reshapes" in chain.text
 
 
 def test_first_step_edits_the_original_only(director: ImageDirector, idea: UpcycleIdea, lantern: Tutorial) -> None:
