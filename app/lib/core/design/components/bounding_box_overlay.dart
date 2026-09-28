@@ -233,6 +233,7 @@ class _BoundingBoxOverlayState extends State<BoundingBoxOverlay>
           builder: (context, constraints) {
             final viewport = constraints.biggest;
             final mapped = [for (final b in widget.boxes) _mapped(b, viewport)];
+            final tags = _placeTags(context, mapped, viewport);
             return Semantics(
               label: widget.semanticsLabel,
               image: true,
@@ -270,10 +271,8 @@ class _BoundingBoxOverlayState extends State<BoundingBoxOverlay>
                             ),
                             for (var i = 0; i < mapped.length; i++)
                               _tag(
-                                context,
                                 widget.boxes[i],
-                                mapped[i],
-                                viewport,
+                                tags[i],
                                 _boxProgress(t, i),
                               ),
                           ],
@@ -307,41 +306,74 @@ class _BoundingBoxOverlayState extends State<BoundingBoxOverlay>
     );
   }
 
-  Widget _tag(
-    BuildContext context,
-    DetectionBox box,
-    Rect rect,
-    Size viewport,
-    double progress,
-  ) {
-    const tagHeight = 22.0;
+  /// Finds a spot for every tag that stays inside the photo and does not
+  /// cover another tag. The selected box is placed first so it gets the
+  /// natural spot above its top edge; the others fall back to inside the
+  /// top edge, below the box, or inside the bottom edge.
+  List<Rect> _placeTags(BuildContext context, List<Rect> rects, Size viewport) {
+    const h = _BoxTag.height;
+    const m = 4.0;
+    final rtl = Directionality.of(context) == TextDirection.rtl;
+    final arabic = !context.kanzType.uppercaseData;
+    final order = [
+      for (var i = 0; i < rects.length; i++)
+        if (widget.boxes[i].id == widget.selectedId) i,
+      for (var i = 0; i < rects.length; i++)
+        if (widget.boxes[i].id != widget.selectedId) i,
+    ];
+    final placed = List<Rect>.filled(rects.length, Rect.zero);
+    final taken = <Rect>[];
+    for (final i in order) {
+      final r = rects[i];
+      final w = math.min(
+        _BoxTag.widthFor(widget.boxes[i].label, arabic: arabic),
+        viewport.width - 2 * m,
+      );
+      double startX(double inset) => rtl ? r.right - w - inset : r.left + inset;
+      final candidates = [
+        Offset(startX(0), r.top - h - m),
+        Offset(startX(m), r.top + m),
+        Offset(startX(0), r.bottom + m),
+        Offset(startX(m), r.bottom - h - m),
+      ];
+      Rect? choice;
+      for (final c in candidates) {
+        final rect = Rect.fromLTWH(
+          c.dx.clamp(m, math.max(m, viewport.width - w - m)),
+          c.dy.clamp(m, math.max(m, viewport.height - h - m)),
+          w,
+          h,
+        );
+        if (taken.every((t) => !t.inflate(2).overlaps(rect))) {
+          choice = rect;
+          break;
+        }
+      }
+      choice ??= Rect.fromLTWH(
+        candidates.first.dx.clamp(m, math.max(m, viewport.width - w - m)),
+        candidates.first.dy.clamp(m, math.max(m, viewport.height - h - m)),
+        w,
+        h,
+      );
+      placed[i] = choice;
+      taken.add(choice);
+    }
+    return placed;
+  }
+
+  Widget _tag(DetectionBox box, Rect placement, double progress) {
     final dimmed = widget.selectedId != null && widget.selectedId != box.id;
-    final above = rect.top - tagHeight - 4;
-    final double top = (above >= 4 ? above : rect.top + 4).clamp(
-      4.0,
-      math.max(4.0, viewport.height - tagHeight - 4),
-    );
-    final alignEnd = rect.center.dx > viewport.width * 0.62;
-    final maxWidth = alignEnd
-        ? math.max(80.0, rect.right - 4)
-        : math.max(80.0, viewport.width - rect.left - 4);
-    final opacity =
-        (progress * 1.4 - 0.4).clamp(0.0, 1.0) * (dimmed ? 0.55 : 1);
-    return Positioned(
-      top: top,
-      left: alignEnd ? null : math.max(4.0, rect.left),
-      right: alignEnd ? math.max(4.0, viewport.width - rect.right) : null,
+    final opacity = (progress * 1.4 - 0.4).clamp(0.0, 1.0) * (dimmed ? 0.6 : 1);
+    return Positioned.fromRect(
+      rect: placement,
       child: IgnorePointer(
         child: ExcludeSemantics(
           child: Opacity(
             opacity: opacity,
-            child: ConstrainedBox(
-              constraints: BoxConstraints(maxWidth: maxWidth),
-              child: _BoxTag(
-                label: box.label,
-                color: KanzMaterialColors.of(box.categoryId).box,
-                selected: widget.selectedId == box.id,
-              ),
+            child: _BoxTag(
+              label: box.label,
+              color: KanzMaterialColors.of(box.categoryId).box,
+              selected: widget.selectedId == box.id,
             ),
           ),
         ),
@@ -363,16 +395,51 @@ class _BoxTag extends StatelessWidget {
   final Color color;
   final bool selected;
 
+  static const double height = 22;
+
+  // Tags are anchored to image geometry, so they do not grow with the
+  // text scale; each box carries a full semantics label instead.
+  static TextStyle _style({required bool arabic}) => TextStyle(
+    fontFamily: arabic ? KanzFonts.arabic : KanzFonts.mono,
+    fontFamilyFallback: const [KanzFonts.arabic],
+    fontSize: arabic ? 11 : 10,
+    height: 1.2,
+    fontWeight: FontWeight.w500,
+    letterSpacing: arabic ? 0 : 0.8,
+    color: const Color(0xFFF2EFE8),
+  );
+
+  static String _text(String label, {required bool arabic}) =>
+      arabic ? label : label.toUpperCase();
+
+  /// Laid-out width of a tag: padding, dot, gap, text and border.
+  static double widthFor(String label, {required bool arabic}) {
+    final painter = TextPainter(
+      text: TextSpan(
+        text: _text(label, arabic: arabic),
+        style: _style(arabic: arabic),
+      ),
+      maxLines: 1,
+      textDirection: arabic ? TextDirection.rtl : TextDirection.ltr,
+    )..layout();
+    final width = painter.width;
+    painter.dispose();
+    return (6 + 6 + 6 + width + 6 + 3).ceilToDouble();
+  }
+
   @override
   Widget build(BuildContext context) {
     final arabic = !context.kanzType.uppercaseData;
     return Container(
-      height: 22,
+      height: height,
       padding: const EdgeInsetsDirectional.symmetric(horizontal: 6),
       decoration: BoxDecoration(
         color: const Color(0xF0161616),
         borderRadius: const BorderRadius.all(Radius.circular(4)),
-        border: selected ? Border.all(color: color, width: 1.5) : null,
+        border: Border.all(
+          color: selected ? color : const Color(0x00000000),
+          width: 1.5,
+        ),
       ),
       child: Row(
         mainAxisSize: MainAxisSize.min,
@@ -385,19 +452,11 @@ class _BoxTag extends StatelessWidget {
           const SizedBox(width: 6),
           Flexible(
             child: Text(
-              arabic ? label : label.toUpperCase(),
+              _text(label, arabic: arabic),
               maxLines: 1,
               overflow: TextOverflow.ellipsis,
               textScaler: TextScaler.noScaling,
-              style: TextStyle(
-                fontFamily: arabic ? KanzFonts.arabic : KanzFonts.mono,
-                fontFamilyFallback: const [KanzFonts.arabic],
-                fontSize: arabic ? 11 : 10,
-                height: 1.2,
-                fontWeight: FontWeight.w500,
-                letterSpacing: arabic ? 0 : 0.8,
-                color: const Color(0xFFF2EFE8),
-              ),
+              style: _style(arabic: arabic),
             ),
           ),
         ],
