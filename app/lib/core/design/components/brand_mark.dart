@@ -4,9 +4,10 @@ import '../context.dart';
 import '../tokens.dart';
 import '../typography.dart';
 
-/// The Kanz mark: a cut gem built from three flat shapes. A clay crown
-/// sits over an ink pavilion split into two facets. Read upside down the
-/// pavilion is also a map pin, the other half of what Kanz does.
+/// The Kanz mark (كنز, "treasure"): a cut gem seen from the front, built
+/// from four flat shapes. Two ink crown facets flank a clay table facet,
+/// the glint, above a solid ink pavilion. The pavilion alone reads as a map
+/// pin, the other half of what Kanz does.
 ///
 /// The geometry lives in [BrandMarkGeometry] and is mirrored exactly by
 /// tool/brand/make_brand.py, which renders the launcher icon and splash.
@@ -14,18 +15,18 @@ class BrandMark extends StatelessWidget {
   const BrandMark({
     super.key,
     this.size = 48,
-    this.crownColor,
-    this.pavilionColor,
+    this.accentColor,
+    this.inkColor,
     this.semanticsLabel,
   });
 
   final double size;
 
-  /// Defaults to the theme accent (clay).
-  final Color? crownColor;
+  /// The table facet. Defaults to the theme accent (clay).
+  final Color? accentColor;
 
-  /// Defaults to the theme ink.
-  final Color? pavilionColor;
+  /// The other facets. Defaults to the theme ink.
+  final Color? inkColor;
 
   /// Accessible name, usually "Kanz". Decorative when null.
   final String? semanticsLabel;
@@ -37,8 +38,8 @@ class BrandMark extends StatelessWidget {
       dimension: size,
       child: CustomPaint(
         painter: _BrandMarkPainter(
-          crown: crownColor ?? c.accent,
-          pavilion: pavilionColor ?? c.ink,
+          accent: accentColor ?? c.accent,
+          ink: inkColor ?? c.ink,
         ),
       ),
     );
@@ -98,29 +99,41 @@ class BrandLockup extends StatelessWidget {
 
 /// Unit-square coordinates of the mark's three shapes.
 abstract final class BrandMarkGeometry {
-  static const List<Offset> crown = [
-    Offset(0.30, 0.16),
-    Offset(0.70, 0.16),
-    Offset(0.88, 0.36),
-    Offset(0.12, 0.36),
+  /// Left crown facet (ink).
+  static const List<Offset> crownStart = [
+    Offset(0.285, 0.16),
+    Offset(0.10, 0.36),
+    Offset(0.325, 0.36),
   ];
-  static const List<Offset> pavilionStart = [
-    Offset(0.12, 0.41),
-    Offset(0.475, 0.41),
-    Offset(0.475, 0.812),
+
+  /// Table facet (accent).
+  static const List<Offset> table = [
+    Offset(0.335, 0.16),
+    Offset(0.665, 0.16),
+    Offset(0.625, 0.36),
+    Offset(0.375, 0.36),
   ];
-  static const List<Offset> pavilionEnd = [
-    Offset(0.525, 0.41),
-    Offset(0.88, 0.41),
-    Offset(0.525, 0.812),
+
+  /// Right crown facet (ink).
+  static const List<Offset> crownEnd = [
+    Offset(0.715, 0.16),
+    Offset(0.90, 0.36),
+    Offset(0.675, 0.36),
+  ];
+
+  /// Pavilion (ink).
+  static const List<Offset> pavilion = [
+    Offset(0.10, 0.41),
+    Offset(0.90, 0.41),
+    Offset(0.50, 0.84),
   ];
 }
 
 class _BrandMarkPainter extends CustomPainter {
-  _BrandMarkPainter({required this.crown, required this.pavilion});
+  _BrandMarkPainter({required this.accent, required this.ink});
 
-  final Color crown;
-  final Color pavilion;
+  final Color accent;
+  final Color ink;
 
   Path _poly(List<Offset> points, Size size) {
     final path = Path()
@@ -133,19 +146,15 @@ class _BrandMarkPainter extends CustomPainter {
 
   @override
   void paint(Canvas canvas, Size size) {
-    final fill = Paint()..isAntiAlias = true;
-    canvas.drawPath(_poly(BrandMarkGeometry.crown, size), fill..color = crown);
-    canvas.drawPath(
-      _poly(BrandMarkGeometry.pavilionStart, size),
-      fill..color = pavilion,
-    );
-    canvas.drawPath(
-      _poly(BrandMarkGeometry.pavilionEnd, size),
-      fill..color = pavilion,
-    );
+    final inkPaint = Paint()..color = ink;
+    canvas
+      ..drawPath(_poly(BrandMarkGeometry.crownStart, size), inkPaint)
+      ..drawPath(_poly(BrandMarkGeometry.crownEnd, size), inkPaint)
+      ..drawPath(_poly(BrandMarkGeometry.pavilion, size), inkPaint)
+      ..drawPath(_poly(BrandMarkGeometry.table, size), Paint()..color = accent);
   }
 
   @override
   bool shouldRepaint(_BrandMarkPainter old) =>
-      old.crown != crown || old.pavilion != pavilion;
+      old.accent != accent || old.ink != ink;
 }

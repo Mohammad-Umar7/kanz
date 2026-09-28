@@ -1082,7 +1082,7 @@ class _NavigationSectionState extends State<NavigationSection> {
                   color: c.inverse,
                   borderRadius: KanzRadii.buttonAll,
                 ),
-                child: BrandMark(size: 32, pavilionColor: c.onInverse),
+                child: BrandMark(size: 32, inkColor: c.onInverse),
               ),
             ],
           ),
