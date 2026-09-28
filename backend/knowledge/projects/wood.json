@@ -1,0 +1,223 @@
+[
+  {
+    "id": "proj_wood_crate_bookshelf",
+    "kind": "project",
+    "title": "Stacked crate bookshelf",
+    "title_ar": "رف كتب من صناديق خشبية مكدّسة",
+    "materials": ["wood"],
+    "items": ["wooden crates", "fruit crates", "wine crates"],
+    "summary": "Three sanded crates screwed together on their sides make a sturdy open bookshelf with cubby spaces.",
+    "summary_ar": "ثلاثة صناديق مصنفرة مثبتة معًا بالبراغي على جوانبها تصنع رف كتب متينًا بتجاويف مفتوحة.",
+    "result": "three sanded natural wooden crates stacked on their sides in a staggered tower and screwed together, filled with books and a small plant",
+    "difficulty": "medium",
+    "time_minutes": 90,
+    "tools": ["sandpaper", "drill", "screwdriver", "clamps"],
+    "extra_materials": ["wood screws", "felt pads", "a wall strap or bracket"],
+    "steps_outline": [
+      "Knock out loose nails and sand every surface, starting coarse and finishing fine",
+      "Arrange the crates on their sides and clamp neighbouring crates together",
+      "Drill pilot holes and screw the crates to each other",
+      "Stick felt pads underneath",
+      "Fix the top crate to the wall with a strap so it cannot tip"
+    ],
+    "safety": [
+      "Wear a dust mask while sanding and safety glasses while drilling",
+      "Always strap tall shelves to the wall, especially around children"
+    ],
+    "techniques": ["sanding", "drilling"],
+    "tags": ["furniture", "storage", "books"]
+  },
+  {
+    "id": "proj_wood_crate_planter",
+    "kind": "project",
+    "title": "Lined crate planter",
+    "title_ar": "أصيص من صندوق خشبي مبطّن",
+    "materials": ["wood", "textile"],
+    "items": ["wooden crate", "fruit crate", "wine box"],
+    "summary": "A crate lined with old fabric becomes a planter for flowers or herbs on a balcony.",
+    "summary_ar": "صندوق خشبي مبطن بقماش قديم يصبح أصيصًا للزهور أو الأعشاب في الشرفة.",
+    "result": "a sanded wooden crate lined with dark fabric showing at the top edge, filled with soil and green herbs and flowers",
+    "difficulty": "easy",
+    "time_minutes": 45,
+    "tools": ["sandpaper", "staple_gun", "scissors"],
+    "extra_materials": ["burlap or thick old fabric as a liner", "potting mix", "plants"],
+    "steps_outline": [
+      "Check the crate for loose nails and sand rough edges",
+      "Cut fabric large enough to line the inside with a 5 cm overlap at the top",
+      "Staple the liner inside, folding the corners neatly",
+      "Snip a few drainage slits in the fabric at the bottom",
+      "Fill with soil and plant"
+    ],
+    "safety": [
+      "Wear a dust mask while sanding",
+      "For edible plants use untreated wood only, never painted or chemically treated crates"
+    ],
+    "techniques": ["sanding", "cutting", "planting"],
+    "tags": ["garden", "balcony", "beginner"]
+  },
+  {
+    "id": "proj_wood_pallet_coffee_table",
+    "kind": "project",
+    "title": "Pallet coffee table",
+    "title_ar": "طاولة قهوة من منصّة خشبية",
+    "materials": ["wood"],
+    "items": ["wooden pallet", "shipping pallet"],
+    "summary": "A heat-treated pallet sanded, sealed and set on casters makes a solid low coffee table.",
+    "summary_ar": "منصة خشبية معالجة بالحرارة ومصنفرة ومحمية بطبقة ورنيش ومثبتة على عجلات تصنع طاولة قهوة منخفضة ومتينة.",
+    "result": "a low coffee table made from a sanded wooden pallet with a clear satin finish, standing on four black caster wheels",
+    "difficulty": "hard",
+    "time_minutes": 240,
+    "tools": ["sandpaper", "drill", "screwdriver", "varnish", "paintbrush", "handsaw"],
+    "extra_materials": ["4 caster wheels with screws", "extra slats from a second pallet (optional)"],
+    "steps_outline": [
+      "Check the stamp: use only pallets marked HT (heat treated), never MB",
+      "Scrub the pallet, let it dry and sand it thoroughly",
+      "Fill gaps on top with extra slats cut to length with the handsaw",
+      "Seal with two thin coats of varnish, sanding lightly between coats",
+      "Drill pilot holes and screw a caster to each corner"
+    ],
+    "safety": [
+      "Wear work gloves and a dust mask while sanding, safety glasses when drilling",
+      "Varnish in a well-ventilated place",
+      "Never use pallets stamped MB: they were treated with a toxic fumigant"
+    ],
+    "techniques": ["sanding", "drilling", "sawing", "varnishing"],
+    "tags": ["furniture", "advanced", "living room"]
+  },
+  {
+    "id": "proj_wood_pallet_vertical_garden",
+    "kind": "project",
+    "title": "Pallet vertical garden",
+    "title_ar": "حديقة عمودية من منصّة خشبية",
+    "materials": ["wood", "textile"],
+    "items": ["wooden pallet", "shipping pallet"],
+    "summary": "A pallet stood upright with fabric pockets stapled behind the slats grows a wall of herbs or flowers.",
+    "summary_ar": "منصة خشبية قائمة بجيوب من القماش مثبتة خلف الألواح تزرع حائطًا من الأعشاب أو الزهور.",
+    "result": "a wooden pallet standing upright against a wall, rows of green herbs and trailing flowers growing between its slats",
+    "difficulty": "medium",
+    "time_minutes": 180,
+    "tools": ["sandpaper", "staple_gun", "scissors", "hammer"],
+    "extra_materials": ["landscape fabric or thick old fabric", "potting mix", "plants"],
+    "steps_outline": [
+      "Use an HT-stamped pallet and sand the front and edges",
+      "Staple a double layer of fabric across the back, bottom and sides",
+      "Hammer down any loose nails",
+      "Lay the pallet flat, fill it with soil through the gaps and plant tightly",
+      "Water and keep it flat for two weeks so roots hold the soil, then stand it up"
+    ],
+    "safety": [
+      "Wear work gloves and a dust mask while sanding and handling rough wood",
+      "Secure the upright pallet to the wall so it cannot fall"
+    ],
+    "techniques": ["sanding", "hammering", "planting"],
+    "tags": ["garden", "balcony", "outdoor"]
+  },
+  {
+    "id": "proj_wood_offcut_coasters",
+    "kind": "project",
+    "title": "Wood offcut coasters",
+    "title_ar": "قواعد أكواب من بقايا الخشب",
+    "materials": ["wood"],
+    "items": ["wood offcuts", "branch", "old table leg", "broom handle"],
+    "summary": "Slices cut from offcuts or a branch, sanded and sealed, make natural coasters.",
+    "summary_ar": "شرائح مقطوعة من بقايا الخشب أو من غصن، مصنفرة ومحمية، تصنع قواعد أكواب طبيعية.",
+    "result": "four round wooden slices with visible growth rings and a clear satin finish, stacked beside a cup of tea",
+    "difficulty": "easy",
+    "time_minutes": 60,
+    "tools": ["handsaw", "sandpaper", "varnish", "paintbrush", "clamps"],
+    "extra_materials": ["felt pads"],
+    "steps_outline": [
+      "Clamp the branch or offcut firmly to the table",
+      "Saw even 1.5 cm slices",
+      "Sand both faces smooth, working up to fine paper",
+      "Brush on two thin coats of varnish and let them cure",
+      "Stick felt pads underneath"
+    ],
+    "safety": [
+      "Wear work gloves and safety glasses while sawing, and always clamp the wood",
+      "Wear a dust mask while sanding and varnish in a ventilated room"
+    ],
+    "techniques": ["sawing", "sanding", "varnishing"],
+    "tags": ["gift", "home", "natural"]
+  },
+  {
+    "id": "proj_wood_crate_storage_bench",
+    "kind": "project",
+    "title": "Crate storage bench",
+    "title_ar": "مقعد تخزين من الصناديق الخشبية",
+    "materials": ["wood", "textile"],
+    "items": ["wooden crates", "fruit crates"],
+    "summary": "Two crates joined by a board and topped with a fabric cushion make an entryway bench with shoe storage.",
+    "summary_ar": "صندوقان يربطهما لوح وتعلوهما وسادة قماشية يصنعان مقعدًا للمدخل مع مساحة لتخزين الأحذية.",
+    "result": "two sanded wooden crates on their sides joined by a plank seat with a fabric-covered cushion, shoes stored in the crates below",
+    "difficulty": "medium",
+    "time_minutes": 120,
+    "tools": ["sandpaper", "drill", "screwdriver", "staple_gun", "scissors"],
+    "extra_materials": ["a plank as long as both crates", "foam or folded old blanket", "fabric for the cushion", "wood screws"],
+    "steps_outline": [
+      "Sand the crates and plank until smooth",
+      "Place the crates on their sides and screw the plank on top through pilot holes",
+      "Cut foam or blanket to the size of the plank",
+      "Wrap it in fabric and staple the fabric underneath a thin board or directly to the plank",
+      "Check every screw is flush before sitting on it"
+    ],
+    "safety": ["Wear a dust mask when sanding and safety glasses when drilling"],
+    "techniques": ["sanding", "drilling"],
+    "tags": ["furniture", "storage", "entryway"]
+  },
+  {
+    "id": "proj_wood_pallet_wall_shelf",
+    "kind": "project",
+    "title": "Pallet-wood wall shelf",
+    "title_ar": "رف جداري من خشب المنصّات",
+    "materials": ["wood"],
+    "items": ["wooden pallet", "pallet boards", "wood offcuts"],
+    "summary": "A section cut from a pallet, with a board fixed along the bottom, becomes a rustic shelf for plants or spices.",
+    "summary_ar": "جزء مقطوع من منصة خشبية مع لوح مثبت في أسفله يصبح رفًا ريفيًا للنباتات أو البهارات.",
+    "result": "a rustic wall shelf made from a short section of sanded pallet wood with a ledge along the bottom, holding small plant pots and jars",
+    "difficulty": "medium",
+    "time_minutes": 120,
+    "tools": ["handsaw", "sandpaper", "drill", "screwdriver", "measuring_tape", "ruler_pencil"],
+    "extra_materials": ["wood screws", "wall plugs", "sawtooth hangers or brackets"],
+    "steps_outline": [
+      "Mark and saw a section with two or three slats from an HT-stamped pallet",
+      "Sand all faces and edges",
+      "Screw a spare board along the bottom as a ledge, drilling pilot holes first",
+      "Fix hangers on the back",
+      "Mount it on the wall with plugs, checking it is level"
+    ],
+    "safety": [
+      "Clamp the pallet and wear work gloves and safety glasses when sawing",
+      "Wear a dust mask when sanding and check the wall for pipes and cables before drilling"
+    ],
+    "techniques": ["sawing", "sanding", "drilling"],
+    "tags": ["furniture", "kitchen", "intermediate"]
+  },
+  {
+    "id": "proj_wood_offcut_phone_stand",
+    "kind": "project",
+    "title": "Offcut phone stand",
+    "title_ar": "حامل هاتف من بقايا الخشب",
+    "materials": ["wood"],
+    "items": ["wood offcut", "thick plank scrap", "small wooden block"],
+    "summary": "An angled slot sawn into a block of wood holds a phone upright for calls, recipes and videos.",
+    "summary_ar": "شق مائل منشور في قطعة خشب يُبقي الهاتف قائمًا للمكالمات والوصفات ومقاطع الفيديو.",
+    "result": "a small sanded wooden block with an angled slot holding a smartphone upright on a desk",
+    "difficulty": "easy",
+    "time_minutes": 40,
+    "tools": ["handsaw", "sandpaper", "ruler_pencil", "clamps", "screwdriver"],
+    "extra_materials": ["felt pads (optional)"],
+    "steps_outline": [
+      "Mark a slot 1.5 cm deep at a slight angle, a little wider than your phone with its case",
+      "Clamp the block and saw both sides of the slot",
+      "Snap out the waste between the cuts with a flat screwdriver, then sand the slot smooth",
+      "Round all edges with sandpaper and add felt pads"
+    ],
+    "safety": [
+      "Clamp the block and wear work gloves and safety glasses while sawing",
+      "Wear a dust mask while sanding"
+    ],
+    "techniques": ["sawing", "sanding"],
+    "tags": ["desk", "gift", "beginner"]
+  }
+]
