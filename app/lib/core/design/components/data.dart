@@ -32,8 +32,12 @@ class MonoLabel extends StatelessWidget {
   Widget build(BuildContext context) {
     final type = context.kanzType;
     final style = strong ? type.dataStrong : type.data;
+    final upper = type.uppercaseData && uppercase;
     return Text(
-      type.uppercaseData && uppercase ? text.toUpperCase() : text,
+      upper ? text.toUpperCase() : text,
+      // Screen readers get the original case: "950 m" must not be read as
+      // "950 M" (mega), nor "3 pcs" spelled out letter by letter.
+      semanticsLabel: upper ? text : null,
       style: color == null ? style : style.copyWith(color: color),
       maxLines: maxLines,
       overflow: maxLines == null ? null : TextOverflow.ellipsis,

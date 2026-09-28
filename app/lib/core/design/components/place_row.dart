@@ -64,27 +64,32 @@ class PlaceRow extends StatelessWidget {
       OpenState.closed => c.danger,
       OpenState.unknown => c.inkSecondary,
     };
-    return Semantics(
-      button: onTap != null,
-      selected: selected,
-      child: InkWell(
-        onTap: onTap,
-        child: Container(
-          padding: const EdgeInsetsDirectional.fromSTEB(
-            KanzSpace.gutter,
-            KanzSpace.s16,
-            KanzSpace.s8,
-            KanzSpace.s16,
-          ),
-          decoration: BoxDecoration(
-            color: selected ? c.surfaceSunken : null,
-            border: divider ? Border(bottom: BorderSide(color: c.line)) : null,
-          ),
-          child: Row(
-            crossAxisAlignment: CrossAxisAlignment.center,
-            children: [
-              Expanded(
-                child: MergeSemantics(
+    // The row's text and its tap action form one node, so a screen reader
+    // reads the place and can open it in one step; the directions button
+    // stays a separate action.
+    return InkWell(
+      onTap: onTap,
+      excludeFromSemantics: true,
+      child: Container(
+        padding: const EdgeInsetsDirectional.fromSTEB(
+          KanzSpace.gutter,
+          KanzSpace.s16,
+          KanzSpace.s8,
+          KanzSpace.s16,
+        ),
+        decoration: BoxDecoration(
+          color: selected ? c.surfaceSunken : null,
+          border: divider ? Border(bottom: BorderSide(color: c.line)) : null,
+        ),
+        child: Row(
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: [
+            Expanded(
+              child: MergeSemantics(
+                child: Semantics(
+                  button: onTap != null,
+                  selected: selected,
+                  onTap: onTap,
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
@@ -143,14 +148,14 @@ class PlaceRow extends StatelessWidget {
                   ),
                 ),
               ),
-              const SizedBox(width: KanzSpace.s4),
-              KanzIconButton(
-                icon: KanzIcons.directions,
-                semanticsLabel: directionsLabel,
-                onPressed: onDirections,
-              ),
-            ],
-          ),
+            ),
+            const SizedBox(width: KanzSpace.s4),
+            KanzIconButton(
+              icon: KanzIcons.directions,
+              semanticsLabel: directionsLabel,
+              onPressed: onDirections,
+            ),
+          ],
         ),
       ),
     );
