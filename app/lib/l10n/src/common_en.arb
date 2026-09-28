@@ -29,7 +29,7 @@
   "commonErrorAiQuotaExhausted": "The AI quota on this server is used up for now.",
   "commonErrorPlacesUnavailable": "Drop-off points can't be loaded right now. Try again soon.",
   "commonErrorInternal": "Something went wrong on our side. Try again.",
-  "commonErrorOffline": "You're offline. Check your connection and try again.",
+  "commonErrorOffline": "Can't reach Kanz. Check your connection and try again.",
   "commonErrorTimeout": "This is taking too long. Check your connection and try again.",
   "commonErrorCancelled": "Cancelled.",
   "commonErrorBadResponse": "The server sent an answer Kanz didn't expect. Try again.",

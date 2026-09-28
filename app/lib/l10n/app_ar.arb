@@ -31,7 +31,7 @@
   "commonErrorInternal": "حدث خطأ من جهتنا. حاول مرة أخرى.",
   "commonErrorInterrupted": "لم تكتمل هذه الخطوة في المرة السابقة. حاول مرة أخرى.",
   "commonErrorNotFound": "لم يعد كنز يجد هذا.",
-  "commonErrorOffline": "أنت غير متصل. تحقّق من الاتصال وحاول مجدداً.",
+  "commonErrorOffline": "تعذّر الوصول إلى كنز. تحقّق من الاتصال وحاول مجدداً.",
   "commonErrorPlacesUnavailable": "تعذّر تحميل نقاط التسليم الآن. حاول بعد قليل.",
   "commonErrorRateLimited": "طلبات كثيرة في وقت واحد. انتظر قليلاً ثم حاول مجدداً.",
   "commonErrorTimeout": "يستغرق هذا وقتاً طويلاً. تحقّق من الاتصال وحاول مجدداً.",

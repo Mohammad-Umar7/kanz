@@ -127,7 +127,7 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get commonErrorOffline =>
-      'You\'re offline. Check your connection and try again.';
+      'Can\'t reach Kanz. Check your connection and try again.';
 
   @override
   String get commonErrorPlacesUnavailable =>

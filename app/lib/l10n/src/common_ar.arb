@@ -27,7 +27,7 @@
   "commonErrorAiQuotaExhausted": "نفدت حصة الذكاء الاصطناعي على هذا الخادم حالياً.",
   "commonErrorPlacesUnavailable": "تعذّر تحميل نقاط التسليم الآن. حاول بعد قليل.",
   "commonErrorInternal": "حدث خطأ من جهتنا. حاول مرة أخرى.",
-  "commonErrorOffline": "أنت غير متصل. تحقّق من الاتصال وحاول مجدداً.",
+  "commonErrorOffline": "تعذّر الوصول إلى كنز. تحقّق من الاتصال وحاول مجدداً.",
   "commonErrorTimeout": "يستغرق هذا وقتاً طويلاً. تحقّق من الاتصال وحاول مجدداً.",
   "commonErrorCancelled": "أُلغي.",
   "commonErrorBadResponse": "أرسل الخادم رداً غير متوقع. حاول مرة أخرى.",

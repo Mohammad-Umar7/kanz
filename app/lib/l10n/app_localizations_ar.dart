@@ -126,7 +126,7 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get commonErrorOffline =>
-      'أنت غير متصل. تحقّق من الاتصال وحاول مجدداً.';
+      'تعذّر الوصول إلى كنز. تحقّق من الاتصال وحاول مجدداً.';
 
   @override
   String get commonErrorPlacesUnavailable =>

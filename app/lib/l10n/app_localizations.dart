@@ -287,7 +287,7 @@ abstract class AppLocalizations {
   /// No description provided for @commonErrorOffline.
   ///
   /// In en, this message translates to:
-  /// **'You\'re offline. Check your connection and try again.'**
+  /// **'Can\'t reach Kanz. Check your connection and try again.'**
   String get commonErrorOffline;
 
   /// No description provided for @commonErrorPlacesUnavailable.
