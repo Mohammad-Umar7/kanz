@@ -413,10 +413,20 @@ class ImageService:
     ) -> Rendered:
         """Join the in-flight render of ``key``, else serve it from disk, else start rendering it."""
         if not regenerate and not self._flights.running(key):
-            hit = self.store.read_generated(image_id, name)
+            hit = self._cached(image_id, name)
             if hit is not None:
                 return Rendered(hit, cached=True)
         return Rendered(await self._flights.run(key, build), cached=False)
+
+    def _cached(self, image_id: str, name: str) -> StoredImage | None:
+        """The stored picture, or None. A file that cannot be read (for example one cut short
+        when the server was killed mid-write) counts as missing and is rendered again, instead
+        of failing every later request for it."""
+        try:
+            return self.store.read_generated(image_id, name)
+        except (UnidentifiedImageError, OSError) as exc:
+            log.warning("cached image %s/%s is unreadable, rendering it again: %s", image_id, name, exc)
+            return None
 
     async def _render(
         self,

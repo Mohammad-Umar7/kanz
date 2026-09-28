@@ -56,6 +56,20 @@ async def test_second_request_is_a_cache_hit(
     assert "image_after" in second.timings_ms and "render_after" not in second.timings_ms
 
 
+async def test_an_unreadable_cached_file_is_rendered_again(
+    service: ImageService, gateway: FakeImageGateway, store: ImageStore, photo_id: str, idea: UpcycleIdea
+) -> None:
+    path = store.generated_path(photo_id, f"after_{idea.id}")
+    path.parent.mkdir(parents=True, exist_ok=True)
+    path.write_bytes(b"")  # what a write cut short by a crash leaves behind
+
+    resp = await service.after_image(request(photo_id, idea))
+
+    assert resp.cached is False
+    assert len(gateway.calls) == 1
+    assert jpeg_size(path.read_bytes()) == (resp.width, resp.height)
+
+
 async def test_regenerate_bypasses_the_cache_and_overwrites(
     service: ImageService, gateway: FakeImageGateway, store: ImageStore, photo_id: str, idea: UpcycleIdea
 ) -> None:
