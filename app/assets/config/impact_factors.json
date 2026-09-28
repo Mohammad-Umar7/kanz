@@ -1,0 +1,18 @@
+{
+  "_comment": "Rough per-material factors for the Impact tab's CO2e figure. ESTIMATES ONLY: rounded, conservative values in the range reported by published life-cycle data (for example the US EPA WARM model and the UK government GHG conversion factors), which vary widely by region, process and item. The app always labels the result as an estimate and never presents it as a measured saving. Verify against a current source before quoting any number.",
+  "status": "estimate",
+  "disclaimer": "Estimate, verify before quoting.",
+  "unit": "kg CO2e avoided per kg of material kept out of landfill",
+  "materials": {
+    "glass": {"kg_co2e_per_kg": 0.3, "typical_item_kg": 0.25, "note": "Cullet saves furnace energy; a jam jar weighs about 200-300 g."},
+    "plastic": {"kg_co2e_per_kg": 1.0, "typical_item_kg": 0.03, "note": "Mixed PET/HDPE; a 500 ml bottle weighs about 20-30 g."},
+    "paper": {"kg_co2e_per_kg": 0.7, "typical_item_kg": 0.1, "note": "Paper and cardboard; excludes forest-carbon credits."},
+    "metal": {"kg_co2e_per_kg": 3.0, "typical_item_kg": 0.05, "note": "Blend of steel (lower) and aluminium (much higher) cans and lids."},
+    "textile": {"kg_co2e_per_kg": 3.0, "typical_item_kg": 0.3, "note": "Reuse of clothing; conservative end of published reuse figures."},
+    "wood": {"kg_co2e_per_kg": 0.4, "typical_item_kg": 1.0, "note": "Reused timber and crates; pallets weigh far more than one item."},
+    "electronics": {"kg_co2e_per_kg": 1.0, "typical_item_kg": 0.2, "note": "Formal e-waste recycling; mostly metal recovery."},
+    "hazardous": {"kg_co2e_per_kg": 0.0, "typical_item_kg": 0.05, "note": "Safe disposal prevents pollution; not counted as a carbon saving."},
+    "organic": {"kg_co2e_per_kg": 0.3, "typical_item_kg": 0.2, "note": "Composting instead of landfill methane."},
+    "other": {"kg_co2e_per_kg": 0.0, "typical_item_kg": 0.1, "note": "Unknown material: not counted."}
+  }
+}
