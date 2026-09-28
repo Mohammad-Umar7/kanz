@@ -134,6 +134,29 @@ void main() {
     },
   );
 
+  test('a text scan sends the trimmed, capped description', () async {
+    h = await TestHarness.create(prefs: _cityMode);
+    h.api.onAnalyze = () async =>
+        AnalyzeResponse.fromJson(fixture('analyze_text_caps.json'));
+    final id = newScanId();
+    final long = '  a jar of bottle caps ${'and more caps ' * 60}';
+
+    await h.container
+        .read(scanSessionProvider(id).notifier)
+        .startFromText(long);
+    await waitFor(() => settled(id));
+
+    final sent = h.api.analyzedTexts.single;
+    expect(sent, startsWith('a jar of bottle caps'));
+    expect(sent.length, lessThanOrEqualTo(ScanSession.maxDescriptionLength));
+    final s = stateOf(id);
+    expect(s.source, AnalysisSource.text);
+    expect(s.inputText, sent);
+    expect(s.localImagePath, isNull);
+    expect(s.stage(PipelineStage.identifying).status, StageStatus.done);
+    expect(s.stage(PipelineStage.ideas).status, StageStatus.done);
+  });
+
   test('disposal-only items request no makeovers', () async {
     h = await TestHarness.create(prefs: _cityMode);
     h.api.onAnalyze = () async =>

@@ -30,6 +30,7 @@ class FakeApi implements ApiClient {
   final List<AfterImageRequest> afterRequests = [];
   final List<StepImageRequest> stepRequests = [];
   final List<Lang> categoryLangs = [];
+  final List<String> analyzedTexts = [];
 
   Future<AnalyzeResponse> Function() onAnalyze = () async =>
       AnalyzeResponse.fromJson(fixture('analyze_glass_jar.json'));
@@ -88,6 +89,7 @@ class FakeApi implements ApiClient {
     CancelToken? cancelToken,
   }) {
     calls.add('analyze');
+    analyzedTexts.add(text);
     return onAnalyze();
   }
 

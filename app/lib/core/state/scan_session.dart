@@ -115,23 +115,31 @@ class ScanSession extends Notifier<ScanSessionState> {
     await _analyze();
   }
 
+  /// Longest description the Material Analyst reads; the backend ignores the
+  /// rest. Use it as the text field's `maxLength` on the scan screen.
+  static const maxDescriptionLength = 600;
+
   /// Starts a scan from a description such as "a pile of old denim jeans".
   Future<void> startFromText(String text) async {
     _started = true;
     final lang = ref.read(contentLangProvider);
+    var description = text.trim();
+    if (description.length > maxDescriptionLength) {
+      description = description.substring(0, maxDescriptionLength).trim();
+    }
     state = ScanSessionState(
       scanId: scanId,
       origin: ScanOrigin.live,
       source: AnalysisSource.text,
       lang: lang,
-      inputText: text.trim(),
+      inputText: description,
     );
     await _save(
       () => _scans.create(
         id: scanId,
         source: AnalysisSource.text,
         lang: lang,
-        inputText: text.trim(),
+        inputText: description,
       ),
     );
     await _analyze();
