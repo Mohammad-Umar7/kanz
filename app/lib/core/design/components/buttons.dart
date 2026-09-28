@@ -22,8 +22,10 @@ enum KanzButtonVariant {
 /// The Kanz button. Primary buttons are ink, never clay: clay belongs to
 /// the scan action alone.
 ///
-/// While [loading], the button keeps its size and color, shows a small
-/// spinner in place of the icon and ignores taps.
+/// [icon] leads the label; [trailingIcon] follows it, for actions that
+/// move forward ("See the tutorial" with [KanzIcons.forward], which also
+/// mirrors in Arabic). While [loading], the button keeps its size and
+/// color, shows a small spinner in place of the icons and ignores taps.
 class KanzButton extends StatelessWidget {
   const KanzButton({
     super.key,
@@ -31,6 +33,7 @@ class KanzButton extends StatelessWidget {
     required this.onPressed,
     this.variant = KanzButtonVariant.primary,
     this.icon,
+    this.trailingIcon,
     this.loading = false,
     this.expand = false,
     this.loadingLabel,
@@ -41,6 +44,7 @@ class KanzButton extends StatelessWidget {
     required this.label,
     required this.onPressed,
     this.icon,
+    this.trailingIcon,
     this.loading = false,
     this.expand = false,
     this.loadingLabel,
@@ -51,6 +55,7 @@ class KanzButton extends StatelessWidget {
     required this.label,
     required this.onPressed,
     this.icon,
+    this.trailingIcon,
     this.loading = false,
     this.expand = false,
     this.loadingLabel,
@@ -61,6 +66,7 @@ class KanzButton extends StatelessWidget {
     required this.label,
     required this.onPressed,
     this.icon,
+    this.trailingIcon,
     this.loading = false,
     this.expand = false,
     this.loadingLabel,
@@ -70,6 +76,7 @@ class KanzButton extends StatelessWidget {
   final VoidCallback? onPressed;
   final KanzButtonVariant variant;
   final IconData? icon;
+  final IconData? trailingIcon;
   final bool loading;
 
   /// Stretch to the available width.
@@ -95,6 +102,7 @@ class KanzButton extends StatelessWidget {
             ),
           )
         : (icon == null ? null : Icon(icon, size: 20));
+    final trailing = loading || trailingIcon == null ? null : trailingIcon;
 
     final child = Row(
       mainAxisSize: expand ? MainAxisSize.max : MainAxisSize.min,
@@ -109,6 +117,10 @@ class KanzButton extends StatelessWidget {
             maxLines: 2,
           ),
         ),
+        if (trailing != null) ...[
+          const SizedBox(width: KanzSpace.s8),
+          Icon(trailing, size: 20),
+        ],
       ],
     );
 

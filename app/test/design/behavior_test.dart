@@ -308,6 +308,25 @@ void main() {
   });
 
   group('KanzButton', () {
+    testWidgets('a trailing forward arrow follows the label in both '
+        'directions', (tester) async {
+      for (final rtl in [false, true]) {
+        await tester.pumpWidget(
+          _app(
+            KanzButton(
+              label: 'See the tutorial',
+              trailingIcon: KanzIcons.forward,
+              onPressed: () {},
+            ),
+            direction: rtl ? TextDirection.rtl : TextDirection.ltr,
+          ),
+        );
+        final label = tester.getCenter(find.text('See the tutorial'));
+        final arrow = tester.getCenter(find.byIcon(KanzIcons.forward));
+        expect(rtl ? arrow.dx < label.dx : arrow.dx > label.dx, isTrue);
+      }
+    });
+
     testWidgets('loading keeps the label and ignores taps', (tester) async {
       var taps = 0;
       await tester.pumpWidget(
