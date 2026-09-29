@@ -22,6 +22,7 @@ class GallerySpecimen {
     required this.note,
     required this.states,
     required this.boxLabel,
+    this.recyclableDetail,
   });
 
   final String name;
@@ -30,6 +31,7 @@ class GallerySpecimen {
   final String quality;
   final String qualitySemantics;
   final String recyclable;
+  final String? recyclableDetail;
   final String confidence;
   final String note;
   final List<String> states;
@@ -380,7 +382,8 @@ class GallerySamples {
       quantity: '1 pc',
       quality: 'Good',
       qualitySemantics: 'Quality 4 of 5, good',
-      recyclable: 'Yes · glass bottle bank',
+      recyclable: 'Recyclable',
+      recyclableDetail: 'Glass bottle bank',
       confidence: '93%',
       note: 'No chips or cracks; label residue on one side.',
       states: ['Empty', 'Label on', 'Lid on', 'Intact'],
@@ -392,7 +395,8 @@ class GallerySamples {
       quantity: '1 pc',
       quality: 'Good',
       qualitySemantics: 'Quality 4 of 5, good',
-      recyclable: 'Yes · metal recycling (cans)',
+      recyclable: 'Recyclable',
+      recyclableDetail: 'Metal recycling (cans)',
       confidence: '81%',
       note: 'Slight scratches, no rust.',
       states: ['Clean', 'Intact'],
@@ -404,7 +408,8 @@ class GallerySamples {
       quantity: '4 pcs',
       quality: 'Worn',
       qualitySemantics: 'Quality 2 of 5, worn',
-      recyclable: 'Only at a battery collection point',
+      recyclable: 'Not recyclable',
+      recyclableDetail: 'Battery collection point',
       confidence: '96%',
       note: 'Used; one shows light corrosion at the terminal.',
       states: ['Worn', 'Dirty'],
@@ -540,7 +545,7 @@ class GallerySamples {
         'what it is made of and what it could become.',
     errorTitle: 'Kanz is busy',
     errorMessage:
-        'The AI service is busy right now. Please try again in a moment.',
+        "Kanz's AI is busy right now. Saved scans and tutorials still open.",
     tryAgain: 'Try again',
     errorCode: 'ai_unavailable · req_5f3c2a1b',
     supportCode: 'Support code',
@@ -550,7 +555,6 @@ class GallerySamples {
       reasons: [
         'Point the camera at any item to identify its materials.',
         'Boxes on your photo show exactly what was recognised.',
-        'Prefer not to? Pick a photo from your gallery instead.',
       ],
       allow: 'Allow camera',
       alternative: 'Choose from gallery',
@@ -561,7 +565,6 @@ class GallerySamples {
       reasons: [
         'Recycling and donation points are sorted by distance.',
         'Hazardous items are matched to places that accept them.',
-        'Prefer not to share? Pick your city instead.',
       ],
       allow: 'Allow location',
       alternative: 'Pick my city',
@@ -599,7 +602,7 @@ class GallerySamples {
       'عناصر التحكم',
       'التعرّف',
       'التوصيات',
-      'الدرس',
+      'الدليل',
       'التسليم والبدائل',
       'الحالات',
       'التنقل والهوية',
@@ -607,7 +610,7 @@ class GallerySamples {
     darkToggle: 'داكن',
     rtlToggle: 'العربية، من اليمين لليسار',
     textToggle: 'نص 130%',
-    seeTutorial: 'اعرض الدرس',
+    seeTutorial: 'اعرض الدليل',
     retake: 'أعد التصوير',
     skip: 'تخطَّ',
     deleteHistory: 'احذف السجل',
@@ -646,7 +649,8 @@ class GallerySamples {
       quantity: 'قطعة واحدة',
       quality: 'جيد',
       qualitySemantics: 'الجودة 4 من 5، جيد',
-      recyclable: 'نعم · حاوية الزجاج',
+      recyclable: 'قابل لإعادة التدوير',
+      recyclableDetail: 'حاوية الزجاج',
       confidence: '93%',
       note: 'لا شقوق ولا كسور، وبقايا ملصق على جانب واحد.',
       states: ['فارغ', 'بالملصق', 'بالغطاء', 'سليم'],
@@ -658,7 +662,8 @@ class GallerySamples {
       quantity: 'قطعة واحدة',
       quality: 'جيد',
       qualitySemantics: 'الجودة 4 من 5، جيد',
-      recyclable: 'نعم · تدوير المعادن (العلب)',
+      recyclable: 'قابل لإعادة التدوير',
+      recyclableDetail: 'تدوير المعادن (العلب)',
       confidence: '81%',
       note: 'خدوش خفيفة، بلا صدأ.',
       states: ['نظيف', 'سليم'],
@@ -670,7 +675,8 @@ class GallerySamples {
       quantity: '4 قطع',
       quality: 'مستهلك',
       qualitySemantics: 'الجودة 2 من 5، مستهلك',
-      recyclable: 'فقط في نقطة جمع البطاريات',
+      recyclable: 'غير قابل لإعادة التدوير',
+      recyclableDetail: 'نقطة جمع البطاريات',
       confidence: '96%',
       note: 'مستعملة، وعلى طرف إحداها آثار تآكل خفيفة.',
       states: ['مهترئ', 'متّسخ'],
@@ -799,17 +805,17 @@ class GallerySamples {
         'صوّر شيئًا كنت ستتخلص منه، وسيخبرك كنز ممّ صُنع وما الذي يمكن '
         'أن يصبح.',
     errorTitle: 'كنز مشغول',
-    errorMessage: 'خدمة الذكاء الاصطناعي مشغولة الآن. حاول مرة أخرى بعد لحظات.',
+    errorMessage:
+        'خدمة الذكاء الاصطناعي مشغولة الآن. ما زالت فحوصك وأدلّتك المحفوظة تُفتح.',
     tryAgain: 'حاول مجددًا',
     errorCode: 'ai_unavailable · req_5f3c2a1b',
     supportCode: 'رمز الدعم',
     offline: 'أنت غير متصل. الفحوص المحفوظة ما زالت تُفتح.',
     camera: GalleryRationale(
-      title: 'أرِ كنز الشيء الذي تريد التخلص منه',
+      title: 'صوّر ما توشك على رميه',
       reasons: [
         'وجّه الكاميرا نحو أي غرض للتعرّف على مواده.',
         'تُظهر المربعات على صورتك ما تم التعرّف عليه بالضبط.',
-        'لا تفضّل ذلك؟ اختر صورة من المعرض.',
       ],
       allow: 'اسمح بالكاميرا',
       alternative: 'اختر من المعرض',
@@ -820,7 +826,6 @@ class GallerySamples {
       reasons: [
         'نقاط التدوير والتبرع مرتبة حسب المسافة.',
         'الأغراض الخطرة تُطابق مع الأماكن التي تقبلها.',
-        'لا تريد المشاركة؟ اختر مدينتك بدلًا من ذلك.',
       ],
       allow: 'اسمح بالموقع',
       alternative: 'اختر مدينتي',

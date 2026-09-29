@@ -662,7 +662,7 @@ class ProjectRow extends StatelessWidget {
                       StepProgressBar(
                         total: p.totalSteps,
                         // No step is "current" in a list: done steps in
-                        // ink, the rest on the track.
+                        // progressDone, the rest on the track.
                         current: -1,
                         completed: {for (final s in p.completedSteps) s - 1},
                         semanticsLabel: status,

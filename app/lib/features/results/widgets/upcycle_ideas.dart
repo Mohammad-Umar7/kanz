@@ -51,14 +51,17 @@ class UpcycleIdeas extends StatelessWidget {
     final sources = format.sourceTitles([
       for (final idea in ideas) ...idea.sources,
     ]);
-    // The server has no image quota: every makeover failed on it and none
-    // can be made from the phone. The ideas then read as a numbered list
-    // under one note, instead of three copies of the same photo.
+    // The server has no image quota: no makeover can be made on it. The
+    // ideas then read as a numbered list under one note, instead of three
+    // copies of the same photo. The first quota answer is enough (the other
+    // requests go to the same spent quota), so the cards do not flash
+    // through a failed picture and two skeletons on the way; a makeover
+    // that did arrive keeps the cards.
     final paused =
-        ideas.isNotEmpty &&
-        ideas.every(
+        ideas.any(
           (i) => session.afterImage(i.id).error?.isQuotaExhausted ?? false,
-        );
+        ) &&
+        !ideas.any((i) => session.afterImage(i.id).isReady);
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -259,7 +262,8 @@ class _Idea extends StatelessWidget {
 }
 
 /// An idea without a picture: a Fraunces number, the title and pitch, and
-/// the same mono meta and tool match as the makeover cards.
+/// the same mono meta and tool match as the makeover cards. A chevron at the
+/// end of the title line says the entry opens, like a row in a list.
 class _IdeaEntry extends StatelessWidget {
   const _IdeaEntry({
     required this.number,
@@ -279,6 +283,9 @@ class _IdeaEntry extends StatelessWidget {
 
   /// Room for a two-digit Fraunces numeral and the gap after it.
   static const double numeralColumn = 36;
+
+  /// The end column that holds the chevron.
+  static const double chevronColumn = 24;
 
   @override
   Widget build(BuildContext context) {
@@ -318,7 +325,25 @@ class _IdeaEntry extends StatelessWidget {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text(title, style: t.headlineSmall),
+                // The chevron shares the title's first baseline, which
+                // centers it on that line; the numeral beside this column
+                // keeps sitting on the same baseline.
+                Row(
+                  crossAxisAlignment: CrossAxisAlignment.baseline,
+                  textBaseline: TextBaseline.alphabetic,
+                  children: [
+                    Expanded(child: Text(title, style: t.headlineSmall)),
+                    const SizedBox(width: KanzSpace.s8),
+                    SizedBox(
+                      width: _IdeaEntry.chevronColumn,
+                      child: Icon(
+                        KanzIcons.chevronForward,
+                        size: 20,
+                        color: c.inkSecondary,
+                      ),
+                    ),
+                  ],
+                ),
                 const SizedBox(height: KanzSpace.s4),
                 Text(
                   pitch,

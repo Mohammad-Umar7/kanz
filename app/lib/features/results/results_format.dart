@@ -198,12 +198,14 @@ class ResultsFormat {
         RecyclabilityStatus.conditional => SpecimenRecyclable.conditional,
         RecyclabilityStatus.no => SpecimenRecyclable.no,
       },
-      recyclableLabel: item.recyclability.stream.trim().isEmpty
-          ? recyclabilityLabel(l10n, item.recyclability.status)
-          : l10n.resultsRecyclableValue(
-              recyclabilityLabel(l10n, item.recyclability.status),
-              ai(item.recyclability.stream),
-            ),
+      // Two lines by design, the status then where it goes: the cell is half
+      // the card wide, and one "status · stream" line broke after the dot.
+      recyclableLabel: [
+        recyclabilityLabel(l10n, item.recyclability.status),
+        if (item.recyclability.stream.trim() case final stream
+            when stream.isNotEmpty)
+          ai(stream),
+      ].join('\n'),
       confidence: confidence(item.confidence),
       hazardLabel: disposal.isEmpty
           ? null

@@ -154,7 +154,7 @@ class _SwapsScreenState extends ConsumerState<SwapsScreen> {
           message: apiErrorMessage(l10n, error),
           retryLabel: l10n.commonRetry,
           onRetry: error.retryable && state.canSubmit ? _submit : null,
-          code: offline ? null : _supportCode(error),
+          code: offline ? null : errorSupportCode(error),
           codeLabel: l10n.commonSupportCode,
         ),
       ];
@@ -344,13 +344,4 @@ class _SwapsScreenState extends ConsumerState<SwapsScreen> {
       ),
     );
   }
-}
-
-/// What support needs to find a failure: the request id, with the error
-/// code as the backend spells it ("ai_unavailable") in debug builds. Null
-/// when there is nothing to look up.
-String? _supportCode(ApiException error) {
-  final id = error.requestId;
-  if (id == null) return null;
-  return [if (kDebugMode) error.code.wireId, id].join(' · ');
 }

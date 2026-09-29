@@ -23,7 +23,7 @@
   "commonErrorImageTooLarge": "That photo is too large. Try a smaller one.",
   "commonErrorNotFound": "Kanz can't find that anymore.",
   "commonErrorRateLimited": "Lots of requests at once. Wait a moment, then try again.",
-  "commonErrorAiUnavailable": "The AI service is busy right now. Try again in a moment.",
+  "commonErrorAiUnavailable": "Kanz's AI is busy right now. Saved scans and tutorials still open.",
   "commonErrorAiTimeout": "The AI took too long to answer. Try again.",
   "commonErrorAiInvalidOutput": "The AI's answer didn't make sense this time. Try again.",
   "commonErrorAiQuotaExhausted": "The AI quota on this server is used up for now.",
@@ -105,5 +105,14 @@
   "@commonLanguageArabic": {"description": "Always written in Arabic, in both languages."},
   "commonThemeSystem": "Match phone",
   "commonThemeLight": "Light",
-  "commonThemeDark": "Dark"
+  "commonThemeDark": "Dark",
+  "commonToolGroupCount": "{selected} of {total} selected",
+  "@commonToolGroupCount": {"placeholders": {"selected": {"type": "int"}, "total": {"type": "int"}}},
+  "commonToolGroupCutting": "Cutting",
+  "commonToolGroupMeasuring": "Measuring",
+  "commonToolGroupJoining": "Gluing and fastening",
+  "commonToolGroupBuilding": "Drilling and fixing",
+  "commonToolGroupFinishing": "Sanding and painting",
+  "commonToolGroupSewing": "Sewing",
+  "commonToolGroupOther": "Other tools"
 }

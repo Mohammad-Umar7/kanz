@@ -48,7 +48,7 @@ class AppLocalizationsAr extends AppLocalizations {
     String _temp0 = intl.Intl.pluralLogic(
       count,
       locale: localeName,
-      other: 'قبل $count يوماً',
+      other: 'قبل $count يومًا',
       few: 'قبل $count أيام',
       two: 'قبل يومين',
       one: 'قبل يوم',
@@ -84,22 +84,22 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get commonErrorAiQuotaExhausted =>
-      'نفدت حصة الذكاء الاصطناعي على هذا الخادم حالياً.';
+      'نفدت حصة الذكاء الاصطناعي على هذا الخادم حاليًا.';
 
   @override
   String get commonErrorAiTimeout =>
-      'استغرق الذكاء الاصطناعي وقتاً طويلاً في الرد. حاول مرة أخرى.';
+      'استغرق الذكاء الاصطناعي وقتًا طويلًا في الرد. حاول مرة أخرى.';
 
   @override
   String get commonErrorAiUnavailable =>
-      'خدمة الذكاء الاصطناعي مشغولة الآن. حاول بعد لحظات.';
+      'خدمة الذكاء الاصطناعي مشغولة الآن. ما زالت فحوصك وأدلّتك المحفوظة تُفتح.';
 
   @override
   String get commonErrorBadRequest => 'في الطلب شيء غير صحيح. حاول مرة أخرى.';
 
   @override
   String get commonErrorBadResponse =>
-      'أرسل الخادم رداً غير متوقع. حاول مرة أخرى.';
+      'أرسل الخادم ردًا غير متوقع. حاول مرة أخرى.';
 
   @override
   String get commonErrorCancelled => 'أُلغي.';
@@ -112,7 +112,7 @@ class AppLocalizationsAr extends AppLocalizations {
       'لا يستطيع كنز قراءة هذا الملف كصورة. جرّب صورة أخرى.';
 
   @override
-  String get commonErrorImageTooLarge => 'الصورة كبيرة جداً. جرّب صورة أصغر.';
+  String get commonErrorImageTooLarge => 'الصورة كبيرة جدًا. جرّب صورة أصغر.';
 
   @override
   String get commonErrorInternal => 'حدث خطأ من جهتنا. حاول مرة أخرى.';
@@ -126,19 +126,19 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get commonErrorOffline =>
-      'لا يوجد اتصال. الفحوص والدروس المحفوظة ما زالت تُفتح.';
+      'لا يوجد اتصال. الفحوص والأدلّة المحفوظة ما زالت تُفتح.';
 
   @override
   String get commonErrorPlacesUnavailable =>
-      'لم تستجب خدمات الخرائط. الأفكار والدروس ما زالت تعمل.';
+      'لم تستجب خدمات الخرائط. الأفكار والأدلّة ما زالت تعمل.';
 
   @override
   String get commonErrorRateLimited =>
-      'طلبات كثيرة في وقت واحد. انتظر قليلاً ثم حاول مجدداً.';
+      'طلبات كثيرة في وقت واحد. انتظر قليلًا ثم حاول مجددًا.';
 
   @override
   String get commonErrorTimeout =>
-      'يستغرق هذا وقتاً طويلاً. تحقّق من الاتصال وحاول مجدداً.';
+      'يستغرق هذا وقتًا طويلًا. تحقّق من الاتصال وحاول مجددًا.';
 
   @override
   String commonHoursAgo(int count) {
@@ -199,7 +199,7 @@ class AppLocalizationsAr extends AppLocalizations {
   String get commonNext => 'التالي';
 
   @override
-  String get commonOk => 'حسناً';
+  String get commonOk => 'حسنًا';
 
   @override
   String get commonOpenSettings => 'فتح الإعدادات';
@@ -217,13 +217,13 @@ class AppLocalizationsAr extends AppLocalizations {
   String get commonPhotoNoItems => 'لم يُعثر على أغراض في الصورة';
 
   @override
-  String get commonPhotoTooClose => 'الغرض قريب جداً';
+  String get commonPhotoTooClose => 'الغرض قريب جدًا';
 
   @override
-  String get commonPhotoTooDark => 'الصورة مظلمة جداً';
+  String get commonPhotoTooDark => 'الصورة مظلمة جدًا';
 
   @override
-  String get commonPhotoTooFar => 'الغرض بعيد جداً';
+  String get commonPhotoTooFar => 'الغرض بعيد جدًا';
 
   @override
   String get commonRecyclableConditional => 'قابل لإعادة التدوير بعد التجهيز';
@@ -238,7 +238,7 @@ class AppLocalizationsAr extends AppLocalizations {
   String get commonRegenerate => 'جرّب صورة أخرى';
 
   @override
-  String get commonRetry => 'حاول مجدداً';
+  String get commonRetry => 'حاول مجددًا';
 
   @override
   String get commonSave => 'حفظ';
@@ -299,6 +299,32 @@ class AppLocalizationsAr extends AppLocalizations {
   String get commonThemeSystem => 'مثل الهاتف';
 
   @override
+  String get commonToolGroupBuilding => 'الثقب والتركيب';
+
+  @override
+  String commonToolGroupCount(int selected, int total) {
+    return '$selected من $total مختارة';
+  }
+
+  @override
+  String get commonToolGroupCutting => 'القصّ';
+
+  @override
+  String get commonToolGroupFinishing => 'الصنفرة والطلاء';
+
+  @override
+  String get commonToolGroupJoining => 'اللصق والتثبيت';
+
+  @override
+  String get commonToolGroupMeasuring => 'القياس';
+
+  @override
+  String get commonToolGroupOther => 'أدوات أخرى';
+
+  @override
+  String get commonToolGroupSewing => 'الخياطة';
+
+  @override
   String commonWeightKg(String kg) {
     return '$kg كغ';
   }
@@ -323,7 +349,7 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get completionCameraBlocked =>
-      'الكاميرا متوقفة لكنز في إعدادات هاتفك. يمكنك اختيار صورة من المعرض بدلاً منها.';
+      'الكاميرا متوقفة لكنز في إعدادات هاتفك. يمكنك اختيار صورة من المعرض بدلًا منها.';
 
   @override
   String get completionCameraDenied =>
@@ -331,13 +357,16 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get completionCameraNone =>
-      'تعذّر فتح كاميرا هذا الهاتف. يمكنك اختيار صورة من المعرض بدلاً منها.';
+      'تعذّر فتح كاميرا هذا الهاتف. يمكنك اختيار صورة من المعرض بدلًا منها.';
 
   @override
   String get completionCameraTitle => 'الكاميرا غير متاحة';
 
   @override
   String get completionCaptureGallery => 'اختر من المعرض';
+
+  @override
+  String get completionCaptureGalleryShort => 'المعرض';
 
   @override
   String get completionCaptureGuidance => 'صوّر ما صنعته';
@@ -403,7 +432,7 @@ class AppLocalizationsAr extends AppLocalizations {
   String get completionNotFinished => 'لم يكتمل هذا المشروع بعد.';
 
   @override
-  String get completionPhotoFailed => 'تعذّر حفظ الصورة. حاول مجدداً.';
+  String get completionPhotoFailed => 'تعذّر حفظ الصورة. حاول مجددًا.';
 
   @override
   String get completionPhotoOnly =>
@@ -415,7 +444,7 @@ class AppLocalizationsAr extends AppLocalizations {
       count,
       locale: localeName,
       other: 'غرض أبعدته عن النفايات',
-      many: 'غرضاً أبعدتها عن النفايات',
+      many: 'غرضًا أبعدتها عن النفايات',
       few: 'أغراض أبعدتها عن النفايات',
       two: 'غرضان أبعدتهما عن النفايات',
       one: 'غرض أبعدته عن النفايات',
@@ -433,7 +462,7 @@ class AppLocalizationsAr extends AppLocalizations {
   String get completionSavingPhoto => 'نحفظ صورتك';
 
   @override
-  String get completionScanAgain => 'صوّر غرضاً آخر';
+  String get completionScanAgain => 'صوّر غرضًا آخر';
 
   @override
   String get completionSeeProjects => 'اعرض مشاريعي';
@@ -476,10 +505,10 @@ class AppLocalizationsAr extends AppLocalizations {
       count,
       locale: localeName,
       other: 'أبعد هذا المشروع $count غرض عن النفايات.',
-      many: 'أبعد هذا المشروع $count غرضاً عن النفايات.',
+      many: 'أبعد هذا المشروع $count غرضًا عن النفايات.',
       few: 'أبعد هذا المشروع $count أغراض عن النفايات.',
       two: 'أبعد هذا المشروع غرضين عن النفايات.',
-      one: 'أبعد هذا المشروع غرضاً واحداً عن النفايات.',
+      one: 'أبعد هذا المشروع غرضًا واحدًا عن النفايات.',
       zero: 'أُضيف هذا المشروع إلى مشاريعك المكتملة.',
     );
     return '$_temp0';
@@ -706,7 +735,7 @@ class AppLocalizationsAr extends AppLocalizations {
   }
 
   @override
-  String get dropoffPlotListed => 'المواد مذكورة';
+  String get dropoffPlotListed => 'تستقبل موادك';
 
   @override
   String get dropoffPlotNorth => 'ش';
@@ -717,7 +746,7 @@ class AppLocalizationsAr extends AppLocalizations {
   }
 
   @override
-  String get dropoffPlotUnlisted => 'غير مذكورة';
+  String get dropoffPlotUnlisted => 'المواد غير مذكورة';
 
   @override
   String get dropoffPlotYou => 'موقعك';
@@ -851,14 +880,14 @@ class AppLocalizationsAr extends AppLocalizations {
   }
 
   @override
-  String get historyNotStarted => 'لم تفتح الدرس بعد';
+  String get historyNotStarted => 'لم تفتح الدليل بعد';
 
   @override
   String get historyOpenScan => 'افتح الفحص';
 
   @override
   String get historyProjectsEmptyBody =>
-      'اختر فكرة لإعادة الابتكار من أحد فحوصك وابدأ درسها، وسيُحفظ تقدّمك هنا.';
+      'اختر فكرة لإعادة الابتكار من أحد فحوصك وافتح دليلها، وسيُحفظ تقدّمك هنا.';
 
   @override
   String get historyProjectsEmptyTitle => 'لا مشاريع بعد';
@@ -1014,7 +1043,7 @@ class AppLocalizationsAr extends AppLocalizations {
   String get homeResumeEyebrow => 'تابِع مشروعك';
 
   @override
-  String get homeResumeNotStarted => 'لم تفتح الدرس بعد';
+  String get homeResumeNotStarted => 'لم تفتح الدليل بعد';
 
   @override
   String homeResumeProgress(int current, int total) {
@@ -1100,7 +1129,7 @@ class AppLocalizationsAr extends AppLocalizations {
   String get ideaSafety => 'السلامة';
 
   @override
-  String get ideaSeeTutorial => 'اعرض الدرس';
+  String get ideaSeeTutorial => 'اعرض الدليل';
 
   @override
   String get ideaTime => 'الوقت';
@@ -1135,6 +1164,10 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get impactEmptyTitle => 'يبدأ أثرك بفحص واحد';
+
+  @override
+  String get impactErrorMessage =>
+      'تعذّر على كنز قراءة فحوصك ومشاريعك المحفوظة على هذا الهاتف. ما زال بإمكانك تصوير الأغراض.';
 
   @override
   String get impactErrorTitle => 'تعذّر تحميل أثرك';
@@ -1230,11 +1263,11 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get onboardingLanguageArabicSample =>
-      'الأفكار والدروس والصوت بالعربية.';
+      'الأفكار والأدلّة والصوت بالعربية.';
 
   @override
   String get onboardingLanguageBody =>
-      'تتبعها القوائم والأفكار والدروس والخطوات المقروءة بصوت عالٍ.';
+      'تتبعها القوائم والأفكار والأدلّة والخطوات المقروءة بصوت عالٍ.';
 
   @override
   String get onboardingLanguageEnglishSample =>
@@ -1253,7 +1286,7 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get onboardingSkillBody =>
-      'تتكيّف الدروس مع مستواك، فللمبتدئين خطوات أبسط وتفاصيل أكثر.';
+      'تتكيّف الأدلّة مع مستواك، فللمبتدئين خطوات أبسط وتفاصيل أكثر.';
 
   @override
   String get onboardingSkillIntermediateLine =>
@@ -1268,34 +1301,8 @@ class AppLocalizationsAr extends AppLocalizations {
   String get onboardingSkillTitle => 'ما مدى خبرتك في الأعمال اليدوية؟';
 
   @override
-  String get onboardingToolGroupBuilding => 'الثقب والتركيب';
-
-  @override
-  String onboardingToolGroupCount(int selected, int total) {
-    return '$selected من $total مختارة';
-  }
-
-  @override
-  String get onboardingToolGroupCutting => 'القصّ';
-
-  @override
-  String get onboardingToolGroupFinishing => 'الصنفرة والطلاء';
-
-  @override
-  String get onboardingToolGroupJoining => 'اللصق والتثبيت';
-
-  @override
-  String get onboardingToolGroupMeasuring => 'القياس';
-
-  @override
-  String get onboardingToolGroupOther => 'أدوات أخرى';
-
-  @override
-  String get onboardingToolGroupSewing => 'الخياطة';
-
-  @override
   String get onboardingToolsBody =>
-      'لا تستخدم الأفكار والدروس إلا هذه الأدوات، مع ذكر معدات السلامة دائمًا.';
+      'لا تستخدم الأفكار والأدلّة إلا هذه الأدوات، مع ذكر معدات السلامة دائمًا.';
 
   @override
   String onboardingToolsCount(int count) {
@@ -1332,7 +1339,7 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get onboardingWelcomeStep2Body =>
-      'أعد ابتكاره بدرس خطوة بخطوة، أو أرسله للتدوير، أو تبرّع به.';
+      'أعد ابتكاره بدليل خطوة بخطوة، أو أرسله للتدوير، أو تبرّع به.';
 
   @override
   String get onboardingWelcomeStep2Title => 'اختر طريقه';
@@ -1372,14 +1379,11 @@ class AppLocalizationsAr extends AppLocalizations {
       'لا تُرسَل للتحليل إلا الصورة التي تلتقطها، بعد حذف بيانات موقعها.';
 
   @override
-  String get permissionsCameraReason3 => 'لا تفضّل ذلك؟ اختر صورة من المعرض.';
-
-  @override
   String get permissionsCameraRestricted =>
       'لا يمكن تفعيل الكاميرا لكنز على هذا الهاتف. اختر صورة من المعرض بدلًا من ذلك.';
 
   @override
-  String get permissionsCameraTitle => 'أرِ كنز ما توشك على رميه';
+  String get permissionsCameraTitle => 'صوّر ما توشك على رميه';
 
   @override
   String get permissionsCityBody =>
@@ -1425,10 +1429,6 @@ class AppLocalizationsAr extends AppLocalizations {
   @override
   String get permissionsLocationReason2 =>
       'لا يقرأ كنز موقعك إلا عند البحث عن نقاط التسليم.';
-
-  @override
-  String get permissionsLocationReason3 =>
-      'لا تفضّل ذلك؟ اختر مدينتك وسيبحث كنز حول وسطها.';
 
   @override
   String get permissionsLocationRestricted =>
@@ -1636,7 +1636,7 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get resultsImagesPausedBody =>
-      'لا يستطيع هذا الخادم رسم الصور الآن. الأفكار ودروسها خطوة بخطوة تعمل كالمعتاد.';
+      'لا يستطيع هذا الخادم رسم الصور الآن. الأفكار وأدلّتها خطوة بخطوة تعمل كالمعتاد.';
 
   @override
   String get resultsImagesPausedTitle => 'رسم الصور متوقف';
@@ -1835,7 +1835,7 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get resultsStageImagesPaused =>
-      'توليد الصور متوقف على هذا الخادم. الأفكار والدروس تعمل كالمعتاد.';
+      'توليد الصور متوقف على هذا الخادم. الأفكار والأدلّة تعمل كالمعتاد.';
 
   @override
   String get resultsStageNeedsLocation => 'اختر مكان البحث في الأسفل.';
@@ -1896,7 +1896,7 @@ class AppLocalizationsAr extends AppLocalizations {
   String get resultsTabRecycle => 'إعادة تدوير';
 
   @override
-  String get resultsTabUpcycle => 'تدوير إبداعي';
+  String get resultsTabUpcycle => 'إعادة ابتكار';
 
   @override
   String get resultsTextRejectedBody =>
@@ -2153,8 +2153,14 @@ class AppLocalizationsAr extends AppLocalizations {
   String get settingsLanguage => 'اللغة';
 
   @override
+  String get settingsLanguageNameArabic => 'العربية';
+
+  @override
+  String get settingsLanguageNameEnglish => 'الإنجليزية';
+
+  @override
   String get settingsLanguageNote =>
-      'تستخدم الأفكار والدروس والخطوات المقروءة هذه اللغة أيضًا.';
+      'تستخدم الأفكار والأدلّة والخطوات المقروءة هذه اللغة أيضًا.';
 
   @override
   String settingsLanguageSystemDetail(String language) {
@@ -2290,7 +2296,7 @@ class AppLocalizationsAr extends AppLocalizations {
       'لا شيء بعد. تأتي أولًا الأفكار التي لا تحتاج إلى أدوات.';
 
   @override
-  String get settingsTutorials => 'الدروس';
+  String get settingsTutorials => 'الأدلّة';
 
   @override
   String get settingsVersion => 'الإصدار';
@@ -2492,9 +2498,6 @@ class AppLocalizationsAr extends AppLocalizations {
   String get swapsUpdate => 'حدّث البدائل';
 
   @override
-  String get tutorialAdaptAdd => 'أضف أداة';
-
-  @override
   String get tutorialAdaptBody =>
       'يعيد كنز كتابة الخطوات بما يناسب مهارتك والأدوات المتوفرة لديك.';
 
@@ -2502,9 +2505,6 @@ class AppLocalizationsAr extends AppLocalizations {
   String tutorialAdaptFailed(String reason) {
     return 'تعذّرت إعادة كتابة الدليل. $reason';
   }
-
-  @override
-  String get tutorialAdaptHave => 'لديك';
 
   @override
   String get tutorialAdaptOffline => 'تعديل الدليل يحتاج إلى اتصال بالإنترنت.';
@@ -2535,7 +2535,7 @@ class AppLocalizationsAr extends AppLocalizations {
       few: 'الأدوات · $count أدوات مختارة',
       two: 'الأدوات · أداتان مختارتان',
       one: 'الأدوات · أداة واحدة مختارة',
-      zero: 'الأدوات · لم تختر شيئاً',
+      zero: 'الأدوات · لم تختر شيئًا',
     );
     return '$_temp0';
   }
@@ -2600,7 +2600,7 @@ class AppLocalizationsAr extends AppLocalizations {
   String get tutorialFinishEyebrow => 'اقتربت من النهاية';
 
   @override
-  String get tutorialFinishFailed => 'تعذّر حفظ المشروع. حاول مجدداً.';
+  String get tutorialFinishFailed => 'تعذّر حفظ المشروع. حاول مجددًا.';
 
   @override
   String get tutorialFinishSaving => 'نحفظ مشروعك';
@@ -2653,7 +2653,7 @@ class AppLocalizationsAr extends AppLocalizations {
   String get tutorialImageOffline => 'الصور تحتاج إلى اتصال بالإنترنت';
 
   @override
-  String get tutorialImagePaused => 'توليد الصور متوقف مؤقتاً على هذا الخادم';
+  String get tutorialImagePaused => 'توليد الصور متوقف مؤقتًا على هذا الخادم';
 
   @override
   String tutorialImageQueued(int number) {
@@ -2712,7 +2712,7 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get tutorialOfflineBody =>
-      'هذا الدليل غير محفوظ على هاتفك بعد. اتصل بالإنترنت وحاول مجدداً.';
+      'هذا الدليل غير محفوظ على هاتفك بعد. اتصل بالإنترنت وحاول مجددًا.';
 
   @override
   String get tutorialOfflineTitle => 'أنت غير متصل';

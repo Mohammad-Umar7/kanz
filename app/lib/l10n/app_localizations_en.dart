@@ -90,7 +90,7 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get commonErrorAiUnavailable =>
-      'The AI service is busy right now. Try again in a moment.';
+      'Kanz\'s AI is busy right now. Saved scans and tutorials still open.';
 
   @override
   String get commonErrorBadRequest =>
@@ -296,6 +296,32 @@ class AppLocalizationsEn extends AppLocalizations {
   String get commonThemeSystem => 'Match phone';
 
   @override
+  String get commonToolGroupBuilding => 'Drilling and fixing';
+
+  @override
+  String commonToolGroupCount(int selected, int total) {
+    return '$selected of $total selected';
+  }
+
+  @override
+  String get commonToolGroupCutting => 'Cutting';
+
+  @override
+  String get commonToolGroupFinishing => 'Sanding and painting';
+
+  @override
+  String get commonToolGroupJoining => 'Gluing and fastening';
+
+  @override
+  String get commonToolGroupMeasuring => 'Measuring';
+
+  @override
+  String get commonToolGroupOther => 'Other tools';
+
+  @override
+  String get commonToolGroupSewing => 'Sewing';
+
+  @override
   String commonWeightKg(String kg) {
     return '$kg kg';
   }
@@ -335,6 +361,9 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get completionCaptureGallery => 'Choose from gallery';
+
+  @override
+  String get completionCaptureGalleryShort => 'Gallery';
 
   @override
   String get completionCaptureGuidance => 'Photograph what you made';
@@ -693,7 +722,7 @@ class AppLocalizationsEn extends AppLocalizations {
   }
 
   @override
-  String get dropoffPlotListed => 'Materials listed';
+  String get dropoffPlotListed => 'Takes your materials';
 
   @override
   String get dropoffPlotNorth => 'N';
@@ -704,7 +733,7 @@ class AppLocalizationsEn extends AppLocalizations {
   }
 
   @override
-  String get dropoffPlotUnlisted => 'Not listed';
+  String get dropoffPlotUnlisted => 'Materials not listed';
 
   @override
   String get dropoffPlotYou => 'Your location';
@@ -1028,7 +1057,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get ideaBackToResults => 'Back to results';
 
   @override
-  String get ideaBasedOn => 'Based on';
+  String get ideaBasedOn => 'Sources';
 
   @override
   String get ideaBefore => 'Before';
@@ -1111,6 +1140,10 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get impactEmptyTitle => 'Your impact starts with one scan';
+
+  @override
+  String get impactErrorMessage =>
+      'Kanz couldn\'t read the scans and projects saved on this phone. Scanning still works.';
 
   @override
   String get impactErrorTitle => 'Your impact didn\'t load';
@@ -1241,32 +1274,6 @@ class AppLocalizationsEn extends AppLocalizations {
   String get onboardingSkillTitle => 'How handy are you?';
 
   @override
-  String get onboardingToolGroupBuilding => 'Drilling and fixing';
-
-  @override
-  String onboardingToolGroupCount(int selected, int total) {
-    return '$selected of $total selected';
-  }
-
-  @override
-  String get onboardingToolGroupCutting => 'Cutting';
-
-  @override
-  String get onboardingToolGroupFinishing => 'Sanding and painting';
-
-  @override
-  String get onboardingToolGroupJoining => 'Gluing and fastening';
-
-  @override
-  String get onboardingToolGroupMeasuring => 'Measuring';
-
-  @override
-  String get onboardingToolGroupOther => 'Other tools';
-
-  @override
-  String get onboardingToolGroupSewing => 'Sewing';
-
-  @override
   String get onboardingToolsBody =>
       'Ideas and tutorials use only these. Safety gear is always listed.';
 
@@ -1344,10 +1351,6 @@ class AppLocalizationsEn extends AppLocalizations {
       'Only the photo you take is sent for analysis, with its location data removed.';
 
   @override
-  String get permissionsCameraReason3 =>
-      'Rather not? Pick a photo from your gallery instead.';
-
-  @override
   String get permissionsCameraRestricted =>
       'The camera can\'t be turned on for Kanz on this phone. Pick a photo from your gallery instead.';
 
@@ -1401,10 +1404,6 @@ class AppLocalizationsEn extends AppLocalizations {
       'Kanz reads your position only when it searches for drop-off points.';
 
   @override
-  String get permissionsLocationReason3 =>
-      'Rather not? Choose your city and Kanz searches around its centre.';
-
-  @override
   String get permissionsLocationRestricted =>
       'Location can\'t be turned on for Kanz on this phone. Choose a city instead.';
 
@@ -1436,7 +1435,7 @@ class AppLocalizationsEn extends AppLocalizations {
   }
 
   @override
-  String get resultsBasedOn => 'Based on';
+  String get resultsBasedOn => 'Sources';
 
   @override
   String get resultsBeforeYouGo => 'Before you go';
@@ -2107,12 +2106,18 @@ class AppLocalizationsEn extends AppLocalizations {
   String get settingsLanguage => 'Language';
 
   @override
+  String get settingsLanguageNameArabic => 'Arabic';
+
+  @override
+  String get settingsLanguageNameEnglish => 'English';
+
+  @override
   String get settingsLanguageNote =>
       'Ideas, tutorials and spoken steps use this language too.';
 
   @override
   String settingsLanguageSystemDetail(String language) {
-    return 'Now $language';
+    return 'Currently $language';
   }
 
   @override
@@ -2430,9 +2435,6 @@ class AppLocalizationsEn extends AppLocalizations {
   String get swapsUpdate => 'Update swaps';
 
   @override
-  String get tutorialAdaptAdd => 'Add a tool';
-
-  @override
   String get tutorialAdaptBody =>
       'Kanz rewrites the steps for your skill and the tools you have.';
 
@@ -2440,9 +2442,6 @@ class AppLocalizationsEn extends AppLocalizations {
   String tutorialAdaptFailed(String reason) {
     return 'Couldn\'t rewrite the tutorial. $reason';
   }
-
-  @override
-  String get tutorialAdaptHave => 'You have';
 
   @override
   String get tutorialAdaptOffline => 'Adapting needs a connection.';
@@ -2667,7 +2666,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get tutorialSafetyTitle => 'Safety';
 
   @override
-  String get tutorialSourcesLabel => 'Based on';
+  String get tutorialSourcesLabel => 'Sources';
 
   @override
   String tutorialSpeaking(int number) {

@@ -1,6 +1,8 @@
-/// The tools grid used in onboarding and in Settings > My tools: the
-/// vocabulary's real tools (never protective gear) grouped the way a
-/// workshop wall is, each group with a glyph and a count.
+/// The one tool picker in Kanz. Onboarding owns it; Settings > My tools and
+/// the tutorial's adapt sheet use it too, so the user edits the same list in
+/// the same design everywhere: the vocabulary's real tools (never protective
+/// gear) grouped the way a workshop wall is, each group with a glyph and a
+/// count. Its strings are `commonToolGroup*`.
 library;
 
 import 'package:flutter/material.dart';
@@ -60,17 +62,17 @@ IconData toolGroupGlyph(ToolGroup group) => switch (group) {
 
 String toolGroupLabel(AppLocalizations l10n, ToolGroup group) =>
     switch (group) {
-      ToolGroup.cutting => l10n.onboardingToolGroupCutting,
-      ToolGroup.measuring => l10n.onboardingToolGroupMeasuring,
-      ToolGroup.joining => l10n.onboardingToolGroupJoining,
-      ToolGroup.building => l10n.onboardingToolGroupBuilding,
-      ToolGroup.finishing => l10n.onboardingToolGroupFinishing,
-      ToolGroup.sewing => l10n.onboardingToolGroupSewing,
-      ToolGroup.other => l10n.onboardingToolGroupOther,
+      ToolGroup.cutting => l10n.commonToolGroupCutting,
+      ToolGroup.measuring => l10n.commonToolGroupMeasuring,
+      ToolGroup.joining => l10n.commonToolGroupJoining,
+      ToolGroup.building => l10n.commonToolGroupBuilding,
+      ToolGroup.finishing => l10n.commonToolGroupFinishing,
+      ToolGroup.sewing => l10n.commonToolGroupSewing,
+      ToolGroup.other => l10n.commonToolGroupOther,
     };
 
-/// Groups [tools] (keeping the vocabulary order inside each group) and drops
-/// empty groups.
+/// Groups [tools] (keeping their order inside each group) and drops empty
+/// groups and protective gear.
 List<(ToolGroup, List<ToolEntry>)> groupTools(List<ToolEntry> tools) {
   final byGroup = <ToolGroup, List<ToolEntry>>{};
   for (final tool in tools) {
@@ -84,14 +86,20 @@ List<(ToolGroup, List<ToolEntry>)> groupTools(List<ToolEntry> tools) {
 }
 
 /// The grouped chip grid. Selected chips are ink with a check; the others
-/// carry a plus, so a chip keeps its width when toggled.
-class ToolPicker extends StatelessWidget {
+/// carry a plus, so a chip keeps its width when toggled. Each chip has the
+/// key `ValueKey('tool-<id>')`.
+///
+/// Inside a scrolling sheet, [revealSelected] scrolls it on open just far
+/// enough to show the first group that holds a selected tool, so the user
+/// sees what they have before what they could add.
+class ToolPicker extends StatefulWidget {
   const ToolPicker({
     super.key,
     required this.tools,
     required this.selected,
     required this.onToggle,
     this.padding = KanzSpace.page,
+    this.revealSelected = false,
   });
 
   /// Usually `vocab.realTools`.
@@ -99,6 +107,41 @@ class ToolPicker extends StatelessWidget {
   final Set<ToolId> selected;
   final ValueChanged<ToolId> onToggle;
   final EdgeInsetsGeometry padding;
+  final bool revealSelected;
+
+  @override
+  State<ToolPicker> createState() => _ToolPickerState();
+}
+
+class _ToolPickerState extends State<ToolPicker> {
+  final _groupKeys = <ToolGroup, GlobalKey>{};
+
+  GlobalKey _keyFor(ToolGroup group) =>
+      _groupKeys.putIfAbsent(group, GlobalKey.new);
+
+  @override
+  void initState() {
+    super.initState();
+    if (widget.revealSelected) {
+      WidgetsBinding.instance.addPostFrameCallback((_) => _reveal());
+    }
+  }
+
+  void _reveal() {
+    if (!mounted) return;
+    for (final (group, entries) in groupTools(widget.tools)) {
+      if (!entries.any((e) => widget.selected.contains(e.id))) continue;
+      final target = _groupKeys[group]?.currentContext;
+      if (target != null && Scrollable.maybeOf(target) != null) {
+        // Scrolls only when the group is (partly) below the fold.
+        Scrollable.ensureVisible(
+          target,
+          alignmentPolicy: ScrollPositionAlignmentPolicy.keepVisibleAtEnd,
+        );
+      }
+      return;
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -106,14 +149,15 @@ class ToolPicker extends StatelessWidget {
     final locale = Localizations.localeOf(context);
     final c = context.kanzColors;
     final t = context.textStyles;
-    final groups = groupTools(tools);
+    final selected = widget.selected;
     return Padding(
-      padding: padding,
+      padding: widget.padding,
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
-          for (final (group, entries) in groups)
+          for (final (group, entries) in groupTools(widget.tools))
             Container(
+              key: _keyFor(group),
               padding: const EdgeInsets.only(
                 top: KanzSpace.s16,
                 bottom: KanzSpace.s12,
@@ -139,12 +183,13 @@ class ToolPicker extends StatelessWidget {
                     children: [
                       for (final tool in entries)
                         KanzChip(
+                          key: ValueKey('tool-${tool.id.id}'),
                           label: tool.label.forLocale(locale),
                           icon: selected.contains(tool.id)
                               ? KanzIcons.check
                               : KanzIcons.add,
                           selected: selected.contains(tool.id),
-                          onSelected: (_) => onToggle(tool.id),
+                          onSelected: (_) => widget.onToggle(tool.id),
                         ),
                     ],
                   ),
@@ -186,7 +231,7 @@ class _GroupHeader extends StatelessWidget {
             Expanded(child: Text(label, style: style)),
             const SizedBox(width: KanzSpace.s12),
             Semantics(
-              label: l10n.onboardingToolGroupCount(selected, total),
+              label: l10n.commonToolGroupCount(selected, total),
               excludeSemantics: true,
               child: MonoLabel(
                 '$selected / $total',

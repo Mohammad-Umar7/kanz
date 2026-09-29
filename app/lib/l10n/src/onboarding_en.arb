@@ -32,14 +32,5 @@
   "onboardingToolsCount": "{count, plural, =0{No tools selected} =1{1 tool selected} other{{count} tools selected}}",
   "@onboardingToolsCount": {"placeholders": {"count": {"type": "int"}}},
   "onboardingToolsNone": "No tools? That's fine. Ideas that need none come first.",
-  "onboardingToolGroupCount": "{selected} of {total} selected",
-  "@onboardingToolGroupCount": {"placeholders": {"selected": {"type": "int"}, "total": {"type": "int"}}},
-  "onboardingToolGroupCutting": "Cutting",
-  "onboardingToolGroupMeasuring": "Measuring",
-  "onboardingToolGroupJoining": "Gluing and fastening",
-  "onboardingToolGroupBuilding": "Drilling and fixing",
-  "onboardingToolGroupFinishing": "Sanding and painting",
-  "onboardingToolGroupSewing": "Sewing",
-  "onboardingToolGroupOther": "Other tools",
   "onboardingFinish": "Start using Kanz"
 }

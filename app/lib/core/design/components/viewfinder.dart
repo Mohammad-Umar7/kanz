@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 
-import '../context.dart';
 import '../tokens.dart';
 
 /// Four corner brackets framing the camera preview. They turn clay when
@@ -31,7 +30,8 @@ class CornerBrackets extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final target = active ? context.kanzColors.accent : color;
+    // On the camera picture: the photo clay, the same in both themes.
+    final target = active ? KanzPhotoColors.accent : color;
     return TweenAnimationBuilder<Color?>(
       tween: ColorTween(end: target),
       duration: KanzMotion.of(context, KanzMotion.medium),

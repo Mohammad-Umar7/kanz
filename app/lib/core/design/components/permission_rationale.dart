@@ -20,14 +20,20 @@ class RationaleReason {
 }
 
 /// Asks for a permission the respectful way: a drawn illustration (plain
-/// geometry, no clip art), a title, two or three concrete reasons and two
-/// choices. The secondary action always leads somewhere useful (the city
-/// picker, the gallery), never a dead end.
+/// geometry, no clip art), a title, two concrete reasons and two choices.
+/// The secondary action always leads somewhere useful (the city picker, the
+/// gallery), never a dead end.
 ///
 /// After a refusal, [notice] (usually a warning [Callout]) says what
 /// happened right under the title, where it is read first; pass no
 /// [reasons] when they no longer apply (access is restricted by policy).
-class PermissionRationale extends StatelessWidget {
+///
+/// A full-screen ask sets [pinActions]: the rationale then fills its parent,
+/// the art and reasons scroll, and the actions stay in a bar at the bottom,
+/// so the way forward is never below the fold (a hairline marks the edge
+/// while content runs on under it). Inline asks, inside a page that already
+/// scrolls, leave it off and the actions follow the reasons.
+class PermissionRationale extends StatefulWidget {
   const PermissionRationale({
     super.key,
     required this.art,
@@ -39,6 +45,7 @@ class PermissionRationale extends StatelessWidget {
     required this.onSecondary,
     this.footnote,
     this.notice,
+    this.pinActions = false,
   });
 
   final PermissionArt art;
@@ -49,85 +56,164 @@ class PermissionRationale extends StatelessWidget {
   final String secondaryLabel;
   final VoidCallback? onSecondary;
 
-  /// Small print, for example "You can change this in Settings".
+  /// Small print under the actions, for example "You can change this in
+  /// Settings", or what the screen is waiting for.
   final String? footnote;
 
   /// What happened after the last answer, shown under the title.
   final Widget? notice;
 
+  /// Fill the parent (which must bound the height) and keep the actions in
+  /// a bar pinned to the bottom.
+  final bool pinActions;
+
+  @override
+  State<PermissionRationale> createState() => _PermissionRationaleState();
+}
+
+class _PermissionRationaleState extends State<PermissionRationale> {
+  /// Content runs on under the pinned bar.
+  bool _contentBelow = false;
+
+  bool _onScrollMetrics(ScrollMetrics metrics) {
+    if (metrics.axis != Axis.vertical) return false;
+    final below = metrics.extentAfter > 0.5;
+    if (below != _contentBelow) setState(() => _contentBelow = below);
+    return false;
+  }
+
   @override
   Widget build(BuildContext context) {
     final c = context.kanzColors;
     final t = context.textStyles;
-    return Padding(
-      padding: KanzSpace.page,
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.stretch,
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          ExcludeSemantics(
-            child: AspectRatio(
-              aspectRatio: 16 / 10,
-              child: Container(
-                decoration: BoxDecoration(
-                  color: c.surfaceSunken,
-                  borderRadius: KanzRadii.cardAll,
-                ),
-                child: CustomPaint(
-                  painter: art == PermissionArt.camera
-                      ? _CameraArtPainter(
-                          ink: c.ink,
-                          line: c.lineStrong,
-                          surface: c.surface,
-                          box: KanzMaterialColors.glass.box,
-                        )
-                      : _LocationArtPainter(
-                          ink: c.ink,
-                          line: c.line,
-                          road: c.surface,
-                          pins: [
-                            KanzMaterialColors.dot(context, 'glass'),
-                            KanzMaterialColors.dot(context, 'paper'),
-                            KanzMaterialColors.dot(context, 'electronics'),
-                          ],
-                        ),
-                ),
-              ),
+    final w = widget;
+    final content = <Widget>[
+      ExcludeSemantics(
+        child: AspectRatio(
+          aspectRatio: 16 / 10,
+          child: Container(
+            decoration: BoxDecoration(
+              color: c.surfaceSunken,
+              borderRadius: KanzRadii.cardAll,
+            ),
+            child: CustomPaint(
+              painter: w.art == PermissionArt.camera
+                  ? _CameraArtPainter(
+                      ink: c.ink,
+                      line: c.lineStrong,
+                      surface: c.surface,
+                      box: KanzMaterialColors.glass.box,
+                    )
+                  : _LocationArtPainter(
+                      ink: c.ink,
+                      line: c.line,
+                      road: c.surface,
+                      pins: [
+                        KanzMaterialColors.dot(context, 'glass'),
+                        KanzMaterialColors.dot(context, 'paper'),
+                        KanzMaterialColors.dot(context, 'electronics'),
+                      ],
+                    ),
             ),
           ),
-          const SizedBox(height: KanzSpace.s32),
-          Semantics(header: true, child: Text(title, style: t.headlineMedium)),
-          if (notice != null) ...[
-            const SizedBox(height: KanzSpace.s16),
-            Semantics(liveRegion: true, child: notice),
-          ],
-          const SizedBox(height: KanzSpace.s20),
-          for (final r in reasons)
-            Padding(
-              padding: const EdgeInsets.only(bottom: KanzSpace.s16),
-              child: Row(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Icon(r.icon, size: 22, color: c.ink),
-                  const SizedBox(width: KanzSpace.s16),
-                  Expanded(child: Text(r.text, style: t.bodyLarge)),
-                ],
-              ),
-            ),
-          SizedBox(height: reasons.isEmpty ? KanzSpace.s4 : KanzSpace.s16),
-          KanzButton(label: primaryLabel, onPressed: onPrimary, expand: true),
-          const SizedBox(height: KanzSpace.s8),
-          KanzButton.tertiary(
-            label: secondaryLabel,
-            onPressed: onSecondary,
-            expand: true,
-          ),
-          if (footnote != null) ...[
-            const SizedBox(height: KanzSpace.s8),
-            Text(footnote!, style: t.bodySmall),
-          ],
-        ],
+        ),
       ),
+      const SizedBox(height: KanzSpace.s32),
+      Semantics(header: true, child: Text(w.title, style: t.headlineMedium)),
+      if (w.notice != null) ...[
+        const SizedBox(height: KanzSpace.s16),
+        Semantics(liveRegion: true, child: w.notice),
+      ],
+      if (w.reasons.isNotEmpty) const SizedBox(height: KanzSpace.s20),
+      for (final (i, r) in w.reasons.indexed)
+        Padding(
+          padding: EdgeInsets.only(
+            bottom: i == w.reasons.length - 1 ? 0 : KanzSpace.s16,
+          ),
+          child: Row(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Icon(r.icon, size: 22, color: c.ink),
+              const SizedBox(width: KanzSpace.s16),
+              Expanded(child: Text(r.text, style: t.bodyLarge)),
+            ],
+          ),
+        ),
+    ];
+    final actions = <Widget>[
+      KanzButton(label: w.primaryLabel, onPressed: w.onPrimary, expand: true),
+      const SizedBox(height: KanzSpace.s8),
+      KanzButton.tertiary(
+        label: w.secondaryLabel,
+        onPressed: w.onSecondary,
+        expand: true,
+      ),
+      if (w.footnote != null) ...[
+        const SizedBox(height: KanzSpace.s8),
+        Text(w.footnote!, style: t.bodySmall),
+      ],
+    ];
+
+    if (!w.pinActions) {
+      return Padding(
+        padding: KanzSpace.page,
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            ...content,
+            const SizedBox(height: KanzSpace.s32),
+            ...actions,
+          ],
+        ),
+      );
+    }
+
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.stretch,
+      children: [
+        Expanded(
+          child: NotificationListener<ScrollMetricsNotification>(
+            onNotification: (n) => _onScrollMetrics(n.metrics),
+            child: NotificationListener<ScrollUpdateNotification>(
+              onNotification: (n) => _onScrollMetrics(n.metrics),
+              child: SingleChildScrollView(
+                padding: const EdgeInsetsDirectional.fromSTEB(
+                  KanzSpace.gutter,
+                  KanzSpace.s8,
+                  KanzSpace.gutter,
+                  KanzSpace.s24,
+                ),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.stretch,
+                  children: content,
+                ),
+              ),
+            ),
+          ),
+        ),
+        AnimatedContainer(
+          duration: KanzMotion.of(context, KanzMotion.fast),
+          decoration: BoxDecoration(
+            border: Border(
+              top: BorderSide(
+                color: _contentBelow ? c.line : c.line.withValues(alpha: 0),
+              ),
+            ),
+          ),
+          padding: EdgeInsetsDirectional.fromSTEB(
+            KanzSpace.gutter,
+            KanzSpace.s16,
+            KanzSpace.gutter,
+            KanzSpace.s16 + MediaQuery.paddingOf(context).bottom,
+          ),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: actions,
+          ),
+        ),
+      ],
     );
   }
 }

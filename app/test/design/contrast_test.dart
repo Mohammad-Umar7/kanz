@@ -66,6 +66,14 @@ void main() {
           );
         });
       }
+
+      // Finished step segments must read against the empty ones beside them.
+      test('progressDone against track >= 3', () {
+        expect(
+          KanzContrast.ratio(c.progressDone, c.track),
+          greaterThanOrEqualTo(KanzContrast.large),
+        );
+      });
     });
   }
 

@@ -118,27 +118,24 @@ class _ServerSectionState extends ConsumerState<ServerSection> {
           const SizedBox(height: KanzSpace.s16),
           _StatusLine(status: status, detail: detail),
           const SizedBox(height: KanzSpace.s16),
-          Wrap(
-            spacing: KanzSpace.s8,
-            runSpacing: KanzSpace.s8,
-            children: [
-              KanzButton.secondary(
-                label: _edited
-                    ? l10n.settingsServerSave
-                    : l10n.settingsServerTest,
-                // Saving tests the new address, so no storage glyph.
-                icon: _edited ? null : KanzIcons.retry,
-                loading: testing,
-                loadingLabel: l10n.settingsServerTesting,
-                onPressed: _edited ? _save : _test,
-              ),
-              if (override != null)
-                KanzButton.tertiary(
-                  label: l10n.settingsServerReset,
-                  onPressed: _reset,
-                ),
-            ],
+          // Full width, like every other action in Kanz.
+          KanzButton.secondary(
+            label: _edited ? l10n.settingsServerSave : l10n.settingsServerTest,
+            // Saving tests the new address, so no storage glyph.
+            icon: _edited ? null : KanzIcons.retry,
+            loading: testing,
+            loadingLabel: l10n.settingsServerTesting,
+            expand: true,
+            onPressed: _edited ? _save : _test,
           ),
+          if (override != null) ...[
+            const SizedBox(height: KanzSpace.s8),
+            KanzButton.tertiary(
+              label: l10n.settingsServerReset,
+              expand: true,
+              onPressed: _reset,
+            ),
+          ],
           if (status == BackendStatus.online && health != null) ...[
             const SizedBox(height: KanzSpace.s24),
             _HealthDetails(health: health),

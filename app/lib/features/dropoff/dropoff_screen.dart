@@ -49,7 +49,6 @@ class DropoffScreen extends ConsumerStatefulWidget {
 
 class _DropoffScreenState extends ConsumerState<DropoffScreen>
     with WidgetsBindingObserver {
-  static const double _toggleWidth = 184;
   static const double _sheetMin = 0.24;
   static const double _sheetInitial = 0.44;
 
@@ -265,11 +264,37 @@ class _DropoffScreenState extends ConsumerState<DropoffScreen>
     );
   }
 
+  /// Width of the list and map toggle: two equal segments, each fitting the
+  /// wider label with its glyph and 10 dp on both sides, in the sunken
+  /// track. Sized to the words rather than fixed, so the short Arabic
+  /// labels sit beside the title on a 360 dp phone too.
+  double _toggleWidth(List<String> labels) {
+    const glyph = 18.0 + 6.0;
+    const side = KanzSpace.s8 + KanzSpace.s2;
+    final style = context.textStyles.labelLarge?.copyWith(
+      fontWeight: FontWeight.w600,
+    );
+    var widest = 0.0;
+    for (final label in labels) {
+      final painter = TextPainter(
+        text: TextSpan(text: label, style: style),
+        textDirection: Directionality.of(context),
+        textScaler: MediaQuery.textScalerOf(context),
+        maxLines: 1,
+      )..layout();
+      if (painter.width > widest) widest = painter.width;
+      painter.dispose();
+    }
+    final segment = (widest + glyph + 2 * side).ceilToDouble();
+    return labels.length * segment + 2 * KanzSpace.s4;
+  }
+
   /// The title, and the list and map toggle at the end of its line; with
   /// large text the toggle moves under the title rather than squeezing it
   /// onto two lines.
   Widget _header(DropoffState state, bool mapAvailable) {
     final l10n = context.l10n;
+    final toggleLabels = [l10n.dropoffViewList, l10n.dropoffViewMap];
     return Padding(
       padding: const EdgeInsetsDirectional.fromSTEB(
         KanzSpace.gutter,
@@ -280,7 +305,7 @@ class _DropoffScreenState extends ConsumerState<DropoffScreen>
       child: Wrap(
         alignment: WrapAlignment.spaceBetween,
         crossAxisAlignment: WrapCrossAlignment.center,
-        spacing: KanzSpace.s16,
+        spacing: KanzSpace.s12,
         runSpacing: KanzSpace.s12,
         children: [
           Semantics(
@@ -292,14 +317,11 @@ class _DropoffScreenState extends ConsumerState<DropoffScreen>
           ),
           if (mapAvailable)
             SizedBox(
-              width: _toggleWidth,
+              width: _toggleWidth(toggleLabels),
               child: SegmentedTabs(
                 tabs: [
-                  SegmentedTab(
-                    label: l10n.dropoffViewList,
-                    icon: KanzIcons.list,
-                  ),
-                  SegmentedTab(label: l10n.dropoffViewMap, icon: KanzIcons.map),
+                  SegmentedTab(label: toggleLabels[0], icon: KanzIcons.list),
+                  SegmentedTab(label: toggleLabels[1], icon: KanzIcons.map),
                 ],
                 selectedIndex: state.view.index,
                 onChanged: (i) => _controller.setView(DropoffView.values[i]),
@@ -454,9 +476,15 @@ class _DropoffScreenState extends ConsumerState<DropoffScreen>
     );
   }
 
+  /// Each place's mark, colored by the accepted materials that match the
+  /// selected chips.
   Map<String, PinMark> _pinMarks(DropoffState state) {
     final catalog = {for (final c in state.catalog) c.key: c};
-    return {for (final p in state.visiblePlaces) p.id: pinMarkOf(p, catalog)};
+    final selected = selectedMaterialIds(state.selectedCategories, catalog);
+    return {
+      for (final p in state.visiblePlaces)
+        p.id: pinMarkOf(p, catalog, selected: selected),
+    };
   }
 
   String _ringLabel(double km) => context.l10n.commonDistanceKm(
@@ -617,7 +645,7 @@ class _DropoffScreenState extends ConsumerState<DropoffScreen>
             onRetry: error.retryable && !state.searching
                 ? () => unawaited(_controller.search())
                 : null,
-            code: offline ? null : supportCode(error),
+            code: offline ? null : errorSupportCode(error),
             codeLabel: l10n.commonSupportCode,
           ),
         ),
@@ -707,8 +735,18 @@ class _DropoffScreenState extends ConsumerState<DropoffScreen>
 
   Widget _mapLayout(DropoffState state, Vocab vocab, _SearchContext where) {
     final c = context.kanzColors;
+    final l10n = context.l10n;
     final results = state.results!;
     final places = state.visiblePlaces;
+    final pinMarks = _pinMarks(state);
+    // What the marks on the map mean, under the sheet's handle.
+    final key = placeMarkKeyEntries(
+      context,
+      places: places,
+      pinMarks: pinMarks,
+      listedLabel: l10n.dropoffPlotListed,
+      unlistedLabel: l10n.dropoffPlotUnlisted,
+    );
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
@@ -727,20 +765,17 @@ class _DropoffScreenState extends ConsumerState<DropoffScreen>
                     PlacesMapSpec(
                       places: places,
                       center: results.center,
-                      pinMarks: _pinMarks(state),
+                      pinMarks: pinMarks,
                       selectedId: state.selectedPlaceId,
                       bottomPadding:
                           box.maxHeight * _sheetExtent.clamp(_sheetMin, 0.6),
                       showMyLocation: where.gps,
-                      semanticsLabel: context.l10n.dropoffPlotLabel(
+                      semanticsLabel: l10n.dropoffPlotLabel(
                         places.length,
                         results.centerLabel,
                         places.first.distanceM == null
                             ? ''
-                            : formatDistance(
-                                context.l10n,
-                                places.first.distanceM!,
-                              ),
+                            : formatDistance(l10n, places.first.distanceM!),
                       ),
                       onPinTap: (place) => _openPlace(place, where),
                     ),
@@ -788,6 +823,22 @@ class _DropoffScreenState extends ConsumerState<DropoffScreen>
                                 ),
                               ),
                             ),
+                            if (key.isNotEmpty)
+                              SliverToBoxAdapter(
+                                child: Padding(
+                                  padding: const EdgeInsetsDirectional.fromSTEB(
+                                    KanzSpace.gutter,
+                                    KanzSpace.s8,
+                                    KanzSpace.gutter,
+                                    0,
+                                  ),
+                                  child: Wrap(
+                                    spacing: KanzSpace.s16,
+                                    runSpacing: KanzSpace.s4,
+                                    children: key,
+                                  ),
+                                ),
+                              ),
                             SliverToBoxAdapter(
                               child: _resultsBar(state, vocab, where),
                             ),

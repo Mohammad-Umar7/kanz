@@ -85,6 +85,10 @@ class _ResultsScreenState extends ConsumerState<ResultsScreen> {
 
   // ------------------------------------------------------------- actions
 
+  /// A new scan in place of these results: its results then replace the
+  /// scan page in turn, so back still returns to where the user started.
+  void _rescan(ScanMode mode) => context.pushReplacement(AppRoutes.scan(mode));
+
   /// Selects an item; from a box on the photo, also brings its card in view.
   void _select(String itemId, {bool reveal = false}) {
     setState(() => _selectedItemId = itemId);
@@ -242,7 +246,7 @@ class _ResultsScreenState extends ConsumerState<ResultsScreen> {
             actionLabel: l10n.resultsNewScan,
             actionIcon: KanzIcons.camera,
             primaryAction: true,
-            onAction: () => context.go(AppRoutes.scan(ScanMode.camera)),
+            onAction: () => _rescan(ScanMode.camera),
           ),
         ],
       ),
@@ -251,8 +255,9 @@ class _ResultsScreenState extends ConsumerState<ResultsScreen> {
     };
 
     return PopScope(
-      // Opened with `context.go` from the scan screen, the results are the
-      // only page: back then goes Home instead of closing the app.
+      // Opened on its own (a link, or "Back to ideas" from a tutorial), the
+      // results are the only page: back then goes Home instead of closing
+      // the app. From a scan they replace the scan page, so back pops.
       canPop: Navigator.of(context).canPop(),
       onPopInvokedWithResult: (didPop, _) {
         if (!didPop) context.go(AppRoutes.home);
@@ -363,7 +368,10 @@ class _ResultsScreenState extends ConsumerState<ResultsScreen> {
       Padding(padding: KanzSpace.page, child: header),
       if (rejected != null) ...[
         const SizedBox(height: KanzSpace.s32),
-        Padding(padding: KanzSpace.page, child: _retake(session, rejected)),
+        Padding(
+          padding: KanzSpace.page,
+          child: _retake(session, rejected, format),
+        ),
       ] else if (identifyError != null && !identifyError.retryable) ...[
         const SizedBox(height: KanzSpace.s32),
         Padding(
@@ -495,7 +503,7 @@ class _ResultsScreenState extends ConsumerState<ResultsScreen> {
         KanzButton(
           label: l10n.resultsDescribeAgain,
           icon: KanzIcons.describe,
-          onPressed: () => context.go(AppRoutes.scan(ScanMode.text)),
+          onPressed: () => _rescan(ScanMode.text),
           expand: true,
         ),
       ];
@@ -504,19 +512,23 @@ class _ResultsScreenState extends ConsumerState<ResultsScreen> {
       KanzButton(
         label: l10n.resultsRetake,
         icon: KanzIcons.camera,
-        onPressed: () => context.go(AppRoutes.scan(ScanMode.camera)),
+        onPressed: () => _rescan(ScanMode.camera),
         expand: true,
       ),
       KanzButton.secondary(
         label: l10n.resultsChooseFromGallery,
         icon: KanzIcons.gallery,
-        onPressed: () => context.go(AppRoutes.scan(ScanMode.gallery)),
+        onPressed: () => _rescan(ScanMode.gallery),
         expand: true,
       ),
     ];
   }
 
-  Widget _retake(ScanSessionState session, PhotoCheck rejected) {
+  Widget _retake(
+    ScanSessionState session,
+    PhotoCheck rejected,
+    ResultsFormat format,
+  ) {
     final l10n = context.l10n;
     final textScan = session.source == AnalysisSource.text;
     return RetakePanel(
@@ -525,9 +537,12 @@ class _ResultsScreenState extends ConsumerState<ResultsScreen> {
           ? l10n.resultsTextRejectedTitle
           : photoIssueLabel(l10n, rejected.issue) ??
                 l10n.resultsRetakeFallbackTitle,
-      tip:
-          rejected.retakeTip ??
-          (textScan ? l10n.resultsTextRejectedBody : null),
+      // The tip is the analyst's own sentence, in the scan's language: it
+      // keeps its direction if the app language changed since.
+      tip: switch (rejected.retakeTip) {
+        final tip? => format.ai(tip),
+        null => textScan ? l10n.resultsTextRejectedBody : null,
+      },
       actions: _retakeActions(textScan),
     );
   }

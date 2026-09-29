@@ -89,6 +89,9 @@ class PipelineSection extends StatelessWidget {
       StageStatus.failed => timeline.PipelineStage(
         label: label,
         status: timeline.PipelineStatus.failed,
+        // Only failures a retry can fix offer one, row by row: a rejected
+        // photo needs a retake, a bad request would fail the same way.
+        retryable: _retryable(stage),
         detail: detail,
         message:
             stage == PipelineStage.identifying && session.rejectedPhoto != null
@@ -130,10 +133,7 @@ class PipelineSection extends StatelessWidget {
       collapseLabel: l10n.resultsHideSteps,
       retryLabel: l10n.commonRetry,
       onRetry: anyRetry
-          ? (index) {
-              final stage = PipelineStage.values[index];
-              if (_retryable(stage)) onRetry(stage);
-            }
+          ? (index) => onRetry(PipelineStage.values[index])
           : null,
     );
   }

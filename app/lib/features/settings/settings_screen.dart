@@ -102,9 +102,11 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen>
     final phoneLang = ref.watch(systemLangProvider);
     final permission = ref.watch(locationPermissionProvider).value;
 
+    // Named in the interface language ("Currently Arabic", "حاليًا:
+    // الإنجليزية"), unlike the endonyms on the rows below.
     final systemLanguage = phoneLang == Lang.ar
-        ? l10n.commonLanguageArabic
-        : l10n.commonLanguageEnglish;
+        ? l10n.settingsLanguageNameArabic
+        : l10n.settingsLanguageNameEnglish;
     final cityName = settings.city == null
         ? null
         : vocab.city(settings.city!).label.forLocale(locale);

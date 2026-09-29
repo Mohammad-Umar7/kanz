@@ -11,6 +11,7 @@ import 'package:kanz/core/data/models/models.dart';
 import 'package:kanz/core/design/design.dart';
 import 'package:kanz/core/network/api_exception.dart';
 import 'package:kanz/features/tutorial/tutorial_screen.dart';
+import 'package:kanz/features/tutorial/widgets/adapt_sheet.dart';
 import 'package:kanz/l10n/l10n.dart';
 
 import '../../screenshots/harness.dart' show loadKanzFonts;
@@ -274,7 +275,12 @@ void main() {
     expect(find.text('Adapt this tutorial'), findsOneWidget);
 
     await tester.tap(find.text('Intermediate'));
-    await tester.tap(find.byKey(const ValueKey('adapt-tool-craft_wire')));
+    // The tools come in the same workshop groups as onboarding.
+    expect(find.text('Gluing and fastening'), findsOneWidget);
+    final craftWire = find.byKey(const ValueKey('tool-craft_wire'));
+    await tester.ensureVisible(craftWire);
+    await tester.pumpAndSettle();
+    await tester.tap(craftWire);
     await tester.pump();
     await tester.tap(find.text('Rewrite the steps'));
     await tester.pump();
@@ -287,6 +293,33 @@ void main() {
     // The old tutorial stays while a progress line says what is happening.
     expect(find.textContaining('Rewriting for Intermediate'), findsOneWidget);
     expect(find.text('Hanging jar lantern'), findsOneWidget);
+  });
+
+  testWidgets('the adapt sheet opens on the first group with a tool in use', (
+    tester,
+  ) async {
+    // Only sewing tools: their group is last, far below the skill picker.
+    await _pump(
+      tester,
+      state: _ready().copyWith(
+        tools: const [ToolId.sewingKit, ToolId.sewingMachine],
+      ),
+    );
+    await tester.tap(find.byKey(const ValueKey('adapt-action')));
+    await tester.pumpAndSettle();
+
+    final list = tester.getRect(
+      find.descendant(
+        of: find.byType(AdaptSheet),
+        matching: find.byType(SingleChildScrollView),
+      ),
+    );
+    final sewing = tester.getRect(find.text('Sewing'));
+    final kit = tester.getRect(
+      find.byKey(const ValueKey('tool-sewing_machine')),
+    );
+    expect(sewing.top, greaterThanOrEqualTo(list.top));
+    expect(kit.bottom, lessThanOrEqualTo(list.bottom));
   });
 
   testWidgets('an unchanged adapt sheet cannot submit', (tester) async {

@@ -84,6 +84,15 @@ Future<GoRouter> _pump(
 /// A scan with no pictures at all (no file images to decode in tests).
 ScanSessionState _noPictures() => scanState(lang: Lang.en);
 
+/// The share control: a full button with a picture to share, a quiet link
+/// hugging its label without one.
+Finder _shareAction() => find
+    .descendant(
+      of: find.byKey(const ValueKey('share-project')),
+      matching: find.byType(InkWell),
+    )
+    .first;
+
 void main() {
   setUpAll(loadKanzFonts);
 
@@ -106,7 +115,7 @@ void main() {
     final renderer = FakeRenderer();
     await _pump(tester, scan: _noPictures(), share: share, renderer: renderer);
 
-    await tester.tap(find.byKey(const ValueKey('share-project')));
+    await tester.tap(_shareAction());
     await tester.pumpAndSettle();
 
     expect(renderer.rendered.single.title, 'Hanging jar lantern');
@@ -129,7 +138,7 @@ void main() {
       share: share,
       renderer: FakeRenderer(result: null),
     );
-    await tester.tap(find.byKey(const ValueKey('share-project')));
+    await tester.tap(_shareAction());
     await tester.pumpAndSettle();
     expect(share.shared.single.imagePath, isNull);
     expect(share.shared.single.text, contains('Hanging jar lantern'));
@@ -150,6 +159,7 @@ void main() {
       find.byKey(const ValueKey('scan-again')),
       200,
     );
+    await tester.pumpAndSettle();
     await tester.tap(find.byKey(const ValueKey('scan-again')));
     await tester.pumpAndSettle();
     expect(find.text('scan'), findsOneWidget);
@@ -166,6 +176,7 @@ void main() {
       find.byKey(const ValueKey('see-projects')),
       200,
     );
+    await tester.pumpAndSettle();
     await tester.tap(find.byKey(const ValueKey('see-projects')));
     await tester.pumpAndSettle();
     expect(find.text('history'), findsOneWidget);
@@ -220,7 +231,7 @@ void main() {
     expect(photos.saved, [(projectId, '/photos/lantern.jpg')]);
     expect(find.byKey(const ValueKey('add-made-photo')), findsNothing);
     expect(find.byKey(const ValueKey('replace-made-photo')), findsOneWidget);
-    await tester.tap(find.byKey(const ValueKey('share-project')));
+    await tester.tap(_shareAction());
     await tester.pumpAndSettle();
     expect(renderer.rendered.single.after, isA<FileImage>());
   });

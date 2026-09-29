@@ -198,7 +198,7 @@
   "resultsIdeasErrorTitle": "Ideas didn't load",
   "resultsNoIdeasTitle": "No DIY ideas for this one",
   "resultsNoIdeasBody": "Recycling or donating may suit it better. If Kanz misread the item, correct it above.",
-  "resultsBasedOn": "Based on",
+  "resultsBasedOn": "Sources",
   "resultsHeldBackTitle": "Held back from DIY",
   "resultsHeldBackBody": "{items} can't be used for DIY.",
   "resultsHeldBackPointer": "How to get rid of it safely follows the ideas.",

@@ -76,10 +76,12 @@ class _LocationRationaleScreenState
     final restricted = outcome == AskOutcome.restricted;
     return RationalePage(
       rationale: PermissionRationale(
+        pinActions: true,
         art: PermissionArt.location,
         title: l10n.permissionsLocationTitle,
         // Restricted by policy: the reasons no longer apply, only the
-        // way around it does.
+        // way around it does. The alternative is the tertiary action, so
+        // no reason repeats it.
         reasons: [
           if (!restricted) ...[
             RationaleReason(
@@ -89,10 +91,6 @@ class _LocationRationaleScreenState
             RationaleReason(
               icon: KanzIcons.locate,
               text: l10n.permissionsLocationReason2,
-            ),
-            RationaleReason(
-              icon: KanzIcons.map,
-              text: l10n.permissionsLocationReason3,
             ),
           ],
         ],

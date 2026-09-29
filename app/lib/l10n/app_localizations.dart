@@ -227,7 +227,7 @@ abstract class AppLocalizations {
   /// No description provided for @commonErrorAiUnavailable.
   ///
   /// In en, this message translates to:
-  /// **'The AI service is busy right now. Try again in a moment.'**
+  /// **'Kanz\'s AI is busy right now. Saved scans and tutorials still open.'**
   String get commonErrorAiUnavailable;
 
   /// No description provided for @commonErrorBadRequest.
@@ -572,6 +572,54 @@ abstract class AppLocalizations {
   /// **'Match phone'**
   String get commonThemeSystem;
 
+  /// No description provided for @commonToolGroupBuilding.
+  ///
+  /// In en, this message translates to:
+  /// **'Drilling and fixing'**
+  String get commonToolGroupBuilding;
+
+  /// No description provided for @commonToolGroupCount.
+  ///
+  /// In en, this message translates to:
+  /// **'{selected} of {total} selected'**
+  String commonToolGroupCount(int selected, int total);
+
+  /// No description provided for @commonToolGroupCutting.
+  ///
+  /// In en, this message translates to:
+  /// **'Cutting'**
+  String get commonToolGroupCutting;
+
+  /// No description provided for @commonToolGroupFinishing.
+  ///
+  /// In en, this message translates to:
+  /// **'Sanding and painting'**
+  String get commonToolGroupFinishing;
+
+  /// No description provided for @commonToolGroupJoining.
+  ///
+  /// In en, this message translates to:
+  /// **'Gluing and fastening'**
+  String get commonToolGroupJoining;
+
+  /// No description provided for @commonToolGroupMeasuring.
+  ///
+  /// In en, this message translates to:
+  /// **'Measuring'**
+  String get commonToolGroupMeasuring;
+
+  /// No description provided for @commonToolGroupOther.
+  ///
+  /// In en, this message translates to:
+  /// **'Other tools'**
+  String get commonToolGroupOther;
+
+  /// No description provided for @commonToolGroupSewing.
+  ///
+  /// In en, this message translates to:
+  /// **'Sewing'**
+  String get commonToolGroupSewing;
+
   /// No description provided for @commonWeightKg.
   ///
   /// In en, this message translates to:
@@ -643,6 +691,12 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Choose from gallery'**
   String get completionCaptureGallery;
+
+  /// One word under the gallery control on the camera band, as on the scan viewfinder.
+  ///
+  /// In en, this message translates to:
+  /// **'Gallery'**
+  String get completionCaptureGalleryShort;
 
   /// No description provided for @completionCaptureGuidance.
   ///
@@ -1160,10 +1214,10 @@ abstract class AppLocalizations {
   /// **'{count, plural, =1{1 drop-off point around {place}, {distance} away.} other{{count} drop-off points around {place}. The nearest is {distance} away.}}'**
   String dropoffPlotLabel(int count, String place, String distance);
 
-  /// Key under the drop-off plot, next to a filled dot: the place lists what it accepts.
+  /// Map key on the drop-off plot and the map's places sheet, next to a dot in material colors: the place lists what it accepts, including the chosen materials.
   ///
   /// In en, this message translates to:
-  /// **'Materials listed'**
+  /// **'Takes your materials'**
   String get dropoffPlotListed;
 
   /// Compass letter for north on the drop-off plot.
@@ -1178,10 +1232,10 @@ abstract class AppLocalizations {
   /// **'Rings every {distance}'**
   String dropoffPlotRings(String distance);
 
-  /// Key under the drop-off plot, next to a hollow ring: the place does not list what it accepts.
+  /// Map key on the drop-off plot and the map's places sheet, next to a hollow ring: the place does not list what it accepts.
   ///
   /// In en, this message translates to:
-  /// **'Not listed'**
+  /// **'Materials not listed'**
   String get dropoffPlotUnlisted;
 
   /// No description provided for @dropoffPlotYou.
@@ -1703,7 +1757,7 @@ abstract class AppLocalizations {
   /// No description provided for @ideaBasedOn.
   ///
   /// In en, this message translates to:
-  /// **'Based on'**
+  /// **'Sources'**
   String get ideaBasedOn;
 
   /// No description provided for @ideaBefore.
@@ -1861,6 +1915,12 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Your impact starts with one scan'**
   String get impactEmptyTitle;
+
+  /// Impact tab error: the local database could not be read. Says what still works.
+  ///
+  /// In en, this message translates to:
+  /// **'Kanz couldn\'t read the scans and projects saved on this phone. Scanning still works.'**
+  String get impactErrorMessage;
 
   /// No description provided for @impactErrorTitle.
   ///
@@ -2072,54 +2132,6 @@ abstract class AppLocalizations {
   /// **'How handy are you?'**
   String get onboardingSkillTitle;
 
-  /// No description provided for @onboardingToolGroupBuilding.
-  ///
-  /// In en, this message translates to:
-  /// **'Drilling and fixing'**
-  String get onboardingToolGroupBuilding;
-
-  /// No description provided for @onboardingToolGroupCount.
-  ///
-  /// In en, this message translates to:
-  /// **'{selected} of {total} selected'**
-  String onboardingToolGroupCount(int selected, int total);
-
-  /// No description provided for @onboardingToolGroupCutting.
-  ///
-  /// In en, this message translates to:
-  /// **'Cutting'**
-  String get onboardingToolGroupCutting;
-
-  /// No description provided for @onboardingToolGroupFinishing.
-  ///
-  /// In en, this message translates to:
-  /// **'Sanding and painting'**
-  String get onboardingToolGroupFinishing;
-
-  /// No description provided for @onboardingToolGroupJoining.
-  ///
-  /// In en, this message translates to:
-  /// **'Gluing and fastening'**
-  String get onboardingToolGroupJoining;
-
-  /// No description provided for @onboardingToolGroupMeasuring.
-  ///
-  /// In en, this message translates to:
-  /// **'Measuring'**
-  String get onboardingToolGroupMeasuring;
-
-  /// No description provided for @onboardingToolGroupOther.
-  ///
-  /// In en, this message translates to:
-  /// **'Other tools'**
-  String get onboardingToolGroupOther;
-
-  /// No description provided for @onboardingToolGroupSewing.
-  ///
-  /// In en, this message translates to:
-  /// **'Sewing'**
-  String get onboardingToolGroupSewing;
-
   /// No description provided for @onboardingToolsBody.
   ///
   /// In en, this message translates to:
@@ -2234,12 +2246,6 @@ abstract class AppLocalizations {
   /// **'Only the photo you take is sent for analysis, with its location data removed.'**
   String get permissionsCameraReason2;
 
-  /// No description provided for @permissionsCameraReason3.
-  ///
-  /// In en, this message translates to:
-  /// **'Rather not? Pick a photo from your gallery instead.'**
-  String get permissionsCameraReason3;
-
   /// No description provided for @permissionsCameraRestricted.
   ///
   /// In en, this message translates to:
@@ -2330,12 +2336,6 @@ abstract class AppLocalizations {
   /// **'Kanz reads your position only when it searches for drop-off points.'**
   String get permissionsLocationReason2;
 
-  /// No description provided for @permissionsLocationReason3.
-  ///
-  /// In en, this message translates to:
-  /// **'Rather not? Choose your city and Kanz searches around its centre.'**
-  String get permissionsLocationReason3;
-
   /// No description provided for @permissionsLocationRestricted.
   ///
   /// In en, this message translates to:
@@ -2387,7 +2387,7 @@ abstract class AppLocalizations {
   /// No description provided for @resultsBasedOn.
   ///
   /// In en, this message translates to:
-  /// **'Based on'**
+  /// **'Sources'**
   String get resultsBasedOn;
 
   /// No description provided for @resultsBeforeYouGo.
@@ -3488,6 +3488,18 @@ abstract class AppLocalizations {
   /// **'Language'**
   String get settingsLanguage;
 
+  /// The language named in the current UI language, for the phone-language status line (unlike commonLanguageArabic, which is always written in Arabic).
+  ///
+  /// In en, this message translates to:
+  /// **'Arabic'**
+  String get settingsLanguageNameArabic;
+
+  /// No description provided for @settingsLanguageNameEnglish.
+  ///
+  /// In en, this message translates to:
+  /// **'English'**
+  String get settingsLanguageNameEnglish;
+
   /// No description provided for @settingsLanguageNote.
   ///
   /// In en, this message translates to:
@@ -3497,7 +3509,7 @@ abstract class AppLocalizations {
   /// No description provided for @settingsLanguageSystemDetail.
   ///
   /// In en, this message translates to:
-  /// **'Now {language}'**
+  /// **'Currently {language}'**
   String settingsLanguageSystemDetail(String language);
 
   /// No description provided for @settingsLicenses.
@@ -4022,12 +4034,6 @@ abstract class AppLocalizations {
   /// **'Update swaps'**
   String get swapsUpdate;
 
-  /// No description provided for @tutorialAdaptAdd.
-  ///
-  /// In en, this message translates to:
-  /// **'Add a tool'**
-  String get tutorialAdaptAdd;
-
   /// No description provided for @tutorialAdaptBody.
   ///
   /// In en, this message translates to:
@@ -4039,12 +4045,6 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Couldn\'t rewrite the tutorial. {reason}'**
   String tutorialAdaptFailed(String reason);
-
-  /// No description provided for @tutorialAdaptHave.
-  ///
-  /// In en, this message translates to:
-  /// **'You have'**
-  String get tutorialAdaptHave;
 
   /// No description provided for @tutorialAdaptOffline.
   ///
@@ -4427,7 +4427,7 @@ abstract class AppLocalizations {
   /// No description provided for @tutorialSourcesLabel.
   ///
   /// In en, this message translates to:
-  /// **'Based on'**
+  /// **'Sources'**
   String get tutorialSourcesLabel;
 
   /// No description provided for @tutorialSpeaking.

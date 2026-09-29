@@ -34,5 +34,7 @@
 
   "impactEmptyTitle": "Your impact starts with one scan",
   "impactEmptyMessage": "Scan something you're about to throw away, then upcycle, recycle or donate it. Each item you mark shows up here.",
-  "impactErrorTitle": "Your impact didn't load"
+  "impactErrorTitle": "Your impact didn't load",
+  "impactErrorMessage": "Kanz couldn't read the scans and projects saved on this phone. Scanning still works.",
+  "@impactErrorMessage": {"description": "Impact tab error: the local database could not be read. Says what still works."}
 }

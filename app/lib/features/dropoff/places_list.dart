@@ -221,7 +221,7 @@ class PlaceSkeletonList extends StatelessWidget {
               KanzSpace.gutter,
               KanzSpace.s8,
             ),
-            child: Skeleton(height: 188, borderRadius: KanzRadii.cardAll),
+            child: _PlotSkeleton(),
           ),
         Padding(
           padding: const EdgeInsetsDirectional.fromSTEB(
@@ -304,6 +304,62 @@ class PlaceSkeletonList extends StatelessWidget {
             ),
           ),
       ],
+    );
+  }
+}
+
+/// Stands in for the places plot: the card, the drawing at the plot's own
+/// height, and three short key lines under a hairline, so the list does not
+/// jump when the results arrive.
+class _PlotSkeleton extends StatelessWidget {
+  const _PlotSkeleton();
+
+  @override
+  Widget build(BuildContext context) {
+    final c = context.kanzColors;
+    return DecoratedBox(
+      decoration: BoxDecoration(
+        color: c.surface,
+        borderRadius: KanzRadii.cardAll,
+        border: Border.all(color: c.line),
+      ),
+      child: ClipRRect(
+        borderRadius: KanzRadii.cardAll,
+        child: LayoutBuilder(
+          builder: (context, constraints) => Column(
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: [
+              Skeleton(
+                // The plot's drawing height (see PlacesPlot).
+                height: (constraints.maxWidth * 0.5).clamp(152.0, 208.0),
+                borderRadius: BorderRadius.zero,
+              ),
+              Divider(height: 1, color: c.line),
+              Padding(
+                padding: const EdgeInsets.all(KanzSpace.s16),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  spacing: KanzSpace.s12,
+                  children: [
+                    for (final width in const [148.0, 172.0, 124.0])
+                      Row(
+                        spacing: KanzSpace.s8,
+                        children: [
+                          const Skeleton(
+                            width: 12,
+                            height: 12,
+                            borderRadius: KanzRadii.chipAll,
+                          ),
+                          Skeleton(width: width, height: 12),
+                        ],
+                      ),
+                  ],
+                ),
+              ),
+            ],
+          ),
+        ),
+      ),
     );
   }
 }

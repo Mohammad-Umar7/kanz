@@ -277,19 +277,35 @@ class _CompletionScreenState extends ConsumerState<CompletionScreen> {
                     onPressed: () => unawaited(_addPhoto(project.id)),
                   ),
           ),
-        const SizedBox(height: KanzSpace.s16),
-        KanzButton.secondary(
-          key: const ValueKey('share-project'),
-          label: visuals.before != null && visuals.after != null
-              ? l10n.completionShare
-              : l10n.completionShareProject,
-          icon: KanzIcons.share,
-          expand: true,
-          loading: _sharing,
-          loadingLabel: l10n.completionSharing,
-          onPressed: () => unawaited(_share(visuals, project)),
-        ),
-        const SizedBox(height: KanzSpace.s32),
+        // Until there is a result picture, adding one is what gives the
+        // share card its point, so sharing waits as a quiet link under it.
+        // With a result it is a full button for the before and after.
+        if (visuals.after == null) ...[
+          const SizedBox(height: KanzSpace.s4),
+          InlineAction(
+            key: const ValueKey('share-project'),
+            icon: KanzIcons.share,
+            label: l10n.completionShareProject,
+            busy: _sharing,
+            busyLabel: l10n.completionSharing,
+            onPressed: () => unawaited(_share(visuals, project)),
+          ),
+          const SizedBox(height: KanzSpace.s24),
+        ] else ...[
+          const SizedBox(height: KanzSpace.s16),
+          KanzButton.secondary(
+            key: const ValueKey('share-project'),
+            label: visuals.before != null
+                ? l10n.completionShare
+                : l10n.completionShareProject,
+            icon: KanzIcons.share,
+            expand: true,
+            loading: _sharing,
+            loadingLabel: l10n.completionSharing,
+            onPressed: () => unawaited(_share(visuals, project)),
+          ),
+          const SizedBox(height: KanzSpace.s32),
+        ],
         DataGrid(
           columns: 3,
           entries: [

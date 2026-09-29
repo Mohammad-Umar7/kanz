@@ -44,8 +44,10 @@ class StepNumeral extends StatelessWidget {
   }
 }
 
-/// Tutorial progress as one segment per step: done steps in ink, the
-/// current step in clay, upcoming steps sunken.
+/// Tutorial progress as one segment per step: done steps in
+/// [KanzColors.progressDone] (ink on paper, a step down in dark mode so they
+/// never outshine the current step), the current step in clay, upcoming
+/// steps on the track.
 class StepProgressBar extends StatelessWidget {
   const StepProgressBar({
     super.key,
@@ -86,7 +88,7 @@ class StepProgressBar extends StatelessWidget {
                 decoration: BoxDecoration(
                   color: i == current
                       ? c.accent
-                      : (isDone(i) ? c.ink : c.track),
+                      : (isDone(i) ? c.progressDone : c.track),
                   borderRadius: const BorderRadius.all(Radius.circular(2)),
                 ),
               ),

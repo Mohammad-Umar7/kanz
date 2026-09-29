@@ -38,8 +38,8 @@
   "dropoffPlotYou": "موقعك",
   "dropoffPlotCentreOf": "وسط {city}",
   "dropoffPlotRings": "المسافة بين الحلقات {distance}",
-  "dropoffPlotListed": "المواد مذكورة",
-  "dropoffPlotUnlisted": "غير مذكورة",
+  "dropoffPlotListed": "تستقبل موادك",
+  "dropoffPlotUnlisted": "المواد غير مذكورة",
   "dropoffPlotNorth": "ش",
 
   "dropoffDirectionOfPlace": "{direction, select, n{إلى الشمال من وسط {place}} ne{إلى الشمال الشرقي من وسط {place}} e{إلى الشرق من وسط {place}} se{إلى الجنوب الشرقي من وسط {place}} s{إلى الجنوب من وسط {place}} sw{إلى الجنوب الغربي من وسط {place}} w{إلى الغرب من وسط {place}} nw{إلى الشمال الغربي من وسط {place}} other{بالقرب من وسط {place}}}",

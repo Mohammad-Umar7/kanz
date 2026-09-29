@@ -55,7 +55,7 @@
   "commonErrorAiInvalidOutput": "The AI's answer didn't make sense this time. Try again.",
   "commonErrorAiQuotaExhausted": "The AI quota on this server is used up for now.",
   "commonErrorAiTimeout": "The AI took too long to answer. Try again.",
-  "commonErrorAiUnavailable": "The AI service is busy right now. Try again in a moment.",
+  "commonErrorAiUnavailable": "Kanz's AI is busy right now. Saved scans and tutorials still open.",
   "commonErrorBadRequest": "Something in that request was off. Please try again.",
   "commonErrorBadResponse": "The server sent an answer Kanz didn't expect. Try again.",
   "commonErrorCancelled": "Cancelled.",
@@ -166,6 +166,24 @@
   "commonThemeDark": "Dark",
   "commonThemeLight": "Light",
   "commonThemeSystem": "Match phone",
+  "commonToolGroupBuilding": "Drilling and fixing",
+  "commonToolGroupCount": "{selected} of {total} selected",
+  "@commonToolGroupCount": {
+    "placeholders": {
+      "selected": {
+        "type": "int"
+      },
+      "total": {
+        "type": "int"
+      }
+    }
+  },
+  "commonToolGroupCutting": "Cutting",
+  "commonToolGroupFinishing": "Sanding and painting",
+  "commonToolGroupJoining": "Gluing and fastening",
+  "commonToolGroupMeasuring": "Measuring",
+  "commonToolGroupOther": "Other tools",
+  "commonToolGroupSewing": "Sewing",
   "commonWeightKg": "{kg} kg",
   "@commonWeightKg": {
     "placeholders": {
@@ -185,6 +203,10 @@
   "completionCameraNone": "This phone's camera couldn't be opened. You can choose a photo from your gallery instead.",
   "completionCameraTitle": "The camera isn't available",
   "completionCaptureGallery": "Choose from gallery",
+  "completionCaptureGalleryShort": "Gallery",
+  "@completionCaptureGalleryShort": {
+    "description": "One word under the gallery control on the camera band, as on the scan viewfinder."
+  },
   "completionCaptureGuidance": "Photograph what you made",
   "completionCaptureShutter": "Take the photo",
   "completionCaptureStarting": "Opening the camera",
@@ -410,9 +432,9 @@
       }
     }
   },
-  "dropoffPlotListed": "Materials listed",
+  "dropoffPlotListed": "Takes your materials",
   "@dropoffPlotListed": {
-    "description": "Key under the drop-off plot, next to a filled dot: the place lists what it accepts."
+    "description": "Map key on the drop-off plot and the map's places sheet, next to a dot in material colors: the place lists what it accepts, including the chosen materials."
   },
   "dropoffPlotNorth": "N",
   "@dropoffPlotNorth": {
@@ -426,9 +448,9 @@
       }
     }
   },
-  "dropoffPlotUnlisted": "Not listed",
+  "dropoffPlotUnlisted": "Materials not listed",
   "@dropoffPlotUnlisted": {
-    "description": "Key under the drop-off plot, next to a hollow ring: the place does not list what it accepts."
+    "description": "Map key on the drop-off plot and the map's places sheet, next to a hollow ring: the place does not list what it accepts."
   },
   "dropoffPlotYou": "Your location",
   "dropoffSearching": "Looking for drop-off points",
@@ -609,7 +631,7 @@
   "homeUnfinishedScan": "Unfinished scan",
   "ideaAfter": "After",
   "ideaBackToResults": "Back to results",
-  "ideaBasedOn": "Based on",
+  "ideaBasedOn": "Sources",
   "ideaBefore": "Before",
   "ideaCompare": "Compare before and after",
   "ideaDifficulty": "Difficulty",
@@ -646,6 +668,10 @@
   "impactCo2Label": "Emissions avoided",
   "impactEmptyMessage": "Scan something you're about to throw away, then upcycle, recycle or donate it. Each item you mark shows up here.",
   "impactEmptyTitle": "Your impact starts with one scan",
+  "impactErrorMessage": "Kanz couldn't read the scans and projects saved on this phone. Scanning still works.",
+  "@impactErrorMessage": {
+    "description": "Impact tab error: the local database could not be read. Says what still works."
+  },
   "impactErrorTitle": "Your impact didn't load",
   "impactEstimateLabel": "Estimate",
   "impactHowItems": "Items you mark as recycled, donated or disposed of safely from a scan's results.",
@@ -704,24 +730,6 @@
     }
   },
   "onboardingSkillTitle": "How handy are you?",
-  "onboardingToolGroupBuilding": "Drilling and fixing",
-  "onboardingToolGroupCount": "{selected} of {total} selected",
-  "@onboardingToolGroupCount": {
-    "placeholders": {
-      "selected": {
-        "type": "int"
-      },
-      "total": {
-        "type": "int"
-      }
-    }
-  },
-  "onboardingToolGroupCutting": "Cutting",
-  "onboardingToolGroupFinishing": "Sanding and painting",
-  "onboardingToolGroupJoining": "Gluing and fastening",
-  "onboardingToolGroupMeasuring": "Measuring",
-  "onboardingToolGroupOther": "Other tools",
-  "onboardingToolGroupSewing": "Sewing",
   "onboardingToolsBody": "Ideas and tutorials use only these. Safety gear is always listed.",
   "onboardingToolsCount": "{count, plural, =0{No tools selected} =1{1 tool selected} other{{count} tools selected}}",
   "@onboardingToolsCount": {
@@ -751,7 +759,6 @@
   "permissionsCameraGallery": "Pick from gallery instead",
   "permissionsCameraReason1": "Point the camera at an item and Kanz names its materials and condition.",
   "permissionsCameraReason2": "Only the photo you take is sent for analysis, with its location data removed.",
-  "permissionsCameraReason3": "Rather not? Pick a photo from your gallery instead.",
   "permissionsCameraRestricted": "The camera can't be turned on for Kanz on this phone. Pick a photo from your gallery instead.",
   "permissionsCameraTitle": "Show Kanz what you're about to throw away",
   "permissionsCityBody": "Kanz looks for drop-off points around the city centre. You can change it any time in Settings.",
@@ -767,7 +774,6 @@
   "permissionsLocationDenied": "Location wasn't allowed. Ask again, or choose a city.",
   "permissionsLocationReason1": "Recycling and donation points are sorted by distance from you.",
   "permissionsLocationReason2": "Kanz reads your position only when it searches for drop-off points.",
-  "permissionsLocationReason3": "Rather not? Choose your city and Kanz searches around its centre.",
   "permissionsLocationRestricted": "Location can't be turned on for Kanz on this phone. Choose a city instead.",
   "permissionsLocationTitle": "Find drop-off points near you",
   "permissionsNotAllowed": "Not allowed",
@@ -797,7 +803,7 @@
       }
     }
   },
-  "resultsBasedOn": "Based on",
+  "resultsBasedOn": "Sources",
   "resultsBeforeYouGo": "Before you go",
   "resultsBoxSemantics": "{name}, {category}, {confidence} confidence",
   "@resultsBoxSemantics": {
@@ -1151,8 +1157,13 @@
     }
   },
   "settingsLanguage": "Language",
+  "settingsLanguageNameArabic": "Arabic",
+  "@settingsLanguageNameArabic": {
+    "description": "The language named in the current UI language, for the phone-language status line (unlike commonLanguageArabic, which is always written in Arabic)."
+  },
+  "settingsLanguageNameEnglish": "English",
   "settingsLanguageNote": "Ideas, tutorials and spoken steps use this language too.",
-  "settingsLanguageSystemDetail": "Now {language}",
+  "settingsLanguageSystemDetail": "Currently {language}",
   "@settingsLanguageSystemDetail": {
     "placeholders": {
       "language": {
@@ -1329,7 +1340,6 @@
   },
   "swapsTry": "Try",
   "swapsUpdate": "Update swaps",
-  "tutorialAdaptAdd": "Add a tool",
   "tutorialAdaptBody": "Kanz rewrites the steps for your skill and the tools you have.",
   "tutorialAdaptFailed": "Couldn't rewrite the tutorial. {reason}",
   "@tutorialAdaptFailed": {
@@ -1339,7 +1349,6 @@
       }
     }
   },
-  "tutorialAdaptHave": "You have",
   "tutorialAdaptOffline": "Adapting needs a connection.",
   "tutorialAdaptOfflineRow": "Adapting needs a connection",
   "tutorialAdaptProgressNote": "Your progress starts over, because the steps change.",
@@ -1475,7 +1484,7 @@
   "tutorialRedraw": "Redraw picture",
   "tutorialSafetyNotes": "Before you start",
   "tutorialSafetyTitle": "Safety",
-  "tutorialSourcesLabel": "Based on",
+  "tutorialSourcesLabel": "Sources",
   "tutorialSpeaking": "Reading step {number} aloud",
   "@tutorialSpeaking": {
     "placeholders": {

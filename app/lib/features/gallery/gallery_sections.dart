@@ -552,6 +552,7 @@ class _RecognitionSectionState extends State<RecognitionSection> {
       stateLabels: x.states,
       recyclable: recyclable,
       recyclableLabel: x.recyclable,
+      recyclableDetail: x.recyclableDetail,
       confidence: x.confidence,
       hazardLabel: hazard,
       note: compact ? null : x.note,
@@ -1067,7 +1068,6 @@ class StatesSection extends StatelessWidget {
           child: _rationale(s.camera, PermissionArt.camera, const [
             KanzIcons.camera,
             KanzIcons.frame,
-            KanzIcons.gallery,
           ]),
         ),
         _Demo(
@@ -1076,7 +1076,6 @@ class StatesSection extends StatelessWidget {
           child: _rationale(s.location, PermissionArt.location, const [
             KanzIcons.dropOff,
             KanzIcons.safety,
-            KanzIcons.map,
           ]),
         ),
       ],

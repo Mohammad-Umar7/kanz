@@ -4,13 +4,12 @@ library;
 
 import 'dart:math' as math;
 
-import 'package:flutter/foundation.dart' show kDebugMode;
+import 'package:flutter/foundation.dart' show listEquals;
 import 'package:flutter/widgets.dart';
 
 import '../../core/data/models/models.dart';
 import '../../core/data/vocab/vocab.dart';
 import '../../core/design/design.dart';
-import '../../core/network/api_exception.dart';
 import '../../core/state/location_resolver.dart';
 import '../../l10n/l10n.dart';
 
@@ -67,63 +66,85 @@ String? searchPlaceName(
 }
 
 /// How a place is marked on the plot and the map. A filled dot means the
-/// listing names what it accepts: in that material's color when it is one
-/// material, in ink when it is several. A hollow ring means the materials
-/// are not listed (most OpenStreetMap points); it takes the material's
-/// color when the place was found for one material only, and stays
-/// neutral otherwise, so filled dots always lead.
+/// listing names what it accepts; it takes the color of the accepted
+/// material that matches the user's chips, or is split into two half-discs
+/// when two or more match. A hollow ring means the materials are not listed
+/// (most OpenStreetMap points); it takes the material's color when the
+/// place was found for one material only, and stays neutral otherwise.
+/// No mark is ever ink: the material colors lead, like the chips above.
 @immutable
 class PinMark {
-  const PinMark({required this.listed, this.materialId});
+  const PinMark({required this.listed, this.materialIds = const []});
 
   /// The listing names the materials it accepts.
   final bool listed;
 
-  /// The one material the pin is colored by; null for several or unknown.
-  final String? materialId;
+  /// The material colors of the mark, at most two (a split dot); empty for
+  /// a neutral ring.
+  final List<String> materialIds;
 
   @override
   bool operator ==(Object other) =>
       other is PinMark &&
       other.listed == listed &&
-      other.materialId == materialId;
+      listEquals(other.materialIds, materialIds);
 
   @override
-  int get hashCode => Object.hash(listed, materialId);
+  int get hashCode => Object.hash(listed, Object.hashAll(materialIds));
 }
 
-/// The [PinMark] for [place]: its accepted materials when listed, else the
-/// materials of the categories it was found for.
-PinMark pinMarkOf(Place place, Map<String, FacilityCategory> catalog) {
+/// The material ids behind the selected category chips. Keys the catalog
+/// does not know (it failed to load) still count when they name a material.
+Set<String> selectedMaterialIds(
+  Iterable<String> categoryKeys,
+  Map<String, FacilityCategory> catalog,
+) => {
+  for (final key in categoryKeys)
+    ...?catalog[key]?.materialCategories.map((m) => m.id),
+  for (final key in categoryKeys)
+    if (catalog[key] == null) ?MaterialCategory.tryFromId(key)?.id,
+};
+
+/// The [PinMark] for [place]. Listed: the accepted materials that match
+/// [selected] (material ids, see [selectedMaterialIds]), in the listing's
+/// order, else its first accepted material. Unlisted: the materials of the
+/// categories it was found for, when there is only one.
+PinMark pinMarkOf(
+  Place place,
+  Map<String, FacilityCategory> catalog, {
+  Set<String> selected = const {},
+}) {
   final accepted = place.acceptedMaterials;
   if (accepted != null && accepted.isNotEmpty) {
-    final ids = {for (final m in accepted) m.id};
-    return PinMark(
-      listed: true,
-      materialId: ids.length == 1 ? ids.first : null,
-    );
+    final ids = {for (final m in accepted) m.id}.toList();
+    final matching = ids.where(selected.contains).toList();
+    final shown = matching.isEmpty ? ids.take(1) : matching.take(2);
+    return PinMark(listed: true, materialIds: shown.toList(growable: false));
   }
-  final materials = <String>{
-    for (final key in place.categoryKeys)
-      ...?catalog[key]?.materialCategories.map((m) => m.id),
-    for (final key in place.categoryKeys)
-      if (catalog[key] == null) ?MaterialCategory.tryFromId(key)?.id,
-  };
+  final materials = selectedMaterialIds(place.categoryKeys, catalog);
   return PinMark(
     listed: false,
-    materialId: materials.length == 1 ? materials.first : null,
+    materialIds: materials.length == 1 ? [materials.first] : const [],
   );
 }
 
-/// The color a pin is drawn in: the material color, ink for a listed place
-/// that takes several materials, the strong hairline for an unlisted one.
-Color pinColor(BuildContext context, PinMark? mark) {
-  final c = context.kanzColors;
-  return switch (mark) {
-    PinMark(:final materialId?) => KanzMaterialColors.pin(context, materialId),
-    PinMark(listed: true) => c.ink,
-    _ => c.lineStrong,
-  };
+/// The colors a pin is drawn in: one or two material colors, or the strong
+/// hairline for a ring that no single material explains.
+List<Color> pinColors(BuildContext context, PinMark? mark) {
+  final ids = mark?.materialIds ?? const <String>[];
+  if (ids.isEmpty) return [context.kanzColors.lineStrong];
+  return [for (final id in ids) KanzMaterialColors.pin(context, id)];
+}
+
+/// The mark the key shows for "takes your materials": the nearest listed
+/// place's own mark, so the key matches a dot the user can see. Null when
+/// no place is listed.
+PinMark? keyListedMark(List<Place> places, Map<String, PinMark> marks) {
+  for (final place in places) {
+    final mark = marks[place.id];
+    if (mark != null && mark.listed) return mark;
+  }
+  return null;
 }
 
 /// East and north offsets of [point] from [origin] in kilometres (a flat
@@ -178,13 +199,4 @@ String? acceptsLabel(
       for (final m in accepted) materialLabel(vocab, locale, m),
     ], sentence: true),
   );
-}
-
-/// What support needs to find a failure: the request id, with the error
-/// code as the backend spells it ("places_unavailable") in debug builds.
-/// Null when there is nothing to look up.
-String? supportCode(ApiException error) {
-  final id = error.requestId;
-  if (id == null) return null;
-  return [if (kDebugMode) error.code.wireId, id].join(' · ');
 }

@@ -63,7 +63,7 @@ class ImpactScreen extends ConsumerWidget {
       AsyncError() => [
         ErrorState(
           title: l10n.impactErrorTitle,
-          message: l10n.commonErrorGeneric,
+          message: l10n.impactErrorMessage,
           retryLabel: l10n.commonRetry,
           onRetry: () => _retry(ref),
         ),

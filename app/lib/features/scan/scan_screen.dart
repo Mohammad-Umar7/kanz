@@ -108,15 +108,22 @@ Future<void> startPhotoScan(
       context,
     ).timeout(const Duration(seconds: 1), onTimeout: () {});
   }
-  if (context.mounted) context.go(AppRoutes.results(id));
+  if (context.mounted) openResults(context, id);
 }
 
 /// Starts a scan from a description and opens its results.
 void startTextScan(BuildContext context, WidgetRef ref, String text) {
   final id = newScanId();
   unawaited(ref.read(scanSessionProvider(id).notifier).startFromText(text));
-  context.go(AppRoutes.results(id));
+  openResults(context, id);
 }
+
+/// Opens a new scan's results in place of the scan page. The pages under it
+/// stay, so back from the results returns to where the scan was started
+/// (Home, History, Impact) with a real pop, and the captured photo still
+/// flies into the results under [scanPhotoHeroTag].
+void openResults(BuildContext context, String scanId) =>
+    context.pushReplacement(AppRoutes.results(scanId));
 
 /// Leaves the scan flow: back to where it was opened, or Home when the scan
 /// screen is the only page (it was opened with `context.go`).

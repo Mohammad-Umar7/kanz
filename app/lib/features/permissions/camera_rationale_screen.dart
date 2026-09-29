@@ -44,10 +44,12 @@ class _CameraRationaleScreenState
     final restricted = outcome == AskOutcome.restricted;
     return RationalePage(
       rationale: PermissionRationale(
+        pinActions: true,
         art: PermissionArt.camera,
         title: l10n.permissionsCameraTitle,
         // Restricted by policy: the reasons no longer apply, only the
-        // way around it does.
+        // way around it does. The alternative is the tertiary action, so
+        // no reason repeats it.
         reasons: [
           if (!restricted) ...[
             RationaleReason(
@@ -57,10 +59,6 @@ class _CameraRationaleScreenState
             RationaleReason(
               icon: KanzIcons.lock,
               text: l10n.permissionsCameraReason2,
-            ),
-            RationaleReason(
-              icon: KanzIcons.gallery,
-              text: l10n.permissionsCameraReason3,
             ),
           ],
         ],

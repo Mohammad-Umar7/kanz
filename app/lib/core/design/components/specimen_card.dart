@@ -57,6 +57,7 @@ class SpecimenCard extends StatelessWidget {
     required this.recyclable,
     required this.recyclableLabel,
     required this.confidence,
+    this.recyclableDetail,
     this.index,
     this.hazardLabel,
     this.note,
@@ -82,8 +83,13 @@ class SpecimenCard extends StatelessWidget {
   final List<String> stateLabels;
   final SpecimenRecyclable recyclable;
 
-  /// Formatted recyclability, for example "Yes · glass bank".
+  /// The recyclability status in words, for example "Recyclable".
   final String recyclableLabel;
+
+  /// Where it goes, for example "Glass bottle bank": a second line under
+  /// the status in secondary text. Two lines by design, since a half-width
+  /// cell would break one "status · stream" line after the separator.
+  final String? recyclableDetail;
 
   /// Formatted confidence, for example "93%".
   final String confidence;
@@ -162,6 +168,7 @@ class SpecimenCard extends StatelessWidget {
 
   Widget _recyclable(BuildContext context) {
     final c = context.kanzColors;
+    final t = context.textStyles;
     final (icon, color) = switch (recyclable) {
       SpecimenRecyclable.yes => (KanzIcons.checkCircle, c.ink),
       SpecimenRecyclable.conditional => (KanzIcons.info, c.ink),
@@ -176,7 +183,19 @@ class SpecimenCard extends StatelessWidget {
         ),
         const SizedBox(width: KanzSpace.s4),
         Expanded(
-          child: Text(recyclableLabel, style: context.textStyles.bodyMedium),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(recyclableLabel, style: t.bodyMedium),
+              if (recyclableDetail case final detail?) ...[
+                const SizedBox(height: KanzSpace.s2),
+                Text(
+                  detail,
+                  style: t.bodySmall?.copyWith(color: c.inkSecondary),
+                ),
+              ],
+            ],
+          ),
         ),
       ],
     );

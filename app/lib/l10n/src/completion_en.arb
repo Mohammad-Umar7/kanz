@@ -24,6 +24,8 @@
   "completionCaptureStarting": "Opening the camera",
   "completionCaptureShutter": "Take the photo",
   "completionCaptureGallery": "Choose from gallery",
+  "completionCaptureGalleryShort": "Gallery",
+  "@completionCaptureGalleryShort": {"description": "One word under the gallery control on the camera band, as on the scan viewfinder."},
   "completionCameraTitle": "The camera isn't available",
   "completionCameraDenied": "Allow the camera to photograph your project, or choose a photo you already took.",
   "completionCameraBlocked": "The camera is turned off for Kanz in your phone's settings. You can choose a photo from your gallery instead.",

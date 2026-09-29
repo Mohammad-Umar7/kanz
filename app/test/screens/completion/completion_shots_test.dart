@@ -127,22 +127,27 @@ void main() {
   for (final config in ShotConfig.matrix(sizes: const [ShotConfig.compact])) {
     testWidgets('made photo camera ${config.id}', (tester) async {
       final photos = await preparePhotos(tester);
-      final ar = config.locale.languageCode == 'ar';
       await takeShot(
         tester,
         name: 'completion_camera',
         config: config,
         precache: [photos.photoImage],
         localizationsDelegates: const [AppLocalizations.delegate],
-        child: MadePhotoViewfinder(
-          preview: Image(image: photos.afterImage, fit: BoxFit.cover),
-          guidance: ar ? 'صوّر ما صنعته' : 'Photograph what you made',
-          closeLabel: ar ? 'إغلاق' : 'Close',
-          shutterLabel: ar ? 'التقط الصورة' : 'Take the photo',
-          galleryLabel: ar ? 'اختر من المعرض' : 'Choose from gallery',
-          onShutter: () {},
-          onGallery: () {},
-          onClose: () {},
+        child: Builder(
+          builder: (context) {
+            final l10n = context.l10n;
+            return MadePhotoViewfinder(
+              preview: Image(image: photos.afterImage, fit: BoxFit.cover),
+              guidance: l10n.completionCaptureGuidance,
+              closeLabel: l10n.commonClose,
+              shutterLabel: l10n.completionCaptureShutter,
+              galleryLabel: l10n.completionCaptureGalleryShort,
+              gallerySemantics: l10n.completionCaptureGallery,
+              onShutter: () {},
+              onGallery: () {},
+              onClose: () {},
+            );
+          },
         ),
       );
     });

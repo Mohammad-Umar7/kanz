@@ -118,31 +118,24 @@ abstract class PermissionAskState<T extends ConsumerStatefulWidget>
   }
 }
 
-/// The scaffold both rationales share: close button and the rationale.
+/// The scaffold both rationales share: a close button over the rationale,
+/// which fills the rest of the screen with its actions pinned at the
+/// bottom (pass `pinActions: true`), above the gesture bar.
 class RationalePage extends StatelessWidget {
   const RationalePage({super.key, required this.rationale});
 
-  final Widget rationale;
+  final PermissionRationale rationale;
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       body: SafeArea(
+        // The pinned action bar keeps its own distance from the gesture bar.
+        bottom: false,
         child: Column(
           children: [
             const PageTopBar(close: true),
-            Expanded(
-              child: SingleChildScrollView(
-                padding: const EdgeInsets.only(bottom: KanzSpace.s32),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.stretch,
-                  children: [
-                    const SizedBox(height: KanzSpace.s8),
-                    rationale,
-                  ],
-                ),
-              ),
-            ),
+            Expanded(child: rationale),
           ],
         ),
       ),

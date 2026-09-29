@@ -2,12 +2,14 @@ import 'dart:async';
 import 'dart:math' as math;
 import 'dart:ui' as ui;
 
+import 'package:flutter/foundation.dart' show listEquals;
 import 'package:flutter/material.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 
 import '../../core/data/models/models.dart';
 import '../../core/design/design.dart';
 import 'place_info.dart';
+import 'places_plot.dart' show paintSplitDot;
 
 /// What the map view draws: the places, the selection and how to react.
 @immutable
@@ -27,8 +29,8 @@ class PlacesMapSpec {
   final List<Place> places;
   final GeoPoint center;
 
-  /// Place id to its mark: a filled dot when the listing names what it
-  /// accepts, a hollow ring when it does not.
+  /// Place id to its mark: a dot in material colors when the listing names
+  /// what it accepts, a hollow ring when it does not.
   final Map<String, PinMark> pinMarks;
   final ValueChanged<Place> onPinTap;
   final String semanticsLabel;
@@ -49,8 +51,9 @@ Widget googlePlacesMap(BuildContext context, PlacesMapSpec spec) =>
     PlacesGoogleMap(spec: spec);
 
 /// Google map in the Kanz map style with the same marks as the drawn plot
-/// (filled material dots, hollow rings for unlisted places) painted on a
-/// canvas; the selected pin is larger with an ink ring.
+/// (material dots, split in two for two matching materials, and hollow
+/// rings for unlisted places) painted on a canvas; the selected pin is
+/// larger with an ink ring.
 class PlacesGoogleMap extends StatefulWidget {
   const PlacesGoogleMap({super.key, required this.spec});
 
@@ -141,14 +144,14 @@ class _PlacesGoogleMapState extends State<PlacesGoogleMap> {
     );
   }
 
-  /// The pin for [fill], or null while it is being drawn (the marker then
+  /// The pin in [fills], or null while it is being drawn (the marker then
   /// appears a frame later instead of flashing Google's default pin).
   BitmapDescriptor? _icon(
-    Color fill, {
+    List<Color> fills, {
     required bool listed,
     required bool selected,
   }) {
-    final key = _PinKey(fill, listed: listed, selected: selected);
+    final key = _PinKey(fills, listed: listed, selected: selected);
     final cached = _icons[key];
     if (cached != null) return cached;
     if (_pending.add(key)) {
@@ -156,7 +159,7 @@ class _PlacesGoogleMapState extends State<PlacesGoogleMap> {
       final ratio = MediaQuery.devicePixelRatioOf(context);
       unawaited(
         _drawPin(
-          fill: fill,
+          fills: fills,
           ring: c.surface,
           outline: c.ink,
           listed: listed,
@@ -176,7 +179,7 @@ class _PlacesGoogleMapState extends State<PlacesGoogleMap> {
     final markers = <Marker>{
       for (final place in spec.places)
         if (_icon(
-              pinColor(context, spec.pinMarks[place.id]),
+              pinColors(context, spec.pinMarks[place.id]),
               listed: spec.pinMarks[place.id]?.listed ?? false,
               selected: place.id == spec.selectedId,
             )
@@ -219,28 +222,29 @@ class _PlacesGoogleMapState extends State<PlacesGoogleMap> {
 
 @immutable
 class _PinKey {
-  const _PinKey(this.fill, {required this.listed, required this.selected});
+  const _PinKey(this.fills, {required this.listed, required this.selected});
 
-  final Color fill;
+  final List<Color> fills;
   final bool listed;
   final bool selected;
 
   @override
   bool operator ==(Object other) =>
       other is _PinKey &&
-      other.fill == fill &&
+      listEquals(other.fills, fills) &&
       other.listed == listed &&
       other.selected == selected;
 
   @override
-  int get hashCode => Object.hash(fill, listed, selected);
+  int get hashCode => Object.hash(Object.hashAll(fills), listed, selected);
 }
 
-/// A circular pin in a paper ring with a hairline outline: a disc in [fill]
-/// for a listed place, a hollow ring in [fill] for an unlisted one. Selected
-/// pins are larger and ringed in ink.
+/// A circular pin in a paper ring with a hairline outline: a disc in
+/// [fills] (two half-discs for two) for a listed place, a hollow ring in
+/// the first fill for an unlisted one. Selected pins are larger and ringed
+/// in ink.
 Future<BitmapDescriptor> _drawPin({
-  required Color fill,
+  required List<Color> fills,
   required Color ring,
   required Color outline,
   required bool listed,
@@ -268,7 +272,7 @@ Future<BitmapDescriptor> _drawPin({
     mark = radius - 3.5;
   }
   if (listed) {
-    canvas.drawCircle(center, mark, Paint()..color = fill);
+    paintSplitDot(canvas, center, mark, fills);
   } else {
     const stroke = 1.75;
     canvas.drawCircle(
@@ -277,7 +281,7 @@ Future<BitmapDescriptor> _drawPin({
       Paint()
         ..style = PaintingStyle.stroke
         ..strokeWidth = stroke
-        ..color = fill,
+        ..color = fills.first,
     );
   }
   final image = await recorder.endRecording().toImage(px, px);

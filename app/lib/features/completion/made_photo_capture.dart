@@ -237,7 +237,8 @@ class _MadePhotoCaptureScreenState extends ConsumerState<MadePhotoCaptureScreen>
             : l10n.completionCaptureStarting,
         closeLabel: l10n.commonClose,
         shutterLabel: l10n.completionCaptureShutter,
-        galleryLabel: l10n.completionCaptureGallery,
+        galleryLabel: l10n.completionCaptureGalleryShort,
+        gallerySemantics: l10n.completionCaptureGallery,
         busy: _capturing,
         onShutter: live && !_capturing ? () => unawaited(_capture()) : null,
         onGallery: () => unawaited(_pickFromGallery()),
@@ -281,8 +282,9 @@ class _MadePhotoCaptureScreenState extends ConsumerState<MadePhotoCaptureScreen>
 
 /// The camera chrome for the project photo: close at the top, corner
 /// brackets, one line of guidance, then the gallery and the clay shutter on
-/// a dark band. Pure layout, so screenshot tests render it with a photo in
-/// place of the live [preview].
+/// a dark band. Like the scan viewfinder it is drawn with the dark palette
+/// in both themes, because the camera picture has no theme. Pure layout, so
+/// screenshot tests render it with a photo in place of the live [preview].
 class MadePhotoViewfinder extends StatelessWidget {
   const MadePhotoViewfinder({
     super.key,
@@ -291,6 +293,7 @@ class MadePhotoViewfinder extends StatelessWidget {
     required this.closeLabel,
     required this.shutterLabel,
     required this.galleryLabel,
+    required this.gallerySemantics,
     required this.onShutter,
     required this.onGallery,
     required this.onClose,
@@ -301,7 +304,12 @@ class MadePhotoViewfinder extends StatelessWidget {
   final String guidance;
   final String closeLabel;
   final String shutterLabel;
+
+  /// The short word under the gallery control ("Gallery").
   final String galleryLabel;
+
+  /// What the gallery control does, for screen readers.
+  final String gallerySemantics;
 
   /// Null while the camera is not ready.
   final VoidCallback? onShutter;
@@ -311,6 +319,15 @@ class MadePhotoViewfinder extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    // Same shutter, brackets and controls over the same scene in light and
+    // dark mode, matching the scan viewfinder.
+    return Theme(
+      data: KanzTheme.dark(locale: Localizations.localeOf(context)),
+      child: Builder(builder: _chrome),
+    );
+  }
+
+  Widget _chrome(BuildContext context) {
     final c = context.kanzColors;
     return Scaffold(
       backgroundColor: c.photoBackdrop,
@@ -405,6 +422,7 @@ class MadePhotoViewfinder extends StatelessWidget {
                         Expanded(
                           child: _GalleryAction(
                             label: galleryLabel,
+                            semanticsLabel: gallerySemantics,
                             onPressed: busy ? null : onGallery,
                           ),
                         ),
@@ -431,9 +449,14 @@ class MadePhotoViewfinder extends StatelessWidget {
 /// The gallery as a 48 dp ringed control on the band with its label under
 /// it; one button for screen readers.
 class _GalleryAction extends StatelessWidget {
-  const _GalleryAction({required this.label, required this.onPressed});
+  const _GalleryAction({
+    required this.label,
+    required this.semanticsLabel,
+    required this.onPressed,
+  });
 
   final String label;
+  final String semanticsLabel;
   final VoidCallback? onPressed;
 
   @override
@@ -441,7 +464,7 @@ class _GalleryAction extends StatelessWidget {
     return Semantics(
       button: true,
       enabled: onPressed != null,
-      label: label,
+      label: semanticsLabel,
       onTap: onPressed,
       excludeSemantics: true,
       child: Center(

@@ -2,7 +2,7 @@
   "@@locale": "en",
   "settingsTitle": "Settings",
   "settingsLanguage": "Language",
-  "settingsLanguageSystemDetail": "Now {language}",
+  "settingsLanguageSystemDetail": "Currently {language}",
   "@settingsLanguageSystemDetail": {
     "placeholders": {
       "language": {
@@ -10,6 +10,9 @@
       }
     }
   },
+  "settingsLanguageNameEnglish": "English",
+  "settingsLanguageNameArabic": "Arabic",
+  "@settingsLanguageNameArabic": {"description": "The language named in the current UI language, for the phone-language status line (unlike commonLanguageArabic, which is always written in Arabic)."},
   "settingsLanguageNote": "Ideas, tutorials and spoken steps use this language too.",
   "settingsTheme": "Appearance",
   "settingsWorkshop": "Your workshop",

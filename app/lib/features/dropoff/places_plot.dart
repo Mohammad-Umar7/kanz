@@ -1,5 +1,6 @@
 import 'dart:math' as math;
 
+import 'package:flutter/foundation.dart' show listEquals;
 import 'package:flutter/material.dart';
 
 import '../../core/data/models/models.dart';
@@ -8,11 +9,11 @@ import 'place_info.dart';
 
 /// A drawn field-guide plot of the results around the search centre: range
 /// rings, a north mark, a surveyor's cross for the centre and one mark per
-/// place at its real bearing and distance ([PinMark]: a filled dot when the
-/// listing names what it accepts, a hollow ring when it does not). A key
-/// under the plot names the centre, the ring spacing and the two marks. It
-/// gives the list a sense of place when there is no map; tapping a mark
-/// opens that place.
+/// place at its real bearing and distance ([PinMark]: a dot in material
+/// colors when the listing names what it accepts, a hollow ring when it
+/// does not). A key under the plot names the centre, the ring spacing and
+/// the two marks. It gives the list a sense of place when there is no map;
+/// tapping a mark opens that place.
 ///
 /// Geography never mirrors: east stays on the right in Arabic, like the
 /// bounding boxes on photos. Only the key follows the reading direction.
@@ -49,8 +50,8 @@ class PlacesPlot extends StatelessWidget {
   /// "Rings every 5 km" for the ring spacing the plot picked.
   final String Function(double km)? ringsLabel;
 
-  /// Key entries for the two marks ("Materials listed", "Not listed"),
-  /// shown when some places have no listed materials.
+  /// Key entries for the two marks ("Takes your materials", "Materials
+  /// not listed"), shown when some places have no listed materials.
   final String? listedLabel;
   final String? unlistedLabel;
 
@@ -99,7 +100,7 @@ class PlacesPlot extends StatelessWidget {
               painter: _PlotPainter(
                 layout: layout,
                 marks: marks,
-                colors: [for (final m in marks) pinColor(context, m)],
+                colors: [for (final m in marks) pinColors(context, m)],
                 line: c.line,
                 axis: c.lineStrong,
                 ink: c.ink,
@@ -110,8 +111,6 @@ class PlacesPlot extends StatelessWidget {
             ),
           );
           if (centerLabel == null) return plot;
-          final anyUnlisted = marks.any((m) => !m.listed);
-          final anyListed = marks.any((m) => m.listed);
           return Column(
             mainAxisSize: MainAxisSize.min,
             crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -137,24 +136,14 @@ class PlacesPlot extends StatelessWidget {
                         glyph: _RingsPainter(c.lineStrong),
                         label: ringsLabel!(layout.ringStepKm),
                       ),
-                    if (anyUnlisted && anyListed && listedLabel != null)
-                      _KeyEntry(
-                        glyph: _MarkPainter(
-                          const PinMark(listed: true),
-                          color: c.ink,
-                          surface: c.surface,
-                        ),
-                        label: listedLabel!,
-                      ),
-                    if (anyUnlisted && unlistedLabel != null)
-                      _KeyEntry(
-                        glyph: _MarkPainter(
-                          const PinMark(listed: false),
-                          color: c.lineStrong,
-                          surface: c.surface,
-                        ),
-                        label: unlistedLabel!,
-                      ),
+                    ...placeMarkKeyEntries(
+                      context,
+                      places: places,
+                      pinMarks: pinMarks,
+                      listedLabel: listedLabel,
+                      unlistedLabel: unlistedLabel,
+                      mono: true,
+                    ),
                   ],
                 ),
               ),
@@ -166,12 +155,54 @@ class PlacesPlot extends StatelessWidget {
   }
 }
 
-/// One entry of the key under the plot: a small drawn glyph and its label.
+/// The key entries for the place marks: "Takes your materials" next to the
+/// nearest listed place's own dot when some places are listed and some are
+/// not, and "Materials not listed" next to a ring when any place is
+/// unlisted. Empty when every mark is a colored dot (the chips above
+/// already name those colors).
+List<Widget> placeMarkKeyEntries(
+  BuildContext context, {
+  required List<Place> places,
+  required Map<String, PinMark> pinMarks,
+  required String? listedLabel,
+  required String? unlistedLabel,
+  bool mono = false,
+}) {
+  final c = context.kanzColors;
+  final anyUnlisted = places.any((p) => !(pinMarks[p.id]?.listed ?? false));
+  final listed = keyListedMark(places, pinMarks);
+  return [
+    if (anyUnlisted && listed != null && listedLabel != null)
+      _KeyEntry(
+        glyph: _MarkPainter(
+          listed,
+          colors: pinColors(context, listed),
+          surface: c.surface,
+        ),
+        label: listedLabel,
+        mono: mono,
+      ),
+    if (anyUnlisted && unlistedLabel != null)
+      _KeyEntry(
+        glyph: _MarkPainter(
+          const PinMark(listed: false),
+          colors: [c.lineStrong],
+          surface: c.surface,
+        ),
+        label: unlistedLabel,
+        mono: mono,
+      ),
+  ];
+}
+
+/// One entry of a map key: a small drawn glyph and its label, as a mono
+/// data label (under the plot) or a quiet caption (the map's sheet).
 class _KeyEntry extends StatelessWidget {
-  const _KeyEntry({required this.glyph, required this.label});
+  const _KeyEntry({required this.glyph, required this.label, this.mono = true});
 
   final CustomPainter glyph;
   final String label;
+  final bool mono;
 
   @override
   Widget build(BuildContext context) {
@@ -180,7 +211,11 @@ class _KeyEntry extends StatelessWidget {
       children: [
         CustomPaint(size: const Size.square(12), painter: glyph),
         const SizedBox(width: KanzSpace.s8),
-        Flexible(child: MonoLabel(label)),
+        Flexible(
+          child: mono
+              ? MonoLabel(label)
+              : Text(label, style: context.textStyles.bodySmall),
+        ),
       ],
     );
   }
@@ -315,20 +350,20 @@ void _paintCross(Canvas canvas, Offset at, Color ink, {double arm = 5}) {
     ..drawLine(at - Offset(0, arm), at + Offset(0, arm), paint);
 }
 
-/// A place's mark without its paper halo: a filled dot, or a hollow ring
-/// ([radius] is the outer edge in both cases, so the two read the same
-/// size).
+/// A place's mark without its paper halo: a filled dot (two half-discs for
+/// two [colors]), or a hollow ring ([radius] is the outer edge in both
+/// cases, so the two read the same size).
 void _paintMark(
   Canvas canvas,
   Offset at,
   PinMark mark,
-  Color color,
+  List<Color> colors,
   Color surface, {
   required double radius,
   double stroke = 1.5,
 }) {
   if (mark.listed) {
-    canvas.drawCircle(at, radius, Paint()..color = color);
+    paintSplitDot(canvas, at, radius, colors);
     return;
   }
   canvas
@@ -339,7 +374,33 @@ void _paintMark(
       Paint()
         ..style = PaintingStyle.stroke
         ..strokeWidth = stroke
-        ..color = color,
+        ..color = colors.first,
+    );
+}
+
+/// A disc in one color, or two half-discs in two: the first on the left,
+/// the second on the right (geography never mirrors, so neither does the
+/// mark). Shared with the map's pins so both views draw the same marks.
+void paintSplitDot(
+  Canvas canvas,
+  Offset at,
+  double radius,
+  List<Color> colors,
+) {
+  if (colors.length < 2) {
+    canvas.drawCircle(at, radius, Paint()..color = colors.first);
+    return;
+  }
+  // The whole disc in the first color, then the right half over it: one
+  // anti-aliased edge down the middle, so no background seam shows there.
+  canvas
+    ..drawCircle(at, radius, Paint()..color = colors[0])
+    ..drawArc(
+      Rect.fromCircle(center: at, radius: radius),
+      -math.pi / 2,
+      math.pi,
+      true,
+      Paint()..color = colors[1],
     );
 }
 
@@ -380,10 +441,10 @@ class _RingsPainter extends CustomPainter {
 
 /// A place mark as a key glyph.
 class _MarkPainter extends CustomPainter {
-  _MarkPainter(this.mark, {required this.color, required this.surface});
+  _MarkPainter(this.mark, {required this.colors, required this.surface});
 
   final PinMark mark;
-  final Color color;
+  final List<Color> colors;
   final Color surface;
 
   @override
@@ -391,14 +452,16 @@ class _MarkPainter extends CustomPainter {
     canvas,
     size.center(Offset.zero),
     mark,
-    color,
+    colors,
     surface,
     radius: 4.5,
   );
 
   @override
   bool shouldRepaint(_MarkPainter old) =>
-      old.mark != mark || old.color != color || old.surface != surface;
+      old.mark != mark ||
+      !listEquals(old.colors, colors) ||
+      old.surface != surface;
 }
 
 class _PlotPainter extends CustomPainter {
@@ -418,7 +481,7 @@ class _PlotPainter extends CustomPainter {
 
   /// Aligned with `layout.pins`.
   final List<PinMark> marks;
-  final List<Color> colors;
+  final List<List<Color>> colors;
   final Color line;
   final Color axis;
   final Color ink;
@@ -520,7 +583,7 @@ class _PlotPainter extends CustomPainter {
           pa[i].offset != pb[i].offset ||
           pa[i].emphasized != pb[i].emphasized ||
           a.marks[i] != b.marks[i] ||
-          a.colors[i] != b.colors[i]) {
+          !listEquals(a.colors[i], b.colors[i])) {
         return false;
       }
     }

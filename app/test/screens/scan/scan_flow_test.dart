@@ -1,5 +1,7 @@
 // What the scan screen does with each path: describe, gallery and the
 // camera's permission and fallback handling.
+import 'dart:async';
+
 import 'package:camera/camera.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
@@ -126,6 +128,27 @@ void main() {
     final id = log.sessions.keys.single;
     expect(log[id].calls, ['text:two old cotton shirts']);
     expect(router.state.matchedLocation, '/results/$id');
+  });
+
+  testWidgets('the results replace the scan page, so back returns Home', (
+    tester,
+  ) async {
+    final (log, router) = await open(tester, '/');
+    unawaited(router.push('/scan?mode=text'));
+    await pumpFrames(tester, 4);
+    await tester.enterText(find.byType(TextField), 'a stack of old magazines');
+    await tester.pump();
+    await tester.tap(find.widgetWithText(FilledButton, l10n.scanDescribeStart));
+    await pumpFrames(tester, 4);
+    final id = log.sessions.keys.single;
+    expect(router.state.matchedLocation, '/results/$id');
+
+    // One page under the results: Home, not the scan.
+    expect(router.canPop(), isTrue);
+    router.pop();
+    await pumpFrames(tester, 4);
+    expect(router.state.matchedLocation, '/');
+    expect(find.text('home'), findsOneWidget);
   });
 
   testWidgets('an example fills the description', (tester) async {

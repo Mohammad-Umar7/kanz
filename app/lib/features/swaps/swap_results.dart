@@ -7,7 +7,8 @@ import '../../l10n/l10n.dart';
 
 /// While the Swap Advisor works: a live line naming what it is looking at
 /// ("Finding swaps for plastic bags and cling film"), and two placeholder
-/// cards shaped like [SwapCard].
+/// cards shaped like [SwapCard]. The "Find swaps" button above already
+/// spins, so the line carries no second spinner.
 class SwapsLoading extends StatelessWidget {
   const SwapsLoading({super.key, required this.label});
 
@@ -23,25 +24,7 @@ class SwapsLoading extends StatelessWidget {
         children: [
           Semantics(
             liveRegion: true,
-            child: Row(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Padding(
-                  padding: const EdgeInsetsDirectional.only(top: 4),
-                  child: SizedBox.square(
-                    dimension: 12,
-                    child: CircularProgressIndicator(
-                      strokeWidth: 1.5,
-                      color: c.inkSecondary,
-                    ),
-                  ),
-                ),
-                const SizedBox(width: KanzSpace.s8),
-                Expanded(
-                  child: Text(label, style: context.textStyles.bodySmall),
-                ),
-              ],
-            ),
+            child: Text(label, style: context.textStyles.bodySmall),
           ),
           const SizedBox(height: KanzSpace.s16),
           for (var i = 0; i < 2; i++) ...[

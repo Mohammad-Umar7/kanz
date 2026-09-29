@@ -1,16 +1,24 @@
 // What the results screen asks of the scan session and the router when the
 // user acts: marks, retries, corrections, focus, location, drop-off and
 // navigation to an idea.
+import 'dart:async';
+
+import 'package:camera/camera.dart' show XFile;
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:flutter_riverpod/misc.dart' show Override;
 import 'package:flutter_test/flutter_test.dart';
 import 'package:go_router/go_router.dart';
 import 'package:kanz/core/data/models/models.dart';
 import 'package:kanz/core/network/api_exception.dart';
+import 'package:kanz/core/services/gallery_picker.dart';
 import 'package:kanz/core/state/connectivity_providers.dart';
+import 'package:kanz/core/state/core_providers.dart';
 import 'package:kanz/core/state/dropoff_controller.dart';
 import 'package:kanz/core/state/scan_session.dart';
 import 'package:kanz/core/state/settings_providers.dart';
+import 'package:kanz/features/results/results_screen.dart';
+import 'package:kanz/features/scan/scan_screen.dart';
 import 'package:kanz/l10n/l10n.dart';
 
 import '../../screenshots/harness.dart';
@@ -28,6 +36,19 @@ class _Dropoff extends DropoffController {
       shown.add(keys.toList());
 }
 
+/// A gallery that stays open until [result] completes.
+class _Picker extends GalleryPicker {
+  _Picker(this.result);
+
+  final Completer<XFile?> result;
+
+  @override
+  Future<XFile?> pick() => result.future;
+
+  @override
+  Future<XFile?> recoverLost() async => null;
+}
+
 void main() {
   setUpAll(loadKanzFonts);
 
@@ -42,6 +63,7 @@ void main() {
     String? location,
     _Dropoff? dropoff,
     BackendStatus status = BackendStatus.online,
+    List<Override> extra = const [],
   }) async {
     tester.view
       ..devicePixelRatio = 1
@@ -61,6 +83,7 @@ void main() {
           extra: [
             if (dropoff != null)
               dropoffControllerProvider.overrideWith(() => dropoff),
+            ...extra,
           ],
         ),
       ),
@@ -209,6 +232,110 @@ void main() {
     await tester.tap(find.text(l10n.resultsChooseFromGallery));
     await pumpFrames(tester, 2);
     expect(router.state.uri.toString(), '/scan?mode=gallery');
+  });
+
+  testWidgets('a retake replaces the results, so back still goes Home', (
+    tester,
+  ) async {
+    final picking = Completer<XFile?>();
+    final (_, router) = await open(
+      tester,
+      ScanFixtures.rejected(),
+      location: '/',
+      extra: [galleryPickerProvider.overrideWithValue(_Picker(picking))],
+    );
+    unawaited(router.push('/results/scan_unclear'));
+    await pumpFrames(tester, 4);
+    await tester.tap(find.text(l10n.resultsChooseFromGallery));
+    await pumpFrames(tester, 4);
+    expect(router.state.uri.toString(), '/scan?mode=gallery');
+    // Home is under the scan, not the rejected results.
+    expect(router.canPop(), isTrue);
+    router.pop();
+    await pumpFrames(tester, 4);
+    expect(router.state.matchedLocation, '/');
+  });
+
+  testWidgets('the scan photo flies into the results', (tester) async {
+    // The heroes pair up by tag whether or not the photo has decoded.
+    final session = ScanFixtures.jar();
+    var flights = 0;
+    final router = GoRouter(
+      initialLocation: '/',
+      routes: [
+        // The viewfinder's captured still, under the shared tag.
+        GoRoute(
+          path: '/',
+          builder: (context, _) => Scaffold(
+            body: Hero(
+              tag: scanPhotoHeroTag(session.scanId),
+              flightShuttleBuilder: (_, _, _, from, _) {
+                flights++;
+                return from.widget;
+              },
+              child: Image(image: photoImage('glass_jar'), fit: BoxFit.cover),
+            ),
+            floatingActionButton: TextButton(
+              onPressed: () => openResults(context, session.scanId),
+              child: const Text('capture'),
+            ),
+          ),
+        ),
+        GoRoute(
+          path: '/results/:scanId',
+          builder: (_, state) =>
+              ResultsScreen(scanId: state.pathParameters['scanId']!),
+        ),
+      ],
+    );
+    final preferences = await testPreferences();
+    await tester.pumpWidget(
+      coreFlowApp(
+        router: router,
+        overrides: screenOverrides(
+          preferences: preferences,
+          sessions: {session.scanId: session},
+        ),
+      ),
+    );
+    await pumpFrames(tester, 2);
+    await tester.tap(find.text('capture'));
+    await pumpFrames(tester, 6);
+    expect(flights, 1);
+    expect(router.state.matchedLocation, '/results/${session.scanId}');
+  });
+
+  testWidgets('the first quota answer turns the ideas into the paused list', (
+    tester,
+  ) async {
+    final rec = ScanFixtures.jarRecommendation();
+    final ids = [for (final i in rec.upcycle) i.id];
+    await open(
+      tester,
+      ScanFixtures.jar(
+        stages: ScanFixtures.stages(makeovers: StageStatus.running),
+        images: {
+          ids[0]: const GeneratedImageState(
+            status: ImageStatus.failed,
+            error: ScanFixtures.quotaError,
+          ),
+          for (final id in ids.skip(1))
+            id: const GeneratedImageState(status: ImageStatus.loading),
+        },
+      ),
+    );
+    // The other requests go to the same spent quota: no failed picture
+    // beside two skeletons on the way to the list.
+    expect(
+      find.text(l10n.resultsImagesPausedTitle.toUpperCase()),
+      findsOneWidget,
+    );
+    expect(find.text(l10n.resultsIdeaImagePaused.toUpperCase()), findsNothing);
+    expect(find.text(l10n.resultsIdeaRendering.toUpperCase()), findsNothing);
+    for (final idea in rec.upcycle) {
+      await scrollTo(tester, find.text(idea.title));
+      expect(find.text(idea.title), findsOneWidget);
+    }
   });
 
   testWidgets('a server that does not answer is named, not called offline', (

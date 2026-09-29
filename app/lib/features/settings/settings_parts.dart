@@ -101,8 +101,8 @@ String toolsSummary(
   );
 }
 
-/// Settings > My tools: the same grouped grid as onboarding, in a sheet.
-/// Changes are saved as they are made.
+/// Settings > My tools: the same grouped grid as onboarding and the adapt
+/// sheet, in a sheet. Changes are saved as they are made.
 Future<void> showToolsSheet(BuildContext context) => showKanzSheet<void>(
   context: context,
   builder: (sheetContext) => const _ToolsSheet(),
@@ -114,6 +114,7 @@ class _ToolsSheet extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final l10n = context.l10n;
+    final c = context.kanzColors;
     final tools = ref.watch(settingsProvider.select((s) => s.tools));
     final vocab = ref.watch(vocabProvider);
     return ConstrainedBox(
@@ -126,31 +127,38 @@ class _ToolsSheet extends ConsumerWidget {
         actions: [
           KanzButton(
             label: l10n.commonDone,
+            expand: true,
             onPressed: () => Navigator.pop(context),
           ),
         ],
-        child: SingleChildScrollView(
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.stretch,
-            children: [
-              Padding(
-                padding: KanzSpace.page,
-                child: Semantics(
-                  liveRegion: true,
-                  child: Text(
-                    l10n.onboardingToolsCount(tools.length),
-                    style: context.textStyles.titleSmall,
-                  ),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: [
+            Padding(
+              padding: KanzSpace.page,
+              child: Semantics(
+                liveRegion: true,
+                child: Text(
+                  l10n.onboardingToolsCount(tools.length),
+                  style: context.textStyles.titleSmall,
                 ),
               ),
-              const SizedBox(height: KanzSpace.s12),
-              ToolPicker(
-                tools: vocab.realTools,
-                selected: tools.toSet(),
-                onToggle: ref.read(settingsProvider.notifier).toggleTool,
+            ),
+            const SizedBox(height: KanzSpace.s12),
+            Flexible(
+              child: SingleChildScrollView(
+                child: ToolPicker(
+                  tools: vocab.realTools,
+                  selected: tools.toSet(),
+                  onToggle: ref.read(settingsProvider.notifier).toggleTool,
+                  revealSelected: true,
+                ),
               ),
-            ],
-          ),
+            ),
+            // Marks where the groups scroll under the pinned action.
+            Divider(height: 1, thickness: 1, color: c.line),
+          ],
         ),
       ),
     );

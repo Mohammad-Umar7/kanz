@@ -16,13 +16,13 @@
   "historyScansEmptyTitle": "لا فحوص بعد",
   "historyScansEmptyBody": "يُحفظ هنا كل غرض تفحصه، ويُفتح حتى دون اتصال.",
   "historyProjectsEmptyTitle": "لا مشاريع بعد",
-  "historyProjectsEmptyBody": "اختر فكرة لإعادة الابتكار من أحد فحوصك وابدأ درسها، وسيُحفظ تقدّمك هنا.",
+  "historyProjectsEmptyBody": "اختر فكرة لإعادة الابتكار من أحد فحوصك وافتح دليلها، وسيُحفظ تقدّمك هنا.",
 
   "historyInProgress": "قيد التنفيذ",
   "historyFinished": "مكتملة",
   "historyFinishedOn": "اكتمل في {date}",
   "historyStepsDone": "{done} من {total} خطوات منجزة",
-  "historyNotStarted": "لم تفتح الدرس بعد",
+  "historyNotStarted": "لم تفتح الدليل بعد",
   "historyResume": "تابِع",
   "historySeeProject": "اعرض المشروع",
 

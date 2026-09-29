@@ -384,8 +384,10 @@ class _ShutterButtonState extends State<ShutterButton> {
 
   @override
   Widget build(BuildContext context) {
+    // The shutter sits on the camera picture, which has no theme: the same
+    // warm white ring and clay disc in light and dark mode.
     const ringColor = KanzPhotoColors.ink;
-    final accent = context.kanzColors.accent;
+    final accent = KanzPhotoColors.accent;
     final enabled = widget.onPressed != null && !widget.busy;
     final size = widget.size;
     return Semantics(

@@ -22,6 +22,7 @@ class KanzColors extends ThemeExtension<KanzColors> {
     required this.surfaceSunken,
     required this.raised,
     required this.track,
+    required this.progressDone,
     required this.ink,
     required this.inkSecondary,
     required this.inkDisabled,
@@ -55,6 +56,11 @@ class KanzColors extends ThemeExtension<KanzColors> {
   /// Empty segments of quality, step and material bars: quiet, but visible
   /// on both background and surface.
   final Color track;
+
+  /// Finished segments of the tutorial's step bar: ink on paper, stepped
+  /// down to the secondary ink in dark mode so the clay current step stays
+  /// the brightest mark. At least 3:1 against [track].
+  final Color progressDone;
 
   /// Primary text and icons, and the fill of primary buttons.
   final Color ink;
@@ -111,6 +117,7 @@ class KanzColors extends ThemeExtension<KanzColors> {
     surfaceSunken: Color(0xFFECE8DF),
     raised: Color(0xFFFFFFFF),
     track: Color(0xFFD8D2C6),
+    progressDone: Color(0xFF161616),
     ink: Color(0xFF161616),
     inkSecondary: Color(0xFF5C5A55),
     inkDisabled: Color(0xFFA9A59C),
@@ -135,6 +142,7 @@ class KanzColors extends ThemeExtension<KanzColors> {
     surfaceSunken: Color(0xFF242522),
     raised: Color(0xFF33342F),
     track: Color(0xFF3A3B36),
+    progressDone: Color(0xFFA8A59C),
     ink: Color(0xFFF2EFE8),
     inkSecondary: Color(0xFFA8A59C),
     inkDisabled: Color(0xFF5E5C56),
@@ -160,6 +168,7 @@ class KanzColors extends ThemeExtension<KanzColors> {
     Color? surfaceSunken,
     Color? raised,
     Color? track,
+    Color? progressDone,
     Color? ink,
     Color? inkSecondary,
     Color? inkDisabled,
@@ -183,6 +192,7 @@ class KanzColors extends ThemeExtension<KanzColors> {
       surfaceSunken: surfaceSunken ?? this.surfaceSunken,
       raised: raised ?? this.raised,
       track: track ?? this.track,
+      progressDone: progressDone ?? this.progressDone,
       ink: ink ?? this.ink,
       inkSecondary: inkSecondary ?? this.inkSecondary,
       inkDisabled: inkDisabled ?? this.inkDisabled,
@@ -208,6 +218,7 @@ class KanzColors extends ThemeExtension<KanzColors> {
     surfaceSunken,
     raised,
     track,
+    progressDone,
     ink,
     inkSecondary,
     inkDisabled,
@@ -243,6 +254,7 @@ class KanzColors extends ThemeExtension<KanzColors> {
       surfaceSunken: l(surfaceSunken, other.surfaceSunken),
       raised: l(raised, other.raised),
       track: l(track, other.track),
+      progressDone: l(progressDone, other.progressDone),
       ink: l(ink, other.ink),
       inkSecondary: l(inkSecondary, other.inkSecondary),
       inkDisabled: l(inkDisabled, other.inkDisabled),

@@ -258,18 +258,25 @@ void main() {
     );
     expect(spec!.places, hasLength(6));
     // A place that lists one material is filled in its color, one that
-    // lists several is filled in ink, and one that lists nothing is a
-    // ring (in the material's color when it was found for one material).
+    // lists several of the chosen materials is split between the first
+    // two, and one that lists nothing is a ring (in the material's color
+    // when it was found for one material). No mark is ink.
     expect(
       spec!.pinMarks['osm:node/1'],
-      const PinMark(listed: true, materialId: 'glass'),
+      const PinMark(listed: true, materialIds: ['glass']),
     );
-    expect(spec!.pinMarks['osm:node/3'], const PinMark(listed: true));
+    expect(
+      spec!.pinMarks['osm:node/3'],
+      const PinMark(listed: true, materialIds: ['glass', 'plastic']),
+    );
     expect(spec!.pinMarks['g:2'], const PinMark(listed: false));
     expect(
       spec!.pinMarks['g:6'],
-      const PinMark(listed: false, materialId: 'metal'),
+      const PinMark(listed: false, materialIds: ['metal']),
     );
+    // The sheet explains the two kinds of mark.
+    expect(find.text('Takes your materials'), findsOneWidget);
+    expect(find.text('Materials not listed'), findsOneWidget);
     spec!.onPinTap(spec!.places[1]);
     await settle(tester);
     expect(controller.calls, contains('selectPlace:g:2'));
